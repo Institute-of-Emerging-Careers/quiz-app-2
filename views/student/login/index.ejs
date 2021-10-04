@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+    <title>Login - Student Panel</title>
+    <style></style>
+  </head>
+  <body>
+    <div class="container mx-auto flex place-content-center justify-center items-center bg-gray-100 h-screen font-body">
+      <div class="w-4/5 sm:w-auto flex flex-col gap-y-8 justify-center pb-6 items-center bg-white h-auto rounded-b-3xl shadow-md">
+        <h1 class="text-2xl bg-iec-blue w-full py-4 text-white text-center"><i class="fas fa-user-shield"></i><br />Student Login</h1>
+
+        <!--Error paragraph-->
+
+        <% if (messages.error) { %>
+        <p class="text-red-500">
+          <i class="fas fa-exclamation-triangle"></i>
+          <%= messages.error %>
+        </p>
+        <% } %>
+
+        <form action="/login" method="POST" class="flex flex-col gap-y-6 sm:gap-y-10 px-12 pb-6">
+          <div class="flex flex-col sm:flex-row gap-x-12">
+            <div class="flex flex-col justify-start">
+              <label for="email" class="text-gray-900">Email Address:</label>
+              <input type="email" name="email" id="email" placeholder="you@site.com" class="border-2 py-2 px-4 hover:border-gray-300" autofocus />
+            </div>
+            <div class="flex flex-col justify-start">
+              <label for="password" class="text-gray-900">Password:</label>
+              <input type="password" name="password" id="password" placeholder="*****" class="border-2 py-2 px-4 hover:border-gray-300" />
+            </div>
+          </div>
+          <input type="submit" value="Log In" class="rounded-full py-3 bg-iec-blue text-lg text-white" />
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

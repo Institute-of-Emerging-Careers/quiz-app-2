@@ -1,0 +1,5 @@
+.env
+node_modules
+instructions.txt
+.prettierrc
+resources/js/node_modules

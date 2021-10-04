@@ -1,0 +1,3 @@
+﻿Section,PoolCount,Statement,Type,A,B,C,D,E,Correct,Link URL,Link Text,Image URL
+1,1,This is a statement,MCQ-S,Option 1,Option 2,Option 3,Option 4,null,A,https://www.google.com,Google,https://vignette1.wikia.nocookie.net/villains/images/8/82/TomFace.PNG/revision/latest?cb=20130605022030
+2,1,This is another statement,MCQ-M,Option 5,Option 6,Option 7,null,null,"B,C",https://www.facebook.com,Facebook,null
