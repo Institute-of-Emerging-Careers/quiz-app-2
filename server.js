@@ -469,10 +469,11 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
       QuizId: section.QuizId,
     },
   });
+  console.log("PoolCount:",section.poolCount)
 
   let count = 0;
   await new Promise((resolve, reject) => {
-    for (let i = 0; i < section.Questions.length; i++) {
+    for (let i = 0; i < section.poolCount; i++) {
       Option.findAll({ where: { QuestionId: section.Questions[i].id }, order: [["optionOrder", "asc"]] })
         .then(async (options_array) => {
           if (section.Questions[i].type == "MCQ-S") {
@@ -503,7 +504,7 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
             result.push({ question: section.Questions[i], options: options_array, answer: default_answers_array });
           }
           count++;
-          if (count == section.Questions.length) resolve(result);
+          if (count == section.poolCount) resolve(result);
         })
         .catch((err) => {
           console.log(err);

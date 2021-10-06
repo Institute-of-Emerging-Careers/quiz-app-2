@@ -129,7 +129,7 @@ const Question = (props) => {
       </div>
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
         <img src={question.image} className="max-w-xl max-h-xl w-auto h-auto"></img>
-        <a href={question.link_url} class="text-blue-600 underline hover:no-underline">{question.link_text == null ? question.link_url : question.link_text}</a>
+        <a href={question.link_url} class="text-blue-600 underline hover:no-underline" target="_blank">{question.link_text == null ? question.link_url : question.link_text}</a>
         <div className="single-question-statement">{question.statement}</div>
         <ul className="mt-2">
           {options.map((option, index) => (
