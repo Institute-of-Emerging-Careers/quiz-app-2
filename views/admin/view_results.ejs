@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../templates/global.ejs') %>
+    <title>View Results - Admin Panel</title>
+    <style>
+        #score-table-body > tr:nth-child(even) {
+            background-color:#f6f6f6;
+        }
+    </style>
+
+</head>
+<body class="px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../templates/header.ejs') %>
+    <h1 class="text-2xl"><%= quiz_title %> - Results</h1>
+    <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen">
+        <% if (data.length!=0) {%>
+        <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
+        <table class='w-full text-left mx-auto' id='results_table'>
+            <thead class="bg-iec-blue text-white w-full">
+                <tr class="w-full">
+                    <th class="py-3 px-6">Student Name</th>
+                    <% const assignment = data[0]
+                        assignment.sectionStatus.forEach(section=>{%>
+                            <th class="py-3 px-6"><%=section.sectionTitle%> Score</th>
+                        <%})
+                        assignment.sectionStatus.forEach(section=>{%>
+                            <th class="py-3 px-6"><%=section.sectionTitle%> Time Taken</th>
+                            <th class="py-3 px-6"><%=section.sectionTitle%> Submission Time</th>
+                        <%})
+                    %>
+                    <th class="py-3 px-6">Total Score</th>
+                </tr>
+            </thead>
+            <tbody class="w-full" id='score-table-body'>
+                <% data.forEach(assignment=>{
+                    total_score=0
+                    %>
+                <tr>
+                    <td class="py-3 px-6"><%=assignment.student_name%></td>
+                        <%assignment.scores.forEach(section=>{
+                            total_score+=section.score
+                            %>
+                            <td class="py-3 px-6"><%=section.score%></td>
+                        <%})
+                        assignment.sectionStatus.forEach(section=>{%>
+                            <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
+                            <td class="py-3 px-6"><%= moment(section.endTime).format("h:mma | ddd D MMM Y") %></td>
+                        <%})
+                    %>
+                    <td class="py-3 px-6"><%= total_score %></td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+        <%} else {%>
+            <p>No results found.</p>    
+        <%} %>
+    </section>
+
+    <script src="/js/view_results.js"></script>
+</body>
+</html>
