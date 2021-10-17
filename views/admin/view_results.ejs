@@ -17,7 +17,10 @@
     <%- include('../templates/header.ejs') %>
     <h1 class="text-2xl"><%= quiz_title %> - Results</h1>
     <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen">
-        <% if (data.length!=0) {%>
+        <% if (data.length!=0) {
+            var time_zone_offset = -(new Date()).getTimezoneOffset()
+
+            %>
         <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
         <table class='w-full text-left mx-auto' id='results_table'>
             <thead class="bg-iec-blue text-white w-full">
@@ -48,7 +51,7 @@
                         <%})
                         assignment.sectionStatus.forEach(section=>{%>
                             <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
-                            <td class="py-3 px-6"><%= moment(section.endTime).format("h:mma | ddd D MMM Y") %></td>
+                            <td class="py-3 px-6"><%= moment(section.endTime-time_zone_offset).format("h:mma | ddd D MMM Y") %></td>
                         <%})
                     %>
                     <td class="py-3 px-6"><%= total_score %></td>
