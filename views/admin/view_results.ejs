@@ -11,6 +11,7 @@
             background-color:#f6f6f6;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 </head>
 <body class="px-32 pt-28 min-h-screen bg-gray-200">
@@ -18,7 +19,6 @@
     <h1 class="text-2xl"><%= quiz_title %> - Results</h1>
     <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen">
         <% if (data.length!=0) {
-            var time_zone_offset = -(new Date()).getTimezoneOffset()
 
             %>
         <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
@@ -51,7 +51,7 @@
                         <%})
                         assignment.sectionStatus.forEach(section=>{%>
                             <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
-                            <td class="py-3 px-6"><%= moment(section.endTime-time_zone_offset).format("h:mma | ddd D MMM Y") %></td>
+                            <td class="py-3 px-6 endtime"><%= section.endTime %></td>
                         <%})
                     %>
                     <td class="py-3 px-6"><%= total_score %></td>

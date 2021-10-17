@@ -28,3 +28,9 @@ function download_table_as_csv(table_id, separator = ',') {
     link.click();
     document.body.removeChild(link);
 }
+
+let items = document.getElementsByClassName("endtime")
+
+for (let i=0;i<items.length;i++) {
+    items.item(i).innerText = moment(parseInt(items.item(i).innerText)+(new Date()).getTimezoneOffset()).format("h:mma | ddd D MMM Y")
+}
