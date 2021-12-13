@@ -13,6 +13,11 @@ Quiz.init(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    allow_edit: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
+    }
     // Time limit is of sections, not of the quiz itself
   },
   {

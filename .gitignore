@@ -4,3 +4,4 @@ instructions.txt
 .prettierrc
 resources/js/node_modules
 uploads
+nginx.conf

@@ -737,6 +737,7 @@ const Main = () => {
           response.json().then((finalResponse) => {
             setSavedStatus(finalResponse.status == true ? <i className="fas fa-check-circle text-green-400 text-xl"></i> : <i className="fas fa-exclamation-triangle text-red-600"></i>);
             setQuizId(finalResponse.quizId);
+            setError(finalResponse.message);
             setUploading2(false);
             setTimeout(() => {
               setSavedStatus("");

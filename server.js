@@ -398,6 +398,14 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
     }
   }
 
+  // make this quiz non-editable because someone has started attempting it
+  const quiz = await Quiz.findOne({
+    where:{
+      id: req.params.quizId
+    }
+  })
+  await quiz.update({allow_edit: false})
+
   // set sectionStatus
   const assignment = await Assignment.findOne({
     where: {
@@ -423,7 +431,7 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
     try {
       const num_sections = await assignment.Quiz.countSections();
       const sectionStatus = assignment.sectionStatus;
-      console.log(sectionStatus);
+      console.log("----Printing Section Status: ",sectionStatus);
       // see if sectionStatus already has current section
       let cur_section_found = false;
       for (let i = 0; i < sectionStatus.length; i++) {
@@ -763,7 +771,14 @@ app.post("/save-quiz", checkAdminAuthenticated, async (req, res) => {
   } else {
     // if old quiz being updated
     console.log(req.body);
-    saveExistingQuiz(req, res);
+    const quiz = Quiz.findOne({
+      where:{
+        id: req.body.quizId
+      }
+    })
+    if (quiz.allow_edit)
+      saveExistingQuiz(req, res);
+    else res.send({ message: "Quiz could not be edited. At least 1 student has already attempted it or is attempting it. Please duplicate the quiz and make changes to the new quiz.", status: false, quizId: quiz.id });
   }
 });
 

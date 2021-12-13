@@ -30,6 +30,7 @@
   "devDependencies": {
     "dotenv": "^10.0.0",
     "nodemon": "^2.0.12",
+    "postcss": "^8.1.0",
     "tailwindcss": "^2.2.7"
   }
 }
