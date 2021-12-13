@@ -27,8 +27,12 @@ const csvToState = require("./functions/csvToState");
 const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
-const updateStatus = require("./functions/sectionExistsInStatus");
+const updateSectionStatuses = require("./functions/updateSectionStatuses")
+const {updateStatus} = require("./functions/updateStatus");
+const {calculateNewSectionStatus, calculateNewStatus} = require("./functions/calculateNewStatuses");
 const updateScore = require("./functions/updateScore") 
+const getAssignment = require("./db/getAssignment")
+const getSection = require("./db/getSection")
 const millisecondsToMinutesAndSeconds = require("./functions/millisecondsToMinutesAndSeconds")
 const { rejects } = require("assert");
 const { resolve } = require("path");
@@ -370,59 +374,37 @@ app.get("/test",async (req,res)=>{
 
 app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, async (req, res) => {
   // add check to see if quiz is available at this moment, if student is assigned to this quiz
+  
 
-  function addSectionToStatus(assignment, section, sectionId) {
-    let cur_status = assignment.status;
-    let cur_section_status = assignment.sectionStatus
-    if (section.time != 0) {
-      const startTime = Date.now();
-      console.log("startTime", startTime);
-      // converting section.time which is in minutes to milliseconds
-      const endTime = startTime + section.time * 60 * 1000;
-      console.log("endTime", endTime);
+  /* We set assignment.sectionStatus here, so that the database reflects that this user has started this section of the quiz
+
+  sectionStatus is a JSON object that contains quantitative data about section progress, such as the exact start and end times, duration of attempt, and the sectionId. For example:
+  [
+    {"startTime": 1633720952527, "endTime": 1633720978740, "duration": 26073, "sectionId": "1"}, 
+    {"startTime": 1633720985932, "endTime": 1633721000292, "duration": 14282, "sectionId": "2"}
+  ]
+  */
+  /* assignment.status, on the other hand, has more qualitative information. For example:
+  [
+    {"status": "Completed", "sectionId": "1"}, 
+    {"status": "In Progress", "sectionId": "2"}
+  ]
+  This can be redundant, but it allows the user to query a section's qualitative status instantly without having to infer it from the quantitative sectionStatus.
+   */
 
 
+  // getAssignment(studentId, quizId, [what_other_models_to_include_in_results])
+  const assignment = await getAssignment(req.user.user.id, req.params.quizId, [Quiz])
 
-      let new_section_status = []
-      if (cur_section_status != null) new_section_status = [...cur_section_status]
-      new_section_status.push({ sectionId: sectionId, startTime: startTime, endTime: endTime });
+  // make this quiz non-editable because someone (this user) has started attempting it
+  await assignment.Quiz.update({allow_edit: false})
 
-      return updateStatus(assignment.id, cur_status, sectionId, "In Progress", new_section_status);
-    } else {
-      const startTime = Date.now();
-
-      let new_section_status = []
-      if (cur_section_status!=null) new_section_status = [...cur_section_status]
-      new_section_status.push({ sectionId: sectionId, startTime: startTime, endTime: 0 });
-      return updateStatus(assignment.id, cur_status, sectionId, "In Progress", new_section_status);
-    }
-  }
-
-  // make this quiz non-editable because someone has started attempting it
-  const quiz = await Quiz.findOne({
-    where:{
-      id: req.params.quizId
-    }
-  })
-  await quiz.update({allow_edit: false})
-
-  // set sectionStatus
-  const assignment = await Assignment.findOne({
-    where: {
-      StudentId: req.user.user.id,
-      QuizId: req.params.quizId,
-    },
-    include: [Quiz],
-  });
-
-  const section = await Section.findOne({
-    where: {
-      id: req.params.sectionId,
-    },
-  });
+  // getSection(sectionId, [what_other_models_to_include_in_results])
+  const section = getSection(req.params.sectionId, [])
 
   if (assignment.sectionStatus == null) {
-    await addSectionToStatus(assignment, section, req.params.sectionId);
+    // update the assignment's status and sectionStatus to show that this student has now started solving this section
+    await updateSectionStatuses(assignment, section, req.params.sectionId);
 
     res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
   } else {
@@ -448,8 +430,7 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
       // sectionStatus does not have current
       if (num_sections > sectionStatus.length && !cur_section_found) {
         // add this section to sectionStatus
-        console.log("I'm here")
-        await addSectionToStatus(assignment, section, req.params.sectionId);
+        await updateSectionStatuses(assignment, section, req.params.sectionId);
 
         res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
       }
@@ -601,7 +582,8 @@ app.get("/quiz/attempt/:sectionId/score", checkStudentAuthenticated, async (req,
 
   await updateScore(req.params.sectionId, assignment, score)
 
-  await updateStatus(assignment.id, assignment.status, req.params.sectionId, "Completed", sectionStatus);
+  const new_status = calculateNewStatus(req.params.sectionId, assignment.status, "Completed")
+  await updateStatus(assignment.id, new_status, sectionStatus);
 
   res.json({ success: true });
 });
