@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
-const { Quiz, Question, Option } = require("./quizmodel");
+const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
 
 class User extends Model {}
@@ -110,9 +110,38 @@ Assignment.init(
   }
 );
 
+class Attempt extends Model {}
+
+Attempt.init(
+  {
+    statusText: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Not Started"
+    },
+    startTime: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    endTime: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
+  },
+  {
+    sequelize,
+    modelName: "Attempt",
+  }
+);
+
 class Answer extends Model {}
 
 Answer.init({}, { sequelize, modelName: "Answer" });
+
 
 // Quiz, Student, and Invite relationships
 Quiz.hasMany(Invite, {
@@ -169,4 +198,18 @@ Option.hasMany(Answer, {
 });
 Answer.belongsTo(Option);
 
-module.exports = { User, Student, Invite, Assignment, Answer };
+
+// Assignment and Attempt relationship
+Assignment.hasMany(Attempt, {})
+Attempt.belongsTo(Assignment)
+
+// Attempt and Section relationship
+Section.hasMany(Attempt, {
+  foreignKey: {
+    allowNull: false,
+  },
+})
+Attempt.belongsTo(Section)
+
+
+module.exports = { User, Student, Invite, Assignment, Answer, Attempt };

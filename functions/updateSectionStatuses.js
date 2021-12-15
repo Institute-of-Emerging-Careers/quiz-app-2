@@ -1,7 +1,8 @@
 const {calculateNewSectionStatus, calculateNewStatus} = require("./calculateNewStatuses");
 const {updateStatus} = require("./updateStatus");
+const { Attempt } = require("../db/models/user");
 
-function updateSectionStatuses(assignment, section, sectionId) {
+async function updateSectionStatuses(assignment, section, sectionId) {
     let cur_status = assignment.status;
     let cur_section_status = assignment.sectionStatus
     // if section time is equal to 0, that means that the quiz is untimed.
@@ -17,6 +18,18 @@ function updateSectionStatuses(assignment, section, sectionId) {
 
         //   creating new status object to insert into database (read comments in server.js about assignment.sectionStatus vs assignment.status)
         let new_status = calculateNewStatus(sectionId, cur_status, "In Progress")
+
+        // creating new rows in the new Attempts table. This will replace the above logic
+        console.log(section)
+        await Attempt.create(
+          {
+            startTime: startTime, 
+            endTime: endTime, 
+            statusText: "In Progress", 
+            AssignmentId: assignment.id, 
+            SectionId: section.id
+          }
+        )
 
         // finally update these statuses in the database
         return updateStatus(assignment.id, new_status, new_section_status);

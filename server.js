@@ -20,7 +20,7 @@ const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
 const { Quiz, Section, Question, Option } = require("./db/models/quizmodel.js");
-const { User, Student, Invite, Assignment, Answer } = require("./db/models/user");
+const { User, Student, Invite, Assignment, Answer, Attempt } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const { saveExistingQuiz, removeEverythingInQuiz } = require("./functions/saveExistingQuiz.js");
 const csvToState = require("./functions/csvToState");
@@ -399,8 +399,9 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
   // make this quiz non-editable because someone (this user) has started attempting it
   await assignment.Quiz.update({allow_edit: false})
 
+  // Get the section that the student wants to attempt.
   // getSection(sectionId, [what_other_models_to_include_in_results])
-  const section = getSection(req.params.sectionId, [])
+  const section = await getSection(req.params.sectionId, [])
 
   if (assignment.sectionStatus == null) {
     // update the assignment's status and sectionStatus to show that this student has now started solving this section
@@ -413,27 +414,31 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
     try {
       const num_sections = await assignment.Quiz.countSections();
       const sectionStatus = assignment.sectionStatus;
-      console.log("----Printing Section Status: ",sectionStatus);
-      // see if sectionStatus already has current section
-      let cur_section_found = false;
-      for (let i = 0; i < sectionStatus.length; i++) {
-        if (sectionStatus[i].sectionId == parseInt(req.params.sectionId)) {
-          cur_section_found = true;
-          if (sectionStatus[i].endTime != 0 && sectionStatus[i].endTime - Date.now() < 0) {
-            // this means that the section is timed and the time for this section is already over
-            res.send("The time for this section has ended. You cannot continue to attempt it anymore. <a href='/student'>Click here to go back.</a>");
-          } else {
-            res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
-          }
+
+      // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
+      // An Attempt is characterized by an AssignmentId and a SectionId
+      const attempt = await Attempt.findOne({
+        where: {
+          AssignmentId: assignment.id,
+          SectionId: section.id
         }
-      }
-      // sectionStatus does not have current
-      if (num_sections > sectionStatus.length && !cur_section_found) {
+      })
+      
+      if (attempt != null) {
+        if (sectionStatus[i].endTime != 0 && sectionStatus[i].endTime - Date.now() < 0) {
+          // this means that the section is timed and the time for this section is already over
+          res.send("The time for this section has ended. You cannot continue to attempt it anymore. <a href='/student'>Click here to go back.</a>");
+        } else {
+          res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
+        }
+      } else {
         // add this section to sectionStatus
         await updateSectionStatuses(assignment, section, req.params.sectionId);
 
         res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
+      
       }
+    
     } catch (err) {
       console.log(err);
       res.send("Error 45");
