@@ -799,7 +799,6 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       },
       include: { model: Quiz, required: true, include: { model: Section } },
     });
-    let all_quizzes = [];
 
     // // add num_sections info to the returned object
     // await async.forEachOf(assignments, (assignment, index) => {
@@ -814,16 +813,41 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       for (let i = 0; i < assignments.length; i++) {
         assignments[i].Quiz.countSections().then(async (num_sections) => {
           count++;
-          const status = assignments[i].status == null ? null : assignments[i].status;
-          result.push({ quiz: assignments[i].Quiz, num_sections: num_sections, status: status });
+          const num_sections_attempted = await Attempt.count({
+            where:{
+              AssignmentId: assignments[i].id
+            }
+          })
+
+
+          if (num_sections_attempted == 0) result.push({status: ["Not Started", "Start"], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
+          else if (num_sections_attempted < num_sections) result.push({status: ["In Progress", "Continue"], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
+          else result.push({status: ["Completed", ""], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
+
           if (count == assignments.length) {
             resolve();
           }
         });
       }
     });
-
     res.json(result);
+
+    // let count = 0;
+    // let result = [];
+    // await new Promise((resolve) => {
+    //   for (let i = 0; i < assignments.length; i++) {
+    //     assignments[i].Quiz.countSections().then(async (num_sections) => {
+    //       count++;
+    //       const status = assignments[i].status == null ? null : assignments[i].status;
+    //       result.push({ quiz: assignments[i].Quiz, num_sections: num_sections, status: status });
+    //       if (count == assignments.length) {
+    //         resolve();
+    //       }
+    //     });
+    //   }
+    // });
+
+    
   } catch (err) {
     console.log(err);
     res.sendStatus(500);

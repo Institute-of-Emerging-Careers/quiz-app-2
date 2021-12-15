@@ -96,11 +96,11 @@ $(document).ready(function () {
     function (data) {
       console.log(data);
       data.forEach((item) => {
-        let [status, action] = retrieveStatusAndAction(item.status, item.num_sections);
+        let [status, action] = item.status
         let statusColor = assignStatusColor(status);
         assessments_table_body.append(
           "<tr><td>" +
-            item.quiz.title +
+            item.quiz_title +
             "</td><td>" +
             item.num_sections +
             "</td><td class='" +
@@ -108,11 +108,11 @@ $(document).ready(function () {
             "'>" +
             status +
             "</td><td><a onClick='details(this)' data-quiz_title='" +
-            item.quiz.title +
+            item.quiz_title +
             "' data-num_sections='" +
             item.num_sections +
             "' id='" +
-            item.quiz.id +
+            item.quiz_id +
             "' class='text-blue-600 cursor-pointer'>" +
             action +
             "</a></td></tr>"
