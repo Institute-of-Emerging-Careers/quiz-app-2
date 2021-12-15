@@ -68,15 +68,11 @@ function details(elem) {
       modal_section_table_body.empty();
       data.forEach((section) => {
         let action = "";
-        let statusColor = assignStatusColor(section.status);
+        let statusColor = assignStatusColor(section.status[0]);
         if (section.time == 0) section.time = "Unlimited";
-        if (section.status == "Not Started" || section.status == null) {
-          section.status = "Not Started";
-          action = "<a class='text-blue-600 underline' href='/quiz/attempt/" + elem.id + "/section/" + section.id + "'>Start</a>";
-        } else if (section.status == "In Progress") {
-          action = "<a class='text-blue-600 underline' href='/quiz/attempt/" + elem.id + "/section/" + section.id + "'>Continue</a>";
-        }
-        modal_section_table_body.append("<tr><td>" + section.title + "</td><td>" + section.num_questions + "</td><td>" + section.time + " minute(s)</td><td class='" + statusColor + "'>" + section.status + "</td><td>" + action + "</td></tr>");
+        action = "<a class='text-blue-600 underline' href='/quiz/attempt/" + elem.id + "/section/" + section.id + "'>" + section.status[1] +"</a>";
+        console.log(section.status)
+        modal_section_table_body.append("<tr><td>" + section.title + "</td><td>" + section.num_questions + "</td><td>" + section.time + " minute(s)</td><td class='" + statusColor + "'>" + section.status[0] + "</td><td>" + action + "</td></tr>");
       });
       // show modal
       showModal();

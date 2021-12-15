@@ -27,8 +27,8 @@ const csvToState = require("./functions/csvToState");
 const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
-const updateSectionStatuses = require("./functions/updateSectionStatuses")
-const {updateStatus} = require("./functions/updateStatus");
+const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress")
+const {setSectionStatusToComplete} = require("./functions/setSectionStatusToComplete");
 const {calculateNewSectionStatus, calculateNewStatus} = require("./functions/calculateNewStatuses");
 const updateScore = require("./functions/updateScore") 
 const getAssignment = require("./db/getAssignment")
@@ -305,23 +305,16 @@ app.get("/quiz/:quizId/details", checkStudentAuthenticated, async (req, res) => 
   try {
     async function retrieveStatus(assignments, sectionId) {
       const assignment = assignments[0];
-      if (assignment.status != null) {
-        return new Promise(async (resolve, reject) => {
-          try {
-            let status = assignment.status;
-            for (let i = 0; i < status.length; i++) {
-              if (status[i].sectionId == sectionId) {
-                resolve(status[i].status);
-              }
-            }
-            resolve("Not Started");
-          } catch (err) {
-            reject(err);
-          }
-        });
-      } else {
-        return null;
-      }
+      const attempt = await Attempt.findOne({
+        where: {
+          AssignmentId: assignment.id,
+          SectionId: sectionId
+        }
+      })
+      console.log(attempt)
+      if (attempt == null) return ["Not Started", "Start"]
+      else if (attempt.statusText == "In Progress") return ["In Progress", "Continue"]
+      else if (attempt.statusText == "Completed") return ["Completed", ""]
     }
 
     let quiz = await Quiz.findOne({
@@ -336,7 +329,7 @@ app.get("/quiz/:quizId/details", checkStudentAuthenticated, async (req, res) => 
           where: {
             StudentId: req.user.user.id,
           },
-          attributes: ["status", "sectionStatus"],
+          attributes: ["id", "status", "sectionStatus"],
         },
       ],
     });
@@ -403,18 +396,22 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
   // getSection(sectionId, [what_other_models_to_include_in_results])
   const section = await getSection(req.params.sectionId, [])
 
-  if (assignment.sectionStatus == null) {
+  const sections_attempted = await Attempt.count({
+    where:{
+      AssignmentId: assignment.id,
+      SectionId: req.params.sectionId
+    }
+  })
+
+  if (sections_attempted.count == 0) {
     // update the assignment's status and sectionStatus to show that this student has now started solving this section
-    await updateSectionStatuses(assignment, section, req.params.sectionId);
+    await setSectionStatusToInProgress(assignment, section, req.params.sectionId);
 
     res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
   } else {
     // assignment.sectionStatus is not null, which means that one of the sections of this quiz has been either started or finished
 
     try {
-      const num_sections = await assignment.Quiz.countSections();
-      const sectionStatus = assignment.sectionStatus;
-
       // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
       // An Attempt is characterized by an AssignmentId and a SectionId
       const attempt = await Attempt.findOne({
@@ -425,7 +422,7 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
       })
       
       if (attempt != null) {
-        if (sectionStatus[i].endTime != 0 && sectionStatus[i].endTime - Date.now() < 0) {
+        if (attempt.endTime != 0 && attempt.endTime - Date.now() < 0) {
           // this means that the section is timed and the time for this section is already over
           res.send("The time for this section has ended. You cannot continue to attempt it anymore. <a href='/student'>Click here to go back.</a>");
         } else {
@@ -433,7 +430,7 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
         }
       } else {
         // add this section to sectionStatus
-        await updateSectionStatuses(assignment, section, req.params.sectionId);
+        await setSectionStatusToInProgress(assignment, section, req.params.sectionId);
 
         res.render("student/attempt.ejs", { user_type: req.user.type, sectionId: req.params.sectionId, sectionTitle: section.title, quizTitle: assignment.Quiz.title });
       
@@ -515,31 +512,24 @@ app.get("/section/:sectionId/endTime", checkStudentAuthenticated, async (req, re
   // getting the endTime of this quiz
   try {
     const section = await Section.findOne({
-      where: {
-        id: req.params.sectionId,
+      where:{
+        id: req.params.sectionId
       },
-      include: [{ model: Question, required: true, order: [["questionOrder", "asc"]] }],
-    });
+      attributes: ["id", "QuizId"],
+    })
 
     const assignment = await Assignment.findOne({
       where: {
         StudentId: req.user.user.id,
         QuizId: section.QuizId,
       },
-      include: { model: Quiz, attributes: ["id"] },
+      attributes: ["id"]
     });
 
-    const num_sections = await assignment.Quiz.countSections();
-
-    const sectionStatus = assignment.sectionStatus;
-    let endTime;
-    for (let i = 0; i < sectionStatus.length; i++) {
-      if (sectionStatus[i].sectionId == req.params.sectionId) {
-        endTime = sectionStatus[i].endTime;
-      }
-    }
-
-    if (endTime == undefined && num_sections > sectionStatus.length) {
+    const attempt = await Attempt.findOne({where:{AssignmentId: assignment.id, SectionId: req.params.sectionId}, attributes: ["endTime"]})
+    let endTime = attempt.endTime
+    console.log("endTime: ",endTime)
+    if (attempt.endTime == null) {
       endTime = 0;
     }
 
@@ -577,18 +567,10 @@ app.get("/quiz/attempt/:sectionId/score", checkStudentAuthenticated, async (req,
   const quizId = (await Section.findOne({ where: { id: req.params.sectionId }, include: { model: Quiz, required: true, attributes: ["id"] }, attributes: [] })).Quiz.id;
   const assignment = await Assignment.findOne({ where: { StudentId: req.user.user.id, QuizId: quizId } });
   const score = await calculateScore(req.params.sectionId, req.user.user.id);
-  let sectionStatus = assignment.sectionStatus;
-  for (let i=0;i<sectionStatus.length;i++) {
-    if (sectionStatus[i].sectionId == req.params.sectionId) {
-        sectionStatus[i].duration = req.query.time - sectionStatus[i].startTime
-        sectionStatus[i].endTime = Date.now()
-    }
-  }
 
   await updateScore(req.params.sectionId, assignment, score)
-
-  const new_status = calculateNewStatus(req.params.sectionId, assignment.status, "Completed")
-  await updateStatus(assignment.id, new_status, sectionStatus);
+  
+  await setSectionStatusToComplete(assignment.id, req.params.sectionId);
 
   res.json({ success: true });
 });
@@ -751,13 +733,11 @@ app.get("/logout", (req, res) => {
 });
 
 app.post("/save-quiz", checkAdminAuthenticated, async (req, res) => {
-  console.log(util.inspect(req.body.mcqs, false, null, true));
   if (req.body.quizId == null) {
     // if new quiz being created
     saveNewQuiz(req, res);
   } else {
     // if old quiz being updated
-    console.log(req.body);
     const quiz = Quiz.findOne({
       where:{
         id: req.body.quizId
@@ -783,7 +763,6 @@ app.get("/delete/quiz/:id", checkAdminAuthenticated, async (req, res) => {
 });
 
 app.get("/student", checkStudentAuthenticated, (req, res) => {
-  console.log(req.query.success)
   res.render("student/index.ejs", { user_type: req.user.type, query: req.query });
 });
 
@@ -800,12 +779,31 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       include: { model: Quiz, required: true, include: { model: Section } },
     });
 
-    // // add num_sections info to the returned object
-    // await async.forEachOf(assignments, (assignment, index) => {
-    //   assignment.Quiz.countSections().then((num_sections) => {
-    //     assignments[index].Quiz.num_sections = num_sections;
-    //   });
-    // });
+    function anySectionInProgress(attempted_sections)
+    {
+      for (let i=0;i<attempted_sections.rows.length;i++)
+      {
+        if (attempted_sections.rows[i].statusText == "In Progress")
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function allSectionsCompleted(attempted_sections)
+    {
+      let all_completed = true;
+      for (let i=0;i<attempted_sections.rows.length;i++)
+      {
+        if (attempted_sections.rows[i].statusText != "Completed")
+        {
+          all_completed = false;
+        }
+      }
+      return all_completed;
+    }
+
 
     let count = 0;
     let result = [];
@@ -813,17 +811,19 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       for (let i = 0; i < assignments.length; i++) {
         assignments[i].Quiz.countSections().then(async (num_sections) => {
           count++;
-          const num_sections_attempted = await Attempt.count({
+          result.push({quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
+
+          const attempted_sections = await Attempt.findAndCountAll({
             where:{
               AssignmentId: assignments[i].id
             }
           })
 
-
-          if (num_sections_attempted == 0) result.push({status: ["Not Started", "Start"], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
-          else if (num_sections_attempted < num_sections) result.push({status: ["In Progress", "Continue"], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
-          else result.push({status: ["Completed", ""], quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
-
+          if (attempted_sections.count==0) result[result.length-1].status=["Not Started", "Start"];
+          else if (anySectionInProgress(attempted_sections)) result[result.length-1].status=["In Progress", "Continue"];
+          else if (!allSectionsCompleted(attempted_sections)) result[result.length-1].status=["Incomplete", "Continue"];
+          else result[result.length-1].status=["Completed", ""];
+          
           if (count == assignments.length) {
             resolve();
           }
@@ -831,21 +831,6 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       }
     });
     res.json(result);
-
-    // let count = 0;
-    // let result = [];
-    // await new Promise((resolve) => {
-    //   for (let i = 0; i < assignments.length; i++) {
-    //     assignments[i].Quiz.countSections().then(async (num_sections) => {
-    //       count++;
-    //       const status = assignments[i].status == null ? null : assignments[i].status;
-    //       result.push({ quiz: assignments[i].Quiz, num_sections: num_sections, status: status });
-    //       if (count == assignments.length) {
-    //         resolve();
-    //       }
-    //     });
-    //   }
-    // });
 
     
   } catch (err) {

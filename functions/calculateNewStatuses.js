@@ -1,4 +1,4 @@
-const {sectionExistsInStatus} = require("./updateStatus");
+const {sectionExistsInStatus} = require("./setSectionStatusToComplete");
 
 const calculateNewSectionStatus = (sectionId, cur_section_status, startTime, endTime) => {
     let new_section_status = []
