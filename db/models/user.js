@@ -112,6 +112,7 @@ Assignment.init(
 
 class Attempt extends Model {}
 
+// An Attempt is the attempt of just a single section out of a quiz
 Attempt.init(
   {
     statusText: {
@@ -135,6 +136,23 @@ Attempt.init(
   {
     sequelize,
     modelName: "Attempt",
+  }
+);
+
+class Score extends Model {}
+
+// An Attempt is the attempt of just a single section out of a quiz
+Score.init(
+  {
+    score: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
+    }
+  },
+  {
+    sequelize,
+    modelName: "Score",
   }
 );
 
@@ -211,5 +229,9 @@ Section.hasMany(Attempt, {
 })
 Attempt.belongsTo(Section)
 
+// Attempt and Score relationship
+Attempt.hasOne(Score)
+Score.belongsTo(Attempt)
 
-module.exports = { User, Student, Invite, Assignment, Answer, Attempt };
+
+module.exports = { User, Student, Invite, Assignment, Answer, Attempt, Score };

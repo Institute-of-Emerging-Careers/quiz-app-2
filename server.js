@@ -20,7 +20,7 @@ const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
 const { Quiz, Section, Question, Option } = require("./db/models/quizmodel.js");
-const { User, Student, Invite, Assignment, Answer, Attempt } = require("./db/models/user");
+const { User, Student, Invite, Assignment, Answer, Attempt, Score } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const { saveExistingQuiz, removeEverythingInQuiz } = require("./functions/saveExistingQuiz.js");
 const csvToState = require("./functions/csvToState");
@@ -29,7 +29,6 @@ const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress")
 const {setSectionStatusToComplete} = require("./functions/setSectionStatusToComplete");
-const {calculateNewSectionStatus, calculateNewStatus} = require("./functions/calculateNewStatuses");
 const updateScore = require("./functions/updateScore") 
 const getAssignment = require("./db/getAssignment")
 const getSection = require("./db/getSection")
@@ -561,9 +560,6 @@ app.post("/quiz/save-progress", checkStudentAuthenticated, (req, res) => {
 
 app.get("/quiz/attempt/:sectionId/score", checkStudentAuthenticated, async (req, res) => {
   
-  if (req.query.hasOwnProperty("time")) {
-    console.log("Time: ",req.query.time);
-  }
   const quizId = (await Section.findOne({ where: { id: req.params.sectionId }, include: { model: Quiz, required: true, attributes: ["id"] }, attributes: [] })).Quiz.id;
   const assignment = await Assignment.findOne({ where: { StudentId: req.user.user.id, QuizId: quizId } });
   const score = await calculateScore(req.params.sectionId, req.user.user.id);
@@ -576,37 +572,52 @@ app.get("/quiz/attempt/:sectionId/score", checkStudentAuthenticated, async (req,
 });
 
 app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
-  const quiz = await Quiz.findOne({where:{id:req.params.quizId}, include: [Section]})
+  const quiz = await Quiz.findOne({where:{id:req.params.quizId}, include: [{model: Section, order:["id"]}]})
+
+  // column_headings will tell the result page how many sections this quiz had, so that the displayed table has the right header row
+  let quiz_sections = []
+  quiz.Sections.forEach(section=>{
+    quiz_sections.push({section_id: section.id, section_title: section.title})
+  })
 
   let data = []
-  let assignments = await Assignment.findAll({where:{QuizId: req.params.quizId}, include: [Student]})
+  let assignments = await Assignment.findAll({where:{QuizId: req.params.quizId}, include: [Student, {model: Attempt, include: [{model: Section, order:["id"]}, Score]}]})
 
   assignments.forEach(assignment=>{
-    if (assignment.scores != null) {
-      for (let i=0;i<assignment.scores.length;i++) {
-        quiz.Sections.forEach(section=>{
-          if (assignment.scores[i].sectionId == section.id) {
-            assignment.scores[i].sectionTitle = section.title
-          }
-        })
-      }
+    if (assignment.Attempts.length > 0) { // only show scores of students who have attempted this quiz
+      data.push(
+        {
+          student_id: assignment.Student.id, 
+          student_name: assignment.Student.firstName + ' ' + assignment.Student.lastName,
+          sections: [],
+          total_score: 0,
+        }
+      )
 
-      for (let i=0;i<assignment.sectionStatus.length;i++) {
-        quiz.Sections.forEach(section=>{
-          if (assignment.sectionStatus[i].sectionId == section.id) {
-            assignment.sectionStatus[i].sectionTitle = section.title
+      quiz_sections.forEach(section=>{
+        let found = false
+        assignment.Attempts.forEach(attempt=>{
+          // if we simply start pushing each attempt to the data array, and if the student has only attempted 1 of 2 sections,
+          // then the results page will have to deal with the complex task of checking which section's results we have sent
+          // and which we haven't. So we will rather do it here. We will, for each section of the quiz that exists in the quiz,
+          // check whether or not the student has attempted it. If yes, we push the scores to the data array, otherwise
+          // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
+          // array
+          if (section.section_id == attempt.SectionId) {
+            data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: attempt.Score.score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
+            found = true
+            data[data.length-1].total_score += attempt.Score.score
           }
         })
-      }
-      data.push({
-        student_name: assignment.Student.firstName + " " + assignment.Student.lastName,
-        scores: assignment.scores,
-        sectionStatus: assignment.sectionStatus
+        if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, start_time: 0, end_time: 0, duration: 0})
       })
     }
   })
 
-  res.render("admin/view_results.ejs", {user_type: req.user.type, myname: req.user.user.firstName, quiz_title: quiz.title, data: data, moment:moment, millisecondsToMinutesAndSeconds:millisecondsToMinutesAndSeconds})
+  let final_response = {quiz_sections: quiz_sections, data: data}
+
+
+  res.render("admin/view_results.ejs", {user_type: req.user.type, myname: req.user.user.firstName, quiz_title: quiz.title, data_obj: final_response, moment:moment, millisecondsToMinutesAndSeconds:millisecondsToMinutesAndSeconds})
 })
 
 // This img_upload object is defined in this server.js file above
@@ -791,17 +802,20 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       return false;
     }
 
-    function allSectionsCompleted(attempted_sections)
+    function allSectionsCompleted(attempted_sections, num_sections)
     {
       let all_completed = true;
-      for (let i=0;i<attempted_sections.rows.length;i++)
-      {
-        if (attempted_sections.rows[i].statusText != "Completed")
+      if (attempted_sections.rows.length < num_sections) return false
+      else {
+        for (let i=0;i<attempted_sections.rows.length;i++)
         {
-          all_completed = false;
+          if (attempted_sections.rows[i].statusText != "Completed")
+          {
+            all_completed = false;
+          }
         }
+        return all_completed;
       }
-      return all_completed;
     }
 
 
@@ -821,7 +835,7 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
 
           if (attempted_sections.count==0) result[result.length-1].status=["Not Started", "Start"];
           else if (anySectionInProgress(attempted_sections)) result[result.length-1].status=["In Progress", "Continue"];
-          else if (!allSectionsCompleted(attempted_sections)) result[result.length-1].status=["Incomplete", "Continue"];
+          else if (!allSectionsCompleted(attempted_sections, num_sections)) result[result.length-1].status=["Incomplete", "Continue"];
           else result[result.length-1].status=["Completed", ""];
           
           if (count == assignments.length) {

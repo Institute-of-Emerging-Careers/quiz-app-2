@@ -1,5 +1,3 @@
-const {calculateNewSectionStatus, calculateNewStatus} = require("./calculateNewStatuses");
-const {updateStatus} = require("./setSectionStatusToComplete");
 const { Attempt } = require("../db/models/user");
 
 async function setSectionStatusToInProgress(assignment, section, sectionId) {

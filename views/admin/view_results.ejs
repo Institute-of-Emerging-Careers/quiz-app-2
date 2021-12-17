@@ -16,6 +16,7 @@
 </head>
 <body class="px-32 pt-28 min-h-screen bg-gray-200">
     <%- include('../templates/header.ejs') %>
+    <% data = data_obj.data %>
     <h1 class="text-2xl"><%= quiz_title %> - Results</h1>
     <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen">
         <% if (data.length!=0) {
@@ -26,35 +27,36 @@
             <thead class="bg-iec-blue text-white w-full">
                 <tr class="w-full">
                     <th class="py-3 px-6">Student Name</th>
-                    <% const assignment = data[0]
-                        assignment.sectionStatus.forEach(section=>{%>
-                            <th class="py-3 px-6"><%=section.sectionTitle%> Score</th>
-                        <%})
-                        assignment.sectionStatus.forEach(section=>{%>
-                            <th class="py-3 px-6"><%=section.sectionTitle%> Time Taken</th>
-                            <th class="py-3 px-6"><%=section.sectionTitle%> Submission Time</th>
+                    <% const quiz_sections = data_obj.quiz_sections
+                        quiz_sections.forEach(section=>{%>
+                            <th class="py-3 px-6"><%=section.section_title%> Score</th>
+                            <th class="py-3 px-6"><%=section.section_title%> Time Taken</th>
+                            <th class="py-3 px-6"><%=section.section_title%> Submission Time (KHI)</th>
                         <%})
                     %>
                     <th class="py-3 px-6">Total Score</th>
                 </tr>
             </thead>
             <tbody class="w-full" id='score-table-body'>
-                <% data.forEach(assignment=>{
-                    total_score=0
+                <% data.forEach(student_row=>{
                     %>
                 <tr>
-                    <td class="py-3 px-6"><%=assignment.student_name%></td>
-                        <%assignment.scores.forEach(section=>{
-                            total_score+=section.score
+                    <td class="py-3 px-6"><%=student_row.student_name%></td>
+                        <%student_row.sections.forEach(section=>{
+                            if (section.status == "Attempted") {
                             %>
-                            <td class="py-3 px-6"><%=section.score%></td>
-                        <%})
-                        assignment.sectionStatus.forEach(section=>{%>
-                            <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
-                            <td class="py-3 px-6 endtime"><%= section.endTime %></td>
-                        <%})
+                                <td class="py-3 px-6"><%=section.section_score%></td>
+                                <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
+                                <td class="py-3 px-6 endtime"><%= section.end_time %></td>
+                            <%
+                            } else {%>
+                                <td class="py-3 px-6">Not Attempted Yet</td>
+                                <td class="py-3 px-6">N/A</td>
+                                <td class="py-3 px-6 endtime">0</td>
+                            <%}
+                        })
                     %>
-                    <td class="py-3 px-6"><%= total_score %></td>
+                    <td class="py-3 px-6"><%= student_row.total_score %></td>
                 </tr>
                 <% }) %>
             </tbody>
