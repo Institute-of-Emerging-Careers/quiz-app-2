@@ -281,7 +281,6 @@ const MCQ = (props) => {
   function uploadImage(e) {
     let data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
     setUploading(true);
-    // data.append("file", e.target.files[0]);
     fetch("/upload", {
       method: "POST",
       body: data,

@@ -130,7 +130,7 @@ const Question = (props) => {
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
         <img src={question.image} className="max-w-xl max-h-xl w-auto h-auto"></img>
         <a href={question.link_url} class="text-blue-600 underline hover:no-underline" target="_blank">{question.link_text == null ? question.link_url : question.link_text}</a>
-        <div className="single-question-statement">{question.statement}</div>
+        <div className="single-question-statement" style={{whiteSpace: 'pre-line'}}>{question.statement.replace(/(?:\r\n|\r|\n)/g, '<br>')}</div>
         <ul className="mt-2">
           {options.map((option, index) => (
             <Option option={option} optionIndex={index} name={question.questionOrder} questionIndex={props.questionIndex} questionType={question.type} key={option.id}></Option>
