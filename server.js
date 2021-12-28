@@ -328,7 +328,7 @@ app.get("/quiz/:quizId/details", checkStudentAuthenticated, async (req, res) => 
           where: {
             StudentId: req.user.user.id,
           },
-          attributes: ["id", "status", "sectionStatus"],
+          attributes: ["id"],
         },
       ],
     });

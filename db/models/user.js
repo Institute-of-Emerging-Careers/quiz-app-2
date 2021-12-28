@@ -90,20 +90,7 @@ Invite.init(
 class Assignment extends Model {}
 
 Assignment.init(
-  {
-    status: {
-      type: DataTypes.JSON,
-      allowNull: true,
-    },
-    sectionStatus: {
-      type: DataTypes.JSON,
-      allowNull: true,
-    },
-    scores: {
-      type: DataTypes.JSON,
-      allowNull: true
-    }
-  },
+  {},
   {
     sequelize,
     modelName: "Assignment",
