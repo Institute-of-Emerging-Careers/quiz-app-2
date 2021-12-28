@@ -86,6 +86,12 @@ $(document).ready(function () {
     }
   }
 
+  email_field.focusout((e)=>{
+    $.get("/email-exists/" + email_field.val(), (data, success)=>{
+      if (data == true) window.location="/student/login?link=" + location.pathname.split('/').slice(-1)[0] + "&email=" + email_field.val()
+    })
+  })
+
   $("#section1-button").click(function () {
     // getting the values
     let firstname = firstname_field.val();

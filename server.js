@@ -753,6 +753,12 @@ app.post("/student/signup", async (req, res) => {
   }
 });
 
+app.get("/email-exists/:email", async(req,res)=>{
+  if (await Student.count({where:{email:req.params.email}}) > 0)
+    res.send(true)
+  else res.send(false)
+})
+
 app.get("/logout", (req, res) => {
   if (req.hasOwnProperty("user")) {
     const user_type = req.user.type;
@@ -799,7 +805,7 @@ app.get("/student", checkStudentAuthenticated, (req, res) => {
 });
 
 app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
-      res.render("student/login/index.ejs", {link: req.query.link});
+      res.render("student/login/index.ejs", {link: req.query.link, email: req.query.email});
 });
 
 app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {

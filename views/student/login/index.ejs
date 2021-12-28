@@ -30,12 +30,13 @@
             </p>
             <% } %>
           <div class="mt-6">
+            <% if (email != undefined) {%><p class="text-green-500">You were redirected to this page because an account with this email address already exists. So you don't have to create a new account. Please enter your password and log in below.</p><br><%}%>
             <label for="email" class="ml-0 text-left float-left text-gray-800">Email Address:</label>
-            <input type="email" name="email" id="email" placeholder="you@site.com"  class="border w-full py-3 px-4 mt-1 hover:shadow-sm" autofocus />
+            <input type="email" name="email" id="email" placeholder="you@site.com" value="<%= email %>" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" <% if (email == undefined) {%> autofocus <%}%> />
           </div>
           <div class="mt-6">
             <label for="password" class="ml-0 text-left float-left text-gray-800">Password:</label>
-            <input type="password" name="password" id="password" placeholder="*****"  class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+            <input type="password" name="password" id="password" placeholder="*****"  class="border w-full py-3 px-4 mt-1 hover:shadow-sm" <% if (email != undefined) {%> autofocus <%}%>/>
           </div>
           <input type="hidden" name="link" value="<%=link%>">
           <input type="submit" value="Log In" class="py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800" />
