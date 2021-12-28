@@ -713,7 +713,7 @@ app.post(
         console.log("req.body.link",req.body.link)
         const invite = await Invite.findOne({where:{link:req.body.link}, include: {model:Quiz, attributes:["id"]}})
         const quizId = invite.Quiz.id
-        await Assignment.findOrCreate({StudentId: req.user.user.id, QuizId: quizId })
+        await Assignment.findOrCreate({where: {StudentId: req.user.user.id, QuizId: quizId} })
         res.redirect("/student")
       } catch(err) {
         res.redirect("/student/login")
