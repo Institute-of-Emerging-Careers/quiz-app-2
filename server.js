@@ -690,9 +690,10 @@ app.post(
     // successRedirect: "/student",
     if (req.hasOwnProperty('user')) {
       try {
+        console.log("req.body.link",req.body.link)
         const invite = await Invite.findOne({where:{link:req.body.link}, include: {model:Quiz, attributes:["id"]}})
         const quizId = invite.Quiz.id
-        await Assignment.create({StudentId: req.user.user.id, QuizId: quizId })
+        await Assignment.findOrCreate({StudentId: req.user.user.id, QuizId: quizId })
         res.redirect("/student")
       } catch(err) {
         res.redirect("/student/login")
@@ -777,8 +778,8 @@ app.get("/student", checkStudentAuthenticated, (req, res) => {
   res.render("student/index.ejs", { user_type: req.user.type, query: req.query });
 });
 
-app.get("/student/login", checkStudentAlreadyLoggedIn, (req, res) => {
-  res.render("student/login/index.ejs", {link: req.query.link});
+app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
+      res.render("student/login/index.ejs", {link: req.query.link});
 });
 
 app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
@@ -821,11 +822,12 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
 
     let count = 0;
     let result = [];
-    await new Promise((resolve) => {
+    result = await new Promise((resolve) => {
       for (let i = 0; i < assignments.length; i++) {
         assignments[i].Quiz.countSections().then(async (num_sections) => {
-          count++;
+          
           result.push({quiz_id: assignments[i].Quiz.id, num_sections: num_sections, quiz_title: assignments[i].Quiz.title})
+          const cur_index = result.length - 1
 
           const attempted_sections = await Attempt.findAndCountAll({
             where:{
@@ -833,17 +835,22 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
             }
           })
 
-          if (attempted_sections.count==0) result[result.length-1].status=["Not Started", "Start"];
-          else if (anySectionInProgress(attempted_sections)) result[result.length-1].status=["In Progress", "Continue"];
-          else if (!allSectionsCompleted(attempted_sections, num_sections)) result[result.length-1].status=["Incomplete", "Continue"];
-          else result[result.length-1].status=["Completed", ""];
           
-          if (count == assignments.length) {
-            resolve();
+          if (attempted_sections.count==0) result[cur_index].status=["Not Started", "Start"];
+          else if (anySectionInProgress(attempted_sections)) result[cur_index].status=["In Progress", "Continue"];
+          else if (!allSectionsCompleted(attempted_sections, num_sections)) result[cur_index].status=["Incomplete", "Continue"];
+          else result[cur_index].status=["Completed", ""];
+          console.log(result[cur_index].status)
+          count++;
+          if (count == assignments.length) 
+          {
+            console.log("resolved")
+            resolve(result);
           }
         });
       }
     });
+    console.log("sending response", result)
     res.json(result);
 
     
