@@ -42,7 +42,7 @@ $("#invite-link-creation-form").submit(function (e) {
       } else {
         invite_link_error.removeClass("text-red-500");
         invite_link_error.addClass("text-green-500");
-        previous_links_table_body.append("<tr><td>" + linkToFullUrl(data.invite.link) + "</td><td></td><td>" + data.invite.registrations + "</td>" + moment(data.invite.createdAt).format("Do MMMM, YYYY") + "</tr>");
+        previous_links_table_body.append("<tr><td>" + linkToFullUrl(data.invite.link) + "</td><td></td><td class='text-blue-600'><a href='registrations/" + data.invite.link + "'>" + data.invite.registrations + " (View All)</a></td><td>" + moment(data.invite.createdAt).format("Do MMMM, YYYY") + "</td></tr>");
       }
     },
     "json"

@@ -65,7 +65,7 @@
 
             <% for (var i = 0; i <all_invites.length;  i++ ) { %>
               <tr>
-                <td><%= site_domain_name %>/invite/<span class="text-blue-600"><%= all_invites[i].link %></span></td><td><%= all_invites[i].Quiz.title %></td><td><%= all_invites[i].registrations %></td><td><%= moment(all_invites[i].createdAt).format('Do MMMM, YYYY') %></td>
+                <td><%= site_domain_name %>/invite/<span class="text-blue-600"><%= all_invites[i].link %></span></td><td><%= all_invites[i].Quiz.title %></td><td class="text-blue-600"><a href="registrations/<%= all_invites[i].link%>"><%= all_invites[i].registrations %> (View All)</a></td><td><%= moment(all_invites[i].createdAt).format('Do MMMM, YYYY') %></td>
               </tr>
             <% } %>
             </tbody>

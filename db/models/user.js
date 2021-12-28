@@ -156,6 +156,7 @@ Quiz.hasMany(Invite, {
 Invite.belongsTo(Quiz);
 
 Student.belongsTo(Invite);
+Invite.hasMany(Student);
 
 // Student, Assignment, and Quiz relationships
 Student.hasMany(Assignment, {

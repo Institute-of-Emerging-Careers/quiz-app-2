@@ -23,6 +23,7 @@ const { Quiz, Section, Question, Option } = require("./db/models/quizmodel.js");
 const { User, Student, Invite, Assignment, Answer, Attempt, Score } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const { saveExistingQuiz, removeEverythingInQuiz } = require("./functions/saveExistingQuiz.js");
+const calculateSingleAssessmentStatus = require("./functions/calculateSingleAssessmentStatus");
 const csvToState = require("./functions/csvToState");
 const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
@@ -656,6 +657,25 @@ app.post("/create-invite", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
+app.get("/registrations/:link", checkAdminAuthenticated, async (req, res)=> {
+  const invite = await Invite.findOne({where:{link:req.params.link}, attributes: ["id"], include:[{model: Student, attributes: ["id", "firstName", "lastName", "email", "phone", "cnic", "createdAt"]}, Quiz]})
+
+  await new Promise(resolve=>{
+    let count = 0;
+    invite.Students.forEach(async (student, index) => {
+      const assignment = await Assignment.findOne({where:{StudentId: student.id, QuizId: invite.Quiz.id}})
+      const num_sections = await invite.Quiz.countSections()
+      const attempted_sections = await Attempt.findAndCountAll({where:{AssignmentId: assignment.id}})
+      const [status, action] = calculateSingleAssessmentStatus(attempted_sections, num_sections)
+      invite.Students[index].status = status
+      count++
+      if (count == invite.Students.length) resolve()
+    })
+  })
+
+  res.render("admin/view_registrations.ejs", {user_type: req.user.type, students: invite.Students, full_link: process.env.SITE_DOMAIN_NAME + "/" + req.params.link})
+})
+
 app.get("/img/:filename", (req, res) => {
   var options = {
     root: path.join(__dirname, "uploads/images"),
@@ -791,35 +811,7 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
       include: { model: Quiz, required: true, include: { model: Section } },
     });
 
-    function anySectionInProgress(attempted_sections)
-    {
-      for (let i=0;i<attempted_sections.rows.length;i++)
-      {
-        if (attempted_sections.rows[i].statusText == "In Progress")
-        {
-          return true;
-        }
-      }
-      return false;
-    }
-
-    function allSectionsCompleted(attempted_sections, num_sections)
-    {
-      let all_completed = true;
-      if (attempted_sections.rows.length < num_sections) return false
-      else {
-        for (let i=0;i<attempted_sections.rows.length;i++)
-        {
-          if (attempted_sections.rows[i].statusText != "Completed")
-          {
-            all_completed = false;
-          }
-        }
-        return all_completed;
-      }
-    }
-
-
+    
     let count = 0;
     let result = [];
     result = await new Promise((resolve) => {
@@ -835,22 +827,15 @@ app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
             }
           })
 
-          
-          if (attempted_sections.count==0) result[cur_index].status=["Not Started", "Start"];
-          else if (anySectionInProgress(attempted_sections)) result[cur_index].status=["In Progress", "Continue"];
-          else if (!allSectionsCompleted(attempted_sections, num_sections)) result[cur_index].status=["Incomplete", "Continue"];
-          else result[cur_index].status=["Completed", ""];
-          console.log(result[cur_index].status)
+          result[cur_index].status = calculateSingleAssessmentStatus(attempted_sections, num_sections)
           count++;
           if (count == assignments.length) 
           {
-            console.log("resolved")
             resolve(result);
           }
         });
       }
     });
-    console.log("sending response", result)
     res.json(result);
 
     
