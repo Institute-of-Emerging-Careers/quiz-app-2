@@ -18,6 +18,7 @@ const initialize = (passport) => {
       if (await bcrypt.compare(password, user.password)) {
         return done(null, { type: "admin", user: user });
       } else {
+        console.log(password,"\n",user.password)
         return done(null, false, { message: "Email or password incorrect." });
       }
     } catch (e) {

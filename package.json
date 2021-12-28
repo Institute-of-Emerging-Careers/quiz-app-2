@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "yarn build:css && nodemon --delay 500ms server.js",
     "build:css": "postcss resources/css/tailwind.css -o resources/css/style.css",
-    "start": "node server.js",
+    "start": "nodemon -r dotenv/config server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

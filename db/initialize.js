@@ -43,7 +43,7 @@ const initializeDatabase = async () => {
 
       // Add a single student user
       const studentUser = await sequelize.models.Student.create({ firstName: "Rohan", lastName: "Hussain", email: "rohanhussain1@yahoo.com", password: hashedPwd, phone: "03320460729", cnic: "35201-3520462-3", InviteId: invite.id });
-
+      await invite.increment('registrations')
       // Create an assignment
       const assignment = await sequelize.models.Assignment.create({ QuizId: quiz.id, StudentId: studentUser.id });
 
