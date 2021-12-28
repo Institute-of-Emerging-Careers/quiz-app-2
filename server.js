@@ -72,12 +72,13 @@ var csv_storage = multer.diskStorage({
 var csv_upload = multer({ storage: csv_storage });
 
 // dotenv
-if (process.env.NODE_ENV !== "production") require("dotenv").config();
+require("dotenv").config();
 
 // Middleware
 app.set("view-engine", "ejs");
 app.use(express.json());
 app.use(express.static("resources"));
+app.use(express.static(path.join(__dirname + "/views")));
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
 app.use(cookieParser());

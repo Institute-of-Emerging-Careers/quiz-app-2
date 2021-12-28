@@ -1,6 +1,7 @@
 const { Sequelize } = require("sequelize");
+console.log(process.env.DEBUG)
 
-const sequelize = new Sequelize("mysql://root:@localhost:3306/quizdb");
+const sequelize = new Sequelize(process.env.MYSQL_CONNECTION_STRING);
 
 sequelize
   .authenticate()
