@@ -1,5 +1,5 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
-const { Quiz, Question, Option } = require("./quizmodel");
+const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
 
 class User extends Model {}
@@ -90,29 +90,63 @@ Invite.init(
 class Assignment extends Model {}
 
 Assignment.init(
-  {
-    status: {
-      type: DataTypes.JSON,
-      allowNull: true,
-    },
-    sectionStatus: {
-      type: DataTypes.JSON,
-      allowNull: true,
-    },
-    scores: {
-      type: DataTypes.JSON,
-      allowNull: true
-    }
-  },
+  {},
   {
     sequelize,
     modelName: "Assignment",
   }
 );
 
+class Attempt extends Model {}
+
+// An Attempt is the attempt of just a single section out of a quiz
+Attempt.init(
+  {
+    statusText: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Not Started"
+    },
+    startTime: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    endTime: {
+      type: DataTypes.BIGINT,
+      allowNull: true,
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
+  },
+  {
+    sequelize,
+    modelName: "Attempt",
+  }
+);
+
+class Score extends Model {}
+
+// An Attempt is the attempt of just a single section out of a quiz
+Score.init(
+  {
+    score: {
+      type: DataTypes.FLOAT,
+      allowNull: false,
+      defaultValue: 0
+    }
+  },
+  {
+    sequelize,
+    modelName: "Score",
+  }
+);
+
 class Answer extends Model {}
 
 Answer.init({}, { sequelize, modelName: "Answer" });
+
 
 // Quiz, Student, and Invite relationships
 Quiz.hasMany(Invite, {
@@ -169,4 +203,22 @@ Option.hasMany(Answer, {
 });
 Answer.belongsTo(Option);
 
-module.exports = { User, Student, Invite, Assignment, Answer };
+
+// Assignment and Attempt relationship
+Assignment.hasMany(Attempt, {})
+Attempt.belongsTo(Assignment)
+
+// Attempt and Section relationship
+Section.hasMany(Attempt, {
+  foreignKey: {
+    allowNull: false,
+  },
+})
+Attempt.belongsTo(Section)
+
+// Attempt and Score relationship
+Attempt.hasOne(Score)
+Score.belongsTo(Attempt)
+
+
+module.exports = { User, Student, Invite, Assignment, Answer, Attempt, Score };
