@@ -109,19 +109,6 @@ const Question = (props) => {
   const question = props.obj.question;
   const options = props.obj.options;
 
-  useEffect(() => {
-    // setQuestions((cur) => {
-    //   let copy = cur.slice();
-    //   let s = [];
-    //   options.map((option) => {
-    //     s.push(false);
-    //   });
-    //   if (question.type == "MCQ-S") copy[props.questionIndex].answer = -1;
-    //   else if (question.type == "MCQ-M") copy[props.questionIndex].answer = s;
-    //   return copy;
-    // });
-  }, []);
-
   return (
     <div className="single-question rounded-lg pb-4 text-left mx-auto mt-4">
       <div className="single-question-header rounded-t-lg px-4 py-2 text-white bg-iec-blue text-md">

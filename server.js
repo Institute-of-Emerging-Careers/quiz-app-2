@@ -366,26 +366,7 @@ app.get("/test",async (req,res)=>{
 })
 
 app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, async (req, res) => {
-  // add check to see if quiz is available at this moment, if student is assigned to this quiz
   
-
-  /* We set assignment.sectionStatus here, so that the database reflects that this user has started this section of the quiz
-
-  sectionStatus is a JSON object that contains quantitative data about section progress, such as the exact start and end times, duration of attempt, and the sectionId. For example:
-  [
-    {"startTime": 1633720952527, "endTime": 1633720978740, "duration": 26073, "sectionId": "1"}, 
-    {"startTime": 1633720985932, "endTime": 1633721000292, "duration": 14282, "sectionId": "2"}
-  ]
-  */
-  /* assignment.status, on the other hand, has more qualitative information. For example:
-  [
-    {"status": "Completed", "sectionId": "1"}, 
-    {"status": "In Progress", "sectionId": "2"}
-  ]
-  This can be redundant, but it allows the user to query a section's qualitative status instantly without having to infer it from the quantitative sectionStatus.
-   */
-
-
   // getAssignment(studentId, quizId, [what_other_models_to_include_in_results])
   const assignment = await getAssignment(req.user.user.id, req.params.quizId, [Quiz])
 
@@ -446,7 +427,7 @@ app.get("/quiz/attempt/:quizId/section/:sectionId", checkStudentAuthenticated, a
 app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (req, res) => {
   // add check to see if quiz is available at this moment, if student is assigned to this quiz
   // if student has already solved this quiz, etc.
-  let result = [];
+  
   const section = await Section.findOne({
     where: {
       id: req.params.sectionId,
@@ -454,13 +435,21 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
     include: [{ model: Question, required: true, order: [["questionOrder", "asc"]] }],
   });
 
+
   const assignment = await Assignment.findOne({
     where: {
       StudentId: req.user.user.id,
       QuizId: section.QuizId,
     },
   });
-  console.log("PoolCount:",section.poolCount)
+
+  // constructing a results array to send
+  let result = [];
+
+  // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
+  for (let i=0;i<section.poolCount;i++) {
+    result.push({question: section.Questions[i], options: [], answer: -1})
+  }
 
   let count = 0;
   await new Promise((resolve, reject) => {
@@ -468,11 +457,14 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
       Option.findAll({ where: { QuestionId: section.Questions[i].id }, order: [["optionOrder", "asc"]] })
         .then(async (options_array) => {
           if (section.Questions[i].type == "MCQ-S") {
+            // student may have already attempted this quiz partly, so we are getting his/her old answer
             const old_answer = await Answer.findOne({where:{StudentId: req.user.user.id, QuestionId: section.Questions[i].id}, attributes:["OptionId"]})
             if (old_answer == null)
-              result.push({ question: section.Questions[i], options: options_array, answer: -1 });
-            else
-              result.push({ question: section.Questions[i], options: options_array, answer: old_answer.OptionId });
+              result[i].options = options_array;
+            else {
+              result[i].options = options_array;
+              result[i].answer = old_answer.OptionId;
+            }
           }
           else if (section.Questions[i].type == "MCQ-M") {
             const old_answers = await Answer.findAll({where:{StudentId: req.user.user.id, QuestionId: section.Questions[i].id}, attributes:["OptionId"], order:[["OptionId","asc"]]})
@@ -492,7 +484,8 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
                 default_answers_array.push(found)
               })
             }
-            result.push({ question: section.Questions[i], options: options_array, answer: default_answers_array });
+            result[i].options = options_array;
+            result[i].answer = default_answers_array;
           }
           count++;
           if (count == section.poolCount) resolve(result);
@@ -504,7 +497,6 @@ app.get("/section/:sectionId/all-questions", checkStudentAuthenticated, async (r
     }
   });
 
-  
   res.json({ success: true, data: result });
 });
 
