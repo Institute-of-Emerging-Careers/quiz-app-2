@@ -597,9 +597,9 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
           // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
           // array
           if (section.section_id == attempt.SectionId) {
-            data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: attempt.Score.score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
+            data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: attempt.Score == null ? 0 : attempt.Score.score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
             found = true
-            data[data.length-1].total_score += attempt.Score.score
+            data[data.length-1].total_score += attempt.Score == null ? 0 : attempt.Score.score
           }
         })
         if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, start_time: 0, end_time: 0, duration: 0})
