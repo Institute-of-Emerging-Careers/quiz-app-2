@@ -627,7 +627,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
           // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
           // array
           if (section.section_id == attempt.SectionId) {
-            const percentage_score = ((attempt.Score == null ? 0 : attempt.Score.score)/section.maximum_score)*100
+            const percentage_score = Math.round((((attempt.Score == null ? 0 : attempt.Score.score)/section.maximum_score)*100)*100)/100
             const section_score = attempt.Score == null ? 0 : attempt.Score.score
            
             data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: section_score, percentage_score: percentage_score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
@@ -637,7 +637,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
           }
         })
         if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, start_time: 0, end_time: 0, duration: 0})
-        else data[data.length-1].percentage_total = (data[data.length-1].total_score / quiz_total_score)*100
+        else data[data.length-1].percentage_total = Math.round(((data[data.length-1].total_score / quiz_total_score)*100)*100)/100
       })
     }
   })
