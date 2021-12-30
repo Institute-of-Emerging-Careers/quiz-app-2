@@ -30,23 +30,27 @@
                     <th class="py-3 px-6">Student Name</th>
                     <% const quiz_sections = data_obj.quiz_sections
                         quiz_sections.forEach(section=>{%>
-                            <th class="py-3 px-6"><%=section.section_title%> Score</th>
-                            <th class="py-3 px-6"><%=section.section_title%> Time Taken</th>
+                            <th class="py-3 px-6"><%=section.section_title%> Student Score<br>(out of <%= section.maximum_score %>)</th>
+                            <th class="py-3 px-6">Percentage Marks in <%=section.section_title%></th>
+                            <th class="py-3 px-6"><%=section.section_title%> Time Taken<br><%= section.maximum_time %></th>
                             <th class="py-3 px-6"><%=section.section_title%> Submission Time (KHI)</th>
                         <%})
                     %>
-                    <th class="py-3 px-6">Total Score</th>
+                    <th class="py-3 px-6">Total Score<br>(out of <%=data_obj.quiz_total_score%>)</th>
+                    <th class="py-3 px-6">Percentage Total Score</th>
                 </tr>
             </thead>
             <tbody class="w-full" id='score-table-body'>
-                <% data.forEach(student_row=>{
-                    %>
+                <% data.forEach((student_row) => 
+                {
+                %>
                 <tr>
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
                         <%student_row.sections.forEach(section=>{
                             if (section.status == "Attempted") {
                             %>
                                 <td class="py-3 px-6"><%=section.section_score%></td>
+                                <td class="py-3 px-6"><%=section.percentage_score%>%</td>
                                 <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
                                 <td class="py-3 px-6 endtime"><%= section.end_time %></td>
                             <%
@@ -58,6 +62,7 @@
                         })
                     %>
                     <td class="py-3 px-6"><%= student_row.total_score %></td>
+                    <td class="py-3 px-6"><%= student_row.percentage_total %>%</td>
                 </tr>
                 <% }) %>
             </tbody>

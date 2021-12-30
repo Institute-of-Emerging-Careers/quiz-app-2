@@ -569,9 +569,37 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
 
   // column_headings will tell the result page how many sections this quiz had, so that the displayed table has the right header row
   let quiz_sections = []
-  quiz.Sections.forEach(section=>{
-    quiz_sections.push({section_id: section.id, section_title: section.title})
+  let quiz_total_score = 0
+  await new Promise((resolve)=>{
+    let count = 0
+    quiz.Sections.forEach(async (section, index)=>
+    {
+      // get the maximum achievable (total) score of a section
+      const maximum_score = (await Question.findAll((
+        {
+          where:{
+            SectionId: section.id
+          }, 
+          attributes: [
+            [sequelize.fn('SUM', sequelize.col('marks')), 'total_marks']
+          ]
+        }
+        )))[0].dataValues.total_marks
+      quiz_total_score += maximum_score
+      quiz_sections.push(
+        {
+          section_id: section.id, 
+          section_title: section.title, 
+          maximum_score: maximum_score, 
+          maximum_time: section.time == 0 ? "(Unlimited Time Allowed)" : "(out of "+section.time+" minutes)"
+        }
+      )
+      count++
+      if (count == quiz.Sections.length) resolve()
+    })
   })
+  
+
 
   let data = []
   let assignments = await Assignment.findAll({where:{QuizId: req.params.quizId}, include: [Student, {model: Attempt, include: [{model: Section, order:["id"]}, Score]}]})
@@ -584,30 +612,37 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
           student_name: assignment.Student.firstName + ' ' + assignment.Student.lastName,
           sections: [],
           total_score: 0,
+          maximum_total_score: 0,
+          percentage_total: 0,
         }
       )
 
       quiz_sections.forEach(section=>{
         let found = false
         assignment.Attempts.forEach(attempt=>{
-          // if we simply start pushing each attempt to the data array, and if the student has only attempted 1 of 2 sections,
+          // if we simply start pushing each section attempt to the data array, and if the student has only attempted 1 of 2 sections,
           // then the results page will have to deal with the complex task of checking which section's results we have sent
-          // and which we haven't. So we will rather do it here. We will, for each section of the quiz that exists in the quiz,
+          // and which we haven't for each student. So we will rather do it here. We will, for each section of the quiz that exists in the quiz,
           // check whether or not the student has attempted it. If yes, we push the scores to the data array, otherwise
           // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
           // array
           if (section.section_id == attempt.SectionId) {
-            data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: attempt.Score == null ? 0 : attempt.Score.score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
+            const percentage_score = ((attempt.Score == null ? 0 : attempt.Score.score)/section.maximum_score)*100
+            const section_score = attempt.Score == null ? 0 : attempt.Score.score
+           
+            data[data.length-1].sections.push({status: "Attempted", section_id: attempt.SectionId, section_score: section_score, percentage_score: percentage_score, start_time: attempt.startTime, end_time: attempt.endTime, duration: attempt.duration})
+            console.log()
             found = true
-            data[data.length-1].total_score += attempt.Score == null ? 0 : attempt.Score.score
+            data[data.length-1].total_score += section_score
           }
         })
         if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, start_time: 0, end_time: 0, duration: 0})
+        else data[data.length-1].percentage_total = (data[data.length-1].total_score / quiz_total_score)*100
       })
     }
   })
 
-  let final_response = {quiz_sections: quiz_sections, data: data}
+  let final_response = {quiz_sections: quiz_sections, data: data, quiz_total_score: quiz_total_score}
 
 
   res.render("admin/view_results.ejs", {user_type: req.user.type, myname: req.user.user.firstName, quiz_title: quiz.title, data_obj: final_response, moment:moment, millisecondsToMinutesAndSeconds:millisecondsToMinutesAndSeconds})
