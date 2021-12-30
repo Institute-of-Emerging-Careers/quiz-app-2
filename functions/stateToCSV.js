@@ -71,7 +71,7 @@ function stateToArray(state) {
       final_array[final_array.length - 1][10] = question.link.url == null ? "null" : question.link.url;
       final_array[final_array.length - 1][11] = question.link.text == null ? "null" : question.link.text;
       final_array[final_array.length - 1][12] =question.image != null
-          ? process.env.SITE_DOMAIN_NAME + "/img/" + question.image
+          ? process.env.SITE_DOMAIN_NAME + question.image
           : "null";
       final_array[final_array.length - 1][18] = question.marks;
 
@@ -83,7 +83,7 @@ function stateToArray(state) {
       question.options.forEach((option, optionIndex) => {
         if (option.optionStatement != null) final_array[final_array.length - 1][array_index_where_options_start + optionIndex] = option.optionStatement
         if (option.image != null)
-          final_array[final_array.length - 1][array_index_where_option_images_start + optionIndex] = option.image;
+          final_array[final_array.length - 1][array_index_where_option_images_start + optionIndex] = process.env.SITE_DOMAIN_NAME + option.image;
 
         if (option.correct == true) {
           if (num_correct > 0) correct_options += ",";
@@ -93,6 +93,7 @@ function stateToArray(state) {
         // remaining options will automatically be "null" as we populated array with "null" in the start
       });
       final_array[final_array.length - 1][9] = correct_options;
+      correct_options = "";
     });
   });
   return final_array;
