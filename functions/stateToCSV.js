@@ -82,8 +82,7 @@ function stateToArray(state) {
       // now adding options
       question.options.forEach((option, optionIndex) => {
         if (option.optionStatement != null) final_array[final_array.length - 1][array_index_where_options_start + optionIndex] = option.optionStatement
-        if (option.image != null)
-          final_array[final_array.length - 1][array_index_where_option_images_start + optionIndex] = process.env.SITE_DOMAIN_NAME + option.image;
+        if (option.image != null) final_array[final_array.length - 1][array_index_where_option_images_start + optionIndex] = process.env.SITE_DOMAIN_NAME + option.image;
 
         if (option.correct == true) {
           if (num_correct > 0) correct_options += ",";
