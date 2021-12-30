@@ -1,0 +1,43 @@
+Section,PoolCount,Statement,Type,A,B,C,D,E,Correct,Link URL,Link Text,Image URL,A Image,B Image,C Image,D Image,E Image,Marks
+Critical Thinking,7,"Read the following passage. Then, decide whether the statements in Questions 1-3 are valid assumptions supported by the passage or not.
+
+-------
+During the 2000s, the number of soldiers physically stationed in the Middle-East skyrocketed. However, in 2019, this number is continuing to decease. It’s wonderful that the western world has less of a military presence in other countries, presumably to a negligible amount on the next 5 to 10 years.
+-------
+
+Statement 1: No soldiers physically stationed in an area means that there is less of a military presence.",MCQ-S,This is a valid assumption according to the passage,This is an invalid assumption according to the passage,null,null,null,A,null,null,http://localhost:3000https://apply.iec.org.pk/img/external-content.duckduckgo.com.jpg-1640782690960.jpeg,null,null,null,null,null,1
+Critical Thinking,7,Statement 2: There won’t be another spark of conflict within the next 5 to 10 years.,MCQ-S,This is a valid assumption according to the passage,This is an invalid assumption according to the passage,null,null,null,B,null,null,null,null,null,null,null,null,1
+Critical Thinking,7,Statement 3: War is a thing of the past.,MCQ-S,This is a valid assumption according to the passage,This is an invalid assumption according to the passage,null,null,null,B,null,null,null,null,null,null,null,null,1
+Critical Thinking,7,"Read the following passage. Then, decide whether the three statements in Questions 4-6 are “True”, “Probably True”, “Insufficient Data to Say True or False”, “Probably False”, or “False” – based purely on the information in the text.
+
+-------
+John’s company has been successful for the past 5 years. Reported profits have been rising each year, with 2018 being the strongest year yet. To celebrate, John treated his staff to a meal at a 5-star restaurant in the city.
+-------
+
+Statement 1: John is rich",MCQ-S,TRUE,Probably True,Insufficient Data to Say True or False,Probably False,FALSE,C,null,null,null,null,null,null,null,null,1.5
+Critical Thinking,7,Statement 2: John's staff are happy,MCQ-S,TRUE,Probably True,Insufficient Data to Say True or False,Probably False,FALSE,C,null,null,null,null,null,null,null,null,1.5
+Critical Thinking,7,Statement 3: John’s company performed well in 2017.,MCQ-S,TRUE,Probably True,Insufficient Data to Say True or False,Probably False,FALSE,C,null,null,null,null,null,null,null,null,1.5
+Critical Thinking,7,"The median house value in Butlerville has fallen significantly in the last few months. Nonetheless, the number of homes sold has been at its lowest level in seven years.
+
+Which of the following best explains the discrepancy?",MCQ-S,The value of homes is not the only determinant of whether a house will be sold.,The neighboring city of Jacksonburg has seen a recent surge in home sales.,The Butlerville economy is struggling and the unemployment rate has reached historic rates.,Analysts predict that the number of homes sold will increasing in the coming year.,Homes priced over a million dollars have seen the sharpest decline in sales.,C,null,null,null,null,null,null,null,null,3
+English,5,"Questions 1-2 are about the following passage:
+
+-------
+An anomaly which often struck me in the character of my friend Sherlock Holmes was that, although in his methods of thought he was the neatest and most methodical of mankind, and although also he affected a certain quiet primness of dress, he was none the less in his personal habits one of the most untidy men that ever drove a fellow-lodger to distraction. Not that I am in the least conventional in that respect myself. The rough-and-tumble work in Afghanistan, coming on the top of a natural Bohemianism of disposition, has made me rather more lax than befits a medical man. But with me there is a limit, and when I find a man who keeps his cigars in the coal-scuttle, his tobacco in the toe end of a Persian slipper, and his unanswered correspondence transfixed by a jack-knife into the very centre of his wooden mantelpiece, then I begin to give myself virtuous airs. I have always held, too, that pistol practice should be distinctly an open-air pastime; and when Holmes, in one of his queer humors, would sit in an arm-chair with his hair-trigger and a hundred Boxer cartridges, and proceed to adorn the opposite wall with a patriotic V. R. done in bullet-pocks, I felt strongly that neither the atmosphere nor the appearance of our room was improved by it.
+-------
+
+Q1: The narrator of this paragraph is",MCQ-S,a medical man from Afghanistan,a psychiatrist who analyses people's personalities,an old friend of Sherlock Holmes,null,null,A,null,null,null,http://localhost:3000https://apply.iec.org.pk/img/JohnWatson.jpg-1640783531310.jpeg,null,null,null,null,2.5
+English,5,"Sherlock Holmes, according to the passage, was",MCQ-S,a lazy person,organized in his mental life but disorganized in his physical and personal life,disorganized overall,null,null,B,null,null,null,null,null,null,null,null,2
+English,5,"Questions 3-5 are about the following passage:
+
+-------
+Some are insisting on retaining the old ways. One morning show host, with a fickleness typical to the category, announced the other day that people should fill cinema halls and support the flailing local industry — I suppose even if it means becoming numbers in a pandemic of an airborne virus. Those numbers, the gift of Omicron, are not simply rising; they are skyrocketing. According to the US Centres for Disease Control, America alone is supposed to reach a million cases of Covid-19 a day by mid-January — this in a country where 61 per cent of the population has been double vaccinated and many have received a booster dose of the most effective Pfizer and Moderna mRNA vaccines.
+
+Closer to home, the situation in China is also expected to be dire. A study that was done in Hong Kong recently revealed that even three doses of the popular SinoVac vaccine do not provide immunity against the Omicron strain. The Sinopharm vaccine has also been found to have lower efficacy against Omicron. It is not surprising that a few days ago the Chinese reported the greatest daily surge in several months in cases of the Omicron variant. This has particular relevance for Pakistan, where weddings, social gatherings, offices and educational institutions have all gone back to functioning as normal.
+
+Given all these facts and realities, none of which are likely to change in the near future, 2022 requires ’re-conceptualisations’ rather than resolutions. Constant school closures owing to environmental hazards and now disease mean that our structures of providing instructions are no longer able to function in the way that we meant them to. Rethinking this may necessitate changes in the way children go to school and what they are able to do there.
+-------
+
+Q3: The author suggests that we should",MCQ-S,take the threat of the Omicron seriously,get more doses of vaccine,restrict immigration from China and USA,null,null,A,null,null,null,null,null,null,null,null,1.5
+English,5,"According to the author, why is a surge in Omicron cases in China relevant to Pakistan?",MCQ-S,Because China is near Pakistan,Because Pakistan has given up on COVID SOPs and has returned to the old ways,Because Chinese people are travelling to Pakistan,null,null,B,null,null,null,null,null,null,null,null,1.5
+English,5,What does the author suggest we do about the problem of educating children during COVID-19,MCQ-S,close schools and stop educating,let students be homeschooled,think of new ways to impart education during lockdowns,null,null,C,null,null,null,null,null,null,null,null,1.5
