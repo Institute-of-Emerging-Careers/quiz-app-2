@@ -650,7 +650,6 @@ const Main = () => {
       const response = await fetch("/quizState/" + globalQuizId.toString());
       const finalResponse = await response.json();
       if (finalResponse.success == true) {
-        console.log("fuck", finalResponse.stateObject);
         state = finalResponse.stateObject;
         title = finalResponse.quizTitle;
       } else {
@@ -734,6 +733,7 @@ const Main = () => {
       })
         .then((response) => {
           response.json().then((finalResponse) => {
+            console.log("finalResponse.status: ", finalResponse.status)
             setSavedStatus(finalResponse.status == true ? <i className="fas fa-check-circle text-green-400 text-xl"></i> : <i className="fas fa-exclamation-triangle text-red-600"></i>);
             setQuizId(finalResponse.quizId);
             setError(finalResponse.message);
@@ -754,6 +754,29 @@ const Main = () => {
         setSavedStatus("");
       }, 10000);
     }
+  }
+
+  function downloadCSV(e) {
+    fetch("/state-to-csv", {
+      method: "POST",
+      mode: "same-origin",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(mcqs),
+    })
+    .then(response=>{
+        response.json().then(finalResponse=>{
+          console.log(finalResponse)
+          if (finalResponse.status == true) {window.location=finalResponse.file_link;console.log(finalResponse.file_link)}
+          else console.log("Error")
+        })
+      })
+      .catch(err=>{
+        console.log(err)
+      })
   }
 
   function uploadCSV(e) {
@@ -804,13 +827,15 @@ const Main = () => {
             {savedStatus}
           </p>
         </div>
-        <div>
-          <form method="POST" encType="multipart/form-data" action="/upload" ref={fileUploadForm} className="mt-2">
+        <div className="flex py-2">
+          <form method="POST" encType="multipart/form-data" action="/upload" ref={fileUploadForm}>
             <label htmlFor="csv-upload" className="inline-block px-4 py-4 cursor-pointer bg-green-500 text-white">
-              <i className="fas fa-file-upload"></i> Import from CSV File <input id="csv-upload" type="file" accept=".csv" name="file" onChange={uploadCSV} className="hidden"></input> {uploading == true ? <i className="fas fa-spinner animate-spin self-center"></i> : <div className="hidden"></div>}
+              <i className="fas fa-file-upload"></i> Upload from CSV File <input id="csv-upload" type="file" accept=".csv" name="file" onChange={uploadCSV} className="hidden"></input> {uploading == true ? <i className="fas fa-spinner animate-spin self-center"></i> : <div className="hidden"></div>}
             </label>
           </form>
+          <button type="button" onClick={downloadCSV} className="inline-block px-4 py-4 cursor-pointer bg-green-500 text-white border-l-2"><i className="fas fa-file-download"></i> Download as CSV File</button>
         </div>
+        
       </div>
       {mcqs.map((section, index) => (
         <Section sectionTitle={section.sectionTitle} sectionNumber={index + 1} sectionIndex={index} totalSections={mcqs.length} key={index} />
