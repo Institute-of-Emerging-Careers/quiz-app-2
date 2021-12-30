@@ -636,7 +636,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req,res)=>{
             data[data.length-1].total_score += section_score
           }
         })
-        if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, start_time: 0, end_time: 0, duration: 0})
+        if (!found) data[data.length-1].sections.push({status: "Not Attempted yet",section_score: 0, percentage_score: 0, start_time: 0, end_time: 0, duration: 0})
         else data[data.length-1].percentage_total = Math.round(((data[data.length-1].total_score / quiz_total_score)*100)*100)/100
       })
     }
