@@ -225,6 +225,12 @@ const MCQ = (props) => {
     setMCQs((cur) => {
       let copy = cur.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[e.target.value].correct = true;
+      if (copy[props.sectionIndex].questions[props.questionIndex].type == "MCQ-S") {
+        // set all other previously true-set options to false
+        for (let i=0; i< copy[props.sectionIndex].questions[props.questionIndex].options.length; i++) {
+          if (i!=e.target.value) copy[props.sectionIndex].questions[props.questionIndex].options[i].correct = false
+        }
+      }
       return copy;
     });
   }
