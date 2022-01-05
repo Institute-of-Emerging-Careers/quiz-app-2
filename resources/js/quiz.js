@@ -25,8 +25,8 @@ const ErrorDisplay = (props) => {
   return props.error == "" ? (
     <p></p>
   ) : (
-    <p className="text-sm text-red-600 leading-8 pb-2">
-      <i className="fas fa-exclamation-triangle"></i> {props.error}
+    <p className={props.errorColor + "text-sm leading-8 pb-2"}>
+      <i className={"fas " + props.errorIcon + " " + props.errorColor}></i> <span className={props.errorColor}>{props.error}</span>
     </p>
   );
 };
@@ -644,6 +644,8 @@ const Main = () => {
   const [quizTitle, setQuizTitle] = useState("");
   const [quizId, setQuizId] = useState(globalQuizId);
   const [error, setError] = useState("");
+  const [errorColor, setErrorColor] = useState("text-red-600")
+  const [errorIcon, setErrorIcon] = useState("fa-exclamation-triangle")
   const [savedStatus, setSavedStatus] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploading2, setUploading2] = useState(false);
@@ -722,7 +724,6 @@ const Main = () => {
     }
 
     if (!anyErrors) {
-      console.log(mcqs[0].poolCount);
       fetch("/save-quiz", {
         method: "POST",
         mode: "same-origin",
@@ -740,9 +741,12 @@ const Main = () => {
         .then((response) => {
           response.json().then((finalResponse) => {
             console.log("finalResponse.status: ", finalResponse.status)
-            setSavedStatus(finalResponse.status == true ? <i className="fas fa-check-circle text-green-400 text-xl"></i> : <i className="fas fa-exclamation-triangle text-red-600"></i>);
+            if (finalResponse.status == true) setSavedStatus((<i className="fas fa-check-circle text-green-400 text-xl"></i>));
+            else setSavedStatus(<i className="fas fa-exclamation-triangle text-red-600"></i>);
             setQuizId(finalResponse.quizId);
             setError(finalResponse.message);
+            setErrorColor("text-green-400")
+            setErrorIcon("fa-check-circle")
             setUploading2(false);
             setTimeout(() => {
               setSavedStatus("");
@@ -752,9 +756,13 @@ const Main = () => {
         .catch((err) => {
           console.log(err);
           setSavedStatus(<i className="fas fa-exclamation-triangle text-red-600"></i>);
+          setErrorColor("text-red-600")
+          setErrorIcon("fa-exclamation-triangle")
         });
     } else {
       setSavedStatus(<i className="fas fa-exclamation-triangle text-red-600"></i>);
+      setErrorColor("text-red-600")
+      setErrorIcon("fa-exclamation-triangle")
       setUploading2(false);
       setTimeout(() => {
         setSavedStatus("");
@@ -816,16 +824,16 @@ const Main = () => {
   return (
     <div>
       <div className="toolbox w-4/5 text-base mt-24 mx-auto p-8 shadow-xl">
-        <ErrorDisplay error={error}></ErrorDisplay>
-        <div className="gap-x-8 flex items-center">
+        <ErrorDisplay error={error} errorColor={errorColor} errorIcon={errorIcon}></ErrorDisplay>
+        <div className="flex items-center">
           <form onSubmit={addSection} className="flex justify-start">
             <input type="text" placeholder="Section Title" name="sectionTitle" value={sectionInput} onChange={(e) => setSectionInput(e.target.value)} className="px-4 w-72"></input>
-            <button className="bg-green-400 text-white px-8 py-4 active:shadow-inner cursor-pointer" id="add_section">
+            <button className="bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer" id="add_section">
               <i className="fas fa-plus"></i> Add New Section
             </button>
           </form>
-          <input type="text" placeholder="Quiz Title" name="quizTitle" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} className="px-4 py-4 w-72" autoFocus></input>
-          <button type="button" onClick={saveDataInDatabase} className="bg-green-400 text-white px-8 py-4 active:shadow-inner cursor-pointer">
+          <input type="text" placeholder="Quiz Title" name="quizTitle" value={quizTitle} onChange={(e) => setQuizTitle(e.target.value)} className="ml-8 px-4 py-4 w-72" autoFocus></input>
+          <button type="button" onClick={saveDataInDatabase} className="bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer">
             <i className="fas fa-save"></i> Save Quiz
           </button>
           <p>
@@ -835,11 +843,11 @@ const Main = () => {
         </div>
         <div className="flex py-2">
           <form method="POST" encType="multipart/form-data" action="/upload" ref={fileUploadForm}>
-            <label htmlFor="csv-upload" className="inline-block px-4 py-4 cursor-pointer bg-green-500 text-white">
+            <label htmlFor="csv-upload" className="inline-block px-4 py-4 cursor-pointer bg-gray-400 hover:bg-gray-500 text-white">
               <i className="fas fa-file-upload"></i> Upload from CSV File <input id="csv-upload" type="file" accept=".csv" name="file" onChange={uploadCSV} className="hidden"></input> {uploading == true ? <i className="fas fa-spinner animate-spin self-center"></i> : <div className="hidden"></div>}
             </label>
           </form>
-          <button type="button" onClick={downloadCSV} className="inline-block px-4 py-4 cursor-pointer bg-green-500 text-white border-l-2"><i className="fas fa-file-download"></i> Download as CSV File</button>
+          <button type="button" onClick={downloadCSV} className="inline-block px-4 py-4 cursor-pointer bg-gray-400 hover:bg-gray-500 text-white border-l-2"><i className="fas fa-file-download"></i> Download as CSV File</button>
         </div>
         
       </div>

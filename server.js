@@ -1110,7 +1110,7 @@ app.post("/save-quiz", checkAdminAuthenticated, async (req, res) => {
     saveNewQuiz(req, res);
   } else {
     // if old quiz being updated
-    const quiz = Quiz.findOne({
+    const quiz = await Quiz.findOne({
       where: {
         id: req.body.quizId,
       },
