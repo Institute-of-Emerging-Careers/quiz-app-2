@@ -3,17 +3,12 @@ const { saveEverythingInQuiz } = require("./saveNewQuiz.js");
 const sequelize = require("../db/connect");
 
 
-async function removeEverythingInQuiz(the_quiz, t) {
-  let data = await Quiz.findOne({where:{id:the_quiz.id},
-  include: {model: Section, 
-  include: {model: Question, 
-  include: {model: Option}}}})
-
+function countTheSectionsAndQuestionsAndOptionsInAQuiz(data)
+{
+  // Note: The quiz must be queried by "include"ing its Sections, Questions, and Options. See saveExistingQuiz.js in start of function removeEverythingInQuiz for precedent
   let num_options = 0;
   let num_questions = 0;
   let num_sections = 0
-  
-    
 
   data.Sections.forEach(section=>{
     num_sections++
@@ -24,9 +19,14 @@ async function removeEverythingInQuiz(the_quiz, t) {
       })
     })
   })
-  
+
+  return [num_options, num_questions, num_sections]
+}
+
+function deleteAllOptionsInQuiz(data, num_options, t)
+{
   let count_options = 0
-  const p1 = new Promise((resolve,reject)=>{
+  return new Promise((resolve,reject)=>{
     data.Sections.forEach(section=>{
       section.Questions.forEach(question=>{
         question.Options.forEach(option=>{
@@ -44,30 +44,31 @@ async function removeEverythingInQuiz(the_quiz, t) {
       })
     })
   })
+}
 
+function deleteAllQuestionsInQuiz(data, num_questions, t)
+{
   let count_questions = 0
-  const p2 = p1.then(()=>{
-    return new Promise((resolve,reject)=>{
-      data.Sections.forEach(section=>{
-        section.Questions.forEach(question=>{
-          question.destroy({transaction:t})
-          .then(()=>{
-            count_questions++
-            if (count_questions == num_questions) {
-              resolve()
-            }
-          }).catch(err=>{
-            reject(err)
-          })
+  return new Promise((resolve,reject)=>{
+    data.Sections.forEach(section=>{
+      section.Questions.forEach(question=>{
+        question.destroy({transaction:t})
+        .then(()=>{
+          count_questions++
+          if (count_questions == num_questions) {
+            resolve()
+          }
+        }).catch(err=>{
+          reject(err)
         })
       })
     })
-  }).catch(err=>{
-    console.log(err)
   })
+}
 
-  return p2.then(()=>{
-    let count_sections = 0
+function deleteAllSectionsInQuiz(data, num_sections, t)
+{
+  let count_sections = 0
     return new Promise((resolve,reject)=>{
       data.Sections.forEach(section=>{
         section.destroy({transaction:t})
@@ -81,8 +82,29 @@ async function removeEverythingInQuiz(the_quiz, t) {
         })
       })
     })
-  })
+}
 
+async function removeEverythingInQuiz(the_quiz, t) {
+  let data = await Quiz.findOne({where:{id:the_quiz.id},
+  include: {model: Section, 
+  include: {model: Question, 
+  include: {model: Option}}}})
+  
+  let [num_options, num_questions, num_sections] = countTheSectionsAndQuestionsAndOptionsInAQuiz(data)
+  
+  
+  return deleteAllOptionsInQuiz(data, num_options, t)
+  .then(()=>
+  {
+    return deleteAllQuestionsInQuiz(data, num_questions, t)
+  }
+  ).then(()=>
+  {
+    return deleteAllSectionsInQuiz(data, num_sections, t)
+  })
+  .catch(err=>{
+    console.log(err)
+  })
 }
 
 const saveExistingQuiz = async (req, res) => {

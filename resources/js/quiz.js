@@ -393,10 +393,10 @@ const MCQ = (props) => {
       <div className="bg-white h-auto w-4/5 mx-auto mt-4 shadow-xl">
         <div className="bg-gray-200 w-full text-black px-4 py-0 mr-4 grid grid-cols-4 content-center">
           <div className="col-start-2 col-span-3 justify-self-end">
-            <i className="far fa-copy text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={copyQuestion}></i>
-            <i className="fas fa-arrow-up text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={moveQuestionUp}></i>
-            <i className="fas fa-arrow-down text-xl p-2 text-gray-500 hover:bg-green-500 hover:gray-700 active:bg-opacity-0" onClick={moveQuestionDown}></i>
-            <i className="fas fa-trash-alt text-xl p-2 text-gray-500 hover:bg-green-500 hover:gray-700 active:bg-opacity-0" onClick={deleteQuestion}></i>
+            <i className="far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={copyQuestion}></i>
+            <i className="fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={moveQuestionUp}></i>
+            <i className="fas fa-arrow-down cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0" onClick={moveQuestionDown}></i>
+            <i className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0" onClick={deleteQuestion}></i>
           </div>
         </div>
         <div className="py-4 px-8">
@@ -537,11 +537,21 @@ const SectionHeader = (props) => {
     addNewMCQ("MCQ-M");
   };
 
+  const deleteSection = () => {
+    setMCQs(cur=>{
+      let copy = cur.slice()
+      copy.splice(props.sectionIndex, 1)
+      return copy
+    })
+  }
+
   return (
     <div className="toolbox w-4/5 text-base mt-4 mx-auto justify-start gap-x-8 shadow-xl bg-white">
-      <h1 className="text-lg bg-green-500 text-white px-4 py-2">
-        Section {props.sectionNumber} of {props.totalSections}: {props.sectionTitle}
-      </h1>
+      <div className="bg-green-500 text-white px-4 flex justify-between items-center">
+        <h1 className="text-lg">Section {props.sectionNumber} of {props.totalSections}: {props.sectionTitle}</h1>
+        <i className="fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 hover:gray-100 active:bg-opacity-0" onClick={deleteSection}></i>
+      </div>
+      
       <div className="flex content-center items-center">
         <div className="cursor-pointer relative w-max p-8">
           <div
