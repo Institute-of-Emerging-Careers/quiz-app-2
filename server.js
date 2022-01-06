@@ -20,7 +20,7 @@ const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
-const { Quiz, Section, Question, Option } = require("./db/models/quizmodel.js");
+const { Quiz, Section, Question, Option, Passage } = require("./db/models/quizmodel.js");
 const {
   User,
   Student,
@@ -195,6 +195,7 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
         poolCount: 0,
         questions: [
             {
+                passage: null,
                 statement: null,
                 type: type,
                 image:null,
@@ -208,6 +209,48 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
     }
   ]
   */
+
+  function findAndReturnPassageIndexFromPassagesArrayUsingPassageId(passages_object, passage_db_id) {
+    for (let passage_index=0; passage_index< passages_object.length; passage_index++) {
+      if (passages_object[passage_index].id == passage_db_id) return passage_index
+    }
+    return null
+  }
+
+  let passages_object = [];
+  try {
+    const data = await Quiz.findOne({
+      where: {
+        id: req.params.quizId,
+      },
+      include: [{
+        model: Section,
+        attributes: ["id"],
+        include:[{
+          model: Question,
+          attributes: ["id"],
+          include: [{
+            model: Passage,
+            order: [["place_after_question","ASC"]]
+          }]
+        }]
+      }]
+    });
+
+    data.Sections.forEach(section=>{
+      section.Questions.forEach(question=>{
+        if (question.Passage != null)
+          passages_object.push({
+            id: question.Passage.id,
+            statement: question.Passage.statement,
+            place_after_question: question.Passage.place_after_question
+          })
+      })
+    })
+  }
+  catch(err) {
+    console.log(err)
+  }
 
   let stateObject = [];
   try {
@@ -232,12 +275,9 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
       const questions = await sections[sectionIndex].getQuestions({
         order: [["questionOrder", "ASC"]],
       });
-      for (
-        let questionIndex = 0;
-        questionIndex < questions.length;
-        questionIndex++
-      ) {
+      for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
         stateObject[sectionIndex].questions.push({
+          passage: questions[questionIndex].PassageId != null ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(passages_object, questions[questionIndex].PassageId) : null,
           statement: questions[questionIndex].statement,
           questionOrder: questions[questionIndex].questionOrder,
           image: questions[questionIndex].image,
@@ -273,6 +313,7 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
     res.json({
       success: true,
       stateObject: stateObject,
+      passages_object: passages_object,
       quizTitle: quiz.title,
     });
   } catch (err) {

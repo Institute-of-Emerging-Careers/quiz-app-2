@@ -1,9 +1,23 @@
-const { Quiz, Section, Question, Option } = require("../db/models/quizmodel");
+const { Quiz, Section, Question, Option, Passage } = require("../db/models/quizmodel");
 const sequelize = require("../db/connect");
 
 async function saveEverythingInQuiz(newquiz, req, t) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     try {
+      await new Promise((resolve)=>{
+        let count_passages = 0
+        let total_passages = req.body.passages.length
+        req.body.passages.forEach(async (passage, passage_index)=>{
+          const passage_object = await Passage.create({
+            statement: passage.statement,
+            place_after_question: passage.place_after_question
+          })
+          req.body.passages[passage_index].passage_object = passage_object
+          count_passages++
+          if (count_passages == total_passages) resolve()
+        })
+      })
+
       req.body.mcqs.forEach(async (data_section) => {
         const newsection = await Section.create(
           {
@@ -27,6 +41,7 @@ async function saveEverythingInQuiz(newquiz, req, t) {
               marks: question.marks,
               link_url: question.link.url,
               link_text: question.link.text,
+              PassageId: question.passage !== null ? req.body.passages[question.passage].passage_object.id : null
             },
             { transaction: t }
           );

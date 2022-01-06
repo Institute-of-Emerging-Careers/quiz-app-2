@@ -53,6 +53,25 @@ Section.init(
   }
 );
 
+class Passage extends Model {}
+Passage.init(
+  {
+    statement: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    place_after_question: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    //which question to place this passage after. This is used to inform the PassageQuestionSelector which question numbers to show. If the passage was added when the quiz already had 4 questions, then the passage can be assigned to questions 5 onwards.
+  },
+  {
+    sequelize,
+  }
+);
+
+
 class Question extends Model {}
 
 Question.init(
@@ -139,4 +158,10 @@ Question.hasMany(Option, {
 });
 Option.belongsTo(Question);
 
-module.exports = { Quiz, Section, Question, Option };
+Passage.hasMany(Question, {
+  onDelete:"SET NULL",
+  onUpdate: "RESTRICT"
+});
+Question.belongsTo(Passage)
+
+module.exports = { Quiz, Section, Question, Option, Passage };

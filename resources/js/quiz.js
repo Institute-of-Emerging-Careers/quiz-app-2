@@ -16,10 +16,9 @@ if (quizIdField.innerText == "") {
 const MyContext = React.createContext();
 
 const ContextProvider = (props) => {
-  const [mcqs, setMCQs] = useState([]);
-  const [passages, setPassages] = useState([])
+  const [state, setState] = useState({mcqs: [], passages: []})
 
-  return <MyContext.Provider value={[[mcqs, setMCQs],[passages, setPassages]]}>{props.children}</MyContext.Provider>;
+  return <MyContext.Provider value={[state, setState]}>{props.children}</MyContext.Provider>;
 };
 
 const ErrorDisplay = (props) => {
@@ -56,8 +55,7 @@ const Select = (props) => {
 };
 
 const SelectMultiple = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
+  const [state, setState] = useContext(MyContext);
   const [alphabets, setAlphabets] = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]);
 
   return (
@@ -77,8 +75,7 @@ const SelectMultiple = (props) => {
 };
 
 const Option = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
+  const [state, setState] = useContext(MyContext);
   const [optionStatement, setOptionStatement] = useState("");
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -88,9 +85,10 @@ const Option = (props) => {
   const setOption = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (mcqs[props.sectionIndex].questions[props.questionIndex].options.length <= alphabets.length) {
-      setMCQs((cur) => {
-        let copy = cur.slice();
+    if (state.mcqs[props.sectionIndex].questions[props.questionIndex].options.length <= alphabets.length) {
+      setState((cur) => {
+        let obj = {...cur}
+        let copy = obj.mcqs.slice();
         // change state so that a question also stores the index of its correct option
 
         // if this is a new option being set, do this
@@ -102,7 +100,8 @@ const Option = (props) => {
           copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].optionStatement = optionStatement;
           copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit = false;
         }
-        return copy;
+        obj.mcqs=copy
+        return obj;
       });
     } else {
       setError("Cannot add more options. Alphabets exhausted.");
@@ -110,10 +109,12 @@ const Option = (props) => {
   };
 
   function toggleOptionEditStatus() {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit = !copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit;
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
@@ -125,11 +126,13 @@ const Option = (props) => {
   }
 
   function deleteOption() {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options.splice(props.optionIndex, 1);
       copy = fixOptionOrdering(copy);
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
@@ -145,12 +148,13 @@ const Option = (props) => {
         response.json().then((finalResponse) => {
           console.log(finalResponse);
           if (finalResponse.status == true) {
-            setMCQs((cur) => {
-              let copy = cur.slice();
+            setState((cur) => {
+              let obj = {...cur}
+              let copy = obj.mcqs.slice();
               // problem: somehow these indexes are all 0
               copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image = finalResponse.filename;
-              console.log(copy);
-              return copy;
+              obj.mcqs = copy
+              return obj
             });
             setUploading(false);
           }
@@ -160,10 +164,12 @@ const Option = (props) => {
   }
 
   function deleteOptionImage(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image = null;
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
@@ -188,11 +194,11 @@ const Option = (props) => {
           </form>
         </div>
       </div>
-      {mcqs[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image == null ? (
+      {state.mcqs[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image == null ? (
         <div className="hidden"></div>
       ) : (
         <div className="relative w-max">
-          <img src={mcqs[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image} height="150px" className="mt-2 ml-8 max-h-64 w-auto self-center"></img>
+          <img src={state.mcqs[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].image} height="150px" className="mt-2 ml-8 max-h-64 w-auto self-center"></img>
           <i className="fas fa-trash p-2 absolute top-0 right-0 bg-white text-red-500 shadow-md cursor-pointer" onClick={deleteOptionImage}></i>
         </div>
       )}
@@ -209,25 +215,25 @@ const Option = (props) => {
 };
 
 const MCQ = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
+  const [state, setState] = useContext(MyContext);
   const [correctOption, setCorrectOption] = useState("");
   const [alphabets, setAlphabets] = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]);
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
-  const [linkUrl, setLinkUrl] = useState(mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? "" : mcqs[props.sectionIndex].questions[props.questionIndex].link.url);
-  const [linkText, setLinkText] = useState(mcqs[props.sectionIndex].questions[props.questionIndex].link.text == null ? "" : mcqs[props.sectionIndex].questions[props.questionIndex].link.text);
+  const [linkUrl, setLinkUrl] = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url);
+  const [linkText, setLinkText] = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text);
   const fileUploadForm = useRef();
 
   const optionsArray = [];
-  mcqs[props.sectionIndex].questions[props.questionIndex].options.map((option, index) => {
+  state.mcqs[props.sectionIndex].questions[props.questionIndex].options.map((option, index) => {
     if (option.optionStatement != null) optionsArray.push({ value: index, label: alphabets[index], correct: option.correct });
   });
 
   function setCorrectOptionInState(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[e.target.value].correct = true;
       if (copy[props.sectionIndex].questions[props.questionIndex].type == "MCQ-S") {
         // set all other previously true-set options to false
@@ -235,22 +241,26 @@ const MCQ = (props) => {
           if (i!=e.target.value) copy[props.sectionIndex].questions[props.questionIndex].options[i].correct = false
         }
       }
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
   function handleCheckboxChange(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[e.target.value].correct = !copy[props.sectionIndex].questions[props.questionIndex].options[e.target.value].correct;
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
   function moveQuestionDown() {
-    if (props.questionIndex < mcqs[props.sectionIndex].questions.length - 1) {
-      setMCQs((cur) => {
-        let copy = cur.slice();
+    if (props.questionIndex < state.mcqs[props.sectionIndex].questions.length - 1) {
+      setState((cur) => {
+        let obj = {...cur}
+        let copy = obj.mcqs.slice();
         // moving elements in the questions array
         const nextElement = copy[props.sectionIndex].questions[props.questionIndex + 1];
         copy[props.sectionIndex].questions[props.questionIndex + 1] = copy[props.sectionIndex].questions[props.questionIndex];
@@ -259,15 +269,17 @@ const MCQ = (props) => {
         // fixing their questionOrder attributes
         copy[props.sectionIndex].questions[props.questionIndex].questionOrder = props.questionIndex;
         copy[props.sectionIndex].questions[props.questionIndex + 1].questionOrder = props.questionIndex + 1;
-        return copy;
+        obj.mcqs = copy
+        return obj;
       });
     }
   }
 
   function moveQuestionUp() {
     if (props.questionIndex > 0) {
-      setMCQs((cur) => {
-        let copy = cur.slice();
+      setState((cur) => {
+        let obj = {...cur}
+        let copy = obj.mcqs.slice();
         // moving the question objects{} in the questions array
         const prevElement = copy[props.sectionIndex].questions[props.questionIndex - 1];
         copy[props.sectionIndex].questions[props.questionIndex - 1] = copy[props.sectionIndex].questions[props.questionIndex];
@@ -276,7 +288,8 @@ const MCQ = (props) => {
         // fixing their questionOrder attributes
         copy[props.sectionIndex].questions[props.questionIndex].questionOrder = props.questionIndex;
         copy[props.sectionIndex].questions[props.questionIndex - 1].questionOrder = props.questionIndex - 1;
-        return copy;
+        obj.mcqs = copy
+        return obj;
       });
     }
   }
@@ -298,10 +311,12 @@ const MCQ = (props) => {
       if (response.status == 200) {
         response.json().then((finalResponse) => {
           if (finalResponse.status == true) {
-            setMCQs((cur) => {
-              let copy = cur.slice();
+            setState((cur) => {
+              let obj = {...cur}
+              let copy = obj.mcqs.slice();
               copy[props.sectionIndex].questions[props.questionIndex].image = finalResponse.filename;
-              return copy;
+              obj.mcqs = copy
+              return obj;
             });
             setUploading(false);
           }
@@ -311,20 +326,38 @@ const MCQ = (props) => {
   }
 
   function deleteQuestion(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
-      copy[props.sectionIndex].questions.splice(props.questionIndex, 1);
-      copy = fixQuestionOrdering(copy);
-      return copy;
+    setState((cur) => {
+      let obj = {...cur}
+      let mcqs_copy = obj.mcqs.slice();
+      let passages_copy = obj.passages.slice()
+
+      // if this question was associated with a comprehension passage, and was the only question of the passage, then we delete the passage as well:
+      let found = false
+      const passageIndex = mcqs_copy[props.sectionIndex].questions[props.questionIndex].passage
+      mcqs_copy[props.sectionIndex].questions.forEach((question,questionIndex)=>{
+        // if any question (other than this one that we are about to delete) is found such that it has the same passage, we set found to true and don't delete the passage
+        if (question.passage == passageIndex && questionIndex != props.questionIndex) found = true
+      })
+      if (!found) passages_copy.splice(passageIndex,1)
+
+      // deleting the question and ensure continunity of questionOrder attribute
+      mcqs_copy[props.sectionIndex].questions.splice(props.questionIndex, 1);
+      mcqs_copy = fixQuestionOrdering(mcqs_copy);
+
+      obj.mcqs = mcqs_copy
+      obj.passages = passages_copy
+      return obj;
     });
   }
 
   function copyQuestion(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions.splice(props.questionIndex, 0, { ...cur[props.sectionIndex].questions[props.questionIndex] });
       copy = fixQuestionOrdering(copy);
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
@@ -339,19 +372,23 @@ const MCQ = (props) => {
     e.stopPropagation();
 
     toggleLinkModal();
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].link.url = linkUrl;
       copy[props.sectionIndex].questions[props.questionIndex].link.text = linkText;
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
   function deleteQuestionImage(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].image = null;
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
   }
 
@@ -410,12 +447,14 @@ const MCQ = (props) => {
             <div className="flex gap-4">
               <textarea
                 placeholder="Enter Question Statement"
-                value={mcqs[props.sectionIndex].questions[props.questionIndex].statement == null ? "" : mcqs[props.sectionIndex].questions[props.questionIndex].statement}
+                value={state.mcqs[props.sectionIndex].questions[props.questionIndex].statement == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].statement}
                 onChange={(e) => {
-                  setMCQs((cur) => {
-                    let copy = cur.slice();
+                  setState((cur) => {
+                    let obj = {...cur}
+                    let copy = obj.mcqs.slice();
                     copy[props.sectionIndex].questions[props.questionIndex].statement = e.target.value;
-                    return copy;
+                    obj.mcqs = copy
+                    return obj;
                   });
                 }}
                 minLength="1"
@@ -434,23 +473,23 @@ const MCQ = (props) => {
               </div>
             </div>
           </div>
-          {mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? (
+          {state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? (
             <div className="hidden"></div>
           ) : (
-            <a href={mcqs[props.sectionIndex].questions[props.questionIndex].link.url} target="_blank" className="text-blue-700 underline ml-8 hover:text-blue-500">
-              {mcqs[props.sectionIndex].questions[props.questionIndex].link.text == "" ? mcqs[props.sectionIndex].questions[props.questionIndex].link.url : mcqs[props.sectionIndex].questions[props.questionIndex].link.text}
+            <a href={state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url} target="_blank" className="text-blue-700 underline ml-8 hover:text-blue-500">
+              {state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text == "" ? state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text}
             </a>
           )}
-          {mcqs[props.sectionIndex].questions[props.questionIndex].image == null ? (
+          {state.mcqs[props.sectionIndex].questions[props.questionIndex].image == null ? (
             <div className="hidden"></div>
           ) : (
             <div className="relative w-max">
-              <img src={mcqs[props.sectionIndex].questions[props.questionIndex].image} height="150px" className="mt-6 ml-8 max-h-64 w-auto"></img>
+              <img src={state.mcqs[props.sectionIndex].questions[props.questionIndex].image} height="150px" className="mt-6 ml-8 max-h-64 w-auto"></img>
               <i className="fas fa-trash p-2 absolute top-0 right-0 bg-white text-red-500 shadow-md cursor-pointer" onClick={deleteQuestionImage}></i>
             </div>
           )}
           <ul className="mt-4 ml-10">
-            {mcqs[props.sectionIndex].questions[props.questionIndex].options.map((option, index) => (
+            {state.mcqs[props.sectionIndex].questions[props.questionIndex].options.map((option, index) => (
               <Option opt={option} questionIndex={props.questionIndex} optionIndex={index} sectionIndex={props.sectionIndex} key={index} type={props.type} />
             ))}
           </ul>
@@ -461,7 +500,7 @@ const MCQ = (props) => {
             ) : (
               <div className="col-span-1">
                 <p>Select correct options:</p>
-                <SelectMultiple sectionIndex={props.sectionIndex} questionIndex={props.questionIndex} options={mcqs[props.sectionIndex].questions[props.questionIndex].options} value={correctOption} onCheckboxChange={handleCheckboxChange}></SelectMultiple>
+                <SelectMultiple sectionIndex={props.sectionIndex} questionIndex={props.questionIndex} options={state.mcqs[props.sectionIndex].questions[props.questionIndex].options} value={correctOption} onCheckboxChange={handleCheckboxChange}></SelectMultiple>
               </div>
             )}
             <div className="col-start-2 col-span-1 justify-self-end">
@@ -470,12 +509,14 @@ const MCQ = (props) => {
                 type="number"
                 step="0.25"
                 min="0"
-                value={mcqs[props.sectionIndex].questions[props.questionIndex].marks}
+                value={state.mcqs[props.sectionIndex].questions[props.questionIndex].marks}
                 onChange={(e) => {
-                  setMCQs((cur) => {
-                    let copy = cur.slice();
+                  setState((cur) => {
+                    let obj = {...cur}
+                    let copy = obj.mcqs.slice();
                     copy[props.sectionIndex].questions[props.questionIndex].marks = e.target.value;
-                    return copy;
+                    obj.mcqs = copy
+                    return obj;
                   });
                 }}
                 className="px-3 py-2 border-2 border-r-0 border-gray-100"
@@ -489,20 +530,16 @@ const MCQ = (props) => {
 };
 
 const PassageQuestionSelector = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
-  const [passages, setPassages] = passage_object
+  const [state, setState] = useContext(MyContext);
   
   return (
     <ul className="ml-2">
       {
-        mcqs[props.sectionIndex].questions.map((question, questionIndex)=>{
-          if (questionIndex > passages[props.passageIndex].place_after_question) 
+        state.mcqs[props.sectionIndex].questions.map((question, questionIndex)=>{
             return (<li>
-              <input type="checkbox" value={questionIndex} name={"questionSelector" + props.sectionIndex} checked={mcqs[props.sectionIndex].questions[questionIndex].passage == props.passageIndex} onChange={props.onCheckboxChange}></input>
+              <input type="checkbox" value={questionIndex} name={"questionSelector" + props.sectionIndex} checked={state.mcqs[props.sectionIndex].questions[questionIndex].passage == props.passageIndex} onChange={props.onCheckboxChange}></input>
               <label htmlFor={"questionSelector" + props.sectionIndex}> {"Q" + (parseInt(questionIndex)+1)}</label>
             </li>)
-          else return (<span></span>)
         })
       }
     </ul>
@@ -510,39 +547,57 @@ const PassageQuestionSelector = (props) => {
 }
 
 const Passage = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
-  const [passages, setPassages] = passage_object
+  const [state, setState] = useContext(MyContext);
 
   const deletePassage = () => {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions.forEach((question,index)=>{
         if (question.passage == props.passageIndex) {
           copy[props.sectionIndex].questions[index].passage = null
-          console.log(index)
         }
       })
-      console.log(copy)
-      return copy;
+      obj.mcqs = copy
+      return obj;
     });
 
-    setPassages((cur)=>{
-      let copy = cur.slice()
+    setState((cur)=>{
+      let obj = {...cur}
+      let copy = obj.passages.slice()
       copy.splice(props.passageIndex, 1)
-      return copy
+      obj.passages = copy
+      return obj;
     })
   }
 
   function handleCheckboxChange(e) {
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let mcqs_copy = obj.mcqs.slice();
+      let passages_copy = obj.passages.slice()
       // if this question has no passage or has a different passage, then assign the current passage to it
-      if (copy[props.sectionIndex].questions[e.target.value].passage === null || copy[props.sectionIndex].questions[e.target.value].passage != props.passageIndex) 
-        copy[props.sectionIndex].questions[e.target.value].passage = props.passageIndex;
+      if (mcqs_copy[props.sectionIndex].questions[e.target.value].passage === null || mcqs_copy[props.sectionIndex].questions[e.target.value].passage != props.passageIndex) 
+        mcqs_copy[props.sectionIndex].questions[e.target.value].passage = props.passageIndex;
       // if this question already had this passage, then assign its passage to null because checkbox has been unchecked
-      else copy[props.sectionIndex].questions[e.target.value].passage = null
-      return copy;
+      else mcqs_copy[props.sectionIndex].questions[e.target.value].passage = null
+      
+
+      // checking to see if passage has no questions associated with it, in which case it will be deleted
+      let found = false
+      mcqs_copy[props.sectionIndex].questions.forEach(question=>{
+        if (question.passage == props.passageIndex) found = true
+      })
+
+      // if no such question is found, delete the passage
+      if (!found) {
+        passages_copy.splice(props.passageIndex,1)
+      }
+      // done
+      console.log(passages_copy)
+      obj.mcqs = mcqs_copy
+      obj.passages = passages_copy
+      return obj;
     });
   }
 
@@ -558,12 +613,14 @@ const Passage = (props) => {
       <div className="py-4 px-8">
         <textarea
           placeholder="Enter Comprehension Passage Text"
-          value={passages[props.passageIndex].statement == null ? "" : passages[props.passageIndex].statement}
+          value={state.passages[props.passageIndex].statement == null ? "" : state.passages[props.passageIndex].statement}
           onChange={(e) => {
-            setPassages((cur) => {
-              let copy = cur.slice();
+            setState((cur) => {
+              let obj = {...cur}
+              let copy = obj.passages.slice();
               copy[props.passageIndex].statement = e.target.value;
-              return copy;
+              obj.passages = copy
+              return obj;
             });
           }}
           minLength="1"
@@ -580,14 +637,13 @@ const Passage = (props) => {
 }
 
 const Section = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
+  const [state, setState] = useContext(MyContext);
 
   return (
     <div>
       <SectionHeader sectionTitle={props.sectionTitle} sectionNumber={props.sectionNumber} sectionIndex={props.sectionNumber - 1} totalSections={props.totalSections} key={props.sectionNumber} />
       <div>
-        {mcqs[props.sectionIndex].questions.map((question, index) => {
+        {state.mcqs[props.sectionIndex].questions.map((question, index) => {
           return question.passage == null ? 
           <MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ>
           : 
@@ -599,26 +655,26 @@ const Section = (props) => {
 };
 
 const SectionHeader = (props) => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
-  const [passages, setPassages] = passage_object
+  const [state, setState] = useContext(MyContext);
   const [poolCountChanged, setPoolCountChanged] = useState(false);
-  const [poolCount, setPoolCount] = useState(poolCountChanged == true ? mcqs[props.sectionIndex].poolCount : mcqs[props.sectionIndex].questions.length);
-  const [time, setTime] = useState(mcqs[props.sectionIndex].time);
-  const [timeOrNot, setTimeOrNot] = useState(mcqs[props.sectionIndex].time == 0 ? false : true);
+  const [poolCount, setPoolCount] = useState(poolCountChanged == true ? state.mcqs[props.sectionIndex].poolCount : state.mcqs[props.sectionIndex].questions.length);
+  const [time, setTime] = useState(state.mcqs[props.sectionIndex].time);
+  const [timeOrNot, setTimeOrNot] = useState(state.mcqs[props.sectionIndex].time == 0 ? false : true);
   const toggle = React.useRef();
 
   useMemo(() => {
-    setPoolCount(poolCountChanged == true ? mcqs[props.sectionIndex].poolCount : mcqs[props.sectionIndex].questions.length);
-    if (!poolCountChanged) {
-      if (mcqs[props.sectionIndex].poolCount != poolCount)
-        setMCQs((cur) => {
-          let copy = cur.slice();
-          copy[props.sectionIndex].poolCount = poolCount;
-          return copy;
-        });
-    }
-  }, [mcqs, toggle]);
+    setPoolCount(poolCountChanged == true ? state.mcqs[props.sectionIndex].poolCount : state.mcqs[props.sectionIndex].questions.length);
+    // if (!poolCountChanged) {
+    //   if (state.mcqs[props.sectionIndex].poolCount != poolCount)
+    //     setState((cur) => {
+    //       let obj = {...cur}
+    //       let copy = obj.mcqs.slice();
+    //       copy[props.sectionIndex].poolCount = poolCount;
+    //       obj.mcqs = copy
+    //       return obj;
+    //     });
+    // }
+  }, [state.mcqs, toggle]);
 
   const closeDropdown = () => {
     const el = ReactDOM.findDOMNode(toggle.current);
@@ -626,9 +682,11 @@ const SectionHeader = (props) => {
   };
 
   const addNewMCQ = (type) => {
-    setMCQs((cur) => {
-      let copy = cur.slice();
-      copy[props.sectionIndex].questions.push({
+    // NOTE: If you make any change to the MCQ State object here, remember to also make it in addNewComprehensionPassage
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
+      let question_order = copy[props.sectionIndex].questions.push({
         passage: null,
         statement: null,
         questionOrder: null,
@@ -639,8 +697,9 @@ const SectionHeader = (props) => {
         options: [{ optionStatement: null, correct: false }],
         correctOptionIndex: null,
       });
-      copy[props.sectionIndex].questions[copy[props.sectionIndex].questions.length - 1].questionOrder = copy[props.sectionIndex].questions.length - 1;
-      return copy;
+      copy[props.sectionIndex].questions[copy[props.sectionIndex].questions.length - 1].questionOrder = question_order;
+      obj.mcqs=copy
+      return obj;
     });
   };
 
@@ -656,30 +715,49 @@ const SectionHeader = (props) => {
 
   const addNewComprehensionPassage = () => {
     let index_of_newly_created_passage
-    setPassages(cur=>{
-      let copy = cur.slice()
+
+    setState(cur=>{
+      let obj = {...cur}
+      let copy = obj.passages.slice()
       index_of_newly_created_passage = copy.push({
         id:null,
         statement: null,
-        place_after_question: mcqs[props.sectionIndex].questions.length-1, //which question to place this passage after, i.e. its position
+        place_after_question: state.mcqs[props.sectionIndex].questions.length-1, 
+        //which question to place this passage after. This is used to inform the PassageQuestionSelector which question numbers to show. If the passage was added when the quiz already had 4 questions, then the passage can be assigned to questions 5 onwards.
       })
       index_of_newly_created_passage--
-      return copy
-    })
+      console.log("index_of_newly_created_passage2:",index_of_newly_created_passage)
+      obj.passages = copy
 
-    addNewMCQSingle()
-    setMCQs(cur=>{
-      let copy = cur.slice()
-      copy[props.sectionIndex].questions[copy[props.sectionIndex].questions.length-1].passage = index_of_newly_created_passage
-      return copy
+    
+      copy = obj.mcqs.slice()
+
+      // now creating a new MCQ-S
+      let question_index = copy[props.sectionIndex].questions.push({
+        passage: index_of_newly_created_passage,
+        statement: null,
+        questionOrder: null,
+        type: "MCQ-S",
+        image: null,
+        marks: 1,
+        link: { url: null, text: null },
+        options: [{ optionStatement: null, correct: false }],
+        correctOptionIndex: null,
+      });
+      copy[props.sectionIndex].questions[copy[props.sectionIndex].questions.length - 1].questionOrder = question_index;
+
+      obj.mcqs = copy
+      return obj;
     })
   }
 
   const deleteSection = () => {
-    setMCQs(cur=>{
-      let copy = cur.slice()
+    setState(cur=>{
+      let obj = {...cur}
+      let copy = obj.mcqs.slice()
       copy.splice(props.sectionIndex, 1)
-      return copy
+      obj.mcqs=copy
+      return obj
     })
   }
 
@@ -698,11 +776,10 @@ const SectionHeader = (props) => {
             onClick={(e) => {
               const el = ReactDOM.findDOMNode(toggle.current);
               el.classList.toggle("hidden");
-            }}
-          >
+            }}>
             <i className="fas fa-plus"></i> Add Question
           </div>
-          <ul id="types_of_questions" ref={toggle} className="hidden bg-white text-gray-800 absolute w-max top-16 left-0 border-gray-200 border-2">
+          <ul id="types_of_questions" ref={toggle} className="hidden bg-white text-gray-800 absolute w-max top-18 left-0 border-gray-200 border-2">
             <li onClick={addNewMCQSingle} className="py-2 px-4 hover:bg-gray-200">
               MCQ Single Select
             </li>
@@ -716,6 +793,7 @@ const SectionHeader = (props) => {
             <i className="fas fa-plus"></i> Add Comprehension Passage
           </div>
         </div>
+        
         <div className="flex gap-x-2 w-full mt-4 mb-2">
           <div className="">
             <label className="px-4 py-3">No. of Questions to be Randomly Selected: </label>
@@ -723,16 +801,18 @@ const SectionHeader = (props) => {
               type="number"
               className="h-12 w-16 bg-gray-100 text-center"
               min="0"
-              max={mcqs[props.sectionIndex].questions.length}
+              max={state.mcqs[props.sectionIndex].questions.length}
               name="pool_count"
               value={poolCount}
               onChange={(e) => {
                 setPoolCountChanged(true);
                 setPoolCount(e.target.value);
-                setMCQs((cur) => {
-                  let copy = cur.slice();
+                setState((cur) => {
+                  let obj = {...cur}
+                  let copy = obj.mcqs.slice();
                   copy[props.sectionIndex].poolCount = e.target.value;
-                  return copy;
+                  obj.mcqs = copy
+                  return obj;
                 });
               }}
             ></input>
@@ -759,10 +839,12 @@ const SectionHeader = (props) => {
                   value={time}
                   onChange={(e) => {
                     setTime(e.target.value);
-                    setMCQs((cur) => {
-                      let copy = cur.slice();
+                    setState((cur) => {
+                      let obj = {...cur}
+                      let copy = obj.mcqs.slice();
                       copy[props.sectionIndex].time = e.target.value;
-                      return copy;
+                      obj.mcqs=copy
+                      return obj;
                     });
                   }}
                 ></input>
@@ -778,8 +860,7 @@ const SectionHeader = (props) => {
 };
 
 const Main = () => {
-  const [mcq_object, passage_object] = useContext(MyContext);
-  const [mcqs, setMCQs] = mcq_object
+  const [state, setState] = useContext(MyContext);
   const [sectionInput, setSectionInput] = useState("");
   const [quizTitle, setQuizTitle] = useState("");
   const [quizId, setQuizId] = useState(globalQuizId);
@@ -794,16 +875,18 @@ const Main = () => {
   // If we are editing an already present quiz, get the quiz state from the server
   useEffect(async () => {
     if (globalQuizId != null) {
-      let state, title;
+      let state, title, passages_object;
       const response = await fetch("/quizState/" + globalQuizId.toString());
       const finalResponse = await response.json();
       if (finalResponse.success == true) {
         state = finalResponse.stateObject;
         title = finalResponse.quizTitle;
+        passages_object = finalResponse.passages_object
       } else {
         state = [];
       }
-      setMCQs(state);
+      setState({mcqs: state, passages: passages_object});
+      console.log("state.mcqs: ", state, "\npassages: ", passages_object)
       setQuizTitle(title);
     }
   }, []);
@@ -811,8 +894,9 @@ const Main = () => {
   const addSection = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    setMCQs((cur) => {
-      let copy = cur.slice();
+    setState((cur) => {
+      let obj = {...cur}
+      let copy = obj.mcqs.slice();
       copy.push({
         sectionTitle: sectionInput,
         sectionOrder: null,
@@ -821,7 +905,8 @@ const Main = () => {
         questions: [],
       });
       copy[copy.length - 1].sectionOrder = copy.length - 1;
-      return copy;
+      obj.mcqs=copy
+      return obj;
     });
   };
 
@@ -829,18 +914,18 @@ const Main = () => {
     // data validation before saving
     setUploading2(true);
     setError("");
-    console.log("Saving: ", mcqs);
+    console.log("Saving: ", state.mcqs);
     let anyErrors = false;
 
     if (quizTitle == "") {
       setError("Please enter a quiz title.");
       anyErrors = true;
     } else {
-      if (mcqs.length == 0) {
+      if (state.mcqs.length == 0) {
         setError("Please add at least one section.");
         anyErrors = true;
       } else {
-        mcqs.forEach((section) => {
+        state.mcqs.forEach((section) => {
           if (section.questions.length == 0) {
             setError("Empty sections cannot exist. Every section must have at least one question.");
             anyErrors = true;
@@ -875,7 +960,8 @@ const Main = () => {
         body: JSON.stringify({
           quizTitle: quizTitle,
           quizId: quizId,
-          mcqs: mcqs,
+          mcqs: state.mcqs,
+          passages: state.passages,
         }),
       })
         .then((response) => {
@@ -919,7 +1005,7 @@ const Main = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(mcqs),
+      body: JSON.stringify(state.mcqs),
     })
     .then(response=>{
         response.json().then(finalResponse=>{
@@ -947,7 +1033,11 @@ const Main = () => {
             if (finalResponse.status == true) {
               console.log(finalResponse);
               setUploading(false);
-              setMCQs(finalResponse.state);
+              setState((cur)=>{
+                let obj = {...cur}
+                obj.mcqs = finalResponse.state
+                return obj
+              });
               console.log(finalResponse.state);
             }
           });
@@ -991,8 +1081,8 @@ const Main = () => {
         </div>
         
       </div>
-      {mcqs.map((section, index) => (
-        <Section sectionTitle={section.sectionTitle} sectionNumber={index + 1} sectionIndex={index} totalSections={mcqs.length} key={index} />
+      {state.mcqs.map((section, index) => (
+        <Section sectionTitle={section.sectionTitle} sectionNumber={index + 1} sectionIndex={index} totalSections={state.mcqs.length} key={index} />
       ))}
     </div>
   );
