@@ -515,7 +515,23 @@ const Passage = (props) => {
   const [passages, setPassages] = passage_object
 
   const deletePassage = () => {
+    setMCQs((cur) => {
+      let copy = cur.slice();
+      copy[props.sectionIndex].questions.forEach((question,index)=>{
+        if (question.passage == props.passageIndex) {
+          copy[props.sectionIndex].questions[index].passage = null
+          console.log(index)
+        }
+      })
+      console.log(copy)
+      return copy;
+    });
 
+    setPassages((cur)=>{
+      let copy = cur.slice()
+      copy.splice(props.passageIndex, 1)
+      return copy
+    })
   }
 
   function handleCheckboxChange(e) {
@@ -536,7 +552,7 @@ const Passage = (props) => {
       <div className="bg-gray-500 w-full text-white px-4 py-0 mr-4 grid grid-cols-4 justify-between items-center">
         <p>Comprehension Passage {props.passageIndex + 1}</p>
         <div className="col-start-2 col-span-3 justify-self-end">
-          <i className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0" onClick={deletePassage}></i>
+          <i className="fas fa-trash-alt cursor-pointer text-xl p-2 text-white hover:bg-white hover:text-gray-500" onClick={deletePassage}></i>
         </div>
       </div>
       <div className="py-4 px-8">
