@@ -395,7 +395,8 @@ const MCQ = (props) => {
         <div></div>
       )}
       <div className="bg-white h-auto w-4/5 mx-auto mt-4 shadow-xl">
-        <div className="bg-gray-200 w-full text-black px-4 py-0 mr-4 grid grid-cols-4 content-center">
+        <div className="bg-gray-200 w-full text-black px-4 py-0 mr-4 grid grid-cols-4 justify-between items-center">
+          <p>Question {props.questionIndex + 1}</p>
           <div className="col-start-2 col-span-3 justify-self-end">
             <i className="far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={copyQuestion}></i>
             <i className="fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2" onClick={moveQuestionUp}></i>
@@ -407,7 +408,6 @@ const MCQ = (props) => {
           <div>
             <ErrorDisplay error={error}></ErrorDisplay>
             <div className="flex gap-4">
-              <label>{props.questionIndex + 1}:</label>
               <textarea
                 placeholder="Enter Question Statement"
                 value={mcqs[props.sectionIndex].questions[props.questionIndex].statement == null ? "" : mcqs[props.sectionIndex].questions[props.questionIndex].statement}
@@ -488,24 +488,58 @@ const MCQ = (props) => {
   );
 };
 
+const PassageQuestionSelector = (props) => {
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
+  const [passages, setPassages] = passage_object
+  
+  return (
+    <ul className="ml-2">
+      {
+        mcqs[props.sectionIndex].questions.map((question, questionIndex)=>{
+          if (questionIndex > passages[props.passageIndex].place_after_question) 
+            return (<li>
+              <input type="checkbox" value={questionIndex} name={"questionSelector" + props.sectionIndex} checked={mcqs[props.sectionIndex].questions[questionIndex].passage == props.passageIndex} onChange={props.onCheckboxChange}></input>
+              <label htmlFor={"questionSelector" + props.sectionIndex}> {"Q" + (parseInt(questionIndex)+1)}</label>
+            </li>)
+          else return (<span></span>)
+        })
+      }
+    </ul>
+  );
+}
+
 const Passage = (props) => {
   const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
   const [passages, setPassages] = passage_object
 
   const deletePassage = () => {
 
   }
 
+  function handleCheckboxChange(e) {
+    setMCQs((cur) => {
+      let copy = cur.slice();
+      // if this question has no passage or has a different passage, then assign the current passage to it
+      if (copy[props.sectionIndex].questions[e.target.value].passage === null || copy[props.sectionIndex].questions[e.target.value].passage != props.passageIndex) 
+        copy[props.sectionIndex].questions[e.target.value].passage = props.passageIndex;
+      // if this question already had this passage, then assign its passage to null because checkbox has been unchecked
+      else copy[props.sectionIndex].questions[e.target.value].passage = null
+      return copy;
+    });
+  }
+
   return (
   <div>
     <div className="bg-white h-auto w-4/5 mx-auto mt-4 shadow-xl">
-      <div className="bg-gray-200 w-full text-black px-4 py-0 mr-4 grid grid-cols-4 content-center">
+      <div className="bg-gray-500 w-full text-white px-4 py-0 mr-4 grid grid-cols-4 justify-between items-center">
+        <p>Comprehension Passage {props.passageIndex + 1}</p>
         <div className="col-start-2 col-span-3 justify-self-end">
           <i className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0" onClick={deletePassage}></i>
         </div>
       </div>
       <div className="py-4 px-8">
-        <label>Comprehension Passage {props.passageIndex + 1}:</label>
         <textarea
           placeholder="Enter Comprehension Passage Text"
           value={passages[props.passageIndex].statement == null ? "" : passages[props.passageIndex].statement}
@@ -521,6 +555,9 @@ const Passage = (props) => {
           className="w-full px-4 py-2 border-gray-400 border-2"
           autoFocus
         ></textarea>
+        <hr className="border-2 mb-4 mt-10"></hr>
+        <h3>Select all the questions that are about this passage:</h3>
+        <PassageQuestionSelector passageIndex={props.passageIndex} sectionIndex={props.sectionIndex} onCheckboxChange={handleCheckboxChange}></PassageQuestionSelector>
       </div>
     </div>
   </div>)
@@ -538,7 +575,7 @@ const Section = (props) => {
           return question.passage == null ? 
           <MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ>
           : 
-          <div><Passage passageIndex = {question.passage}></Passage><MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ></div>
+          <div><Passage passageIndex = {question.passage} sectionIndex={props.sectionIndex}></Passage><MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ></div>
         })}
       </div>
     </div>
@@ -608,20 +645,18 @@ const SectionHeader = (props) => {
       index_of_newly_created_passage = copy.push({
         id:null,
         statement: null,
+        place_after_question: mcqs[props.sectionIndex].questions.length-1, //which question to place this passage after, i.e. its position
       })
       index_of_newly_created_passage--
       return copy
     })
 
+    addNewMCQSingle()
     setMCQs(cur=>{
       let copy = cur.slice()
-      const last_question_index = copy[props.sectionIndex].questions.length-1
-      copy[props.sectionIndex].questions[last_question_index].passage = index_of_newly_created_passage
-      console.log(index_of_newly_created_passage)
+      copy[props.sectionIndex].questions[copy[props.sectionIndex].questions.length-1].passage = index_of_newly_created_passage
       return copy
     })
-
-    
   }
 
   const deleteSection = () => {
