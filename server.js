@@ -1023,7 +1023,6 @@ app.post(
     // successRedirect: "/student",
     if (req.hasOwnProperty("user")) {
       try {
-        console.log("req.body.link", req.body.link);
         const invite = await Invite.findOne({
           where: { link: req.body.link },
           include: { model: Quiz, attributes: ["id"] },
@@ -1139,7 +1138,18 @@ app.get("/delete/quiz/:id", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/student", checkStudentAuthenticated, (req, res) => {
+app.get("/student", checkStudentAuthenticated, async (req, res) => {
+  if (req.query.link != undefined) 
+  {
+    const invite = await Invite.findOne({
+      where: { link: req.query.link },
+      include: { model: Quiz, attributes: ["id"] },
+    });
+    const quizId = invite.Quiz.id;
+    await Assignment.findOrCreate({
+      where: { StudentId: req.user.user.id, QuizId: quizId },
+    });
+  }
   res.render("student/index.ejs", {
     user_type: req.user.type,
     query: req.query,
