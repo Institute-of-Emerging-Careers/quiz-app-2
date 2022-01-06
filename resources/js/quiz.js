@@ -17,8 +17,9 @@ const MyContext = React.createContext();
 
 const ContextProvider = (props) => {
   const [mcqs, setMCQs] = useState([]);
+  const [passages, setPassages] = useState([])
 
-  return <MyContext.Provider value={[mcqs, setMCQs]}>{props.children}</MyContext.Provider>;
+  return <MyContext.Provider value={[[mcqs, setMCQs],[passages, setPassages]]}>{props.children}</MyContext.Provider>;
 };
 
 const ErrorDisplay = (props) => {
@@ -55,7 +56,8 @@ const Select = (props) => {
 };
 
 const SelectMultiple = (props) => {
-  const [mcqs, setMCQs] = useContext(MyContext);
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
   const [alphabets, setAlphabets] = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]);
 
   return (
@@ -75,7 +77,8 @@ const SelectMultiple = (props) => {
 };
 
 const Option = (props) => {
-  const [mcqs, setMCQs] = useContext(MyContext);
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
   const [optionStatement, setOptionStatement] = useState("");
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -206,7 +209,8 @@ const Option = (props) => {
 };
 
 const MCQ = (props) => {
-  const [mcqs, setMCQs] = useContext(MyContext);
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
   const [correctOption, setCorrectOption] = useState("");
   const [alphabets, setAlphabets] = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]);
   const [error, setError] = useState("");
@@ -484,8 +488,67 @@ const MCQ = (props) => {
   );
 };
 
+const Passage = (props) => {
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [passages, setPassages] = passage_object
+
+  const deletePassage = () => {
+
+  }
+
+  return (
+  <div>
+    <div className="bg-white h-auto w-4/5 mx-auto mt-4 shadow-xl">
+      <div className="bg-gray-200 w-full text-black px-4 py-0 mr-4 grid grid-cols-4 content-center">
+        <div className="col-start-2 col-span-3 justify-self-end">
+          <i className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0" onClick={deletePassage}></i>
+        </div>
+      </div>
+      <div className="py-4 px-8">
+        <label>Comprehension Passage {props.passageIndex + 1}:</label>
+        <textarea
+          placeholder="Enter Comprehension Passage Text"
+          value={passages[props.passageIndex].statement == null ? "" : passages[props.passageIndex].statement}
+          onChange={(e) => {
+            setPassages((cur) => {
+              let copy = cur.slice();
+              copy[props.passageIndex].statement = e.target.value;
+              return copy;
+            });
+          }}
+          minLength="1"
+          maxLength="65535"
+          className="w-full px-4 py-2 border-gray-400 border-2"
+          autoFocus
+        ></textarea>
+      </div>
+    </div>
+  </div>)
+}
+
+const Section = (props) => {
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
+
+  return (
+    <div>
+      <SectionHeader sectionTitle={props.sectionTitle} sectionNumber={props.sectionNumber} sectionIndex={props.sectionNumber - 1} totalSections={props.totalSections} key={props.sectionNumber} />
+      <div>
+        {mcqs[props.sectionIndex].questions.map((question, index) => {
+          return question.passage == null ? 
+          <MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ>
+          : 
+          <div><Passage passageIndex = {question.passage}></Passage><MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ></div>
+        })}
+      </div>
+    </div>
+  );
+};
+
 const SectionHeader = (props) => {
-  const [mcqs, setMCQs] = useContext(MyContext);
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
+  const [passages, setPassages] = passage_object
   const [poolCountChanged, setPoolCountChanged] = useState(false);
   const [poolCount, setPoolCount] = useState(poolCountChanged == true ? mcqs[props.sectionIndex].poolCount : mcqs[props.sectionIndex].questions.length);
   const [time, setTime] = useState(mcqs[props.sectionIndex].time);
@@ -513,6 +576,7 @@ const SectionHeader = (props) => {
     setMCQs((cur) => {
       let copy = cur.slice();
       copy[props.sectionIndex].questions.push({
+        passage: null,
         statement: null,
         questionOrder: null,
         type: type,
@@ -537,6 +601,29 @@ const SectionHeader = (props) => {
     addNewMCQ("MCQ-M");
   };
 
+  const addNewComprehensionPassage = () => {
+    let index_of_newly_created_passage
+    setPassages(cur=>{
+      let copy = cur.slice()
+      index_of_newly_created_passage = copy.push({
+        id:null,
+        statement: null,
+      })
+      index_of_newly_created_passage--
+      return copy
+    })
+
+    setMCQs(cur=>{
+      let copy = cur.slice()
+      const last_question_index = copy[props.sectionIndex].questions.length-1
+      copy[props.sectionIndex].questions[last_question_index].passage = index_of_newly_created_passage
+      console.log(index_of_newly_created_passage)
+      return copy
+    })
+
+    
+  }
+
   const deleteSection = () => {
     setMCQs(cur=>{
       let copy = cur.slice()
@@ -552,10 +639,10 @@ const SectionHeader = (props) => {
         <i className="fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 hover:gray-100 active:bg-opacity-0" onClick={deleteSection}></i>
       </div>
       
-      <div className="flex content-center items-center">
-        <div className="cursor-pointer relative w-max p-8">
+      <div className="py-4 px-8">
+        <div className="cursor-pointer relative w-max flex">
           <div
-            className="bg-green-500 text-white px-8 py-4"
+            className="bg-green-500 hover:bg-green-600 text-white px-8 py-4"
             id="add_question"
             onClick={(e) => {
               const el = ReactDOM.findDOMNode(toggle.current);
@@ -571,85 +658,77 @@ const SectionHeader = (props) => {
             <li onClick={addNewMCQMultiple} className="py-2 px-4 hover:bg-gray-200">
               MCQ Multiple Select
             </li>
-            <li className="py-2 px-4 hover:bg-gray-200">Fill in the Blank</li>
+            {/* <li className="py-2 px-4 hover:bg-gray-200">Fill in the Blank</li> */}
           </ul>
+          <div
+            className="bg-gray-400 hover:bg-gray-500 text-white px-4 py-4 text-center border-l border-white" id="add_passage" onClick={addNewComprehensionPassage}>
+            <i className="fas fa-plus"></i> Add Comprehension Passage
+          </div>
         </div>
-        <div className="">
-          <label className="px-4 py-3">No. of Questions to be Randomly Selected: </label>
-          <input
-            type="number"
-            className="h-12 w-16 bg-gray-100 text-center"
-            min="0"
-            max={mcqs[props.sectionIndex].questions.length}
-            name="pool_count"
-            value={poolCount}
-            onChange={(e) => {
-              setPoolCountChanged(true);
-              setPoolCount(e.target.value);
-              setMCQs((cur) => {
-                let copy = cur.slice();
-                copy[props.sectionIndex].poolCount = e.target.value;
-                return copy;
-              });
-            }}
-          ></input>
-        </div>
-        <div className="flex gap-4 ml-4">
-          <div className="self-center">
+        <div className="flex gap-x-2 w-full mt-4 mb-2">
+          <div className="">
+            <label className="px-4 py-3">No. of Questions to be Randomly Selected: </label>
             <input
-              type="checkbox"
-              checked={timeOrNot}
+              type="number"
+              className="h-12 w-16 bg-gray-100 text-center"
+              min="0"
+              max={mcqs[props.sectionIndex].questions.length}
+              name="pool_count"
+              value={poolCount}
               onChange={(e) => {
-                setTimeOrNot(e.target.checked);
+                setPoolCountChanged(true);
+                setPoolCount(e.target.value);
+                setMCQs((cur) => {
+                  let copy = cur.slice();
+                  copy[props.sectionIndex].poolCount = e.target.value;
+                  return copy;
+                });
               }}
             ></input>
-            <label> Time Limit</label>
           </div>
-          {timeOrNot ? (
-            <div>
-              <label className="px-4 py-3">Time Limit (minutes): </label>
+          <div className="flex gap-4 ml-4">
+            <div className="self-center">
               <input
-                type="number"
-                className="h-12 w-16 bg-gray-100 text-center"
-                min="0"
-                name="time"
-                value={time}
+                type="checkbox"
+                checked={timeOrNot}
                 onChange={(e) => {
-                  setTime(e.target.value);
-                  setMCQs((cur) => {
-                    let copy = cur.slice();
-                    copy[props.sectionIndex].time = e.target.value;
-                    return copy;
-                  });
+                  setTimeOrNot(e.target.checked);
                 }}
               ></input>
+              <label> Time Limit</label>
             </div>
-          ) : (
-            <div className="hidden"></div>
-          )}
+            {timeOrNot ? (
+              <div>
+                <label className="px-4 py-3">Time Limit (minutes): </label>
+                <input
+                  type="number"
+                  className="h-12 w-16 bg-gray-100 text-center"
+                  min="0"
+                  name="time"
+                  value={time}
+                  onChange={(e) => {
+                    setTime(e.target.value);
+                    setMCQs((cur) => {
+                      let copy = cur.slice();
+                      copy[props.sectionIndex].time = e.target.value;
+                      return copy;
+                    });
+                  }}
+                ></input>
+              </div>
+            ) : (
+              <div className="hidden"></div>
+            )}
+          </div>
         </div>
-      </div>
-    </div>
-  );
-};
-
-const Section = (props) => {
-  const [mcqs, setMCQs] = useContext(MyContext);
-
-  return (
-    <div>
-      <SectionHeader sectionTitle={props.sectionTitle} sectionNumber={props.sectionNumber} sectionIndex={props.sectionNumber - 1} totalSections={props.totalSections} key={props.sectionNumber} />
-      <div>
-        {mcqs[props.sectionIndex].questions.map((question, index) => {
-          return <MCQ sectionIndex={props.sectionIndex} questionIndex={index} type={question.type}></MCQ>;
-        })}
       </div>
     </div>
   );
 };
 
 const Main = () => {
-  const [mcqs, setMCQs] = useContext(MyContext);
+  const [mcq_object, passage_object] = useContext(MyContext);
+  const [mcqs, setMCQs] = mcq_object
   const [sectionInput, setSectionInput] = useState("");
   const [quizTitle, setQuizTitle] = useState("");
   const [quizId, setQuizId] = useState(globalQuizId);
