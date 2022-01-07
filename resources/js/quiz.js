@@ -427,6 +427,15 @@ const MCQ = (props) => {
     "Y",
     "Z",
   ]);
+  const [statement, setStatement] = useState(
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].statement ==
+      null
+      ? ""
+      : state.mcqs[props.sectionIndex].questions[props.questionIndex].statement
+  );
+  const [editing_statement, setEditingStatement] = useState(
+    statement == null ? true : false
+  );
   const [error, setError] = useState("");
   const [uploading, setUploading] = useState(false);
   const [linkModal, setLinkModal] = useState(false);
@@ -443,6 +452,17 @@ const MCQ = (props) => {
       : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text
   );
   const fileUploadForm = useRef();
+
+  useEffect(() => {
+    setState((cur) => {
+      let obj = { ...cur };
+      let copy = obj.mcqs.slice();
+      copy[props.sectionIndex].questions[props.questionIndex].statement =
+        statement;
+      obj.mcqs = copy;
+      return obj;
+    });
+  }, [editing_statement]);
 
   const optionsArray = [];
   state.mcqs[props.sectionIndex].questions[props.questionIndex].options.map(
@@ -735,39 +755,46 @@ const MCQ = (props) => {
         <div className="py-4 px-8">
           <div>
             <ErrorDisplay error={error}></ErrorDisplay>
-            <div className="flex gap-4">
-              <textarea
-                placeholder="Enter Question Statement"
-                value={
-                  state.mcqs[props.sectionIndex].questions[props.questionIndex]
-                    .statement == null
-                    ? ""
-                    : state.mcqs[props.sectionIndex].questions[
-                        props.questionIndex
-                      ].statement
-                }
-                onChange={(e) => {
-                  setState((cur) => {
-                    let obj = { ...cur };
-                    let copy = obj.mcqs.slice();
-                    copy[props.sectionIndex].questions[
-                      props.questionIndex
-                    ].statement = e.target.value;
-                    obj.mcqs = copy;
-                    return obj;
+            <div className="grid grid-cols-10 gap-4">
+              {editing_statement ? (
+                <textarea
+                  placeholder="Enter Question Statement"
+                  value={statement}
+                  onChange={(e) => {
+                    setStatement(e.target.value);
+                  }}
+                  minLength="1"
+                  maxLength="65535"
+                  className="col-span-7 px-4 py-2 border-gray-400 border-2"
+                  autoFocus
+                ></textarea>
+              ) : (
+                <p className="col-span-7 border py-2 px-3">{statement}</p>
+              )}
+              <div
+                className="border-green-500 border-4 cursor-pointer text-3xl col-span-1 h-full grid grid-cols-1 py-6 px-4"
+                onClick={(e) => {
+                  setEditingStatement((cur) => {
+                    return !cur;
                   });
                 }}
-                minLength="1"
-                maxLength="65535"
-                className="w-full px-4 py-2 border-gray-400 border-2"
-                autoFocus
-              ></textarea>
+                style={{ flexBasis: "10%" }}
+              >
+                <i
+                  className={
+                    editing_statement
+                      ? "fa-save fas text-green-500 col-span-1 justify-self-center self-center"
+                      : "fa-pen fas text-green-500 col-span-1 justify-self-center self-center"
+                  }
+                ></i>
+              </div>
+
               <form
                 method="POST"
                 encType="multipart/form-data"
                 action="/upload"
                 ref={fileUploadForm}
-                className="relative cursor-pointer"
+                className="col-span-1 relative cursor-pointer"
                 style={{ flexBasis: "10%" }}
               >
                 <div className="absolute text-3xl w-full h-full grid grid-cols-1 border-gray-300 border-4 cursor-pointer">
@@ -786,7 +813,7 @@ const MCQ = (props) => {
                 ></input>
               </form>
               <div
-                className="border-gray-300 border-4 cursor-pointer text-3xl w-full h-full grid grid-cols-1 py-6 px-4"
+                className="border-gray-300 border-4 cursor-pointer text-3xl col-span-1 h-full grid grid-cols-1 py-6 px-4"
                 onClick={toggleLinkModal}
                 style={{ flexBasis: "10%" }}
               >
