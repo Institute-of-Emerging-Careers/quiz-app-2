@@ -967,12 +967,18 @@ const Main = () => {
         .then((response) => {
           response.json().then((finalResponse) => {
             console.log("finalResponse.status: ", finalResponse.status)
-            if (finalResponse.status == true) setSavedStatus((<i className="fas fa-check-circle text-green-400 text-xl"></i>));
-            else setSavedStatus(<i className="fas fa-exclamation-triangle text-red-600"></i>);
-            setQuizId(finalResponse.quizId);
+            if (finalResponse.status == true) {
+              setSavedStatus((<i className="fas fa-check-circle text-green-400 text-xl"></i>));
+              setErrorColor("text-green-400")
+              setErrorIcon("fa-check-circle")
+              setQuizId(finalResponse.quizId);
+            }
+            else {
+              setSavedStatus(<i className="fas fa-exclamation-triangle text-red-600"></i>);
+              setErrorColor("text-red-600")
+              setErrorIcon("fa-exclamation-triangle")
+            }
             setError(finalResponse.message);
-            setErrorColor("text-green-400")
-            setErrorIcon("fa-check-circle")
             setUploading2(false);
             setTimeout(() => {
               setSavedStatus("");

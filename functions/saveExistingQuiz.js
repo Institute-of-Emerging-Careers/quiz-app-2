@@ -1,14 +1,15 @@
-const { Quiz, Section, Question, Option } = require("../db/models/quizmodel");
+const { Quiz, Section, Question, Option, Passage } = require("../db/models/quizmodel");
 const { saveEverythingInQuiz } = require("./saveNewQuiz.js");
 const sequelize = require("../db/connect");
 
 
-function countTheSectionsAndQuestionsAndOptionsInAQuiz(data)
+function countTheComponentsInAQuiz(data)
 {
   // Note: The quiz must be queried by "include"ing its Sections, Questions, and Options. See saveExistingQuiz.js in start of function removeEverythingInQuiz for precedent
   let num_options = 0;
   let num_questions = 0;
-  let num_sections = 0
+  let num_sections = 0;
+  let num_passages = 0;
 
   data.Sections.forEach(section=>{
     num_sections++
@@ -17,10 +18,11 @@ function countTheSectionsAndQuestionsAndOptionsInAQuiz(data)
       question.Options.forEach(option=>{
         num_options++
       })
+      if (question.Passage != null) num_passages++
     })
   })
 
-  return [num_options, num_questions, num_sections]
+  return [num_options, num_questions, num_sections, num_passages]
 }
 
 function deleteAllOptionsInQuiz(data, num_options, t)
@@ -84,16 +86,44 @@ function deleteAllSectionsInQuiz(data, num_sections, t)
     })
 }
 
+function deleteAllComprehensionPassagesInQuiz(data, num_passages, t) {
+  let count_passages = 0
+  return new Promise((resolve,reject)=>{
+    if (num_passages == 0) resolve()
+    else data.Sections.forEach(section=>{
+      section.Questions.forEach(async (question)=>{
+        
+        if (question.Passage != null){
+          let passage_temp_store = question.Passage
+          await question.update({PassageId: null})
+          passage_temp_store.destroy({transaction:t})
+          .then(()=>{
+            count_passages++
+            if (count_passages == num_passages) {
+              resolve()
+            }
+          }).catch(err=>{
+            reject(err)
+          })
+        }
+      })
+    })
+  })
+}
+
 async function removeEverythingInQuiz(the_quiz, t) {
   let data = await Quiz.findOne({where:{id:the_quiz.id},
   include: {model: Section, 
   include: {model: Question, 
-  include: {model: Option}}}})
+  include: [Option, Passage]}}})
   
-  let [num_options, num_questions, num_sections] = countTheSectionsAndQuestionsAndOptionsInAQuiz(data)
+  let [num_options, num_questions, num_sections, num_passages] = countTheComponentsInAQuiz(data)
   
   
   return deleteAllOptionsInQuiz(data, num_options, t)
+  .then(()=>{
+    return deleteAllComprehensionPassagesInQuiz(data, num_passages, t)
+  })
   .then(()=>
   {
     return deleteAllQuestionsInQuiz(data, num_questions, t)
@@ -140,13 +170,13 @@ const saveExistingQuiz = async (req, res) => {
             .catch(async (err) => {
               await t.rollback();
               console.log("Error 03", err);
-              res.send({ message: "Code 02 Error.", status: false, quizId: the_quiz.id });
+              res.send({ message: "Code 02 Error. Please contact the tech team.", status: false, quizId: the_quiz.id });
             });
         })
         .catch(async (err) => {
           await t.rollback();
           console.log("Code 01", err);
-          res.send({ message: "Code 01 Error.", status: false, quizId: the_quiz.id });
+          res.send({ message: "Code 01 Error. Please contact the tech team.", status: false, quizId: the_quiz.id });
         });
     } else {
       saveEverythingInQuiz(the_quiz, req, t)
@@ -157,7 +187,7 @@ const saveExistingQuiz = async (req, res) => {
         .catch(async (err) => {
           await t.rollback();
           console.log("Error 03", err);
-          res.send({ message: "Code 02 Error.", status: false, quizId: the_quiz.id });
+          res.send({ message: "Code 03 Error. Please contact the tech team.", status: false, quizId: the_quiz.id });
         });
     }
   } else {
