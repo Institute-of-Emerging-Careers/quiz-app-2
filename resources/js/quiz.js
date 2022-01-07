@@ -1214,6 +1214,7 @@ const SectionHeader = (props) => {
         options: [{ optionStatement: null, correct: false }],
         correctOptionIndex: null,
       });
+      question_index--;
       copy[props.sectionIndex].questions[
         copy[props.sectionIndex].questions.length - 1
       ].questionOrder = question_index;
