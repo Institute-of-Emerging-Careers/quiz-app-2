@@ -20,7 +20,13 @@ const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
-const { Quiz, Section, Question, Option, Passage } = require("./db/models/quizmodel.js");
+const {
+  Quiz,
+  Section,
+  Question,
+  Option,
+  Passage,
+} = require("./db/models/quizmodel.js");
 const {
   User,
   Student,
@@ -210,11 +216,19 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
   ]
   */
 
-  function findAndReturnPassageIndexFromPassagesArrayUsingPassageId(passages_object, passage_db_id) {
-    for (let passage_index=0; passage_index< passages_object.length; passage_index++) {
-      if (passages_object[passage_index].id == passage_db_id) return passage_index
+  function findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
+    passages_object,
+    passage_db_id
+  ) {
+    for (
+      let passage_index = 0;
+      passage_index < passages_object.length;
+      passage_index++
+    ) {
+      if (passages_object[passage_index].id == passage_db_id)
+        return passage_index;
     }
-    return null
+    return null;
   }
 
   let passages_object = [];
@@ -223,33 +237,38 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
       where: {
         id: req.params.quizId,
       },
-      include: [{
-        model: Section,
-        attributes: ["id"],
-        include:[{
-          model: Question,
+      include: [
+        {
+          model: Section,
           attributes: ["id"],
-          include: [{
-            model: Passage,
-            order: [["place_after_question","ASC"]]
-          }]
-        }]
-      }]
+          include: [
+            {
+              model: Question,
+              attributes: ["id"],
+              include: [
+                {
+                  model: Passage,
+                  order: [["place_after_question", "ASC"]],
+                },
+              ],
+            },
+          ],
+        },
+      ],
     });
 
-    data.Sections.forEach(section=>{
-      section.Questions.forEach(question=>{
+    data.Sections.forEach((section) => {
+      section.Questions.forEach((question) => {
         if (question.Passage != null)
           passages_object.push({
             id: question.Passage.id,
             statement: question.Passage.statement,
-            place_after_question: question.Passage.place_after_question
-          })
-      })
-    })
-  }
-  catch(err) {
-    console.log(err)
+            place_after_question: question.Passage.place_after_question,
+          });
+      });
+    });
+  } catch (err) {
+    console.log(err);
   }
 
   let stateObject = [];
@@ -275,9 +294,19 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
       const questions = await sections[sectionIndex].getQuestions({
         order: [["questionOrder", "ASC"]],
       });
-      for (let questionIndex = 0; questionIndex < questions.length; questionIndex++) {
+      for (
+        let questionIndex = 0;
+        questionIndex < questions.length;
+        questionIndex++
+      ) {
         stateObject[sectionIndex].questions.push({
-          passage: questions[questionIndex].PassageId != null ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(passages_object, questions[questionIndex].PassageId) : null,
+          passage:
+            questions[questionIndex].PassageId != null
+              ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
+                  passages_object,
+                  questions[questionIndex].PassageId
+                )
+              : null,
           statement: questions[questionIndex].statement,
           questionOrder: questions[questionIndex].questionOrder,
           image: questions[questionIndex].image,
@@ -321,7 +350,8 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/quiz/duplicate/:quizId",
+app.get(
+  "/quiz/duplicate/:quizId",
   checkAdminAuthenticated,
   async (req, res) => {
     const old_quiz = await Quiz.findOne({
@@ -335,12 +365,15 @@ app.get("/quiz/duplicate/:quizId",
       },
     });
 
-    // console.log(util.inspect(old_quiz, false, null, true));
+    const t = await sequelize.transaction();
 
-    const new_quiz = await Quiz.create({
-      title: old_quiz.title + " - copy",
-      modified_by: req.user.user.id,
-    });
+    const new_quiz = await Quiz.create(
+      {
+        title: old_quiz.title + " - copy",
+        modified_by: req.user.user.id,
+      },
+      { transaction: t }
+    );
 
     let count_created = 0; //total entities that have been created at a given time
     let total_required = 0; //total entities that exist in this quiz
@@ -348,68 +381,83 @@ app.get("/quiz/duplicate/:quizId",
     await new Promise((resolve, reject) => {
       total_required += old_quiz.Sections.length;
       old_quiz.Sections.forEach((old_section) => {
-        Section.create({
-          sectionOrder: old_section.sectionOrder,
-          title: old_section.title,
-          poolCount: old_section.poolCount,
-          time: old_section.time,
-          QuizId: new_quiz.id,
-        })
+        Section.create(
+          {
+            sectionOrder: old_section.sectionOrder,
+            title: old_section.title,
+            poolCount: old_section.poolCount,
+            time: old_section.time,
+            QuizId: new_quiz.id,
+          },
+          { transaction: t }
+        )
           .then((new_section) => {
             count_created++;
             total_required += old_section.Questions.length;
             old_section.Questions.forEach(async (old_question) => {
-              let new_passage_id = null
-              if (old_question.Passage!=null) 
-              {
-                console.log("creating duplicate passage")
-                let old_passage = await old_question.getPassage()
-                new_passage_id = (await Passage.create({
-                  statement: old_passage.statement,
-                  place_after_question: old_passage.place_after_question
-                })).id
-                console.log("created duplicate passage: ", new_passage_id)
+              let new_passage_id = null;
+              if (old_question.Passage != null) {
+                let old_passage = await old_question.getPassage();
+                new_passage_id = (
+                  await Passage.create(
+                    {
+                      statement: old_passage.statement,
+                      place_after_question: old_passage.place_after_question,
+                    },
+                    { transaction: t }
+                  )
+                ).id;
               }
-              Question.create({
-                PassageId: new_passage_id,
-                SectionId: new_section.id,
-                questionOrder: old_question.questionOrder,
-                statement: old_question.statement,
-                type: old_question.type,
-                marks: old_question.marks,
-                image: old_question.image,
-                link_url: old_question.link_url,
-                link_text: old_question.link_text,
-              })
+              Question.create(
+                {
+                  PassageId: new_passage_id,
+                  SectionId: new_section.id,
+                  questionOrder: old_question.questionOrder,
+                  statement: old_question.statement,
+                  type: old_question.type,
+                  marks: old_question.marks,
+                  image: old_question.image,
+                  link_url: old_question.link_url,
+                  link_text: old_question.link_text,
+                },
+                { transaction: t }
+              )
                 .then((new_question) => {
                   count_created++;
                   total_required += old_question.Options.length;
                   old_question.Options.forEach((old_option) => {
-                    Option.create({
-                      QuestionId: new_question.id,
-                      optionOrder: old_option.optionOrder,
-                      statement: old_option.statement,
-                      correct: old_option.correct,
-                      image: old_option.image,
-                    })
-                      .then((new_option) => {
+                    Option.create(
+                      {
+                        QuestionId: new_question.id,
+                        optionOrder: old_option.optionOrder,
+                        statement: old_option.statement,
+                        correct: old_option.correct,
+                        image: old_option.image,
+                      },
+                      { transaction: t }
+                    )
+                      .then(async (new_option) => {
                         count_created++;
                         if (count_created == total_required) {
                           resolve();
+                          await t.commit();
                         }
                       })
-                      .catch((err) => {
+                      .catch(async (err) => {
                         reject(err);
+                        await t.rollback();
                       });
-                  })
+                  });
                 })
-                .catch((err) => {
+                .catch(async (err) => {
                   reject(err);
+                  await t.rollback();
                 });
             });
           })
-          .catch((err) => {
+          .catch(async (err) => {
             reject(err);
+            await t.rollback();
           });
       });
     });
@@ -887,7 +935,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
   });
 });
 
-// This img_upload object is defined in this server.js file above
+// CSV upload
 app.post(
   "/upload/csv",
   checkAdminAuthenticated,
@@ -900,9 +948,11 @@ app.post(
       {},
       (err, data) => {
         if (!err) {
-          const state = csvToState(data);
-          if (state !== false) {
-            res.status(200).json({ status: true, state: state });
+          const obj = csvToState(data);
+          if (obj !== false) {
+            res
+              .status(200)
+              .json({ status: true, state: obj[0], passages: obj[1] });
           } else {
             res.sendStatus(401);
           }
@@ -920,7 +970,10 @@ app.post("/state-to-csv", checkAdminAuthenticated, async (req, res) => {
   let file_name = await stateToCSV(mcqs);
   if (file_name === false) res.json({ status: false });
   else {
-    res.json({ status: true, file_link: process.env.SITE_DOMAIN_NAME + "/csv/" + file_name });
+    res.json({
+      status: true,
+      file_link: process.env.SITE_DOMAIN_NAME + "/csv/" + file_name,
+    });
   }
 });
 
@@ -1176,8 +1229,7 @@ app.get("/delete/quiz/:id", checkAdminAuthenticated, async (req, res) => {
 });
 
 app.get("/student", checkStudentAuthenticated, async (req, res) => {
-  if (req.query.link != undefined) 
-  {
+  if (req.query.link != undefined) {
     const invite = await Invite.findOne({
       where: { link: req.query.link },
       include: { model: Quiz, attributes: ["id"] },
