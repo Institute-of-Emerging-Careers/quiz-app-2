@@ -98,7 +98,7 @@ const SelectMultiple = (props) => {
     <ul className="ml-2">
       {props.options.map((option, index) => {
         return option.optionStatement != null ? (
-          <li>
+          <li key={index}>
             <input
               type="checkbox"
               value={index}
@@ -109,7 +109,7 @@ const SelectMultiple = (props) => {
             <label htmlFor={props.name}> {alphabets[index]}</label>
           </li>
         ) : (
-          <span></span>
+          <span key={index}></span>
         );
       })}
     </ul>
@@ -897,6 +897,7 @@ const MCQ = (props) => {
                   }
                   value={correctOption}
                   onCheckboxChange={handleCheckboxChange}
+                  key={props.questionIndex}
                 ></SelectMultiple>
               </div>
             )}
@@ -1089,17 +1090,20 @@ const Section = (props) => {
               sectionIndex={props.sectionIndex}
               questionIndex={index}
               type={question.type}
+              key={index}
             ></MCQ>
           ) : (
             <div>
               <Passage
                 passageIndex={question.passage}
                 sectionIndex={props.sectionIndex}
+                key={index + (question.passage + 1) * 100}
               ></Passage>
               <MCQ
                 sectionIndex={props.sectionIndex}
                 questionIndex={index}
                 type={question.type}
+                key={index}
               ></MCQ>
             </div>
           );
