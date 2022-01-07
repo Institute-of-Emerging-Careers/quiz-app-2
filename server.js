@@ -321,43 +321,29 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get(
-  "/quiz/duplicate/:quizId",
+app.get("/quiz/duplicate/:quizId",
   checkAdminAuthenticated,
   async (req, res) => {
     const old_quiz = await Quiz.findOne({
       where: { id: req.params.quizId },
-      attributes: ["title"],
       include: {
         model: Section,
-        attributes: ["sectionOrder", "title", "poolCount", "time"],
         include: {
           model: Question,
-          attributes: [
-            "questionOrder",
-            "statement",
-            "type",
-            "marks",
-            "image",
-            "link_url",
-            "link_text",
-          ],
-          include: {
-            model: Option,
-            attributes: ["optionOrder", "statement", "correct", "image"],
-          },
+          include: [Option, Passage],
         },
       },
     });
+
+    // console.log(util.inspect(old_quiz, false, null, true));
 
     const new_quiz = await Quiz.create({
       title: old_quiz.title + " - copy",
       modified_by: req.user.user.id,
     });
 
-    let count_created = 0;
-    // target count
-    let total_required = 0;
+    let count_created = 0; //total entities that have been created at a given time
+    let total_required = 0; //total entities that exist in this quiz
 
     await new Promise((resolve, reject) => {
       total_required += old_quiz.Sections.length;
@@ -371,11 +357,21 @@ app.get(
         })
           .then((new_section) => {
             count_created++;
-            console.log("SECTION: ", old_section.title);
             total_required += old_section.Questions.length;
-            old_section.Questions.forEach((old_question) => {
-              console.log(old_question.statement);
+            old_section.Questions.forEach(async (old_question) => {
+              let new_passage_id = null
+              if (old_question.Passage!=null) 
+              {
+                console.log("creating duplicate passage")
+                let old_passage = await old_question.getPassage()
+                new_passage_id = (await Passage.create({
+                  statement: old_passage.statement,
+                  place_after_question: old_passage.place_after_question
+                })).id
+                console.log("created duplicate passage: ", new_passage_id)
+              }
               Question.create({
+                PassageId: new_passage_id,
                 SectionId: new_section.id,
                 questionOrder: old_question.questionOrder,
                 statement: old_question.statement,
@@ -405,7 +401,7 @@ app.get(
                       .catch((err) => {
                         reject(err);
                       });
-                  });
+                  })
                 })
                 .catch((err) => {
                   reject(err);
