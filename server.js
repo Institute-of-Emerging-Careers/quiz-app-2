@@ -180,6 +180,11 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
     res.render("templates/error.ejs", {
       link: req.params.link,
       site_domain_name: process.env.SITE_DOMAIN_NAME,
+      additional_info:
+        "https://" +
+        process.env.SITE_DOMAIN_NAME +
+        "/invite/" +
+        req.params.link,
       error_message:
         "The above invite link is invalid. Please contact IEC for a valid invite link.",
       action_link: "/",
@@ -570,6 +575,8 @@ app.get(
     });
 
     if (sections_attempted.count == 0) {
+      //student hasn't attempted any sections previously, which means we don't need to check whether or not the student has attempted this section before
+
       // update the assignment's status and sectionStatus to show that this student has now started solving this section
       await setSectionStatusToInProgress(
         assignment,
@@ -584,7 +591,7 @@ app.get(
         quizTitle: assignment.Quiz.title,
       });
     } else {
-      // assignment.sectionStatus is not null, which means that one of the sections of this quiz has been either started or finished
+      // means that one or more of the sections of this quiz has been either started or have been finished
 
       try {
         // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
@@ -597,12 +604,16 @@ app.get(
         });
 
         if (attempt != null) {
-          if (attempt.endTime != 0 && attempt.endTime - Date.now() < 0) {
+          if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
             // this means that the section is timed and the time for this section is already over
-            res.send(
-              "The time for this section has ended. You cannot continue to attempt it anymore. <a href='/student'>Click here to go back.</a>"
-            );
+            res.render("templates/error.ejs", {
+              error_message:
+                "The time for this section has ended. You cannot continue to attempt it anymore.",
+              action_link: "/student",
+              action_link_text: "Click here to go to student home page.",
+            });
           } else {
+            // the student still has time to continue this section
             res.render("student/attempt.ejs", {
               user_type: req.user.type,
               sectionId: req.params.sectionId,
@@ -611,6 +622,8 @@ app.get(
             });
           }
         } else {
+          // the student has never attempted or started to attempt this section before
+
           // add this section to sectionStatus
           await setSectionStatusToInProgress(
             assignment,
@@ -627,7 +640,7 @@ app.get(
         }
       } catch (err) {
         console.log(err);
-        res.send("Error 45");
+        res.send("Error 45. Contact Admin.");
       }
     }
   }
@@ -640,28 +653,67 @@ app.get(
     // add check to see if quiz is available at this moment, if student is assigned to this quiz
     // if student has already solved this quiz, etc.
 
-    const section = await Section.findOne({
+    let section = await Section.findOne({
       where: {
         id: req.params.sectionId,
       },
       include: [
-        { model: Question, required: true, order: [["questionOrder", "asc"]] },
+        {
+          model: Question,
+          required: true,
+          order: [["questionOrder", "asc"]],
+          include: [Passage],
+        },
       ],
-    });
-
-    const assignment = await Assignment.findOne({
-      where: {
-        StudentId: req.user.user.id,
-        QuizId: section.QuizId,
-      },
     });
 
     // constructing a results array to send
     let result = [];
+    let passages = [];
+
+    let prev_passage = null;
+    let prev_passage_index = null;
+    let passage_id_to_array_index_mapping = {};
+
+    for (let i = 0; i < section.poolCount; i++) {
+      if (section.Questions[i].Passage != null) {
+        if (prev_passage != section.Questions[i].Passage.id) {
+          prev_passage = section.Questions[i].Passage.id;
+          prev_passage_index = passages.push({
+            id: section.Questions[i].Passage.id,
+            statement: section.Questions[i].Passage.statement,
+            place_after_question:
+              section.Questions[i].Passage.place_after_question,
+          });
+
+          prev_passage_index--;
+          passage_id_to_array_index_mapping[section.Questions[i].Passage.id] =
+            prev_passage_index;
+        }
+      }
+    }
 
     // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
     for (let i = 0; i < section.poolCount; i++) {
-      result.push({ question: section.Questions[i], options: [], answer: -1 });
+      result.push({
+        question: {
+          id: section.Questions[i].id,
+          questionOrder: section.Questions[i].questionOrder,
+          statement: section.Questions[i].statement,
+          type: section.Questions[i].type,
+          marks: section.Questions[i].marks,
+          image: section.Questions[i].image,
+          link_url: section.Questions[i].link_url,
+          link_text: section.Questions[i].link_text,
+          passage: passage_id_to_array_index_mapping.hasOwnProperty(
+            section.Questions[i].PassageId
+          )
+            ? passage_id_to_array_index_mapping[section.Questions[i].PassageId]
+            : null,
+        },
+        options: [],
+        answer: -1,
+      });
     }
 
     let count = 0;
@@ -681,11 +733,9 @@ app.get(
                 },
                 attributes: ["OptionId"],
               });
-              if (old_answer == null) result[i].options = options_array;
-              else {
-                result[i].options = options_array;
-                result[i].answer = old_answer.OptionId;
-              }
+
+              result[i].options = options_array;
+              if (old_answer != null) result[i].answer = old_answer.OptionId;
             } else if (section.Questions[i].type == "MCQ-M") {
               const old_answers = await Answer.findAll({
                 where: {
@@ -724,7 +774,7 @@ app.get(
       }
     });
 
-    res.json({ success: true, data: result });
+    res.json({ success: true, data: result, passages: passages });
   }
 );
 

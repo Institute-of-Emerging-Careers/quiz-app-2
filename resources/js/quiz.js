@@ -1096,23 +1096,23 @@ const SectionHeader = (props) => {
   );
   const toggle = React.useRef();
 
-  useMemo(() => {
+  useEffect(() => {
     setPoolCount(
       poolCountChanged == true
         ? state.mcqs[props.sectionIndex].poolCount
         : state.mcqs[props.sectionIndex].questions.length
     );
-    // if (!poolCountChanged) {
-    //   if (state.mcqs[props.sectionIndex].poolCount != poolCount)
-    //     setState((cur) => {
-    //       let obj = {...cur}
-    //       let copy = obj.mcqs.slice();
-    //       copy[props.sectionIndex].poolCount = poolCount;
-    //       obj.mcqs = copy
-    //       return obj;
-    //     });
-    // }
-  }, [state.mcqs, toggle]);
+    if (!poolCountChanged) {
+      if (state.mcqs[props.sectionIndex].poolCount != poolCount)
+        setState((cur) => {
+          let obj = { ...cur };
+          let copy = obj.mcqs.slice();
+          copy[props.sectionIndex].poolCount = poolCount;
+          obj.mcqs = copy;
+          return obj;
+        });
+    }
+  }, [state.mcqs, state.passages, toggle]);
 
   const closeDropdown = () => {
     const el = ReactDOM.findDOMNode(toggle.current);
