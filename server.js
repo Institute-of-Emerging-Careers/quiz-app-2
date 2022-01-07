@@ -20,7 +20,13 @@ const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
-const { Quiz, Section, Question, Option } = require("./db/models/quizmodel.js");
+const {
+  Quiz,
+  Section,
+  Question,
+  Option,
+  Passage,
+} = require("./db/models/quizmodel.js");
 const {
   User,
   Student,
@@ -174,6 +180,11 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
     res.render("templates/error.ejs", {
       link: req.params.link,
       site_domain_name: process.env.SITE_DOMAIN_NAME,
+      additional_info:
+        "https://" +
+        process.env.SITE_DOMAIN_NAME +
+        "/invite/" +
+        req.params.link,
       error_message:
         "The above invite link is invalid. Please contact IEC for a valid invite link.",
       action_link: "/",
@@ -195,6 +206,7 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
         poolCount: 0,
         questions: [
             {
+                passage: null,
                 statement: null,
                 type: type,
                 image:null,
@@ -208,6 +220,61 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
     }
   ]
   */
+
+  function findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
+    passages_object,
+    passage_db_id
+  ) {
+    for (
+      let passage_index = 0;
+      passage_index < passages_object.length;
+      passage_index++
+    ) {
+      if (passages_object[passage_index].id == passage_db_id)
+        return passage_index;
+    }
+    return null;
+  }
+
+  let passages_object = [];
+  try {
+    const data = await Quiz.findOne({
+      where: {
+        id: req.params.quizId,
+      },
+      include: [
+        {
+          model: Section,
+          attributes: ["id"],
+          include: [
+            {
+              model: Question,
+              attributes: ["id"],
+              include: [
+                {
+                  model: Passage,
+                  order: [["place_after_question", "ASC"]],
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    data.Sections.forEach((section) => {
+      section.Questions.forEach((question) => {
+        if (question.Passage != null)
+          passages_object.push({
+            id: question.Passage.id,
+            statement: question.Passage.statement,
+            place_after_question: question.Passage.place_after_question,
+          });
+      });
+    });
+  } catch (err) {
+    console.log(err);
+  }
 
   let stateObject = [];
   try {
@@ -238,6 +305,13 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
         questionIndex++
       ) {
         stateObject[sectionIndex].questions.push({
+          passage:
+            questions[questionIndex].PassageId != null
+              ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
+                  passages_object,
+                  questions[questionIndex].PassageId
+                )
+              : null,
           statement: questions[questionIndex].statement,
           questionOrder: questions[questionIndex].questionOrder,
           image: questions[questionIndex].image,
@@ -273,6 +347,7 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
     res.json({
       success: true,
       stateObject: stateObject,
+      passages_object: passages_object,
       quizTitle: quiz.title,
     });
   } catch (err) {
@@ -286,93 +361,108 @@ app.get(
   async (req, res) => {
     const old_quiz = await Quiz.findOne({
       where: { id: req.params.quizId },
-      attributes: ["title"],
       include: {
         model: Section,
-        attributes: ["sectionOrder", "title", "poolCount", "time"],
         include: {
           model: Question,
-          attributes: [
-            "questionOrder",
-            "statement",
-            "type",
-            "marks",
-            "image",
-            "link_url",
-            "link_text",
-          ],
-          include: {
-            model: Option,
-            attributes: ["optionOrder", "statement", "correct", "image"],
-          },
+          include: [Option, Passage],
         },
       },
     });
 
-    const new_quiz = await Quiz.create({
-      title: old_quiz.title + " - copy",
-      modified_by: req.user.user.id,
-    });
+    const t = await sequelize.transaction();
 
-    let count_created = 0;
-    // target count
-    let total_required = 0;
+    const new_quiz = await Quiz.create(
+      {
+        title: old_quiz.title + " - copy",
+        modified_by: req.user.user.id,
+      },
+      { transaction: t }
+    );
+
+    let count_created = 0; //total entities that have been created at a given time
+    let total_required = 0; //total entities that exist in this quiz
 
     await new Promise((resolve, reject) => {
       total_required += old_quiz.Sections.length;
       old_quiz.Sections.forEach((old_section) => {
-        Section.create({
-          sectionOrder: old_section.sectionOrder,
-          title: old_section.title,
-          poolCount: old_section.poolCount,
-          time: old_section.time,
-          QuizId: new_quiz.id,
-        })
+        Section.create(
+          {
+            sectionOrder: old_section.sectionOrder,
+            title: old_section.title,
+            poolCount: old_section.poolCount,
+            time: old_section.time,
+            QuizId: new_quiz.id,
+          },
+          { transaction: t }
+        )
           .then((new_section) => {
             count_created++;
-            console.log("SECTION: ", old_section.title);
             total_required += old_section.Questions.length;
-            old_section.Questions.forEach((old_question) => {
-              console.log(old_question.statement);
-              Question.create({
-                SectionId: new_section.id,
-                questionOrder: old_question.questionOrder,
-                statement: old_question.statement,
-                type: old_question.type,
-                marks: old_question.marks,
-                image: old_question.image,
-                link_url: old_question.link_url,
-                link_text: old_question.link_text,
-              })
+            old_section.Questions.forEach(async (old_question) => {
+              let new_passage_id = null;
+              if (old_question.Passage != null) {
+                let old_passage = await old_question.getPassage();
+                new_passage_id = (
+                  await Passage.create(
+                    {
+                      statement: old_passage.statement,
+                      place_after_question: old_passage.place_after_question,
+                    },
+                    { transaction: t }
+                  )
+                ).id;
+              }
+              Question.create(
+                {
+                  PassageId: new_passage_id,
+                  SectionId: new_section.id,
+                  questionOrder: old_question.questionOrder,
+                  statement: old_question.statement,
+                  type: old_question.type,
+                  marks: old_question.marks,
+                  image: old_question.image,
+                  link_url: old_question.link_url,
+                  link_text: old_question.link_text,
+                },
+                { transaction: t }
+              )
                 .then((new_question) => {
                   count_created++;
                   total_required += old_question.Options.length;
                   old_question.Options.forEach((old_option) => {
-                    Option.create({
-                      QuestionId: new_question.id,
-                      optionOrder: old_option.optionOrder,
-                      statement: old_option.statement,
-                      correct: old_option.correct,
-                      image: old_option.image,
-                    })
-                      .then((new_option) => {
+                    Option.create(
+                      {
+                        QuestionId: new_question.id,
+                        optionOrder: old_option.optionOrder,
+                        statement: old_option.statement,
+                        correct: old_option.correct,
+                        image: old_option.image,
+                      },
+                      { transaction: t }
+                    )
+                      .then(async (new_option) => {
                         count_created++;
                         if (count_created == total_required) {
                           resolve();
+                          await t.commit();
                         }
                       })
-                      .catch((err) => {
+                      .catch(async (err) => {
                         reject(err);
+                        await t.rollback();
                       });
                   });
                 })
-                .catch((err) => {
+                .catch(async (err) => {
                   reject(err);
+                  await t.rollback();
                 });
             });
           })
-          .catch((err) => {
+          .catch(async (err) => {
             reject(err);
+            await t.rollback();
           });
       });
     });
@@ -485,6 +575,8 @@ app.get(
     });
 
     if (sections_attempted.count == 0) {
+      //student hasn't attempted any sections previously, which means we don't need to check whether or not the student has attempted this section before
+
       // update the assignment's status and sectionStatus to show that this student has now started solving this section
       await setSectionStatusToInProgress(
         assignment,
@@ -499,7 +591,7 @@ app.get(
         quizTitle: assignment.Quiz.title,
       });
     } else {
-      // assignment.sectionStatus is not null, which means that one of the sections of this quiz has been either started or finished
+      // means that one or more of the sections of this quiz has been either started or have been finished
 
       try {
         // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
@@ -512,12 +604,16 @@ app.get(
         });
 
         if (attempt != null) {
-          if (attempt.endTime != 0 && attempt.endTime - Date.now() < 0) {
+          if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
             // this means that the section is timed and the time for this section is already over
-            res.send(
-              "The time for this section has ended. You cannot continue to attempt it anymore. <a href='/student'>Click here to go back.</a>"
-            );
+            res.render("templates/error.ejs", {
+              error_message:
+                "The time for this section has ended. You cannot continue to attempt it anymore.",
+              action_link: "/student",
+              action_link_text: "Click here to go to student home page.",
+            });
           } else {
+            // the student still has time to continue this section
             res.render("student/attempt.ejs", {
               user_type: req.user.type,
               sectionId: req.params.sectionId,
@@ -526,6 +622,8 @@ app.get(
             });
           }
         } else {
+          // the student has never attempted or started to attempt this section before
+
           // add this section to sectionStatus
           await setSectionStatusToInProgress(
             assignment,
@@ -542,7 +640,7 @@ app.get(
         }
       } catch (err) {
         console.log(err);
-        res.send("Error 45");
+        res.send("Error 45. Contact Admin.");
       }
     }
   }
@@ -555,28 +653,67 @@ app.get(
     // add check to see if quiz is available at this moment, if student is assigned to this quiz
     // if student has already solved this quiz, etc.
 
-    const section = await Section.findOne({
+    let section = await Section.findOne({
       where: {
         id: req.params.sectionId,
       },
       include: [
-        { model: Question, required: true, order: [["questionOrder", "asc"]] },
+        {
+          model: Question,
+          required: true,
+          order: [["questionOrder", "asc"]],
+          include: [Passage],
+        },
       ],
-    });
-
-    const assignment = await Assignment.findOne({
-      where: {
-        StudentId: req.user.user.id,
-        QuizId: section.QuizId,
-      },
     });
 
     // constructing a results array to send
     let result = [];
+    let passages = [];
+
+    let prev_passage = null;
+    let prev_passage_index = null;
+    let passage_id_to_array_index_mapping = {};
+
+    for (let i = 0; i < section.poolCount; i++) {
+      if (section.Questions[i].Passage != null) {
+        if (prev_passage != section.Questions[i].Passage.id) {
+          prev_passage = section.Questions[i].Passage.id;
+          prev_passage_index = passages.push({
+            id: section.Questions[i].Passage.id,
+            statement: section.Questions[i].Passage.statement,
+            place_after_question:
+              section.Questions[i].Passage.place_after_question,
+          });
+
+          prev_passage_index--;
+          passage_id_to_array_index_mapping[section.Questions[i].Passage.id] =
+            prev_passage_index;
+        }
+      }
+    }
 
     // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
     for (let i = 0; i < section.poolCount; i++) {
-      result.push({ question: section.Questions[i], options: [], answer: -1 });
+      result.push({
+        question: {
+          id: section.Questions[i].id,
+          questionOrder: section.Questions[i].questionOrder,
+          statement: section.Questions[i].statement,
+          type: section.Questions[i].type,
+          marks: section.Questions[i].marks,
+          image: section.Questions[i].image,
+          link_url: section.Questions[i].link_url,
+          link_text: section.Questions[i].link_text,
+          passage: passage_id_to_array_index_mapping.hasOwnProperty(
+            section.Questions[i].PassageId
+          )
+            ? passage_id_to_array_index_mapping[section.Questions[i].PassageId]
+            : null,
+        },
+        options: [],
+        answer: -1,
+      });
     }
 
     let count = 0;
@@ -596,11 +733,9 @@ app.get(
                 },
                 attributes: ["OptionId"],
               });
-              if (old_answer == null) result[i].options = options_array;
-              else {
-                result[i].options = options_array;
-                result[i].answer = old_answer.OptionId;
-              }
+
+              result[i].options = options_array;
+              if (old_answer != null) result[i].answer = old_answer.OptionId;
             } else if (section.Questions[i].type == "MCQ-M") {
               const old_answers = await Answer.findAll({
                 where: {
@@ -639,7 +774,7 @@ app.get(
       }
     });
 
-    res.json({ success: true, data: result });
+    res.json({ success: true, data: result, passages: passages });
   }
 );
 
@@ -850,7 +985,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
   });
 });
 
-// This img_upload object is defined in this server.js file above
+// CSV upload
 app.post(
   "/upload/csv",
   checkAdminAuthenticated,
@@ -863,9 +998,11 @@ app.post(
       {},
       (err, data) => {
         if (!err) {
-          const state = csvToState(data);
-          if (state !== false) {
-            res.status(200).json({ status: true, state: state });
+          const obj = csvToState(data);
+          if (obj !== false) {
+            res
+              .status(200)
+              .json({ status: true, state: obj[0], passages: obj[1] });
           } else {
             res.sendStatus(401);
           }
@@ -879,11 +1016,14 @@ app.post(
 );
 
 app.post("/state-to-csv", checkAdminAuthenticated, async (req, res) => {
-  const mcqs = req.body;
-  let file_name = await stateToCSV(mcqs);
+  const [mcqs, passages] = req.body;
+  let file_name = await stateToCSV(mcqs, passages);
   if (file_name === false) res.json({ status: false });
   else {
-    res.json({ status: true, file_link: process.env.SITE_DOMAIN_NAME + "/csv/" + file_name });
+    res.json({
+      status: true,
+      file_link: process.env.SITE_DOMAIN_NAME + "/csv/" + file_name,
+    });
   }
 });
 
@@ -1139,8 +1279,7 @@ app.get("/delete/quiz/:id", checkAdminAuthenticated, async (req, res) => {
 });
 
 app.get("/student", checkStudentAuthenticated, async (req, res) => {
-  if (req.query.link != undefined) 
-  {
+  if (req.query.link != undefined) {
     const invite = await Invite.findOne({
       where: { link: req.query.link },
       include: { model: Quiz, attributes: ["id"] },

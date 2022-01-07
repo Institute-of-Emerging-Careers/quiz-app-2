@@ -12,15 +12,32 @@ const sectionTitle = document.getElementById("sectionTitle").innerText;
 function millisecondsToMinutesAndSeconds(millis) {
   var minutes = Math.floor(millis / 60000);
   var seconds = ((millis % 60000) / 1000).toFixed(0);
-  return minutes + " minutes and " + (seconds < 10 ? "0" : "") + seconds + " seconds remaining";
+  return (
+    minutes +
+    " minutes and " +
+    (seconds < 10 ? "0" : "") +
+    seconds +
+    " seconds remaining"
+  );
 }
-
 
 const ContextProvider = (props) => {
   const [questions, setQuestions] = useState([]);
+  const [passages, setPassages] = useState([]);
   const [displayQuestions, setDisplayQuestions] = useState(true);
+  // displayQuestions is true when there is still time to solve the quiz, and becomes false when time ends.
 
-  return <MyContext.Provider value={{ questionsObj: [questions, setQuestions], displayQuestionsObj: [displayQuestions, setDisplayQuestions] }}>{props.children}</MyContext.Provider>;
+  return (
+    <MyContext.Provider
+      value={{
+        questionsObj: [questions, setQuestions],
+        passagesObj: [passages, setPassages],
+        displayQuestionsObj: [displayQuestions, setDisplayQuestions],
+      }}
+    >
+      {props.children}
+    </MyContext.Provider>
+  );
 };
 
 const MCQSOption = (props) => {
@@ -44,8 +61,16 @@ const MCQSOption = (props) => {
         }}
         checked={questions[props.questionIndex].answer == props.option.id}
       />{" "}
-      <label>{props.option.statement}
-      {props.option.image != null ? <img src={props.option.image} className="max-h-48 max-w-full h-auto w-auto py-4"></img> : <span></span>}
+      <label>
+        {props.option.statement}
+        {props.option.image != null ? (
+          <img
+            src={props.option.image}
+            className="max-h-48 max-w-full h-auto w-auto py-4"
+          ></img>
+        ) : (
+          <span></span>
+        )}
       </label>
     </li>
   );
@@ -65,7 +90,8 @@ const MCQMOption = (props) => {
         onChange={(e) => {
           setQuestions((cur) => {
             let copy = cur.slice();
-            copy[props.questionIndex].answer[props.optionIndex] = !copy[props.questionIndex].answer[props.optionIndex];
+            copy[props.questionIndex].answer[props.optionIndex] =
+              !copy[props.questionIndex].answer[props.optionIndex];
             console.log("MCQ-M", copy);
             return copy;
           });
@@ -78,9 +104,23 @@ const MCQMOption = (props) => {
 };
 
 const Option = (props) => {
-
-  if (props.questionType == "MCQ-S") return <MCQSOption option={props.option} name={props.name} questionIndex={props.questionIndex}></MCQSOption>;
-  else if (props.questionType == "MCQ-M") return <MCQMOption option={props.option} optionIndex={props.optionIndex} name={props.name} questionIndex={props.questionIndex}></MCQMOption>;
+  if (props.questionType == "MCQ-S")
+    return (
+      <MCQSOption
+        option={props.option}
+        name={props.name}
+        questionIndex={props.questionIndex}
+      ></MCQSOption>
+    );
+  else if (props.questionType == "MCQ-M")
+    return (
+      <MCQMOption
+        option={props.option}
+        optionIndex={props.optionIndex}
+        name={props.name}
+        questionIndex={props.questionIndex}
+      ></MCQMOption>
+    );
 };
 
 /*
@@ -103,6 +143,56 @@ State questions array looks like this:
 
 */
 
+const PassageQuestionPrompt = (props) => {
+  const { questionsObj } = useContext(MyContext);
+  const [questions, setQuestions] = questionsObj;
+  const [list_of_questions, setListOfQuestions] = useState("");
+
+  useEffect(() => {
+    let list = "";
+    questions.forEach((question_obj, question_index) => {
+      if (question_obj.question.passage == props.passageIndex) {
+        if (list != "") list += ", ";
+        list += question_index + 1;
+      }
+    });
+    setListOfQuestions(list);
+  }, []);
+
+  return (
+    <span>
+      Questions {list_of_questions} are about the following comprehension
+      passage: <br></br>
+    </span>
+  );
+};
+
+const Passage = (props) => {
+  const { passagesObj } = useContext(MyContext);
+  const [passages, setPassages] = passagesObj;
+
+  return (
+    <div className="single-question rounded-lg pb-4 text-left mx-auto mt-4">
+      <div className="single-question-header rounded-t-lg px-4 py-2 text-white bg-gray-600 text-md">
+        {/* Comprehension Passage {props.passageIndex + 1} of {passages.length} */}
+        <PassageQuestionPrompt
+          passageIndex={props.passageIndex}
+        ></PassageQuestionPrompt>
+      </div>
+      <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
+        <div
+          className="single-question-statement"
+          style={{ whiteSpace: "pre-line" }}
+        >
+          <p style={{ wordWrap: "break-word" }}>
+            {passages[props.passageIndex].statement}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Question = (props) => {
   const { questionsObj } = useContext(MyContext);
   const [questions, setQuestions] = questionsObj;
@@ -115,12 +205,33 @@ const Question = (props) => {
         Question {question.questionOrder + 1} of {props.total_questions}
       </div>
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
-        <img src={question.image} className="max-w-xl max-h-xl w-auto h-auto"></img>
-        <a href={question.link_url} class="text-blue-600 underline hover:no-underline" target="_blank">{question.link_text == null ? question.link_url : question.link_text}</a>
-        <div className="single-question-statement" style={{whiteSpace: 'pre-line'}}>{question.statement}</div>
+        <img
+          src={question.image}
+          className="max-w-xl max-h-xl w-auto h-auto"
+        ></img>
+        <a
+          href={question.link_url}
+          className="text-blue-600 underline hover:no-underline"
+          target="_blank"
+        >
+          {question.link_text == null ? question.link_url : question.link_text}
+        </a>
+        <div
+          className="single-question-statement"
+          style={{ whiteSpace: "pre-line" }}
+        >
+          {question.statement}
+        </div>
         <ul className="mt-2">
           {options.map((option, index) => (
-            <Option option={option} optionIndex={index} name={question.questionOrder} questionIndex={props.questionIndex} questionType={question.type} key={option.id}></Option>
+            <Option
+              option={option}
+              optionIndex={index}
+              name={question.questionOrder}
+              questionIndex={props.questionIndex}
+              questionType={question.type}
+              key={option.id}
+            ></Option>
           ))}
         </ul>
       </div>
@@ -128,65 +239,11 @@ const Question = (props) => {
   );
 };
 
-const Header = () => {
-  const { questionsObj, displayQuestionsObj } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
-  const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
-
-  const [endTime, setEndTime] = useState(null);
-  const endTimeRef = useRef(0);
-  const [remainingTime, setRemainingTime] = useState("Please wait");
-  const timeRef = useRef(null); //stores the setInterval object
-
-  endTimeRef.current = endTime;
-
-  function myFunction() {
-    console.log(endTimeRef.current);
-    if (endTimeRef.current == 0) {
-      setRemainingTime("No Time Limit");
-      clearInterval(timeRef.current);
-    } else if (endTimeRef.current != null && endTimeRef.current - Date.now() < 1000) {
-      setTimeout(() => {
-        setRemainingTime("Time Over");
-        setDisplayQuestions(false);
-      }, 1000);
-      clearInterval(timeRef.current);
-    } else if (endTimeRef.current != null) {
-      setRemainingTime(millisecondsToMinutesAndSeconds(endTimeRef.current - Date.now()));
-    }
-  }
-
-  useEffect(() => {
-    $.get(
-      "/section/" + sectionId + "/endTime",
-      (resp) => {
-        if (resp.success == true) {
-          const edt = resp.endTime;
-          setEndTime(edt);
-        } else {
-          // handle error
-          console.log("Error getting endTime.");
-        }
-      },
-      "json"
-    );
-    timeRef.current = setInterval(myFunction, 1000);
-  }, []);
-
-  return (
-    <div>
-      <div id="quiz-header" className="bg-white m-auto mb-1 gap-y-2 px-8 py-4 rounded-2xl grid grid-cols-4 justify-between text-lg">
-        <p className="justify-self-center md:justify-self-start col-span-4 md:col-span-2 lg:col-span-1">{quizTitle}</p>
-        <p className="justify-self-center md:justify-self-end col-span-4 md:col-span-2 lg:col-span-1">{sectionTitle}</p>
-        <p className={remainingTime == "No Time Limit" ? "text-green-700 justify-self-center lg:justify-self-end col-span-4 lg:col-span-2" : "text-red-700" + "justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"}>{remainingTime}</p>
-      </div>
-    </div>
-  );
-};
-
 const Main = () => {
-  const { questionsObj, displayQuestionsObj } = useContext(MyContext);
+  const { questionsObj, displayQuestionsObj, passagesObj } =
+    useContext(MyContext);
   const [questions, setQuestions] = questionsObj;
+  const [passages, setPassages] = passagesObj;
   const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
   const [saveSpinner, setSaveSpinner] = useState(false);
   const [saveButtonColor, setSaveButtonColor] = useState("bg-iec-blue");
@@ -208,14 +265,23 @@ const Main = () => {
     setSaveSpinner(true);
     let answers = [];
     questions.forEach((obj) => {
-      if (obj.question.type == "MCQ-S") answers.push({ questionId: obj.question.id, questionType: obj.question.type, answerOptionId: obj.answer });
+      if (obj.question.type == "MCQ-S")
+        answers.push({
+          questionId: obj.question.id,
+          questionType: obj.question.type,
+          answerOptionId: obj.answer,
+        });
       else {
         // for MCQ-M, the obj.answer array contains [true, false], we need optionIds there
         let optionIds = [];
         obj.options.forEach((option, index) => {
           if (obj.answer[index]) optionIds.push(option.id);
         });
-        answers.push({ questionId: obj.question.id, questionType: obj.question.type, answerOptionId: optionIds });
+        answers.push({
+          questionId: obj.question.id,
+          questionType: obj.question.type,
+          answerOptionId: optionIds,
+        });
       }
     });
 
@@ -247,16 +313,19 @@ const Main = () => {
   }
 
   function sendScoringRequest(time) {
-    $.get("/quiz/attempt/" + sectionId + "/score?time="+time, function (resp) {
-      if (resp.success == true) {
-        setSubmitSpinner(false);
-        setSubmitButtonColor("bg-green-500");
-        console.log("Quiz submitted successfully.");
-        window.location = "/student?success=true";
-      } else {
-        console.log("Error submitting quiz.");
+    $.get(
+      "/quiz/attempt/" + sectionId + "/score?time=" + time,
+      function (resp) {
+        if (resp.success == true) {
+          setSubmitSpinner(false);
+          setSubmitButtonColor("bg-green-500");
+          console.log("Quiz submitted successfully.");
+          window.location = "/student?success=true";
+        } else {
+          console.log("Error submitting quiz.");
+        }
       }
-    });
+    );
   }
 
   function submitQuiz() {
@@ -282,8 +351,9 @@ const Main = () => {
       "/section/" + sectionId + "/all-questions",
       (resp) => {
         if (resp.success == true) {
-          const data = resp.data;
-          setQuestions(data);
+          const mcqs = resp.data;
+          setPassages(resp.passages);
+          setQuestions(mcqs);
         } else {
           // handle error
           console.log("Error getting questions.");
@@ -297,15 +367,142 @@ const Main = () => {
     <div>
       <div className="grid grid-cols-1 justify-end mb-6">
         <div className="justify-self-center sm:justify-self-end flex flex-row gap-2">
-          <button className={saveButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"} onClick={saveQuizProgress}>
-            <i className={saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"}></i> {saveButtonText}
+          <button
+            className={
+              saveButtonColor +
+              " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
+            }
+            onClick={saveQuizProgress}
+          >
+            <i
+              className={
+                saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
+              }
+            ></i>{" "}
+            {saveButtonText}
           </button>
-          <button className={submitButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"} onClick={submitQuiz}>
-            <i className={submitSpinner ? "fas fa-spinner animate-spin" : "far fa-paper-plane"}></i> Finish & Submit Quiz
+          <button
+            className={
+              submitButtonColor +
+              " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
+            }
+            onClick={submitQuiz}
+          >
+            <i
+              className={
+                submitSpinner
+                  ? "fas fa-spinner animate-spin"
+                  : "far fa-paper-plane"
+              }
+            ></i>{" "}
+            Finish & Submit Quiz
           </button>
         </div>
       </div>
-      {displayQuestions ? questions.map((obj, index) => <Question obj={obj} questionIndex={index} total_questions={questions.length} key={obj.question.id}></Question>) : <div></div>}
+      {displayQuestions ? (
+        questions.map((obj, index) =>
+          obj.question.passage == null ? (
+            <Question
+              obj={obj}
+              questionIndex={index}
+              total_questions={questions.length}
+              key={obj.question.id}
+            ></Question>
+          ) : (
+            <div>
+              <Passage
+                passage={passages[obj.question.passage]}
+                passageIndex={obj.question.passage}
+              ></Passage>
+              <Question
+                obj={obj}
+                questionIndex={index}
+                total_questions={questions.length}
+                key={obj.question.id}
+              ></Question>
+            </div>
+          )
+        )
+      ) : (
+        <div></div>
+      )}
+    </div>
+  );
+};
+
+const Header = () => {
+  const { questionsObj, displayQuestionsObj } = useContext(MyContext);
+  const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
+
+  const [endTime, setEndTime] = useState(null);
+  const endTimeRef = useRef(0);
+  const [remainingTime, setRemainingTime] = useState("Please wait");
+  const timeRef = useRef(null); //stores the setInterval object
+
+  endTimeRef.current = endTime;
+
+  function myFunction() {
+    console.log(endTimeRef.current);
+    if (endTimeRef.current == 0) {
+      setRemainingTime("No Time Limit");
+      clearInterval(timeRef.current);
+    } else if (
+      endTimeRef.current != null &&
+      endTimeRef.current - Date.now() < 1000
+    ) {
+      setTimeout(() => {
+        setRemainingTime("Time Over");
+        setDisplayQuestions(false);
+      }, 1000);
+      clearInterval(timeRef.current);
+    } else if (endTimeRef.current != null) {
+      setRemainingTime(
+        millisecondsToMinutesAndSeconds(endTimeRef.current - Date.now())
+      );
+    }
+  }
+
+  useEffect(() => {
+    let edt;
+    $.get(
+      "/section/" + sectionId + "/endTime",
+      (resp) => {
+        if (resp.success == true) {
+          edt = resp.endTime;
+          setEndTime(edt);
+        } else {
+          // handle error
+          console.log("Error getting endTime.");
+        }
+      },
+      "json"
+    );
+    timeRef.current = setInterval(myFunction, 1000);
+  }, []);
+
+  return (
+    <div>
+      <div
+        id="quiz-header"
+        className="bg-white m-auto mb-1 gap-y-2 px-8 py-4 rounded-2xl grid grid-cols-4 justify-between text-lg"
+      >
+        <p className="justify-self-center md:justify-self-start col-span-4 md:col-span-2 lg:col-span-1">
+          {quizTitle}
+        </p>
+        <p className="justify-self-center md:justify-self-end col-span-4 md:col-span-2 lg:col-span-1">
+          {sectionTitle}
+        </p>
+        <p
+          className={
+            remainingTime == "No Time Limit"
+              ? "text-green-700 justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"
+              : "text-red-700" +
+                "justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"
+          }
+        >
+          {remainingTime}
+        </p>
+      </div>
     </div>
   );
 };
