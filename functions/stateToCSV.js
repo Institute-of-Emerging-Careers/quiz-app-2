@@ -1,4 +1,4 @@
-const {stringify} = require("csv-stringify");
+const { stringify } = require("csv-stringify");
 const fs = require("fs");
 const path = require("path");
 
@@ -10,6 +10,7 @@ const path = require("path");
         poolCount: 0,
         questions: [
             {
+                passage: null,
                 statement: null,
                 type: type,
                 image:null,
@@ -25,16 +26,33 @@ const path = require("path");
   ]
 */
 
-function stateToArray(state) {
+function generateImageLink(link) {
+  if (link.slice(0, 4) == "http") return link;
+  else return process.env.SITE_DOMAIN_NAME + "/" + link;
+}
+
+function stateToArray(mcqs, passages) {
   let final_array = [];
-  const num_columns_in_csv = 19;
-  const array_index_where_options_start = 4;
-  const array_index_where_option_images_start = 13;
+  const num_columns_in_csv = 20;
+  const [
+    section_title_index,
+    pool_count_index,
+    comprehension_passage_index,
+    question_statement_index,
+    question_type_index,
+    array_index_where_options_start,
+    correct_option_index,
+    link_url_index,
+    image_index,
+    array_index_where_option_images_start,
+    marks_index,
+  ] = [0, 1, 2, 3, 4, 5, 10, 11, 13, 14, 19];
 
   // Adding headers
   final_array.push([
     "Section",
     "PoolCount",
+    "Comprehension Passage",
     "Statement",
     "Type",
     "A",
@@ -57,32 +75,48 @@ function stateToArray(state) {
   //we will convert this 2D array into a CSV file (table). Each row in this array is a question, as in books.csv
   // [0-> Section, 1-> PoolCount, 2-> Statement,3-> Type,4-> A,5-> B,6-> C,7-> D,8-> E,9-> Correct,10-> Link URL,11-> Link Text,12-> Image URL,13-> A Image,14-> B Image,15-> C Image,16-> D Image,17-> E Image,18-> Marks]
 
-  state.forEach((section, sectionIndex) => {
+  mcqs.forEach((section, sectionIndex) => {
     section.questions.forEach((question, questionIndex) => {
       // populating a new row array with null
-      final_array.push([]);
-      for (let i = 0; i < num_columns_in_csv; i++)
-        final_array[final_array.length - 1].push("null");
 
-      final_array[final_array.length - 1][0] = section.sectionTitle;
-      final_array[final_array.length - 1][1] = section.poolCount;
-      final_array[final_array.length - 1][2] = question.statement;
-      final_array[final_array.length - 1][3] = question.type;
-      final_array[final_array.length - 1][10] = question.link.url == null ? "null" : question.link.url;
-      final_array[final_array.length - 1][11] = question.link.text == null ? "null" : question.link.text;
-      final_array[final_array.length - 1][12] =question.image != null
-          ? process.env.SITE_DOMAIN_NAME + question.image
-          : "null";
-      final_array[final_array.length - 1][18] = question.marks;
+      let new_section_index = final_array.push([]);
+      new_section_index--;
+
+      for (let i = 0; i < num_columns_in_csv; i++)
+        final_array[new_section_index].push("null");
+
+      final_array[new_section_index][section_title_index] =
+        section.sectionTitle;
+      final_array[new_section_index][pool_count_index] = section.poolCount;
+      final_array[new_section_index][question_statement_index] =
+        question.statement;
+      final_array[new_section_index][comprehension_passage_index] =
+        question.passage == null
+          ? "null"
+          : passages[question.passage].statement;
+      final_array[new_section_index][question_type_index] = question.type;
+      final_array[new_section_index][link_url_index] =
+        question.link.url == null ? "null" : question.link.url;
+      final_array[new_section_index][link_url_index + 1] =
+        question.link.text == null ? "null" : question.link.text;
+      final_array[new_section_index][image_index] =
+        question.image != null ? generateImageLink(question.image) : "null";
+      final_array[new_section_index][marks_index] = question.marks;
 
       let correct_options = "";
       let num_correct = 0;
       const array_of_alphabets = ["A", "B", "C", "D", "E"];
 
-      // now adding options
+      // now creating a correct_options string
       question.options.forEach((option, optionIndex) => {
-        if (option.optionStatement != null) final_array[final_array.length - 1][array_index_where_options_start + optionIndex] = option.optionStatement
-        if (option.image != null) final_array[final_array.length - 1][array_index_where_option_images_start + optionIndex] = process.env.SITE_DOMAIN_NAME + option.image;
+        if (option.optionStatement != null)
+          final_array[new_section_index][
+            array_index_where_options_start + optionIndex
+          ] = option.optionStatement;
+        if (option.image != null)
+          final_array[new_section_index][
+            array_index_where_option_images_start + optionIndex
+          ] = generateImageLink(option.image);
 
         if (option.correct == true) {
           if (num_correct > 0) correct_options += ",";
@@ -91,18 +125,18 @@ function stateToArray(state) {
         }
         // remaining options will automatically be "null" as we populated array with "null" in the start
       });
-      final_array[final_array.length - 1][9] = correct_options;
+      final_array[new_section_index][correct_option_index] = correct_options;
       correct_options = "";
     });
   });
   return final_array;
 }
 
-async function stateToCSV(state) {
+async function stateToCSV(mcqs, passages) {
   let file_save_location = path.join(__dirname, "/../downloads/csv");
   const file_name = Date.now().toString() + ".csv";
-  file_save_location = file_save_location + "/" + file_name
-  const final_array = stateToArray(state);
+  file_save_location = file_save_location + "/" + file_name;
+  const final_array = stateToArray(mcqs, passages);
 
   return new Promise((resolve, reject) => {
     stringify(final_array, (err, csv) => {

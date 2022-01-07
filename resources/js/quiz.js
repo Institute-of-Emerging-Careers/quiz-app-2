@@ -1442,6 +1442,7 @@ const Main = () => {
         }),
       })
         .then((response) => {
+          console.log(response);
           response.json().then((finalResponse) => {
             console.log("finalResponse.status: ", finalResponse.status);
             if (finalResponse.status == true) {
@@ -1495,7 +1496,7 @@ const Main = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(state.mcqs),
+      body: JSON.stringify([state.mcqs, state.passages]),
     })
       .then((response) => {
         response.json().then((finalResponse) => {

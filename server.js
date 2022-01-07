@@ -966,8 +966,8 @@ app.post(
 );
 
 app.post("/state-to-csv", checkAdminAuthenticated, async (req, res) => {
-  const mcqs = req.body;
-  let file_name = await stateToCSV(mcqs);
+  const [mcqs, passages] = req.body;
+  let file_name = await stateToCSV(mcqs, passages);
   if (file_name === false) res.json({ status: false });
   else {
     res.json({
