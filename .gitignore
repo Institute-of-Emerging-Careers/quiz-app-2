@@ -4,6 +4,5 @@ instructions.txt
 .prettierrc
 resources/js/node_modules
 uploads
-uploads/csv
-uploads/images
+downloads
 nginx.conf
