@@ -29,7 +29,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
         }
       });
 
-    const html = await ejs.renderFile(__dirname + "/views/templates/mail-template-1.ejs", ejs_obj)
+    const html = await ejs.renderFile("/templates/mail-template-1.ejs", ejs_obj)
       
     var mailOptions = {
       from: 'mail@iec.org.pk',
