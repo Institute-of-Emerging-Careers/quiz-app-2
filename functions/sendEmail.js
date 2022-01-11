@@ -1,4 +1,5 @@
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const ejs = require("ejs")
 
 function sendTextMail(recepient, subject, text) {
     var transporter = nodemailer.createTransport({
@@ -19,7 +20,7 @@ function sendTextMail(recepient, subject, text) {
       return transporter.sendMail(mailOptions);
 }
 
-function sendHTMLMail(recepient, subject, html) {
+async function sendHTMLMail(recepient, subject, ejs_obj) {
     var transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
@@ -27,15 +28,17 @@ function sendHTMLMail(recepient, subject, html) {
           pass: 'Jah29535'
         }
       });
+
+    const html = await ejs.renderFile(__dirname + "/views/templates/mail-template-1.ejs", ejs_obj)
       
-      var mailOptions = {
-        from: 'mail@iec.org.pk',
-        to: recepient,
-        subject: subject,
-        html: html
-      };
-      
-      return transporter.sendMail(mailOptions);
+    var mailOptions = {
+      from: 'mail@iec.org.pk',
+      to: recepient,
+      subject: subject,
+      html: html
+    };
+    
+    return transporter.sendMail(mailOptions);
 }
 
 module.exports = {sendTextMail, sendHTMLMail}

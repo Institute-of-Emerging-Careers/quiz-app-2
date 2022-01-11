@@ -535,19 +535,20 @@ app.get(
   }
 );
 
-app.get("/test", async (req, res) => {
-  const the_quiz = await Quiz.findOne();
-  const t = await sequelize.transaction();
-  removeEverythingInQuiz(the_quiz, t)
-    .then(() => {
-      res.send("HI");
-      t.commit();
-    })
-    .catch((err) => {
-      console.log(err);
-      res.send(err);
-      t.rollback();
-    });
+app.get("/test", (req, res) => {
+  try {
+    await sendHTMLMail("hallucinogenizer123@gmail.com", `Welcome to IEC LCMS`, 
+        { 
+            heading: 'Welcome to the IEC LCMS',
+            inner_text: "We have sent you an assessment to solve.<br>You have 72 hours to solve the assessment.",
+            button_announcer: "Click on the button below to solve the Assessment",
+            button_text: "Solve Assessment",
+            button_link: "https://apply.iec.org.pk/student/login"
+        }
+    )
+  } catch(err) {
+      console.log("Email sending failed.")
+  }
 });
 
 app.get(
@@ -1215,8 +1216,14 @@ app.post("/student/signup", async (req, res) => {
 
     // send automated email to student
     try {
-      const email_content = `<h2>Welcome to the IEC LCMS</h2><p>You have successfully signed up on the IEC LCMS. You have been given an assessment to solve.</p><p><a href='${process.env.SITE_DOMAIN_NAME + "/student/login"}'>Click here to start solving the assessment.</a></p>`
-      await sendHTMLMail(email, `Welcome to IEC LCMS`, email_content)
+      await sendHTMLMail(email, `Welcome to IEC LCMS`, 
+      { 
+        heading: 'Welcome to the IEC LCMS',
+        inner_text: "We have sent you an assessment to solve.<br>You have 72 hours to solve the assessment.",
+        button_announcer: "Click on the button below to solve the Assessment",
+        button_text: "Solve Assessment",
+        button_link: "https://apply.iec.org.pk/student/login"
+      })
     } catch(err) {
       console.log("Email sending failed.")
     }
