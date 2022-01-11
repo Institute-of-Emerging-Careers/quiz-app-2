@@ -47,7 +47,7 @@ const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress");
-const {sendTextMail, sendHTMLMail} = require("./functions/sendMail")
+const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
 const {
   setSectionStatusToComplete,
 } = require("./functions/setSectionStatusToComplete");
