@@ -47,6 +47,7 @@ const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress");
+const {sendTextMail, sendHTMLMail} = require("./functions/sendMail")
 const {
   setSectionStatusToComplete,
 } = require("./functions/setSectionStatusToComplete");
@@ -1212,6 +1213,13 @@ app.post("/student/signup", async (req, res) => {
       QuizId: invite.QuizId,
     });
 
+    // send automated email to student
+    try {
+      const email_content = `<h2>Welcome to the IEC LCMS</h2><p>You have successfully signed up on the IEC LCMS. You have been given an assessment to solve.</p><p><a href='${process.env.SITE_DOMAIN_NAME + "/student/login"}'>Click here to start solving the assessment.</a></p>`
+      await sendHTMLMail(email, `Welcome to IEC LCMS`, email_content)
+    } catch(err) {
+      console.log("Email sending failed.")
+    }
     res.redirect("/student/login");
   } catch (err) {
     console.log(err);
