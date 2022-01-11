@@ -546,8 +546,11 @@ app.get("/test", async(req, res) => {
             button_link: "https://apply.iec.org.pk/student/login"
         }
     )
+    console.log("Email sent")
+    res.sendStatus(200)
   } catch(err) {
-      console.log("Email sending failed.")
+      console.log("Email sending failed.", err)
+      res.sendStatus(500)
   }
 });
 
