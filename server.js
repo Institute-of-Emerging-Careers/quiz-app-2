@@ -537,7 +537,7 @@ app.get(
 
 app.get("/test", async(req, res) => {
   try {
-    await sendHTMLMail("hallucinogenizer123@gmail.com", `Welcome to IEC LCMS`, 
+    await sendHTMLMail("rohanhussain1@yahoo.com", `Welcome to IEC LCMS`, 
         { 
             heading: 'Welcome to the IEC LCMS',
             inner_text: "We have sent you an assessment to solve.<br>You have 72 hours to solve the assessment.",
