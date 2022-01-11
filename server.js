@@ -535,7 +535,7 @@ app.get(
   }
 );
 
-app.get("/test", (req, res) => {
+app.get("/test", async(req, res) => {
   try {
     await sendHTMLMail("hallucinogenizer123@gmail.com", `Welcome to IEC LCMS`, 
         { 
