@@ -1024,6 +1024,8 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
         student_id: assignment.Student.id,
         student_name:
           assignment.Student.firstName + " " + assignment.Student.lastName,
+        student_cnic: assignment.Student.cnic,
+        student_email: assignment.Student.email,
         sections: [],
         total_score: 0,
         maximum_total_score: 0,
@@ -1085,7 +1087,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
     quiz_total_score: quiz_total_score,
   };
 
-  res.render("admin/view_results.ejs", {
+  res.render("admin/view_detailed_results.ejs", {
     user_type: req.user.type,
     myname: req.user.user.firstName,
     quiz_title: quiz.title,
@@ -1094,6 +1096,8 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
     millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
   });
 });
+
+
 
 // CSV upload
 app.post(
