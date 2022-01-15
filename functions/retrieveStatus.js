@@ -13,4 +13,4 @@ async function retrieveStatus(assignment, sectionId) {
     else if (attempt.statusText == "Completed") return ["Completed", ""];
   }
 
-module.exports = {retrieveStatus}
+module.exports = retrieveStatus
