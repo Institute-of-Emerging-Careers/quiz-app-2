@@ -19,6 +19,7 @@ const initializeDatabase = require("./db/initialize");
 const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
+const checkAnyoneAuthenticated = require("./db/check-anyone-authenticated")
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
 const {
   Quiz,
@@ -540,7 +541,7 @@ app.get("/test", async(req, res) => {
     await sendHTMLMail("rohanhussain1@yahoo.com", `Welcome to IEC LCMS`, 
         { 
             heading: 'Welcome to the IEC LCMS',
-            inner_text: "We have sent you an assessment to solve.<br>You have 72 hours to solve the assessment.",
+            inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
             button_announcer: "Click on the button below to solve the Assessment",
             button_text: "Solve Assessment",
             button_link: "https://apply.iec.org.pk/student/login"
@@ -594,6 +595,7 @@ app.get(
         sectionId: req.params.sectionId,
         sectionTitle: section.title,
         quizTitle: assignment.Quiz.title,
+        previewOrNot: 0
       });
     } else {
       // means that one or more of the sections of this quiz has been either started or have been finished
@@ -624,6 +626,7 @@ app.get(
               sectionId: req.params.sectionId,
               sectionTitle: section.title,
               quizTitle: assignment.Quiz.title,
+              previewOrNot: 0
             });
           }
         } else {
@@ -641,6 +644,7 @@ app.get(
             sectionId: req.params.sectionId,
             sectionTitle: section.title,
             quizTitle: assignment.Quiz.title,
+            previewOrNot: 0
           });
         }
       } catch (err) {
@@ -652,8 +656,38 @@ app.get(
 );
 
 app.get(
+  "/quiz/preview/:quizId/section/:sectionId",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    
+    // Get the section that the student wants to attempt.
+    // getSection(sectionId, [what_other_models_to_include_in_results])
+    const quiz = await Quiz.findOne({
+      where: {
+        id: req.params.quizId,
+      },
+      attributes: ["title"],
+      include: {model:Section, where: {id: req.params.sectionId}, attributes: ["title"], limit:1}
+  })
+
+    try {
+      res.render("student/attempt.ejs", {
+        user_type: req.user.type,
+        sectionId: req.params.sectionId,
+        sectionTitle: quiz.Sections[0].title,
+        quizTitle: quiz.title,
+        previewOrNot: 1
+      });
+    } catch(err) {
+      console.log(err)
+      res.sendStatus(500)
+    }
+  }
+);
+
+app.get(
   "/section/:sectionId/all-questions",
-  checkStudentAuthenticated,
+  checkAnyoneAuthenticated,
   async (req, res) => {
     // add check to see if quiz is available at this moment, if student is assigned to this quiz
     // if student has already solved this quiz, etc.
@@ -1222,7 +1256,7 @@ app.post("/student/signup", async (req, res) => {
       await sendHTMLMail(email, `Welcome to IEC LCMS`, 
       { 
         heading: 'Welcome to the IEC LCMS',
-        inner_text: "We have sent you an assessment to solve.<br>You have 72 hours to solve the assessment.",
+        inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
         button_announcer: "Click on the button below to solve the Assessment",
         button_text: "Solve Assessment",
         button_link: "https://apply.iec.org.pk/student/login"
