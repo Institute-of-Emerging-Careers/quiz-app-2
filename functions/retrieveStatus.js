@@ -1,3 +1,7 @@
+const {
+  Attempt
+} = require("../db/models/quizmodel");
+
 async function retrieveStatus(assignment, sectionId) {
         
     const attempt = await Attempt.findOne({
