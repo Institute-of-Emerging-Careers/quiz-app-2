@@ -523,15 +523,21 @@ app.get("/quiz/:quizId/details",
 
 app.get("/test", async(req, res) => {
   try {
-    await sendHTMLMail("rohanhussain1@yahoo.com", `Welcome to IEC LCMS`, 
-        { 
-            heading: 'Welcome to the IEC LCMS',
-            inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
-            button_announcer: "Click on the button below to solve the Assessment",
-            button_text: "Solve Assessment",
-            button_link: "https://apply.iec.org.pk/student/login"
-        }
-    )
+    await sendHTMLMail("22100063@lums.edu.pk", `Assessment Completed`, 
+      { 
+        heading: `All Sections Completed`,
+        inner_text: `Dear Student
+        <br>
+        This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
+        <br>
+        Thank you for showing your interest in becoming part of the program. 
+        <br>
+        Sincerely, 
+        IEC Admissions Team`,
+        button_announcer: "Visit out website to learn more about us",
+        button_text: "Visit",
+        button_link: "https://iec.org.pk"
+      })
     console.log("Email sent")
     res.sendStatus(200)
   } catch(err) {
@@ -929,11 +935,11 @@ app.get(
       { 
         heading: `All Sections Completed`,
         inner_text: `Dear Student
-
+        <br><br>
         This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
-        
+        <br><br>
         Thank you for showing your interest in becoming part of the program. 
-        
+        <br><br>
         Sincerely, 
         IEC Admissions Team`,
         button_announcer: "Visit out website to learn more about us",
@@ -946,11 +952,11 @@ app.get(
       { 
         heading: `Section "${section.title}" Solved`,
         inner_text: `Dear Student
-
+        <br><br>
         This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
-        
+        <br><br>
         Thank you for showing your interest in becoming part of the program. 
-        
+        <br><br>
         Sincerely, 
         IEC Admissions Team`,
         button_announcer: "Solve the remaining sections on the portal:",
