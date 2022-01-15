@@ -8,6 +8,7 @@ const useMemo = React.useMemo;
 const sectionId = parseInt(document.getElementById("sectionId").value);
 const quizTitle = document.getElementById("quizTitle").innerText;
 const sectionTitle = document.getElementById("sectionTitle").innerText;
+const preview_or_not = parseInt(document.getElementById("previewOrNot").value)
 
 function millisecondsToMinutesAndSeconds(millis) {
   var minutes = Math.floor(millis / 60000);
@@ -373,7 +374,7 @@ const Main = () => {
               " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
             }
             onClick={saveQuizProgress}
-          >
+            disabled={preview_or_not}>
             <i
               className={
                 saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
@@ -387,7 +388,7 @@ const Main = () => {
               " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
             }
             onClick={submitQuiz}
-          >
+          disabled={preview_or_not}>
             <i
               className={
                 submitSpinner
