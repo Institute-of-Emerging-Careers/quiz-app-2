@@ -11,7 +11,7 @@ function sendTextMail(recepient, subject, text) {
       });
       
       var mailOptions = {
-        from: 'mail@iec.org.pk',
+        from: 'IEC Assessments <mail@iec.org.pk>',
         to: recepient,
         subject: subject,
         text: text
@@ -32,7 +32,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
     const html = await ejs.renderFile(__dirname + "/../views/templates/mail-template-1.ejs", ejs_obj)
       
     var mailOptions = {
-      from: 'mail@iec.org.pk',
+      from: 'IEC Assessments <mail@iec.org.pk>',
       to: recepient,
       subject: subject,
       html: html
