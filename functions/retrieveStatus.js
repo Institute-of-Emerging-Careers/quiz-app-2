@@ -1,6 +1,6 @@
 const {
   Attempt
-} = require("../db/models/quizmodel");
+} = require("../db/models/user");
 
 async function retrieveStatus(assignment, sectionId) {
         
