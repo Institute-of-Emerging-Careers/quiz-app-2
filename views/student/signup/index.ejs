@@ -44,8 +44,30 @@
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Phone Number:</label><br />
                 <input type="text" id="phone" minlength="11" maxlength="11" name="phone" placeholder="e.g. 03001234567" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
               </div>
+              <div class="mt-4">
+                <label class="ml-0 text-left float-left text-gray-800 min-w-max">Your Gender:</label><br />
+                <select name="gender" id="gender" class="py-3 px-4 mt-1 w-full bg-white border-2">
+                  <option class="py-2" value="" selected>Choose</option>
+                  <option class="py-2" value="male">Male</option>
+                  <option class="py-2" value="female">Female</option>
+                  <option class="py-2" value="female">Other</option>
+                </select>
+              </div>
+              <div>
+                <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Age:</label><br />
+                <input type="number" id="age" min="10" max="100" name="age" placeholder="e.g. 20" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+              </div>
+              <div>
+                <label class="ml-0 text-left float-left mt-4 text-gray-800">Your City:</label><br />
+                <input type="text" id="city" minlength="2" maxlength="100" name="city" placeholder="e.g. LAHORE" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+              </div>
+              <div>
+                <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Full Address:</label><br />
+                <input type="text" id="address" minlength="10" maxlength="200" name="address" placeholder="e.g. street 1 house 2 area city province country" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+              </div>
               <button type="button" id="section1-button" class="py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800">Next Step</button>
             </div>
+            
           </div>
           <div id="section2" class="hidden">
             <p class="font-thin text-left mt-4">
@@ -53,7 +75,11 @@
               <span class="font-bold">Name: </span><span id="name-mirror"></span><br />
               <span class="font-bold">Email: </span><span id="email-mirror"></span><br />
               <span class="font-bold">CNIC: </span><span id="cnic-mirror"></span><br />
-              <span class="font-bold">Phone: </span><span id="phone-mirror"></span><br /><br />
+              <span class="font-bold">Phone: </span><span id="phone-mirror"></span><br />
+              <span class="font-bold">Gender: </span><span id="gender-mirror"></span><br />
+              <span class="font-bold">Age: </span><span id="age-mirror"></span><br />
+              <span class="font-bold">City: </span><span id="city-mirror"></span><br />
+              <span class="font-bold">Address: </span><span id="address-mirror"></span><br /><br />
               If the above information is correct, proceed to set a password below:
             </p>
             <br />

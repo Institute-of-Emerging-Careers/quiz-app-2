@@ -68,6 +68,10 @@ $(document).ready(function () {
   let email_mirror = $("#email-mirror");
   let phone_mirror = $("#phone-mirror");
   let cnic_mirror = $("#cnic-mirror");
+  let gender_mirror = $("#gender-mirror");
+  let age_mirror = $("#age-mirror");
+  let city_mirror = $("#city-mirror")
+  let address_mirror = $("#address-mirror")
   let back_arrow = $("#back-arrow");
 
   let firstname_field = $("#firstName");
@@ -75,6 +79,10 @@ $(document).ready(function () {
   let email_field = $("#email");
   let cnic_field = $("#cnic");
   let phone_field = $("#phone");
+  let gender_field = $("#gender");
+  let age_field = $("#age");
+  let city_field = $("#city")
+  let address_field = $("#address")
   let password_field = $("#password");
   let password_retype = $("#password2");
 
@@ -99,6 +107,10 @@ $(document).ready(function () {
     let email = email_field.val();
     let cnic = cnic_field.val();
     let phone = phone_field.val();
+    let gender = gender_field.val();
+    let age = age_field.val();
+    let city = city_field.val().toUpperCase();
+    let address = address_field.val().toUpperCase();
 
     // reseting all errors
     resetAllErrors([firstname_field, lastname_field, email_field, cnic_field, phone_field]);
@@ -127,6 +139,10 @@ $(document).ready(function () {
       email_mirror.text(email);
       cnic_mirror.text(cnic);
       phone_mirror.text(phone);
+      gender_mirror.text(gender);
+      age_mirror.text(age);
+      city_mirror.text(city);
+      address_mirror.text(address);
       section2.slideToggle();
       back_arrow.toggle();
     }
