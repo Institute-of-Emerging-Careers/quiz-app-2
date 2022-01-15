@@ -940,6 +940,7 @@ app.get(
         button_text: "Visit",
         button_link: "https://iec.org.pk"
       })
+      console.log("Mail sent")
     } else {
       await sendHTMLMail(email, `Section Solved`, 
       { 
@@ -956,6 +957,7 @@ app.get(
         button_text: "Student Portal",
         button_link: "https://apply.iec.org.pk/student/login"
       })
+      console.log("Mail sent")
     }
 
     res.json({ success: true });
