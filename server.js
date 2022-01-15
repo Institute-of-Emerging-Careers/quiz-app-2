@@ -655,8 +655,7 @@ app.get(
   }
 );
 
-app.get(
-  "/quiz/preview/:quizId/section/:sectionId",
+app.get("/quiz/preview/:quizId/section/:sectionId",
   checkAdminAuthenticated,
   async (req, res) => {
     
@@ -684,6 +683,30 @@ app.get(
     }
   }
 );
+
+app.get("/quiz/preview/:quiz_id", checkAdminAuthenticated, async (req,res)=>{
+    // Get the section that the student wants to attempt.
+    // getSection(sectionId, [what_other_models_to_include_in_results])
+    const quiz = await Quiz.findOne({
+      where: {
+        id: req.params.quiz_id,
+      },
+      attributes: ["title"],
+      include: {model:Section, attributes: ["id","title"]}
+  })
+
+  try {
+    res.render("admin/preview.ejs", {
+      user_type:req.user.type,
+      quiz_id: req.params.quiz_id,
+      quiz_title: quiz.title,
+      sections: quiz.Sections
+    });
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
+})
 
 app.get(
   "/section/:sectionId/all-questions",
