@@ -914,7 +914,7 @@ app.get(
       await new Promise(async (resolve)=>{
         sections.forEach(async (section)=>{
           const attempt = await Attempt.findOne({where: {AssignmentId: assignment.id, SectionId: section.id}})
-          if (attempt!=null && attempt.statusText != "Completed") all_solved=false
+          if (attempt!=null || attempt.statusText != "Completed") all_solved=false
           count_sections++
           if (count_sections == sections.length) resolve()
         })
