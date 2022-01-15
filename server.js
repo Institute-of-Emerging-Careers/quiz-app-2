@@ -924,7 +924,7 @@ app.get(
 
     const email = (await Student.findOne({where:{id: req.user.user.id}, attributes: ["email"]})).email
 
-    if (allSectionsSolved(quizId, assignment)) {
+    if (await allSectionsSolved(quizId, assignment)) {
       await sendHTMLMail(email, `Assessment Completed`, 
       { 
         heading: `All Sections Completed`,
