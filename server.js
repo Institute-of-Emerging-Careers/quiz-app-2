@@ -48,6 +48,7 @@ const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const calculateScore = require("./functions/calculateScore");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress");
+const retrieveStatus = require("./functions/retrieveStatus")
 const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
 const {
   setSectionStatusToComplete,
@@ -357,8 +358,7 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get(
-  "/quiz/duplicate/:quizId",
+app.get("/quiz/duplicate/:quizId",
   checkAdminAuthenticated,
   async (req, res) => {
     const old_quiz = await Quiz.findOne({
@@ -473,26 +473,11 @@ app.get(
   }
 );
 
-app.get(
-  "/quiz/:quizId/details",
+app.get("/quiz/:quizId/details",
   checkStudentAuthenticated,
   async (req, res) => {
     try {
-      async function retrieveStatus(assignments, sectionId) {
-        const assignment = assignments[0];
-        const attempt = await Attempt.findOne({
-          where: {
-            AssignmentId: assignment.id,
-            SectionId: sectionId,
-          },
-        });
-        console.log(attempt);
-        if (attempt == null) return ["Not Started", "Start"];
-        else if (attempt.statusText == "In Progress")
-          return ["In Progress", "Continue"];
-        else if (attempt.statusText == "Completed") return ["Completed", ""];
-      }
-
+      
       let quiz = await Quiz.findOne({
         where: {
           id: req.params.quizId,
@@ -517,7 +502,7 @@ app.get(
         const section_time = quiz.Sections[i].time;
         const pool = quiz.Sections[i].poolCount;
         const status = await retrieveStatus(
-          quiz.Assignments,
+          quiz.Assignments[0],
           quiz.Sections[i].id
         );
         final_data.push({
@@ -902,12 +887,13 @@ app.get(
   "/quiz/attempt/:sectionId/score",
   checkStudentAuthenticated,
   async (req, res) => {
+    const section = await Section.findOne({
+      where: { id: req.params.sectionId },
+      include: { model: Quiz, required: true, attributes: ["id"] },
+      attributes: ["title"],
+    })
     const quizId = (
-      await Section.findOne({
-        where: { id: req.params.sectionId },
-        include: { model: Quiz, required: true, attributes: ["id"] },
-        attributes: [],
-      })
+      section
     ).Quiz.id;
     const assignment = await Assignment.findOne({
       where: { StudentId: req.user.user.id, QuizId: quizId },
@@ -917,6 +903,62 @@ app.get(
     await updateScore(req.params.sectionId, assignment, score);
 
     await setSectionStatusToComplete(assignment.id, req.params.sectionId);
+
+    // sending completion email to student
+
+    // check if student has solved all sections
+    async function allSectionsSolved(quizId, assignment) {
+      const sections = await Section.findAll({where:{QuizId: quizId}})
+      let all_solved = true
+      let count_sections = 0
+      await new Promise(async (resolve)=>{
+        sections.forEach(async (section)=>{
+          const attempt = await Attempt.findOne({where: {AssignmentId: assignment.id, SectionId: section.id}})
+          if (attempt==null || attempt.statusText != "Completed") all_solved=false
+          count_sections++
+          if (count_sections == sections.length) resolve()
+        })
+      })
+      return all_solved
+    }
+
+    const email = (await Student.findOne({where:{id: req.user.user.id}, attributes: ["email"]})).email
+
+    if (await allSectionsSolved(quizId, assignment)) {
+      await sendHTMLMail(email, `Assessment Completed`, 
+      { 
+        heading: `All Sections Completed`,
+        inner_text: `Dear Student
+
+        This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
+        
+        Thank you for showing your interest in becoming part of the program. 
+        
+        Sincerely, 
+        IEC Admissions Team`,
+        button_announcer: "Visit out website to learn more about us",
+        button_text: "Visit",
+        button_link: "https://iec.org.pk"
+      })
+      console.log("Mail sent")
+    } else {
+      await sendHTMLMail(email, `Section Solved`, 
+      { 
+        heading: `Section "${section.title}" Solved`,
+        inner_text: `Dear Student
+
+        This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
+        
+        Thank you for showing your interest in becoming part of the program. 
+        
+        Sincerely, 
+        IEC Admissions Team`,
+        button_announcer: "Solve the remaining sections on the portal:",
+        button_text: "Student Portal",
+        button_link: "https://apply.iec.org.pk/student/login"
+      })
+      console.log("Mail sent")
+    }
 
     res.json({ success: true });
   }
