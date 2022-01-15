@@ -7,7 +7,9 @@ function sendTextMail(recepient, subject, text) {
         auth: {
           user: 'mail@iec.org.pk',
           pass: 'Jah29535'
-        }
+        },
+        pool:true,
+        rateLimit: 0.5
       });
       
       var mailOptions = {
@@ -26,7 +28,9 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
         auth: {
           user: 'mail@iec.org.pk',
           pass: 'Jah29535'
-        }
+        },
+        pool:true,
+        rateLimit: 0.5
       });
 
     const html = await ejs.renderFile(__dirname + "/../views/templates/mail-template-1.ejs", ejs_obj)
