@@ -15,30 +15,34 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 </head>
-<body class="px-32 pt-28 min-h-screen bg-gray-200">
+<body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
     <%- include('../templates/header.ejs') %>
     <% data = data_obj.data %>
 
     <h1 class="text-2xl"><%= quiz_title %> - Results</h1>
-    <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen overflow-auto text-xs">
+    <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen text-xs">
         <% if (data.length!=0) {
 
             %>
-        <div class="mb-2 flex justify-between items-center">
-            <div class="flex items-center gap-x-2">
+        <div class="mb-2 flex justify-between items-center md:flex-row flex-col gap-y-4" id="filter-options">
+            <div class="flex items-center gap-x-2 max-w-full">
                 <label for="minimum_percentage">Show students above percentage:</label>
-                <input type="range" id="minimum_percentage" name="minimum_percentage" min="0" max="95" step="5" value="0">
-                <span id='minimum_percentage_mirror'></span>
+                <input type="number" id="minimum_percentage" name="minimum_percentage" min="0" max="99" step="1" value="0" class="border pl-2 py-1">
             </div>
             <div>
                 <input type="checkbox" id="unsolved_students" name="unsolved_students" value="show_unsolved_students" checked>
                 <label for="unsolved_students"> Show students who have not started the assessment yet</label>
             </div>
-            <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
+            <div>
+                <input type="checkbox" id="only_show_completed_students" name="only_show_completed_students" value="only_show_completed_students">
+                <label for="only_show_completed_students"> Only show students who have completed the assessment</label>
+            </div>
+            <a href="#" onclick="download_table_as_csv('results_table');" class="self-end text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
         </div>
+        <div class="max-w-full overflow-x-scroll">
         <table class='w-full text-left mx-auto' id='results_table'>
             <thead class="bg-iec-blue text-white w-full">
-                <tr class="w-full">
+                <tr class="w-full header_row">
                     <th class="py-3 px-6">Student Name</th>
                     <th class="py-3 px-6">Student Email</th>
                     <th class="py-3 px-6">Student CNIC</th>
@@ -59,7 +63,7 @@
                 {
                     if (student_row.sections.length > 0) {
                 %>
-                <tr class="solved">
+                <tr class="solved <% if (student_row.completed) {%> completed_all_sections <%} %>">
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
@@ -107,6 +111,7 @@
                 %>
             </tbody>
         </table>
+        </div>
         <%} else {%>
             <p>No results found.</p>    
         <%} %>

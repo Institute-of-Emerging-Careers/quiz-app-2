@@ -1,5 +1,4 @@
 // Quick and simple export target #table_id into a csv
-let minimum_percentage_mirror = $("#minimum_percentage_mirror")
 
 function download_table_as_csv(table_id, separator = ',') {
     // Select rows from table_id
@@ -47,33 +46,51 @@ for (let i=0;i<items.length;i++) {
     items.item(i).innerText = moment(parseInt(items.item(i).innerText)+(new Date()).getTimezoneOffset()).format("h:mma | ddd D MMM Y")
 }
 
+function filterRows(minimum_percentage, show_unsolved, only_show_completed_students) {
+    const int_value = parseInt(minimum_percentage)
+
+    // show all rows and then hide the ones you need to hide based on the new overall filtering scheme
+    $("#results_table tr").show();
+
+    // the following filter decides which rows to hide and hides them
+    $("#results_table tr").filter(function(){
+        let hide_row = false;
+
+        if (!$(this).hasClass("header_row")) {
+            if (only_show_completed_students && !$(this).hasClass("completed_all_sections")) hide_row = true;
+            if (!show_unsolved && $(this).hasClass("unsolved")) hide_row = true;
+            if (parseInt($(this).find('.total_percentage').text())<int_value) hide_row = true
+        }
+        return hide_row
+    }).fadeOut()
+}
+
 $(document).ready(function(){
     // here I am handling the event listeners on the minimum percentage selector
     $("#minimum_percentage").val(0)
-    minimum_percentage_mirror.text("0%")
+
+    
     $("#minimum_percentage").on("change", function(){
-        const value = $(this).val()
-        minimum_percentage_mirror.text(value + "%")
-        const int_value = parseInt(value)
-        $("#results_table tr").filter(function(){
-            return parseInt($(this).find('.total_percentage').text())<int_value
-        }).fadeOut()
-        $("#results_table tr").filter(function(){
-            return parseInt($(this).find('.total_percentage').text())>int_value
-        }).fadeIn()
+        const minimum_percentage = $(this).val()
+        const show_unsolved = $("#unsolved_students").is(":checked")
+        const only_show_completed_students = $("#only_show_completed_students").is(":checked")
+
+        filterRows(minimum_percentage, show_unsolved, only_show_completed_students)
     })
 
     $("#unsolved_students").on("change",function(){
-        const value = $(this).is(':checked')
-        console.log(value)
-        if (value) {
-            $("#results_table tr").filter(function(){
-                return $(this).hasClass("unsolved")
-            }).fadeIn()
-        } else {
-            $("#results_table tr").filter(function(){
-                return $(this).hasClass("unsolved")
-            }).fadeOut()
-        }
+        const show_unsolved = $(this).is(':checked')
+        const minimum_percentage = $("#minimum_percentage").val()
+        const only_show_completed_students = $("#only_show_completed_students").is(":checked")
+
+        filterRows(minimum_percentage, show_unsolved, only_show_completed_students)
+    })
+
+    $("#only_show_completed_students").on("change", function() {
+        const minimum_percentage = $(this).val()
+        const show_unsolved = $("#unsolved_students").is(":checked")
+        const only_show_completed_students = $("#only_show_completed_students").is(":checked")
+
+        filterRows(minimum_percentage, show_unsolved, only_show_completed_students)
     })
 })

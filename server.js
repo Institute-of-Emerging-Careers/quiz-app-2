@@ -1026,6 +1026,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
         student_cnic: assignment.Student.cnic,
         student_email: assignment.Student.email,
         sections: [],
+        completed: false, //this tells if the student has completed all sections or not
         total_score: 0,
         maximum_total_score: 0,
         percentage_total: 0,
@@ -1077,6 +1078,7 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
               (data[data.length - 1].total_score / quiz_total_score) * 100
             );
         });
+        if (quiz_sections.length == data[data.length - 1].sections.length) data[data.length - 1].completed = true;
       }
   });
 
