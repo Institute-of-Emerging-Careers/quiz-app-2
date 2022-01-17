@@ -2,6 +2,7 @@ const nodemailer = require('nodemailer');
 const ejs = require("ejs")
 
 function sendTextMail(recepient, subject, text) {
+  if (process.env.NODE_ENV == "production"){
     var transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
@@ -20,9 +21,15 @@ function sendTextMail(recepient, subject, text) {
       };
       
       return transporter.sendMail(mailOptions);
+  } else {
+    return new Promise(resolve=>{
+      resolve()
+    })
+  }
 }
 
 async function sendHTMLMail(recepient, subject, ejs_obj) {
+  if (process.env.NODE_ENV == "production"){
     var transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
@@ -43,6 +50,11 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
     };
     
     return transporter.sendMail(mailOptions);
+  } else {
+    return new Promise(resolve=>{
+      resolve()
+    })
+  }
 }
 
 module.exports = {sendTextMail, sendHTMLMail}

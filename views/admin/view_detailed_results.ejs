@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../templates/global.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <title>View Detailed Results - Admin Panel</title>
     <style>
         #score-table-body > tr:nth-child(even) {
@@ -23,7 +24,18 @@
         <% if (data.length!=0) {
 
             %>
-        <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
+        <div class="mb-2 flex justify-between items-center">
+            <div class="flex items-center gap-x-2">
+                <label for="minimum_percentage">Show students above percentage:</label>
+                <input type="range" id="minimum_percentage" name="minimum_percentage" min="0" max="95" step="5" value="0">
+                <span id='minimum_percentage_mirror'></span>
+            </div>
+            <div>
+                <input type="checkbox" id="unsolved_students" name="unsolved_students" value="show_unsolved_students" checked>
+                <label for="unsolved_students"> Show students who have not started the assessment yet</label>
+            </div>
+            <a href="#" onclick="download_table_as_csv('results_table');" class="float-right text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline ">Download as CSV</span></a>
+        </div>
         <table class='w-full text-left mx-auto' id='results_table'>
             <thead class="bg-iec-blue text-white w-full">
                 <tr class="w-full">
@@ -45,8 +57,9 @@
             <tbody class="w-full" id='score-table-body'>
                 <% data.forEach((student_row) => 
                 {
+                    if (student_row.sections.length > 0) {
                 %>
-                <tr>
+                <tr class="solved">
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
@@ -67,9 +80,31 @@
                         })
                     %>
                     <td class="py-3 px-6"><%= student_row.total_score %></td>
-                    <td class="py-3 px-6"><%= student_row.percentage_total %>%</td>
+                    <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
                 </tr>
-                <% }) %>
+                <% } else {
+                    // this section is to print those students who have not solved any sections
+                %>
+                <tr class="unsolved">
+                    <td class="py-3 px-6"><%=student_row.student_name%></td>
+                    <td class="py-3 px-6"><%=student_row.student_email%></td>
+                    <td class="py-3 px-6"><%=student_row.student_cnic%></td>
+                        <%quiz_sections.forEach(section=>{
+                            %>
+                                <td class="py-3 px-6">Not Attempted Yet</td>
+                                <td class="py-3 px-6">0</td>
+                                <td class="py-3 px-6">N/A</td>
+                                <td class="py-3 px-6 endtime">0</td>
+                            <%
+                        })
+                    %>
+                    <td class="py-3 px-6"><%= student_row.total_score %></td>
+                    <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
+                </tr>
+                <%
+                    }
+                    }) 
+                %>
             </tbody>
         </table>
         <%} else {%>
@@ -77,6 +112,6 @@
         <%} %>
     </section>
 
-    <script src="/js/view_results.js"></script>
+    <script src="/js/view_results.js" async defer></script>
 </body>
 </html>
