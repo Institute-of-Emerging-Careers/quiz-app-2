@@ -43,6 +43,7 @@
         <table class='w-full text-left mx-auto' id='results_table'>
             <thead class="bg-iec-blue text-white w-full">
                 <tr class="w-full header_row">
+                    <th class="py-3 px-6">No.</th>
                     <th class="py-3 px-6">Student Name</th>
                     <th class="py-3 px-6">Student Email</th>
                     <th class="py-3 px-6">Student CNIC</th>
@@ -59,11 +60,12 @@
                 </tr>
             </thead>
             <tbody class="w-full" id='score-table-body'>
-                <% data.forEach((student_row) => 
+                <% data.forEach((student_row, student_index) => 
                 {
                     if (student_row.sections.length > 0) {
                 %>
                 <tr class="solved <% if (student_row.completed) {%> completed_all_sections <%} %>">
+                    <td class="py-3 px-6"><%=student_index+1%></td>
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
@@ -90,6 +92,7 @@
                     // this section is to print those students who have not solved any sections
                 %>
                 <tr class="unsolved">
+                    <td class="py-3 px-6"><%=student_index+1%></td>
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
