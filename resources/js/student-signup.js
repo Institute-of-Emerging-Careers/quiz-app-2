@@ -1,10 +1,10 @@
 function validateFirstname(firstname) {
-  if (firstname.length > 60) return "First name too long. Cannot exceed 60 alphabets.";
+  if (firstname.length > 100) return "First name too long. Cannot exceed 60 alphabets.";
   else if (firstname.length < 1) return "First name too short. Must be at least 1 character.";
   else return true;
 }
 function validateLastname(lastname) {
-  if (lastname.length > 60) return "Last name too long. Cannot exceed 30 alphabets.";
+  if (lastname.length > 100) return "Last name too long. Cannot exceed 30 alphabets.";
   else if (lastname.length < 1) return "Last name too short. Must be at least 1 character.";
   return true;
 }
@@ -86,11 +86,38 @@ $(document).ready(function () {
   let password_field = $("#password");
   let password_retype = $("#password2");
 
-  // getting GET search data from URL
-  let searchParams = new URLSearchParams(window.location.search);
-  if (searchParams.has("error")) {
-    if (searchParams.get("error") == "unique violation") {
-      displayError(email_field, "An account with this email address already exists. <a href='/student/login' class='text-blue-600 underline'>Click here to log in instead.</a>");
+  let name_to_field_obj = {
+    'firstName':firstname_field,
+    'lastName':lastname_field,
+    'email':email_field,
+    'cnic':cnic_field,
+    'phone':phone_field,
+    'gender':gender_field,
+    'age':age_field,
+    'city':city_field,
+    'address':address_field,
+    'password':password_field
+  }
+
+  // getting GET search parameters from URL and converting them to a JavaScript object
+  function paramsToObject(entries) {
+    const result = {}
+    for(const [key, value] of entries) { // each 'entry' is a [key, value] tupple
+      result[key] = value;
+    }
+    return result;
+  }
+  
+  let search = location.search.substring(1);
+  const urlParams = new URLSearchParams(search);
+  const entries = urlParams.entries(); //returns an iterator of decoded [key,value] tuples
+  const searchParams = paramsToObject(entries); //{abc:"foo",def:"[asf]",xyz:"5"}
+
+
+  if (searchParams.hasOwnProperty("error")) {
+    if (searchParams["error"] == "Validation error") {
+      console.log(name_to_field_obj[searchParams["field"]])
+      displayError(name_to_field_obj[searchParams["field"]], searchParams["message"])
     }
   }
 
