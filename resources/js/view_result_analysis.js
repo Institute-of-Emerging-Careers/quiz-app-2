@@ -32,6 +32,14 @@ const percentage_ranges_chart = new Chart(
                     display: true,
                     text: 'Percentage Scores'
                 }
+            },
+            scales: {
+                x: {
+                    title: {display:true, text: "Percentage Range"}
+                },
+                y: {
+                    title: {display:true, text:"Number of Students"}
+                }
             }
         }
     }
@@ -63,9 +71,92 @@ const solved_complete_vs_unsolved = new Chart(
             plugins: {
                 title: {
                     display: true,
-                    text: 'Number of Students'
+                    text: 'Assessment Completion Statistics'
                 }
             }
+        }
+    }
+);
+
+const num_male = document.getElementById("num_male").value
+const num_female = document.getElementById("num_female").value
+const num_other = document.getElementById("num_other").value
+
+// Gender chart
+const gender_chart = new Chart(
+    document.getElementById('gender_chart'),
+    {
+        type: 'pie',
+        data: {
+            labels: [
+                "Male",
+                "Female",
+                "Other"
+            ],
+            datasets: [{
+                backgroundColor: ['#2D92A8','#F54E8E','#CAEDF5'],
+                data: [num_male, num_female, num_other],
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Gender Distribution'
+                }
+            }
+        }
+    }
+);
+
+// age distribution chart
+const age_distribution_string = document.getElementById("age_distribution_string").value
+let age_distribution_raw_data = age_distribution_string.split(",")
+age_distribution_raw_data.pop() //remove last empty element due to excess ,
+
+console.log(age_distribution_raw_data)
+
+let age_distribution_labels = []
+let age_distribution_data = []
+for (let i=0;i<age_distribution_raw_data.length;i+=2) {
+    age_distribution_labels.push(age_distribution_raw_data[i])
+    age_distribution_data.push(age_distribution_raw_data[i+1])
+}
+console.log(age_distribution_labels)
+console.log(age_distribution_data)
+
+const age_chart = new Chart(
+    document.getElementById('age_chart'),
+    {
+        type: 'bar',
+        data: {
+            labels: age_distribution_labels,
+            datasets: [{
+                label:"Number of Students",
+                backgroundColor: '#2A6095',
+                borderColor: 'rgb(255, 99, 132)',
+                data: age_distribution_data,
+            }]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Age Distribution of Students who Signed Up'
+                },
+                subtitle: {
+                    display: true,
+                    text: 'The ages that are not displayed on the x-axis have 0 students.'
+                }
+            },
+            scales: {
+                x: {
+                    title: {display:true, text: "Age"}
+                },
+                y: {
+                    title: {display:true, text:"Number of Students"}
+                }
+            },
         }
     }
 );

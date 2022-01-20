@@ -43,16 +43,28 @@
                     }
                 }    
             %>">
+
+            <input type="number" id="num_male" value="<%=analysis.gender_male%>">
+            <input type="number" id="num_female" value="<%=analysis.gender_female%>">
+            <input type="number" id="num_other" value="<%=analysis.gender_other%>">
+            
+            <input type="text" id="age_distribution_string" value="<% for (let age in analysis.age_distribution) {%><%=age%>,<%=analysis.age_distribution[age]%>,<% } %>">
         </div>
 
-        <div class="flex flex-col md:flex-row w-full">
-            <div style="flex-basis:50%;">
+        <div class="grid grid-cols-1 gap-x-4 gap-y-16 md:grid-cols-2">
+            <div>
                 <canvas id="num_students_chart"></canvas>
-            </div>
-            <div style="flex-basis:50%;">
+            </div> 
+            <div>
+                <canvas id="gender_chart"></canvas>
+            </div> 
+            <div class="md:col-span-2">
                 <canvas id="percentage_ranges_chart"></canvas>
-            </div>  
-        </div>  
+            </div> 
+            <div class="md:col-span-2">
+                <canvas id="age_chart"></canvas>
+            </div> 
+        </div>
         <%
         } else {%>
             <p>No results found.</p>    

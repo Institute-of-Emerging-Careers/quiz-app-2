@@ -203,7 +203,11 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
             ],
             num_students_who_completed: 0,
             num_students_who_started_but_did_not_complete: 0,
-            total_students: assignments.length
+            total_students: assignments.length,
+            gender_male:0,
+            gender_female:0,
+            gender_other:0,
+            age_distribution: {}
         }
     
         assignments.forEach((assignment) => {
@@ -221,6 +225,14 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
             percentage_total: 0,
             });
             cur_index--;
+
+            if (assignment.Student.gender=="male") analysis.gender_male++
+            else if (assignment.Student.gender=="female") analysis.gender_female++
+            else if (assignment.Student.gender=="other") analysis.gender_other++
+
+            if (analysis.age_distribution.hasOwnProperty(assignment.Student.age)) analysis.age_distribution[assignment.Student.age]++
+            else analysis.age_distribution[assignment.Student.age] = 1
+
             if (assignment.Attempts.length > 0) {
                 quiz_sections.forEach((section) => {
                     let found = false;
