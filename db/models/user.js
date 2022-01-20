@@ -246,6 +246,18 @@ class Answer extends Model {}
 
 Answer.init({}, { sequelize, modelName: "Answer" });
 
+class PasswordResetLink extends Model {}
+
+PasswordResetLink.init({
+  key: {
+    type: DataTypes.STRING(255),
+    allowNull: false,
+  }
+},{
+  sequelize,
+  modelName: "PasswordResetLink",
+})
+
 
 // Quiz, Student, and Invite relationships
 Quiz.hasMany(Invite, {
@@ -266,6 +278,7 @@ Student.hasMany(Assignment, {
   },
 });
 Assignment.belongsTo(Student);
+
 Quiz.hasMany(Assignment, {
   onDelete: "CASCADE",
   onUpdate: "CASCADE",
@@ -320,5 +333,8 @@ Attempt.belongsTo(Section)
 Attempt.hasOne(Score)
 Score.belongsTo(Attempt)
 
+Student.hasMany(PasswordResetLink)
+PasswordResetLink.belongsTo(Student)
 
-module.exports = { User, Student, Invite, Assignment, Answer, Attempt, Score };
+
+module.exports = { User, Student, Invite, Assignment, Answer, Attempt, Score, PasswordResetLink };
