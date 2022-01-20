@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../templates/global.ejs') %>
     <title>Sign Up - Student Panel</title>
+    <style>
+      input:invalid {
+        border:1px solid red;
+      }
+    </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   </head>
   <body class="bg-gradient-to-br from-green-300 to-blue-400 min-h-screen h-screen">
@@ -26,27 +31,27 @@
             <div class="flex flex-col text-sm">
               <div class="mt-6">
                 <label class="ml-0 text-left float-left text-gray-800">Your First Name:</label><br />
-                <input type="text" id="firstName" minlength="1" name="firstName" placeholder="e.g. Muhammad Ali" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+                <input type="text" id="firstName" minlength="1" maxlength="100" name="firstName" placeholder="e.g. Muhammad Ali" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Last Name:</label><br />
-                <input type="text" id="lastName" minlength="1" name="lastName" placeholder="e.g. Jinnah" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+                <input type="text" id="lastName" minlength="1" maxlength="100" name="lastName" placeholder="e.g. Jinnah" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Email Address:</label><br />
-                <input type="email" id="email" minlength="1" name="email" placeholder="Hint: the one you wrote in the IEC form" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+                <input type="email" id="email" minlength="5" name="email" placeholder="Hint: the one you wrote in the IEC form" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your CNIC Number (with dashes):</label><br />
-                <input type="text" id="cnic" minlength="15" maxlength="15" name="cnic" placeholder="e.g. 35201-1234567-8" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+                <input type="text" id="cnic" minlength="15" maxlength="15" name="cnic" placeholder="e.g. 35201-1234567-8" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Phone Number:</label><br />
-                <input type="text" id="phone" minlength="11" maxlength="11" name="phone" placeholder="e.g. 03001234567" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+                <input type="text" id="phone" minlength="11" maxlength="11" name="phone" placeholder="e.g. 03001234567" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" pattern="\d\d\d\d\d\d\d\d\d\d\d" required />
               </div>
               <div class="mt-4">
                 <label class="ml-0 text-left float-left text-gray-800 min-w-max">Your Gender:</label><br />
-                <select name="gender" id="gender" class="py-3 px-4 mt-1 w-full bg-white border-2">
+                <select name="gender" id="gender" class="py-3 px-4 mt-1 w-full bg-white border-2" required>
                   <option class="py-2" value="" selected>Choose</option>
                   <option class="py-2" value="male">Male</option>
                   <option class="py-2" value="female">Female</option>
@@ -55,15 +60,15 @@
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Age:</label><br />
-                <input type="number" id="age" min="10" max="100" name="age" placeholder="e.g. 20" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+                <input type="number" id="age" min="10" max="100" name="age" placeholder="e.g. 20" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your City:</label><br />
-                <input type="text" id="city" minlength="2" maxlength="100" name="city" placeholder="e.g. LAHORE" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+                <input type="text" id="city" minlength="2" maxlength="100" name="city" placeholder="e.g. LAHORE" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" required />
               </div>
               <div>
                 <label class="ml-0 text-left float-left mt-4 text-gray-800">Your Full Address:</label><br />
-                <input type="text" id="address" minlength="10" maxlength="200" name="address" placeholder="e.g. street 1 house 2 area city province country" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" />
+                <input type="text" id="address" minlength="10" maxlength="300" name="address" placeholder="e.g. street 1 house 2 area city province country" class="border w-full py-3 px-4 mt-1 hover:shadow-sm uppercase" required />
               </div>
               <button type="button" id="section1-button" class="py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800">Next Step</button>
             </div>
@@ -85,11 +90,11 @@
             <br />
             <div>
               <label class="ml-0 text-left float-left mt-4 text-gray-800">Set a new password:</label><br />
-              <input type="password" minlength="6" maxlength="50" id="password" name="password" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+              <input type="password" minlength="6" maxlength="255" id="password" name="password" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required />
             </div>
             <div>
               <label class="ml-0 text-left float-left mt-4 text-gray-800">Retype the same password:</label><br />
-              <input type="password" minlength="6" maxlength="50" id="password2" name="password2" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" />
+              <input type="password" minlength="6" maxlength="255" id="password2" name="password2" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required />
             </div>
             <input type="hidden" name="invite" value="<%= link %>" />
             <input type="submit" class="w-full py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800" value="Finish Registration" />

@@ -30,7 +30,7 @@ const percentage_ranges_chart = new Chart(
             plugins: {
                 title: {
                     display: true,
-                    text: 'Total Assessment Score Percentages'
+                    text: 'Percentage Scores'
                 }
             }
         }

@@ -62,6 +62,7 @@ const { rejects } = require("assert");
 const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
 const stateToCSV = require("./functions/stateToCSV.js");
+const { encode } = require("punycode");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -196,6 +197,7 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
   } else {
     res.render("student/signup/index.ejs", {
       link: req.params.link,
+      query: req.query
     });
   }
 });
@@ -1196,7 +1198,12 @@ app.post("/student/signup", async (req, res) => {
     phone = req.body.phone,
     cnic = req.body.cnic,
     password = req.body.password,
+    age = req.body.age,
+    gender = req.body.gender,
+    city = req.body.city,
+    address = req.body.address,
     invite_link = req.body.invite;
+
 
   try {
     const invite = await Invite.findOne({
@@ -1206,36 +1213,44 @@ app.post("/student/signup", async (req, res) => {
     });
     invite.increment("registrations");
 
-    const student = await Student.create({
+    let student = Student.build({
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: await bcrypt.hash(password, 10),
       phone: phone,
       cnic: cnic,
+      age: age,
+      gender:gender,
+      city: city,
+      address: address,
       InviteId: invite.id,
     });
 
-    // assign the quiz associated with the invite to this student
-    const new_assignment = await Assignment.create({
-      StudentId: student.id,
-      QuizId: invite.QuizId,
-    });
+    if (await student.validate()) {
+      student = await student.save()
 
-    // send automated email to student
-    try {
-      await sendHTMLMail(email, `Welcome to IEC LCMS`, 
-      { 
-        heading: 'Welcome to the IEC LCMS',
-        inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
-        button_announcer: "Click on the button below to solve the Assessment",
-        button_text: "Solve Assessment",
-        button_link: "https://apply.iec.org.pk/student/login"
-      })
-    } catch(err) {
-      console.log("Email sending failed.")
+      // assign the quiz associated with the invite to this student
+      await Assignment.create({
+        StudentId: student.id,
+        QuizId: invite.QuizId,
+      });
+
+      // send automated email to student
+      try {
+        await sendHTMLMail(email, `Welcome to IEC LCMS`, 
+        { 
+          heading: 'Welcome to the IEC LCMS',
+          inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
+          button_announcer: "Click on the button below to solve the Assessment",
+          button_text: "Solve Assessment",
+          button_link: "https://apply.iec.org.pk/student/login"
+        })
+      } catch(err) {
+        console.log("Email sending failed.")
+      }
+      res.redirect("/student/login");
     }
-    res.redirect("/student/login");
   } catch (err) {
     console.log(err);
     if (err.errors) {
@@ -1244,6 +1259,9 @@ app.post("/student/signup", async (req, res) => {
           invite_link +
           "?error=" +
           encodeURIComponent(err.errors[0].type)
+          + "&field=" + encodeURIComponent(err.errors[0].path)
+          + "&type=" + encodeURIComponent(err.errors[0].validatorName)
+          + "&message=" + encodeURIComponent(err.errors[0].message)
       );
     } else res.redirect("/invite/" + invite_link);
   }
