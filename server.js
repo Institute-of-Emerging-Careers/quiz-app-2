@@ -13,6 +13,7 @@ const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
 const csvStringify = require("csv-stringify");
+const randomstring = require("randomstring");
 
 // My requirements
 const initializeDatabase = require("./db/initialize");
@@ -29,13 +30,12 @@ const {
   Passage,
 } = require("./db/models/quizmodel.js");
 const {
-  User,
   Student,
   Invite,
   Assignment,
   Answer,
   Attempt,
-  Score,
+  PasswordResetLink
 } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const {
@@ -182,8 +182,6 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
   });
   if (invite == null) {
     res.render("templates/error.ejs", {
-      link: req.params.link,
-      site_domain_name: process.env.SITE_DOMAIN_NAME,
       additional_info:
         "https://" +
         process.env.SITE_DOMAIN_NAME +
@@ -1340,8 +1338,151 @@ app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
   res.render("student/login/index.ejs", {
     link: req.query.link,
     email: req.query.email,
+    success: req.query.success,
   });
 });
+
+app.get("/student/forgot-password", checkStudentAlreadyLoggedIn, async (req, res) => {
+  res.render("student/login/forgot_password.ejs", {
+    link: req.query.link,
+    error: req.query.error
+  });
+});
+
+app.post("/student/change-password", async (req,res)=>{
+  if (req.body.password1 == req.body.password2) {
+    try {
+      const password = req.body.password1
+      const password_reset_link = await PasswordResetLink.findOne({
+        where:{
+          key: req.body.key,
+          StudentId: req.body.id
+        },
+        include:[Student]
+      })
+    
+      if (password_reset_link!=null) {
+        await password_reset_link.Student.update({
+          password: await bcrypt.hash(password, 10),
+        })
+
+        await password_reset_link.destroy()
+    
+        res.redirect("/student/login?success=password-reset")
+      } else {
+        res.render("templates/error.ejs", {
+          additional_info:"Invalid Link",
+          error_message:
+            "The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.",
+          action_link: "/student/login",
+          action_link_text: "Student Login Page",
+        });
+      }
+    } catch (err) {
+      console.log(err)
+      res.sendStatus(500)
+    }
+  } else {
+    res.render("student/login/set_new_password.ejs", {
+      key: req.body.key,
+      student_id: req.body.id,
+      error: "Passwords do not match"
+    })
+  }
+  
+})
+
+app.get("/set-new-password/:key", async (req,res)=>{
+  const password_reset_link = await PasswordResetLink.findOne({
+    where:{
+      key: req.params.key
+    }
+  })
+
+  if (password_reset_link!=null) {
+    res.render("student/login/set_new_password.ejs", {
+      key: req.params.key,
+      student_id: password_reset_link.StudentId,
+      error:false
+    })
+  } else {
+    res.render("templates/error.ejs", {
+      additional_info:"Wrong Link",
+      error_message:
+        "The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.",
+      action_link: "/student/login",
+      action_link_text: "Student Login Page",
+    });
+  }
+})
+
+app.post("/student/reset-password", checkStudentAlreadyLoggedIn, async(req,res)=>{
+  const student = await Student.findOne({
+    where:{
+      email: req.body.email,
+      cnic: req.body.cnic
+    }
+  })
+
+  if (student != null) {
+    const key = randomstring.generate(255)
+    PasswordResetLink.create({
+      key: key,
+      StudentId: student.id
+    })
+    
+    const reset_link = process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
+    console.log(reset_link)
+
+    try {
+      await sendHTMLMail(student.email, `Reset Password`, 
+        { 
+          heading: `Reset Password`,
+          inner_text: `Dear Student
+          <br>
+          This email contains your password reset link. Either copy paste the following link in your browser:
+          <br>
+          <a href="${reset_link}">${reset_link}</a>
+          <br>
+          Sincerely, 
+          IEC Admissions Team`,
+          button_announcer: "Or you can click on the following button to change your password",
+          button_text: "Change Password",
+          button_link: reset_link
+        })
+      console.log("Password reset email sent")
+      res.render("templates/error.ejs", {
+        additional_info: "Check Your Inbox",
+        error_message:
+          "If your email and CNIC were correct, then we have sent you a Password Reset link at your email address. Please also check your spam folder.",
+        action_link: "/student/login",
+        action_link_text: "Click here to go to the student login page.",
+      });
+    } catch(err) {
+        console.log("Password reset email sending failed.", err)
+        res.sendStatus(500)
+    }
+  } else {
+    redirect("/student/forgot-password?error=wrong-credentials")
+  }
+})
+
+app.get("/email-template", (req,res)=>{
+  res.render("templates/mail-template-1.ejs",{
+    heading: `All Sections Completed`,
+    inner_text: `Dear Student
+    <br>
+    This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
+    <br>
+    Thank you for showing your interest in becoming part of the program. 
+    <br>
+    Sincerely, 
+    IEC Admissions Team`,
+    button_announcer: "Visit out website to learn more about us",
+    button_text: "Visit",
+    button_link: "https://iec.org.pk"
+  })
+})
 
 app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
   try {
