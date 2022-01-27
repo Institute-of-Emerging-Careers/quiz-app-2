@@ -189,7 +189,13 @@ Invite.init(
 class Assignment extends Model {}
 
 Assignment.init(
-  {},
+  {
+    emailSent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
+  },
   {
     sequelize,
     modelName: "Assignment",
@@ -215,7 +221,7 @@ Attempt.init(
       allowNull: true,
     },
     duration: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: true,
     }
   },
