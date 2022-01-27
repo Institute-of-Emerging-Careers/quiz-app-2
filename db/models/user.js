@@ -190,10 +190,10 @@ class Assignment extends Model {}
 
 Assignment.init(
   {
-    emailSent: {
-      type: DataTypes.BOOLEAN,
+    timeOfLastReminderEmail: {
+      type: DataTypes.BIGINT,
       allowNull: false,
-      defaultValue: false
+      defaultValue: 0
     }
   },
   {
