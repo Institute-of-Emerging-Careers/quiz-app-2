@@ -51,6 +51,7 @@ const retrieveStatus = require("./functions/retrieveStatus")
 const scoreSectionAndSendEmail = require("./functions/scoreSectionAndSendEmail")
 const {getQuizResults,getQuizResultsWithAnalysis} = require("./functions/getQuizResults")
 const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
+const flatten2DArray = require("./functions/flatten2DArray")
 const getAssignment = require("./db/getAssignment");
 const getSection = require("./db/getSection");
 const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMinutesAndSeconds");
@@ -155,6 +156,53 @@ app.get("/admin", checkAdminAuthenticated, async (req, res) => {
     res.sendStatus(500);
   }
 });
+
+app.get("/mail/compose",checkAdminAuthenticated,(req,res)=>{
+  res.render("admin/email/compose.ejs", {
+    user_type: req.user.type
+  })
+})
+
+app.post("/mail/preview", checkAdminAuthenticated, (req,res)=>{
+  res.render("templates/mail-template-1.ejs",{
+    heading: req.body.heading,
+    inner_text: req.body.body,
+    button_announcer: req.body.button_announcer,
+    button_text: req.body.button_text,
+    button_link: req.body.button_url
+  })
+})
+
+app.post("/mail/send/batch", checkAdminAuthenticated, async (req,res)=>{
+  new Promise(resolve=>{
+    let num_emails = 0
+    let target_num_emails = req.body.email_addresses.length
+    req.body.email_addresses.forEach(async (email)=>{
+      try {
+        await sendHTMLMail(email, req.body.subject, 
+        { 
+          heading: req.body.heading,
+          inner_text: req.body.inner_text,
+          button_announcer: req.body.button_announcer,
+          button_text: req.body.button_text,
+          button_link: req.body.button_link
+        })
+      } catch(err) {
+        console.log("Email sending failed.")
+      }
+      num_emails++
+      console.log(num_emails, target_num_emails)
+      if (num_emails == target_num_emails) resolve()
+    })
+  })
+  .then(()=>{
+    res.sendStatus(200)
+  })
+  .catch(err=>{
+    console.log(err)
+    res.sendStatus(500)
+  })
+})
 
 app.get("/new", checkAdminAuthenticated, (req, res) => {
   res.render("new_quiz.ejs", { quizId: "", user_type: req.user.type });
@@ -962,9 +1010,9 @@ app.get("/quiz/:quiz_id/analysis", checkAdminAuthenticated, async (req,res)=>{
   });
 })
 
-// CSV upload
+// CSV for Quiz State upload
 app.post(
-  "/upload/csv",
+  "/upload/quiz/csv",
   checkAdminAuthenticated,
   csv_upload.single("file"),
   (req, res) => {
@@ -991,6 +1039,33 @@ app.post(
     );
   }
 );
+
+app.post("/upload/email/csv", checkAdminAuthenticated, csv_upload.single("file"), (req,res)=>{
+  csv_parser(
+    fs.readFileSync(
+      path.join(__dirname, "/uploads/csv/" + req.file.filename)
+    ),
+    {},
+    async (err, data) => {
+      // deleting file because it is not needed anymore
+      fs.unlink(path.join(__dirname, "/uploads/csv/" + req.file.filename), ()=>{
+        if (!err) {
+          /* data = [
+            ["Emails"],
+            ["rohanhussain1@yahoo.com"],
+            ["dkhn.act@gmail.com"],
+            ["22100063@lums.edu.pk"]    
+          ] */
+          data = flatten2DArray(data)
+          res.status(200).json(data)
+      } else {
+        console.log(err);
+        res.sendStatus(500);
+      }
+      })
+    }
+  );
+})
 
 app.post("/state-to-csv", checkAdminAuthenticated, async (req, res) => {
   const [mcqs, passages] = req.body;

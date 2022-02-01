@@ -1,9 +1,15 @@
 const nodemailer = require('nodemailer');
-const ejs = require("ejs")
+const ejs = require("ejs");
+const { Student } = require('../db/models/user');
 
-function sendTextMail(recepient, subject, text) {
-  if (process.env.NODE_ENV == "production"){
-    var transporter = nodemailer.createTransport({
+async function sendTextMail(recepient, subject, text) {
+  if (process.env.NODE_ENV == "production") {
+    // checking if this student has unsubscribed from emails, if so, we won't send email
+    const student = await Student.findOne({where:{email:recepient}, attributes:["hasUnsubscribedFromEmails"]})
+    
+    if (student==null || !student.hasUnsubscribedFromEmails)
+    {
+      var transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
           user: 'mail@iec.org.pk',
@@ -21,6 +27,11 @@ function sendTextMail(recepient, subject, text) {
       };
       
       return transporter.sendMail(mailOptions);
+    } else {
+      return new Promise(resolve=>{
+        resolve()
+      })
+    }
   } else {
     return new Promise(resolve=>{
       resolve()
@@ -29,8 +40,13 @@ function sendTextMail(recepient, subject, text) {
 }
 
 async function sendHTMLMail(recepient, subject, ejs_obj) {
-  if (process.env.NODE_ENV == "production"){
-    var transporter = nodemailer.createTransport({
+  if (process.env.NODE_ENV == "production") {
+    // checking if this student has unsubscribed from emails, and if so, we won't send him/her an email
+    const student = await Student.findOne({where:{email:recepient}, attributes:["hasUnsubscribedFromEmails"]})
+    console.log(recepient, student)
+    if (student==null || !student.hasUnsubscribedFromEmails)
+    {
+      var transporter = nodemailer.createTransport({
         service: 'outlook',
         auth: {
           user: 'mail@iec.org.pk',
@@ -40,16 +56,22 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
         rateLimit: 0.5
       });
 
-    const html = await ejs.renderFile(__dirname + "/../views/templates/mail-template-1.ejs", ejs_obj)
+      const html = await ejs.renderFile(__dirname + "/../views/templates/mail-template-1.ejs", ejs_obj)
+        
+      var mailOptions = {
+        from: 'IEC Assessments <mail@iec.org.pk>',
+        to: recepient,
+        subject: subject,
+        html: html
+      };
       
-    var mailOptions = {
-      from: 'IEC Assessments <mail@iec.org.pk>',
-      to: recepient,
-      subject: subject,
-      html: html
-    };
-    
-    return transporter.sendMail(mailOptions);
+      return transporter.sendMail(mailOptions);
+    } else {
+      console.log(recepient, "email not allowed.")
+      return new Promise(resolve=>{
+        resolve()
+      })
+    }
   } else {
     return new Promise(resolve=>{
       resolve()
