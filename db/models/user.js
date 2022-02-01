@@ -189,7 +189,13 @@ Invite.init(
 class Assignment extends Model {}
 
 Assignment.init(
-  {},
+  {
+    timeOfLastReminderEmail: {
+      type: DataTypes.BIGINT,
+      allowNull: false,
+      defaultValue: 0
+    }
+  },
   {
     sequelize,
     modelName: "Assignment",
@@ -215,7 +221,7 @@ Attempt.init(
       allowNull: true,
     },
     duration: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: true,
     }
   },

@@ -47,4 +47,35 @@ $("#invite-link-creation-form").submit(function (e) {
     },
     "json"
   );
+
 });
+
+function toggleDropdown(quiz_id) {
+  console.log("hi",quiz_id)
+  $(`#quiz-dropdown-${quiz_id}`).toggleClass('hidden');
+}
+
+function toggleReminderEmailSetting(dom_obj) {
+  const current_reminder_setting = dom_obj.dataset.currentReminderSetting
+  const quiz_id = dom_obj.dataset.quizId
+
+  console.log(current_reminder_setting)
+
+  const data_to_send = {
+    current_reminder_setting: current_reminder_setting,
+    quiz_id: quiz_id
+  }
+
+  $.post("/quiz/edit-reminder-setting", data_to_send, function(data) {
+    console.log(data)
+    if (data.success) {
+      dom_obj.children[1].innerHTML= data.new_reminder_setting ? "Disable Reminder Emails" : "Enable Reminder Emails"
+      dom_obj.children[0].classList.remove(data.new_reminder_setting ? "far" : "fas")
+      dom_obj.children[0].classList.add(data.new_reminder_setting ? "fas" : "far")
+      dom_obj.dataset.currentReminderSetting = data.new_reminder_setting
+
+    } else {
+      alert("Error changing reminder setting.")
+    }
+  })
+}

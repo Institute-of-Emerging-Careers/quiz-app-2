@@ -17,6 +17,11 @@ Quiz.init(
       type: DataTypes.BOOLEAN,
       defaultValue: true,
       allowNull: false,
+    },
+    sendReminderEmails: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
     }
     // Time limit is of sections, not of the quiz itself
   },

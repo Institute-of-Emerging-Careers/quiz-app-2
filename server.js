@@ -46,23 +46,20 @@ const calculateSingleAssessmentStatus = require("./functions/calculateSingleAsse
 const csvToState = require("./functions/csvToState");
 const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
-const calculateScore = require("./functions/calculateScore");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress");
 const retrieveStatus = require("./functions/retrieveStatus")
+const scoreSectionAndSendEmail = require("./functions/scoreSectionAndSendEmail")
 const {getQuizResults,getQuizResultsWithAnalysis} = require("./functions/getQuizResults")
 const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
-const {
-  setSectionStatusToComplete,
-} = require("./functions/setSectionStatusToComplete");
-const updateScore = require("./functions/updateScore");
 const getAssignment = require("./db/getAssignment");
 const getSection = require("./db/getSection");
-const millisecondsToMinutesAndSeconds = require("./functions/millisecondsToMinutesAndSeconds");
+const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMinutesAndSeconds");
 const { rejects } = require("assert");
 const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
 const stateToCSV = require("./functions/stateToCSV.js");
 const { encode } = require("punycode");
+const { resolveSoa } = require("dns");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -557,61 +554,100 @@ app.get(
       [Quiz]
     );
 
-    // make this quiz non-editable because someone (this user) has started attempting it
-    await assignment.Quiz.update({ allow_edit: false });
+    // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
+    const now = new Date()
+    const timeDiff = (now - assignment.createdAt)
+    console.log(timeDiff)
+    if (timeDiff > 259200000) //>72h
+    {
+      await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id)
 
-    // Get the section that the student wants to attempt.
-    // getSection(sectionId, [what_other_models_to_include_in_results])
-    const section = await getSection(req.params.sectionId, []);
-
-    const sections_attempted = await Attempt.count({
-      where: {
-        AssignmentId: assignment.id,
-        SectionId: req.params.sectionId,
-      },
-    });
-
-    if (sections_attempted.count == 0) {
-      //student hasn't attempted any sections previously, which means we don't need to check whether or not the student has attempted this section before
-
-      // update the assignment's status and sectionStatus to show that this student has now started solving this section
-      await setSectionStatusToInProgress(
-        assignment,
-        section,
-        req.params.sectionId
-      );
-
-      res.render("student/attempt.ejs", {
-        user_type: req.user.type,
-        sectionId: req.params.sectionId,
-        sectionTitle: section.title,
-        quizTitle: assignment.Quiz.title,
-        previewOrNot: 0
+      res.render("templates/error.ejs", {
+        additional_info:"Deadline Passed :(",
+        error_message:
+          "You had 72 hours to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
+        action_link: "/student",
+        action_link_text: "Click here to go to student home page.",
       });
     } else {
-      // means that one or more of the sections of this quiz has been either started or have been finished
+      // deadline has not passed, so let student edit quiz if time limit has not reached (deadline is 72 hours, time limit is the quiz's time in minutes)
 
-      try {
-        // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
-        // An Attempt is characterized by an AssignmentId and a SectionId
-        const attempt = await Attempt.findOne({
-          where: {
-            AssignmentId: assignment.id,
-            SectionId: section.id,
-          },
+      // make this quiz non-editable because someone has started attempting it
+      if (assignment.allow_edit)
+      await assignment.Quiz.update({ allow_edit: false });
+
+      // Get the section that the student wants to attempt.
+      // getSection(sectionId, [what_other_models_to_include_in_results])
+      const section = await getSection(req.params.sectionId, []);
+
+      const sections_attempted = await Attempt.count({
+        where: {
+          AssignmentId: assignment.id,
+          SectionId: req.params.sectionId,
+        },
+      });
+
+      if (sections_attempted.count == 0) {
+        //student hasn't attempted any sections previously, which means we don't need to check whether or not the student has attempted this section before
+
+        // update the assignment's status and sectionStatus to show that this student has now started solving this section
+        await setSectionStatusToInProgress(
+          assignment,
+          section,
+          req.params.sectionId
+        );
+
+        res.render("student/attempt.ejs", {
+          user_type: req.user.type,
+          sectionId: req.params.sectionId,
+          sectionTitle: section.title,
+          quizTitle: assignment.Quiz.title,
+          previewOrNot: 0
         });
+      } else {
+        // means that one or more of the sections of this quiz has been either started or have been finished
 
-        if (attempt != null) {
-          if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
-            // this means that the section is timed and the time for this section is already over
-            res.render("templates/error.ejs", {
-              error_message:
-                "The time for this section has ended. You cannot continue to attempt it anymore.",
-              action_link: "/student",
-              action_link_text: "Click here to go to student home page.",
-            });
+        try {
+          // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
+          // An Attempt is characterized by an AssignmentId and a SectionId
+          const attempt = await Attempt.findOne({
+            where: {
+              AssignmentId: assignment.id,
+              SectionId: section.id,
+            },
+          });
+
+          if (attempt != null) {
+            // attempt exists for this section by this student, so we check if there is time remaining
+            if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
+              // this means that the section is timed and the time for this section is already over
+              res.render("templates/error.ejs", {
+                additional_info:"Time Limit Over :(",
+                error_message:
+                  "The time for this section of the assessment has ended. You cannot continue to attempt it anymore.",
+                action_link: "/student",
+                action_link_text: "Click here to go to student home page.",
+              });
+            } else {
+              // the student still has time to continue this section
+              res.render("student/attempt.ejs", {
+                user_type: req.user.type,
+                sectionId: req.params.sectionId,
+                sectionTitle: section.title,
+                quizTitle: assignment.Quiz.title,
+                previewOrNot: 0
+              });
+            }
           } else {
-            // the student still has time to continue this section
+            // the student has never attempted or started to attempt this section before
+
+            // add this section to sectionStatus
+            await setSectionStatusToInProgress(
+              assignment,
+              section,
+              req.params.sectionId
+            );
+
             res.render("student/attempt.ejs", {
               user_type: req.user.type,
               sectionId: req.params.sectionId,
@@ -620,28 +656,12 @@ app.get(
               previewOrNot: 0
             });
           }
-        } else {
-          // the student has never attempted or started to attempt this section before
-
-          // add this section to sectionStatus
-          await setSectionStatusToInProgress(
-            assignment,
-            section,
-            req.params.sectionId
-          );
-
-          res.render("student/attempt.ejs", {
-            user_type: req.user.type,
-            sectionId: req.params.sectionId,
-            sectionTitle: section.title,
-            quizTitle: assignment.Quiz.title,
-            previewOrNot: 0
-          });
+        } catch (err) {
+          console.log(err);
+          res.send("Error 45. Contact Admin.");
         }
-      } catch (err) {
-        console.log(err);
-        res.send("Error 45. Contact Admin.");
       }
+
     }
   }
 );
@@ -889,82 +909,29 @@ app.post("/quiz/save-progress", checkStudentAuthenticated, (req, res) => {
     });
 });
 
+app.post("/quiz/edit-reminder-setting", checkAdminAuthenticated, async (req,res) => {
+  try {
+    const quiz = await Quiz.findOne({where: {id:req.body.quiz_id}})
+    if (quiz!=null) {
+      const cur_reminder_setting = req.body.current_reminder_setting == "true" ? true : false
+      const new_reminder_setting = !cur_reminder_setting
+      quiz.sendReminderEmails = new_reminder_setting
+      await quiz.save()
+      res.json({success:true, new_reminder_setting: new_reminder_setting})
+    } else res.json({success:false})
+  } catch(err) {
+    res.json({success:false})
+    console.log(err)
+  }
+})
+
 app.get(
   "/quiz/attempt/:sectionId/score",
   checkStudentAuthenticated,
   async (req, res) => {
-    const section = await Section.findOne({
-      where: { id: req.params.sectionId },
-      include: { model: Quiz, required: true, attributes: ["id"] },
-      attributes: ["title"],
-    })
-    const quizId = (
-      section
-    ).Quiz.id;
-    const assignment = await Assignment.findOne({
-      where: { StudentId: req.user.user.id, QuizId: quizId },
-    });
-    const score = await calculateScore(req.params.sectionId, req.user.user.id);
 
-    await updateScore(req.params.sectionId, assignment, score);
-
-    await setSectionStatusToComplete(assignment.id, req.params.sectionId);
-
-    // sending completion email to student
-
-    // check if student has solved all sections
-    async function allSectionsSolved(quizId, assignment) {
-      const sections = await Section.findAll({where:{QuizId: quizId}})
-      let all_solved = true
-      let count_sections = 0
-      await new Promise(async (resolve)=>{
-        sections.forEach(async (section)=>{
-          const attempt = await Attempt.findOne({where: {AssignmentId: assignment.id, SectionId: section.id}})
-          if (attempt==null || attempt.statusText != "Completed") all_solved=false
-          count_sections++
-          if (count_sections == sections.length) resolve()
-        })
-      })
-      return all_solved
-    }
-
-    const email = (await Student.findOne({where:{id: req.user.user.id}, attributes: ["email"]})).email
-
-    if (await allSectionsSolved(quizId, assignment)) {
-      await sendHTMLMail(email, `Assessment Completed`, 
-      { 
-        heading: `All Sections Completed`,
-        inner_text: `Dear Student
-        <br><br>
-        This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
-        <br><br>
-        Thank you for showing your interest in becoming part of the program. 
-        <br><br>
-        Sincerely, 
-        IEC Admissions Team`,
-        button_announcer: "Visit out website to learn more about us",
-        button_text: "Visit",
-        button_link: "https://iec.org.pk"
-      })
-      console.log("Mail sent")
-    } else {
-      await sendHTMLMail(email, `Section Solved`, 
-      { 
-        heading: `Section "${section.title}" Solved`,
-        inner_text: `Dear Student
-        <br><br>
-        This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
-        <br><br>
-        Thank you for showing your interest in becoming part of the program. 
-        <br><br>
-        Sincerely, 
-        IEC Admissions Team`,
-        button_announcer: "Solve the remaining sections on the portal:",
-        button_text: "Student Portal",
-        button_link: "https://apply.iec.org.pk/student/login"
-      })
-      console.log("Mail sent")
-    }
+    // answers are already saved in Database, so we create a Score object and send student completion email
+    await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id)
 
     res.json({ success: true });
   }

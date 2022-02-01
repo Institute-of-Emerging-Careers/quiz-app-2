@@ -11,10 +11,13 @@ async function retrieveStatus(assignment, sectionId) {
       },
     });
 
-    if (attempt == null) return ["Not Started", "Start"];
+    console.log(attempt)
+
+    if (attempt == null || attempt.statusText == "Not Started") return ["Not Started", "Start"];
     else if (attempt.statusText == "In Progress")
       return ["In Progress", "Continue"];
     else if (attempt.statusText == "Completed") return ["Completed", ""];
+    else return ["Unknown", ""]
   }
 
 module.exports = retrieveStatus

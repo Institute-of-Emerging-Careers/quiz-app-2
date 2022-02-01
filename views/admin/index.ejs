@@ -29,7 +29,7 @@
             if (n > 1 || n == 0) {return singular + "s";}
             else {return singular;}
         } 
-        let colors = ["bg-green-500","bg-blue-500","bg-pink-500","bg-yellow-500","bg-indigo-500","bg-red-500", "bg-purple-500"]
+        // let colors = ["bg-green-500","bg-blue-500","bg-pink-500","bg-yellow-500","bg-indigo-500","bg-red-500", "bg-purple-500"]
     %>
 
     <p class="hidden" id='site-domain-name'><%= site_domain_name %></p>
@@ -78,7 +78,7 @@
       
     </section>
     <section class="w-full">
-      <h2 class="text-xl mt-6 mb-4 font-bold">Quizzes <a href="/new" class="text-xs px-4 py-1 cursor-pointer bg-green-500 text-white rounded-full">NEW</a></h2>
+      <h2 class="text-xl mt-6 mb-4 font-bold">Quizzes <a href="/new" class="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full">NEW</a></h2>
       <% if (all_quizzes.length==0) { %>
         <p>No quizzes to show.</p>
       <% } else { %> 
@@ -88,14 +88,22 @@
       <div id="all-quizzes" class="flex flex-wrap justify-start gap-y-10 gap-x-10">
         <% for (let i=0;i<all_quizzes.length;i++) { %>
         <div class="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card">
-          <div class="grid grid-cols-8 col-span-8 h-16 <%= colors[i%colors.length] %> justify-center content-center">
+          <div class="grid grid-cols-8 col-span-8 h-16 bg-iec-blue justify-center content-center">
             <a href="/edit/<%= all_quizzes[i].id %>" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Edit Quiz"><i class="far fa-edit "></i></a>
             <a class="text-white text-xl col-start-3 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" href="/quiz/duplicate/<%= all_quizzes[i].id %>" title="Duplicate Quiz"><i class="far fa-copy"></i></a>
             <a class="text-white text-xl col-start-4 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" onClick="copyToClipboard(<%= all_quizzes[i].id %>)" title="Invite Links"><i class="fas fa-link"></i></a>
             <input type="url" class="hidden" value="<%= 'https://assessments.iec.com/solve/' + all_quizzes[i].id %>" id="<%= 'quiz-'+all_quizzes[i].id %>">
             <a class="text-white text-xl col-start-5 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" href="/quiz/<%= all_quizzes[i].id %>/results" title="View Results"><i class="fas fa-poll-h"></i></a>
             <a class="text-white text-xl col-start-6 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" href="/quiz/preview/<%= all_quizzes[i].id %>/" title="Preview Quiz"><i class="fa fa-eye"></i></a>
-            <a class="text-white text-xl col-start-7 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" href="/delete/quiz/<%= all_quizzes[i].id %>" title="Delete Quiz"><i class="fas fa-trash"></i></a>
+            <div class="col-start-7 col-span-1 self-center justify-self-center cursor-pointer relative" title="More Options">
+              <i class="fas fa-ellipsis-v text-white text-xl hover:text-gray-100" onClick="toggleDropdown(<%=all_quizzes[i].id%>)"></i>
+              <div class="absolute z-10 w-max border shadow-lg hidden text-sm" id="quiz-dropdown-<%=all_quizzes[i].id%>">
+                <ul>
+                  <li class="py-3 px-6 bg-white hover:bg-gray-100 grid grid-cols-6" data-current-reminder-setting="<%=all_quizzes[i].sendReminderEmails%>" data-quiz-id="<%= all_quizzes[i].id %>" onClick="toggleReminderEmailSetting(this)"><%- all_quizzes[i].sendReminderEmails ? "<i class='fas fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 self-start w-max'>Disable Reminder Emails</span>" : "<i class='far fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 w-max'>Enable Reminder Emails</span>" %></li>
+                  <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6" href="/delete/quiz/<%= all_quizzes[i].id %>"><i class="fas fa-trash col-start-1 col-span-1 self-center"></i> <span class='col-start-2 col-span-5 self-start w-max'>Delete Quiz</span></a></li>
+                </ul>
+              </div>
+            </div>
           </div>
           <h3 class="col-span-6 font-semibold text-lg px-4"><%= all_quizzes[i].title %></h3>
           <div class="col-start-1 col-span-3"><p class="px-4 pt-0"><%= all_quizzes[i].num_sections %> <%= print_plural("Section",all_quizzes[i].num_sections) %></p></div>
