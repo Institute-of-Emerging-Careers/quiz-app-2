@@ -47,4 +47,10 @@ $("#invite-link-creation-form").submit(function (e) {
     },
     "json"
   );
+
 });
+
+function toggleDropdown(quiz_id) {
+  console.log("hi",quiz_id)
+  $(`#quiz-dropdown-${quiz_id}`).toggleClass('hidden');
+}

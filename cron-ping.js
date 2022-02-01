@@ -10,8 +10,7 @@ const cron = require('node-cron');
 const sendReminderEmails = require('./functions/sendReminderEmails');
 
 const assessment_reminder_mailer_task = cron.schedule('0 0 */3 * * *', () => {
-  console.log('Running reminder mailer every 3 hours');
-
+  console.log('Running 3-hourly reminder email.');
     sendReminderEmails()
 },{
     scheduled: false
