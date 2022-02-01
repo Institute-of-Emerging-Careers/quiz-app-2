@@ -157,6 +157,11 @@ Student.init(
         len: {args: [[10,300]], msg: "Address cannot be shorter than 10 characters and longer than 300 characters."},
       }
     },
+    hasUnsubscribedFromEmails: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
   },
   {
     sequelize,

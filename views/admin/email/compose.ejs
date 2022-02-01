@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+    <title>Compose Email - IEC Admin Panel</title>
+
+</head>
+<body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../../templates/header.ejs') %>
+
+    <h1 class="text-2xl">Compose Email</h1>
+    <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen">
+        <!-- { 
+        subject,
+        heading: `All Sections Completed`,
+        inner_text: `Dear Student
+        <br>
+        This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
+        <br>
+        Thank you for showing your interest in becoming part of the program. 
+        <br>
+        Sincerely, 
+        IEC Admissions Team`,
+        button_announcer: "Visit out website to learn more about us",
+        button_text: "Visit",
+        button_link: "https://iec.org.pk"
+      } -->
+
+      <form method="POST" encType="multipart/form-data" action="/upload/email/csv" id="csv_form">
+        <label for="csv-upload" class="inline-block px-4 py-4 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white">
+            <i class="fas fa-file-upload"></i> Upload CSV File of Recepient Email Addresses
+            <input id="csv-upload" type="file" accept=".csv" name="file" class="hidden">
+        </label>
+      </form>
+
+      <p id="recepients_list"></p>
+
+      <br><br>
+      <form id="mail-form" action="/mail/preview" method="POST" target="_blank" class="flex flex-col gap-y-4">
+        <div id='recepient_field'>
+            <label>Recepient Email: </label>
+            <input type="email" maxlength="200" name="recepient" placeholder="e.g. rohanhussain1@yahoo.com" class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+        </div>
+        <div>
+            <label>Subject: </label>
+            <input type="text" id="subject" maxlength="100" name="subject" placeholder="e.g. Invite" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" required>
+        </div>
+        <div>
+            <label>Heading: </label>
+            <input type="text" id="heading" maxlength="100" name="heading" placeholder="This will be the heading inside the body of the email." class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+        </div>
+        <div>
+            <label>Body: </label>
+            <textarea maxlength="1500" id="body" name="body" placeholder="This will be the the body of the email. Limit: 1500 characters." class="border w-full h-48 py-3 px-4 mt-1 hover:shadow-sm" required></textarea>
+        </div>
+        <div>
+            <label>Button Pre-text: </label>
+            <input type="text" maxlength="100" id="button_announcer" name="button_announcer" placeholder="This text comes before a button and invites the user to click the button. You can leave it empty if you want." class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+        </div>
+        <div>
+            <label>Button Label: </label>
+            <input type="text" maxlength="50" id="button_text" name="button_text" placeholder="What does the button say? Limit: 50 characters" class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+        </div>
+        <div>
+            <label>Button URL: </label>
+            <input type="url" name="button_url" id="button_url" placeholder="Where does the button take the user?" class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+        </div>
+        <div class="flex">
+            <button type="submit" class="w-full py-3 px-6 bg-gray-700 text-white mt-4 cursor-pointer hover:bg-gray-600">Preview Mail</button>
+            <button type="button" class="w-full py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800" id="email-button">Send Email(s)</button>
+        </div>
+
+      </form>
+
+    </section>
+
+    <script src="/js/compose.js"></script>
+</body>
+</html>

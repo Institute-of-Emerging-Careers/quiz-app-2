@@ -1545,10 +1545,9 @@ const Main = () => {
   }
 
   function uploadCSV(e) {
-    console.log("hi");
     let data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
     setUploading(true);
-    fetch("/upload/csv", {
+    fetch("/upload/quiz/csv", {
       method: "POST",
       body: data,
     })
