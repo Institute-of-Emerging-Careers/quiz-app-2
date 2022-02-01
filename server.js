@@ -78,6 +78,8 @@ var img_storage = multer.diskStorage({
   },
 });
 
+
+
 var img_upload = multer({ storage: img_storage });
 
 // Multer config for csv file upload
@@ -174,34 +176,38 @@ app.post("/mail/preview", checkAdminAuthenticated, (req,res)=>{
 })
 
 app.post("/mail/send/batch", checkAdminAuthenticated, async (req,res)=>{
-  new Promise(resolve=>{
-    let num_emails = 0
-    let target_num_emails = req.body.email_addresses.length
-    req.body.email_addresses.forEach(async (email)=>{
-      try {
-        await sendHTMLMail(email, req.body.subject, 
-        { 
-          heading: req.body.heading,
-          inner_text: req.body.inner_text,
-          button_announcer: req.body.button_announcer,
-          button_text: req.body.button_text,
-          button_link: req.body.button_link
-        })
-      } catch(err) {
-        console.log("Email sending failed.")
-      }
-      num_emails++
-      console.log(num_emails, target_num_emails)
-      if (num_emails == target_num_emails) resolve()
+  try {
+    await new Promise(resolve=>{
+      let num_emails = 0
+      let target_num_emails = req.body.email_addresses.length
+      req.body.email_addresses.forEach(async (email)=>{
+        try {
+          await sendHTMLMail(email, req.body.subject, 
+          { 
+            heading: req.body.heading,
+            inner_text: req.body.inner_text,
+            button_announcer: req.body.button_announcer,
+            button_text: req.body.button_text,
+            button_link: req.body.button_link
+          })
+          num_emails++
+          console.log(num_emails, target_num_emails)
+          if (num_emails == target_num_emails) resolve()
+        } catch(err) {
+          console.log("Email sending failed.",err)
+          num_emails++
+          console.log(num_emails, target_num_emails)
+          if (num_emails == target_num_emails) resolve()
+        }
+      })
     })
-  })
-  .then(()=>{
+  
     res.sendStatus(200)
-  })
-  .catch(err=>{
+  }
+  catch(err) {
     console.log(err)
     res.sendStatus(500)
-  })
+  }
 })
 
 app.get("/new", checkAdminAuthenticated, (req, res) => {

@@ -11,6 +11,7 @@ async function sendTextMail(recepient, subject, text) {
     {
       var transporter = nodemailer.createTransport({
         service: 'outlook',
+        port: 587,
         auth: {
           user: 'mail@iec.org.pk',
           pass: 'Jah29535'
@@ -59,7 +60,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
       const html = await ejs.renderFile(__dirname + "/../views/templates/mail-template-1.ejs", ejs_obj)
         
       var mailOptions = {
-        from: 'IEC Assessments <mail@iec.org.pk>',
+        from: 'IEC Mail<mail@iec.org.pk>',
         to: recepient,
         subject: subject,
         html: html
