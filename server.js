@@ -1140,18 +1140,24 @@ app.post(
     // successRedirect: "/student",
     if (req.hasOwnProperty("user")) {
       try {
-        const invite = await Invite.findOne({
-          where: { link: req.body.link },
-          include: { model: Quiz, attributes: ["id"] },
-        });
-        const quizId = invite.Quiz.id;
-        await Assignment.findOrCreate({
-          where: { StudentId: req.user.user.id, QuizId: quizId },
-        });
-        res.redirect("/student");
+        if (req.body.link!="") {
+          const invite = await Invite.findOne({
+            where: { link: req.body.link },
+            include: { model: Quiz, attributes: ["id"] },
+          });
+          const quizId = invite.Quiz.id;
+          await Assignment.findOrCreate({
+            where: { StudentId: req.user.user.id, QuizId: quizId },
+          });
+        }
+        if (req.body.redirect!="") res.redirect(req.body.redirect)
+        else res.redirect("/student");
       } catch (err) {
+        console.log(err)
         res.redirect("/student/login");
       }
+    } else {
+      console.log("hey")
     }
   }
 );
@@ -1306,6 +1312,7 @@ app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
     link: req.query.link,
     email: req.query.email,
     success: req.query.success,
+    redirect: req.query.url
   });
 });
 
@@ -1449,6 +1456,33 @@ app.get("/email-template", (req,res)=>{
     button_text: "Visit",
     button_link: "https://iec.org.pk"
   })
+})
+
+app.get("/mail/unsubscribe", checkStudentAuthenticated ,async (req,res)=>{
+  try {
+    const student = await Student.findOne({where:{id: req.user.user.id}})
+    if (student!=null) {
+      student.hasUnsubscribedFromEmails = true
+      await student.save()
+      res.render("templates/error.ejs", {
+        additional_info:
+          "Successfully Unsubscribed",
+        error_message:
+          "You will not receive any more similar automated emails from the IEC LCMS.",
+        action_link: "/",
+        action_link_text: "Click here to go to the IEC LCMS home page.",
+      });
+    }
+  } catch(err) {
+    res.render("templates/error.ejs", {
+      additional_info:
+        "Failed",
+      error_message:
+        "We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at mail@iec.org.pk for assistance.",
+      action_link: "/",
+      action_link_text: "Click here to go to the IEC LCMS home page.",
+    });
+  }
 })
 
 app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {

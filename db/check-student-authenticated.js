@@ -4,7 +4,9 @@ const checkAuthenticated = (req, res, next) => {
     if (req.user.type == "student") return next();
     else res.redirect("/student/login");
   } else {
-    res.redirect("/student/login");
+    if (req.url != "/student")
+    res.redirect(`/student/login?url=${encodeURIComponent(req.url)}`);
+    else res.redirect(`/student/login`);
   }
 };
 
