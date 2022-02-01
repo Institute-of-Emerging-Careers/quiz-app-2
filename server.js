@@ -59,6 +59,7 @@ const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
 const stateToCSV = require("./functions/stateToCSV.js");
 const { encode } = require("punycode");
+const { resolveSoa } = require("dns");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -907,6 +908,22 @@ app.post("/quiz/save-progress", checkStudentAuthenticated, (req, res) => {
       res.json({ success: false });
     });
 });
+
+app.post("/quiz/edit-reminder-setting", checkAdminAuthenticated, async (req,res) => {
+  try {
+    const quiz = await Quiz.findOne({where: {id:req.body.quiz_id}})
+    if (quiz!=null) {
+      const cur_reminder_setting = req.body.current_reminder_setting == "true" ? true : false
+      const new_reminder_setting = !cur_reminder_setting
+      quiz.sendReminderEmails = new_reminder_setting
+      await quiz.save()
+      res.json({success:true, new_reminder_setting: new_reminder_setting})
+    } else res.json({success:false})
+  } catch(err) {
+    res.json({success:false})
+    console.log(err)
+  }
+})
 
 app.get(
   "/quiz/attempt/:sectionId/score",

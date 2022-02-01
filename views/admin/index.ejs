@@ -99,8 +99,8 @@
               <i class="fas fa-ellipsis-v text-white text-xl hover:text-gray-100" onClick="toggleDropdown(<%=all_quizzes[i].id%>)"></i>
               <div class="absolute z-10 w-max border shadow-lg hidden text-sm" id="quiz-dropdown-<%=all_quizzes[i].id%>">
                 <ul>
-                  <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6"><%- all_quizzes[i].sendReminderEmails ? "<i class='fas fa-envelope col-start-1 col-span-1 self-start self-center'></i> <span class='col-start-2 col-span-5 self-start w-max'>Disable Reminder Emails</span>" : "<i class='far fa-envelope col-start-1 col-span-1 self-start self-center'></i> <span class='col-start-2 col-span-5 w-max'>Enable Reminder Emails</span>" %></a></li>
-                  <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6" href="/delete/quiz/<%= all_quizzes[i].id %>"><i class="fas fa-trash col-start-1 col-span-1 self-start self-center"></i> <span class='col-start-2 col-span-5 self-start w-max'>Delete Quiz</span></a></li>
+                  <li class="py-3 px-6 bg-white hover:bg-gray-100 grid grid-cols-6" data-current-reminder-setting="<%=all_quizzes[i].sendReminderEmails%>" data-quiz-id="<%= all_quizzes[i].id %>" onClick="toggleReminderEmailSetting(this)"><%- all_quizzes[i].sendReminderEmails ? "<i class='fas fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 self-start w-max'>Disable Reminder Emails</span>" : "<i class='far fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 w-max'>Enable Reminder Emails</span>" %></li>
+                  <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6" href="/delete/quiz/<%= all_quizzes[i].id %>"><i class="fas fa-trash col-start-1 col-span-1 self-center"></i> <span class='col-start-2 col-span-5 self-start w-max'>Delete Quiz</span></a></li>
                 </ul>
               </div>
             </div>
