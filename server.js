@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const compression = require("compression")
 const fs = require("fs");
 const util = require("util");
 const csv_parser = require("csv-parse");
@@ -119,6 +120,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(compression())
 
 // Initializing Stuff
 initializePassport(passport);
