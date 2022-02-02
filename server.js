@@ -7,7 +7,7 @@ const csv_parser = require("csv-parse");
 const multer = require("multer");
 const passport = require("passport");
 const flash = require("express-flash");
-const session = require("cookie-session");
+const session = require("express-session");
 const initializePassport = require("./passport-config.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
@@ -113,8 +113,6 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
-    // Cookie Options
-    maxAge: 3 * 24 * 60 * 60 * 1000 // 72 hours
   })
 );
 app.use(passport.initialize());
