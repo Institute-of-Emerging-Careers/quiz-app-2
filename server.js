@@ -113,6 +113,8 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    // Cookie Options
+    maxAge: 3 * 24 * 60 * 60 * 1000 // 72 hours
   })
 );
 app.use(passport.initialize());
