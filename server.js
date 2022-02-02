@@ -182,21 +182,19 @@ app.post("/mail/send/batch", checkAdminAuthenticated, async (req,res)=>{
       let target_num_emails = req.body.email_addresses.length
       req.body.email_addresses.forEach(async (email)=>{
         try {
-          await sendHTMLMail(email, req.body.subject, 
+          await sendHTMLMail(email, req.body.email_content.subject, 
           { 
-            heading: req.body.heading,
-            inner_text: req.body.inner_text,
-            button_announcer: req.body.button_announcer,
-            button_text: req.body.button_text,
-            button_link: req.body.button_link
+            heading: req.body.email_content.heading,
+            inner_text: req.body.email_content.inner_text,
+            button_announcer: req.body.email_content.button_announcer,
+            button_text: req.body.email_content.button_text,
+            button_link: req.body.email_content.button_link
           })
           num_emails++
-          console.log(num_emails, target_num_emails)
           if (num_emails == target_num_emails) resolve()
         } catch(err) {
           console.log("Email sending failed.",err)
           num_emails++
-          console.log(num_emails, target_num_emails)
           if (num_emails == target_num_emails) resolve()
         }
       })

@@ -46,7 +46,6 @@ async function sendHTMLMail(recepient, subject, ejs_obj) {
   if (process.env.NODE_ENV == "production") {
     // checking if this student has unsubscribed from emails, and if so, we won't send him/her an email
     const student = await Student.findOne({where:{email:recepient}, attributes:["hasUnsubscribedFromEmails"]})
-    console.log(recepient, student)
     if (student==null || !student.hasUnsubscribedFromEmails)
     {
       var transporter = nodemailer.createTransport({
