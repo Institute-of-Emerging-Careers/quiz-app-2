@@ -74,39 +74,44 @@ function uploadCSV(e) {
     });
 }
 
-function sendEmails() {
+function sendEmails() {   
+    document.getElementById("loading-spinner").classList.remove("hidden")
+    if (!recepient_field.disabled) {
+        // this means that no excel sheet was uploaded for email addresses
+        email_addresses = []
+        email_addresses.push(recepient_field.value)
+    }
     
-    if (recepient_field.disabled) {
-        // this means that an excel sheet of emails has been added
-        if (email_addresses.length>0) {
-            fetch("/mail/send/batch", {
-                method:"POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    email_addresses: email_addresses,
-                    email_content: {
-                        subject: email_subject.value,
-                        heading: email_heading.value,
-                        inner_text: email_body.value,
-                        button_announcer: email_button_announcer.value,
-                        button_text: email_button_label.value,
-                        button_link: email_button_url.value
-                    }
-                })
-            })
-            .then(response=>{
-                if (response.status==200) {
-                    alert("Emails sent successfully")
-                } else {
-                    alert("There was an error sending emails. Contact IT.")
+    if (email_addresses.length>0) {
+        fetch("/mail/send/batch", {
+            method:"POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                email_addresses: email_addresses,
+                email_content: {
+                    subject: email_subject.value,
+                    heading: email_heading.value,
+                    inner_text: email_body.value,
+                    button_announcer: email_button_announcer.value,
+                    button_text: email_button_label.value,
+                    button_link: email_button_url.value
                 }
             })
-            .catch(err=>{
-                console.log(err)
-                alert("Could not contact server. Something is wrong. Try later.")
-            })
-        } else {
-            alert("No email addresses found.")
-        }
+        })
+        .then(response=>{
+            document.getElementById("loading-spinner").classList.add("hidden")
+            if (response.status==200) {
+                alert("Emails sent successfully")
+            } else {
+                alert("There was an error sending emails. Contact IT.")
+            }
+        })
+        .catch(err=>{
+            document.getElementById("loading-spinner").classList.add("hidden")
+            console.log(err)
+            alert("Could not contact server. Something is wrong. Try later.")
+        })
+    } else {
+        alert("No email addresses found.")
     }
 }
