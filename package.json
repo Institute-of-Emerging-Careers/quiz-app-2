@@ -4,7 +4,7 @@
   "description": "Made for EIC",
   "main": "index.js",
   "scripts": {
-    "dev": "yarn build:css && nodemon --delay 500ms -r dotenv/config server.js",
+    "dev": "nodemon --delay 500ms -r dotenv/config server.js",
     "build:css": "postcss resources/css/tailwind.css -o resources/css/style.css",
     "start": "node -r dotenv/config server.js",
     "test": "echo \"Error: no test specified\" && exit 1",

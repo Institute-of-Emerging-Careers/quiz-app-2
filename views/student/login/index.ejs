@@ -35,7 +35,8 @@
             </p>
             <% } %>
           <div class="mt-6">
-            <% if (email != undefined) {%><p class="text-green-500 mb-3">You were redirected to this page because an account with this email address already exists. So you don't have to create a new account. Please enter your password and log in below.</p><br><%}%>
+            <% if (email != undefined) {%><p class="text-green-500 mb-3">You were redirected to this page because an account with your email address (<%=email%>) already exists. So you don't have to create a new account. <br>Please enter your password below and log in.</p><br><%}
+             else if (cnic != undefined) {%><p class="text-green-500 mb-3">You were redirected to this page because an account with your CNIC Number (<%=cnic%>) already exists. So you don't have to create a new account again. <br>Please enter your email and password below and log in.</p><br><%}%>
             <% if (success != undefined) {%> <p class="text-green-500 mb-3">You have successfully changed your password. You can log in now.</p> <%} %>
             <label for="email" class="ml-0 text-left float-left text-gray-800">Email Address:</label>
             <input type="email" name="email" id="email" placeholder="you@site.com" value="<%= email %>" class="border w-full py-3 px-4 mt-1 hover:shadow-sm" <% if (email == undefined) {%> autofocus <%}%> />
