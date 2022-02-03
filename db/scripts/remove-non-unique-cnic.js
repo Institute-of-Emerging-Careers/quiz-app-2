@@ -7,6 +7,12 @@ function getRandomCNIC() {
     return Math.floor(Math.random() * (maxm - minm + 1)) + minm;
 }
 
+function addDashes(cnic) {
+    return cnic.slice(0,5) + "-" + cnic.slice(5,12) + "-" + cnic[12]
+    // 35201352016 2 3
+    // 0123456789101112
+}
+
 async function removeNonUniqueCNICs() {
   const students = await Student.findAll()
   const used_cnics = []
@@ -20,7 +26,7 @@ async function removeNonUniqueCNICs() {
             if (i==n) resolve()
         } else {
             while (used_cnics.includes(student.cnic))  {
-                student.cnic = getRandomCNIC()
+                student.cnic = addDashes(getRandomCNIC().toString())
             }
             await student.save()
             i++
