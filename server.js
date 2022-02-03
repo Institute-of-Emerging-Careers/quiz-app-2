@@ -1327,6 +1327,12 @@ app.get("/email-exists/:email", async (req, res) => {
   else res.send(false);
 });
 
+app.get("/cnic-exists/:cnic", async (req, res) => {
+  if ((await Student.count({ where: { cnic: req.params.cnic } })) > 0)
+    res.send(true);
+  else res.send(false);
+});
+
 app.get("/logout", (req, res) => {
   if (req.hasOwnProperty("user")) {
     const user_type = req.user.type;
@@ -1394,6 +1400,7 @@ app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
   res.render("student/login/index.ejs", {
     link: req.query.link,
     email: req.query.email,
+    cnic: req.query.cnic,
     success: req.query.success,
     redirect: req.query.url
   });

@@ -121,9 +121,16 @@ $(document).ready(function () {
     }
   }
 
+  // checking if the email entered is already taken, if yes we redirect user to login page
   email_field.focusout((e)=>{
     $.get("/email-exists/" + email_field.val(), (data, success)=>{
-      if (data == true) window.location="/student/login?link=" + location.pathname.split('/').slice(-1)[0] + "&email=" + email_field.val()
+      if (data == true) window.location="/student/login?link=" + location.pathname.split('/').slice(-1)[0] + "&email=" + encodeURIComponent(email_field.val())
+    })
+  })
+
+  cnic_field.focusout((e)=>{
+    $.get("/cnic-exists/" + cnic_field.val(), (data, success)=>{
+      if (data == true) window.location="/student/login?link=" + location.pathname.split('/').slice(-1)[0] + "&cnic=" + encodeURIComponent(cnic_field.val())
     })
   })
 
