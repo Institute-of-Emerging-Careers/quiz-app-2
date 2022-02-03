@@ -16,6 +16,15 @@ const email_button_announcer = document.getElementById("button_announcer")
 const email_button_label = document.getElementById("button_text")
 const email_button_url = document.getElementById("button_url")
 
+// restore old values from localStorage if present
+email_subject.value = window.localStorage.getItem("subject")
+email_body.value = window.localStorage.getItem("inner_text")
+email_heading.value = window.localStorage.getItem("heading",email_heading.value)
+email_button_announcer.value = window.localStorage.getItem("button_announcer",email_button_announcer.value)
+email_button_label.value = window.localStorage.getItem("button_text",email_button_label.value)
+email_button_url.value = window.localStorage.getItem("button_url",email_button_url.value)
+
+
 email_button.addEventListener("click", sendEmails)
 
 function arrayToCommaDeliminatedString(arr) {
@@ -76,6 +85,15 @@ function uploadCSV(e) {
 
 function sendEmails() {   
     document.getElementById("loading-spinner").classList.remove("hidden")
+
+    // save this email's subject and content to browser local storage for future use
+    window.localStorage.setItem("subject",email_subject.value)
+    window.localStorage.setItem("heading",email_heading.value)
+    window.localStorage.setItem("inner_text",email_body.value)
+    window.localStorage.setItem("button_announcer",email_button_announcer.value)
+    window.localStorage.setItem("button_text",email_button_label.value)
+    window.localStorage.setItem("button_url",email_button_url.value)
+
     if (!recepient_field.disabled) {
         // this means that no excel sheet was uploaded for email addresses
         email_addresses = []
