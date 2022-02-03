@@ -249,7 +249,7 @@ const Option = (props) => {
     });
   }
 
-  function uploadImage(e) {
+  function uploadFile(e) {
     let data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
     setUploading(true);
     // data.append("file", e.target.files[0]);
@@ -348,7 +348,7 @@ const Option = (props) => {
                 type="file"
                 accept="image/png, image/jpeg"
                 name="file"
-                onChange={uploadImage}
+                onChange={uploadFile}
                 className="self-center hidden"
               ></input>
             </label>
@@ -395,6 +395,51 @@ const Option = (props) => {
     </li>
   );
 };
+
+const ImageOrAudio = (props) => {
+  const [state, setState] = useContext(MyContext);
+
+  function deleteQuestionImage(e) {
+    setState((cur) => {
+      let obj = { ...cur };
+      let copy = obj.mcqs.slice();
+      copy[props.sectionIndex].questions[props.questionIndex].image = null;
+      obj.mcqs = copy;
+      return obj;
+    });
+  }
+
+  if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(1,4) == "img") {
+    return (
+      <div className="relative w-max">
+        <img
+          src={
+            state.mcqs[props.sectionIndex].questions[props.questionIndex]
+              .image
+          }
+          height="150px"
+          className="mt-6 ml-8 max-h-64 w-auto"
+        ></img>
+        <i
+          className="fas fa-trash p-2 absolute top-0 right-0 bg-white text-red-500 shadow-md cursor-pointer"
+          onClick={deleteQuestionImage}
+        ></i>
+      </div>
+    )
+  } else if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(1,6) == "audio") {
+    return (
+      <div className="w-max flex items-center">
+          <audio controls>
+            <source src={state.mcqs[props.sectionIndex].questions[props.questionIndex].image} type="audio/mpeg"></source>
+            <span>Your browser does not support the audio element.</span>
+          </audio> 
+          <i
+          className="fas fa-trash p-2 bg-white text-red-500 cursor-pointer"
+          onClick={deleteQuestionImage}></i>
+      </div>
+    )
+  }
+}
 
 const MCQ = (props) => {
   const [state, setState] = useContext(MyContext);
@@ -578,7 +623,7 @@ const MCQ = (props) => {
     return copy;
   }
 
-  function uploadImage(e) {
+  function uploadFile(e) {
     let data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
     setUploading(true);
     fetch("/upload", {
@@ -671,15 +716,7 @@ const MCQ = (props) => {
     });
   }
 
-  function deleteQuestionImage(e) {
-    setState((cur) => {
-      let obj = { ...cur };
-      let copy = obj.mcqs.slice();
-      copy[props.sectionIndex].questions[props.questionIndex].image = null;
-      obj.mcqs = copy;
-      return obj;
-    });
-  }
+
 
   return (
     <div>
@@ -796,19 +833,20 @@ const MCQ = (props) => {
                 ref={fileUploadForm}
                 className="col-span-1 relative cursor-pointer"
                 style={{ flexBasis: "10%" }}
+                title="Upload Image or Audio"
               >
                 <div className="absolute text-3xl w-full h-full grid grid-cols-1 border-gray-300 border-4 cursor-pointer">
                   {uploading == false ? (
-                    <i className="far fa-image col-span-1 justify-self-center self-center text-gray-300"></i>
+                    <i className="far fa-file col-span-1 justify-self-center self-center text-gray-300"></i>
                   ) : (
                     <i className="fas fa-spinner text-gray-300 justify-self-center self-center col-span-1 animate-spin"></i>
                   )}
                 </div>
                 <input
                   type="file"
-                  accept="image/png, image/jpeg"
+                  accept="image/png, image/jpeg, audio/mpeg"
                   name="file"
-                  onChange={uploadImage}
+                  onChange={uploadFile}
                   className="opacity-0 w-full h-full cursor-pointer"
                 ></input>
               </form>
@@ -844,22 +882,7 @@ const MCQ = (props) => {
           {state.mcqs[props.sectionIndex].questions[props.questionIndex]
             .image == null ? (
             <div className="hidden"></div>
-          ) : (
-            <div className="relative w-max">
-              <img
-                src={
-                  state.mcqs[props.sectionIndex].questions[props.questionIndex]
-                    .image
-                }
-                height="150px"
-                className="mt-6 ml-8 max-h-64 w-auto"
-              ></img>
-              <i
-                className="fas fa-trash p-2 absolute top-0 right-0 bg-white text-red-500 shadow-md cursor-pointer"
-                onClick={deleteQuestionImage}
-              ></i>
-            </div>
-          )}
+          ) : <ImageOrAudio sectionIndex={props.sectionIndex} questionIndex={props.questionIndex}></ImageOrAudio>}
           <ul className="mt-4 ml-10">
             {state.mcqs[props.sectionIndex].questions[
               props.questionIndex
