@@ -99,6 +99,7 @@ Student.init(
     cnic: {
       type: DataTypes.STRING(15),
       allowNull: false,
+      unique:true,
       validate: {
         is:{args:[/\d\d\d\d\d-\d\d\d\d\d\d\d-\d/i], msg: "CNIC Format Invalid. Correct format: xxxxx-xxxxxxx-x"},
         notEmpty: {
