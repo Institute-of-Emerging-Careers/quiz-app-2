@@ -194,6 +194,21 @@ const Passage = (props) => {
   );
 };
 
+const ImageOrAudio = (props) => {
+  if (props.question.image.slice(1,4)=="img") {
+    return (<img
+      src={question.image}
+      className="max-w-xl max-h-xl w-auto h-auto"
+    ></img>)
+  } else if (props.question.image.slice(1,6) == "audio") {
+    return (
+    <audio controls>
+      <source src={props.question.image} type="audio/mpeg"></source>
+      <span>Your browser does not support the audio element. Use a modern browser.</span>
+    </audio>)
+  }
+}
+
 const Question = (props) => {
   const { questionsObj } = useContext(MyContext);
   const [questions, setQuestions] = questionsObj;
@@ -206,10 +221,7 @@ const Question = (props) => {
         Question {question.questionOrder + 1} of {props.total_questions}
       </div>
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
-        <img
-          src={question.image}
-          className="max-w-xl max-h-xl w-auto h-auto"
-        ></img>
+        <ImageOrAudio question={question}></ImageOrAudio>
         <a
           href={question.link_url}
           className="text-blue-600 underline hover:no-underline"
