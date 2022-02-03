@@ -53,6 +53,7 @@ const scoreSectionAndSendEmail = require("./functions/scoreSectionAndSendEmail")
 const {getQuizResults,getQuizResultsWithAnalysis} = require("./functions/getQuizResults")
 const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
 const flatten2DArray = require("./functions/flatten2DArray")
+const sendFileInResponse = require("./functions/sendFileInResponse")
 const getAssignment = require("./db/getAssignment");
 const getSection = require("./db/getSection");
 const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMinutesAndSeconds");
@@ -82,6 +83,42 @@ var img_storage = multer.diskStorage({
 
 
 var img_upload = multer({ storage: img_storage });
+
+// Multer config for file upload (image and audio allowed)
+var file_storage = multer.diskStorage({
+  destination: function(req,file,cb) {
+    switch(file.mimetype) {
+      case "image/jpeg":
+        upload_folder = "./uploads/images";
+        break;
+      case "image/png":
+        upload_folder = "./uploads/images";
+        break;
+      case "audio/mpeg":
+        upload_folder = "./uploads/audio";
+        break;
+    }
+    cb(null, upload_folder)
+  },
+  filename: function (req, file, cb) {
+    switch (file.mimetype) {
+      case "image/jpeg":
+        ext = ".jpeg";
+        break;
+      case "image/png":
+        ext = ".png";
+        break;
+      case "audio/mpeg":
+        ext = ".mp3";
+        break;
+    }
+    cb(null, file.originalname + "-" + Date.now() + ext);
+  },
+});
+
+
+
+var file_upload = multer({ storage: file_storage });
 
 // Multer config for csv file upload
 var csv_storage = multer.diskStorage({
@@ -946,8 +983,17 @@ app.get(
   }
 );
 
-app.post("/upload", img_upload.single("file"), (req, res) => {
-  res.status(200).json({ status: true, filename: "/img/" + req.file.filename });
+app.post("/upload", file_upload.single("file"), (req, res) => {
+  const file_type = req.file.mimetype.slice(0,5)
+  let file_name = ""
+  if (file_type == "image") file_name = "/img/"
+  else if (file_type == "audio") file_name = "/audio/"
+
+  let response_object = {
+    status: true, 
+    filename:  file_name + req.file.filename
+  }
+  res.status(200).json(response_object);
 });
 
 app.post("/quiz/save-progress", checkStudentAuthenticated, (req, res) => {
@@ -1173,35 +1219,16 @@ app.get("/registrations/:link", checkAdminAuthenticated, async (req, res) => {
 });
 
 app.get("/img/:filename", (req, res) => {
-  var options = {
-    root: path.join(__dirname, "uploads/images"),
-    dotfiles: "deny",
-    headers: {
-      "x-timestamp": Date.now(),
-      "x-sent": true,
-    },
-  };
-  res.sendFile(req.params.filename, options, function (err) {
-    if (err) {
-      console.log(err);
-    }
-  });
+  sendFileInResponse(req, res, "uploads/images")
 });
 
+app.get("/audio/:filename", (req, res) => {
+  sendFileInResponse(req, res, "uploads/audio")
+});
+
+
 app.get("/csv/:filename", (req, res) => {
-  var options = {
-    root: path.join(__dirname, "downloads/csv"),
-    dotfiles: "deny",
-    headers: {
-      "x-timestamp": Date.now(),
-      "x-sent": true,
-    },
-  };
-  res.sendFile(req.params.filename, options, function (err) {
-    if (err) {
-      console.log(err);
-    }
-  });
+  sendFileInResponse(req, res, "uploads/csv")
 });
 
 app.post(
