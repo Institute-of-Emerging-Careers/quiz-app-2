@@ -275,10 +275,19 @@ PasswordResetLink.init({
 Quiz.hasMany(Invite, {
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
+  foreignKey: {
+    allowNull: false,
+  }
 });
 Invite.belongsTo(Quiz);
 
-Student.belongsTo(Invite);
+Student.belongsTo(Invite, {
+  onDelete: "SET NULL",
+  onUpdate: "CASCADE",
+  foreignKey: {
+    allowNull: false
+  }
+});
 Invite.hasMany(Student);
 
 // Student, Assignment, and Quiz relationships
@@ -321,7 +330,7 @@ Answer.belongsTo(Student);
 
 Option.hasMany(Answer, {
   onDelete: "RESTRICT",
-  onUpdate: "NO ACTION",
+  onUpdate: "CASCADE",
   foreignKey: {
     allowNull: false,
   },
@@ -330,11 +339,20 @@ Answer.belongsTo(Option);
 
 
 // Assignment and Attempt relationship
-Assignment.hasMany(Attempt, {})
+Assignment.hasMany(Attempt, {
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+  foreignKey: {
+    allowNull: false,
+  },
+})
+
 Attempt.belongsTo(Assignment)
 
 // Attempt and Section relationship
 Section.hasMany(Attempt, {
+  onDelete: "RESTRICT",
+  onUpdate: "CASCADE",
   foreignKey: {
     allowNull: false,
   },
