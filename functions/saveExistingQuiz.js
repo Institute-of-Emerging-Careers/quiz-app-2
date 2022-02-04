@@ -142,9 +142,6 @@ async function removeEverythingInQuiz(the_quiz, t) {
     .then(() => {
       return deleteAllSectionsInQuiz(data, num_sections, t);
     })
-    .catch((err) => {
-      console.log(err);
-    });
 }
 
 const saveExistingQuiz = async (req, res) => {
