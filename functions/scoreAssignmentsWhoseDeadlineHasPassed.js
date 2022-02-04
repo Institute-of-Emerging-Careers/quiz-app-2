@@ -14,6 +14,7 @@ async function scoreAssignmentsWhoseDeadlineHasPassed() {
                 let attempt = assignment.Attempts.find(attempt=>attempt.SectionId == section.id)
                 if (assignment.Attempts == null || assignment.Attempts.find(attempt=>attempt.SectionId == section.id) == undefined) {
                     attempt = await Attempt.create({AssignmentId: assignment.id, SectionId: section.id})
+                    await assignment.Quiz.update({allow_edit:false})
                 }
                 const score = await attempt.getScore()
                 if (score == null)
