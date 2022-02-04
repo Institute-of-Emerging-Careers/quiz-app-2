@@ -54,13 +54,21 @@ const {getQuizResults,getQuizResultsWithAnalysis} = require("./functions/getQuiz
 const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
 const flatten2DArray = require("./functions/flatten2DArray")
 const sendFileInResponse = require("./functions/sendFileInResponse")
+const stateToCSV = require("./functions/stateToCSV.js");
+
+// starting cron-jobs
+const {assessment_reminder_mailer_task, score_past_deadline_attempts} = require("./functions/cron-ping")
+
+assessment_reminder_mailer_task.start();
+score_past_deadline_attempts.start()
+
+
 const getAssignment = require("./db/getAssignment");
 const getSection = require("./db/getSection");
 const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMinutesAndSeconds");
 const { rejects } = require("assert");
 const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
-const stateToCSV = require("./functions/stateToCSV.js");
 const { encode } = require("punycode");
 const { resolveSoa } = require("dns");
 
