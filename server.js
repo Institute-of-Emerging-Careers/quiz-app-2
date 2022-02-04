@@ -650,7 +650,6 @@ app.get(
     // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date()
     const timeDiff = (now - assignment.createdAt)
-    console.log(timeDiff)
     if (timeDiff > 259200000) //>72h
     {
       await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id)
