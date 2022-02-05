@@ -162,7 +162,7 @@ const PassageQuestionPrompt = (props) => {
 
   return (
     <span>
-      Questions {list_of_questions} are about the following comprehension
+      Questions {props.questionIndex+1} isi about the following comprehension
       passage: <br></br>
     </span>
   );
@@ -195,18 +195,20 @@ const Passage = (props) => {
 };
 
 const ImageOrAudio = (props) => {
-  if (props.question.image.slice(1,4)=="img") {
-    return (<img
-      src={question.image}
-      className="max-w-xl max-h-xl w-auto h-auto"
-    ></img>)
-  } else if (props.question.image.slice(1,6) == "audio") {
-    return (
-    <audio controls>
-      <source src={props.question.image} type="audio/mpeg"></source>
-      <span>Your browser does not support the audio element. Use a modern browser.</span>
-    </audio>)
-  }
+  if (props.question.image!=null) {
+    if (props.question.image.slice(1,4)=="img") {
+      return (<img
+        src={question.image}
+        className="max-w-xl max-h-xl w-auto h-auto"
+      ></img>)
+    } else if (props.question.image.slice(1,6) == "audio") {
+      return (
+      <audio controls>
+        <source src={props.question.image} type="audio/mpeg"></source>
+        <span>Your browser does not support the audio element. Use a modern browser.</span>
+      </audio>)
+    }
+  } else return <div></div>
 }
 
 const Question = (props) => {

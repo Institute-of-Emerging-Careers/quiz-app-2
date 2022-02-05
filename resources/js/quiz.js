@@ -259,7 +259,6 @@ const Option = (props) => {
     }).then((response) => {
       if (response.status == 200) {
         response.json().then((finalResponse) => {
-          console.log(finalResponse);
           if (finalResponse.status == true) {
             setState((cur) => {
               let obj = { ...cur };

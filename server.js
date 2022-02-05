@@ -166,6 +166,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(compression())
+app.use(express.bodyParser({limit: '50mb'}));
 
 // Initializing Stuff
 initializePassport(passport);
@@ -830,11 +831,11 @@ app.get(
       where: {
         id: req.params.sectionId,
       },
+      order: [[Question, 'questionOrder', 'asc']],
       include: [
         {
           model: Question,
           required: true,
-          order: [["questionOrder", "asc"]],
           include: [Passage],
         },
       ],
@@ -885,7 +886,7 @@ app.get(
             : null,
         },
         options: [],
-        answer: -1,
+        answer: -1, //student's old answers, not the correct answers
       });
     }
 
