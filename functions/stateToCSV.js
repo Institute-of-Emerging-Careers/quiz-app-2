@@ -27,6 +27,7 @@ const path = require("path");
 */
 
 function generateImageLink(link) {
+  // this function adds an "https" to the start of a link if the link does not have it.
   if (link.slice(0, 4) == "http") return link;
   else return process.env.SITE_DOMAIN_NAME + "/" + link;
 }

@@ -992,6 +992,7 @@ app.get(
 );
 
 app.post("/upload", file_upload.single("file"), (req, res) => {
+  console.log("uploading file")
   const file_type = req.file.mimetype.slice(0,5)
   let file_name = ""
   if (file_type == "image") file_name = "/img/"
@@ -1236,7 +1237,7 @@ app.get("/audio/:filename", (req, res) => {
 
 
 app.get("/csv/:filename", (req, res) => {
-  sendFileInResponse(req, res, "uploads/csv")
+  sendFileInResponse(req, res, "downloads/csv")
 });
 
 app.post(

@@ -1557,7 +1557,6 @@ const Main = () => {
           console.log(finalResponse);
           if (finalResponse.status == true) {
             window.location = finalResponse.file_link;
-            console.log(finalResponse.file_link);
           } else console.log("Error");
         });
       })
