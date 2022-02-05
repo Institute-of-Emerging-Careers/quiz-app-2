@@ -166,7 +166,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(compression())
-app.use(express.bodyParser({limit: '50mb'}));
+
 
 // Initializing Stuff
 initializePassport(passport);
