@@ -6,3 +6,4 @@ resources/js/node_modules
 uploads
 downloads
 nginx.conf
+.vscode
