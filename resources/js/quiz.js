@@ -408,13 +408,17 @@ const ImageOrAudio = (props) => {
     });
   }
 
-  if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(1,4) == "img") {
+  if (
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
+      1,
+      4
+    ) == "img"
+  ) {
     return (
       <div className="relative w-max">
         <img
           src={
-            state.mcqs[props.sectionIndex].questions[props.questionIndex]
-              .image
+            state.mcqs[props.sectionIndex].questions[props.questionIndex].image
           }
           height="150px"
           className="mt-6 ml-8 max-h-64 w-auto"
@@ -424,23 +428,35 @@ const ImageOrAudio = (props) => {
           onClick={deleteQuestionImage}
         ></i>
       </div>
-    )
-  } else if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(1,6) == "audio") {
+    );
+  } else if (
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
+      1,
+      6
+    ) == "audio"
+  ) {
     return (
       <div className="w-max flex items-center">
-          <audio controls>
-            <source src={state.mcqs[props.sectionIndex].questions[props.questionIndex].image} type="audio/mpeg"></source>
-            <span>Your browser does not support the audio element.</span>
-          </audio> 
-          <i
+        <audio controls>
+          <source
+            src={
+              state.mcqs[props.sectionIndex].questions[props.questionIndex]
+                .image
+            }
+            type="audio/mpeg"
+          ></source>
+          <span>Your browser does not support the audio element.</span>
+        </audio>
+        <i
           className="fas fa-trash p-2 bg-white text-red-500 cursor-pointer"
-          onClick={deleteQuestionImage}></i>
+          onClick={deleteQuestionImage}
+        ></i>
       </div>
-    )
+    );
   } else {
-    return <div></div>
+    return <div></div>;
   }
-}
+};
 
 const MCQ = (props) => {
   const [state, setState] = useContext(MyContext);
@@ -717,8 +733,6 @@ const MCQ = (props) => {
     });
   }
 
-
-
   return (
     <div>
       {linkModal == true ? (
@@ -883,7 +897,12 @@ const MCQ = (props) => {
           {state.mcqs[props.sectionIndex].questions[props.questionIndex]
             .image == null ? (
             <div className="hidden"></div>
-          ) : <ImageOrAudio sectionIndex={props.sectionIndex} questionIndex={props.questionIndex}></ImageOrAudio>}
+          ) : (
+            <ImageOrAudio
+              sectionIndex={props.sectionIndex}
+              questionIndex={props.questionIndex}
+            ></ImageOrAudio>
+          )}
           <ul className="mt-4 ml-10">
             {state.mcqs[props.sectionIndex].questions[
               props.questionIndex
@@ -1133,6 +1152,13 @@ const Section = (props) => {
           );
         })}
       </div>
+      <SectionHeader
+        sectionTitle={props.sectionTitle}
+        sectionNumber={props.sectionNumber}
+        sectionIndex={props.sectionNumber - 1}
+        totalSections={props.totalSections}
+        key={props.sectionNumber}
+      />
     </div>
   );
 };
