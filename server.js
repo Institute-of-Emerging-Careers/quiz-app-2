@@ -703,6 +703,7 @@ app.get(
           sectionId: req.params.sectionId,
           sectionTitle: section.title,
           quizTitle: assignment.Quiz.title,
+          env: process.env.NODE_ENV,
           previewOrNot: 0
         });
       } else {
@@ -736,6 +737,7 @@ app.get(
                 sectionId: req.params.sectionId,
                 sectionTitle: section.title,
                 quizTitle: assignment.Quiz.title,
+                env: process.env.NODE_ENV,
                 previewOrNot: 0
               });
             }
@@ -754,6 +756,7 @@ app.get(
               sectionId: req.params.sectionId,
               sectionTitle: section.title,
               quizTitle: assignment.Quiz.title,
+              env: process.env.NODE_ENV,
               previewOrNot: 0
             });
           }
@@ -787,6 +790,7 @@ app.get("/quiz/preview/:quizId/section/:sectionId",
         sectionId: req.params.sectionId,
         sectionTitle: quiz.Sections[0].title,
         quizTitle: quiz.title,
+        env: process.env.NODE_ENV,
         previewOrNot: 1
       });
     } catch(err) {
