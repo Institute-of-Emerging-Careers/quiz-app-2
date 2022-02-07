@@ -207,7 +207,7 @@ const ImageOrAudio = (props) => {
         <source src={props.question.image} type="audio/mpeg"></source>
         <span>Your browser does not support the audio element. Use a modern browser.</span>
       </audio>)
-    }
+    } else return <div></div>
   } else return <div></div>
 }
 
