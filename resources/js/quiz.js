@@ -437,6 +437,8 @@ const ImageOrAudio = (props) => {
           onClick={deleteQuestionImage}></i>
       </div>
     )
+  } else {
+    return <div></div>
   }
 }
 
