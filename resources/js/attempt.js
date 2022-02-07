@@ -195,10 +195,10 @@ const Passage = (props) => {
 };
 
 const ImageOrAudio = (props) => {
-  if (props.question.image!=null) {
+  if (props.question.image!=null && props.question.image != "null") {
     if (props.question.image.slice(1,4)=="img") {
       return (<img
-        src={question.image}
+        src={props.question.image}
         className="max-w-xl max-h-xl w-auto h-auto"
       ></img>)
     } else if (props.question.image.slice(1,6) == "audio") {
