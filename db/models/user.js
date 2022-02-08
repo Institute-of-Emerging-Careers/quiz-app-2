@@ -39,130 +39,151 @@ Student.init(
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Name cannot be empty."
+          msg: "Name cannot be empty.",
         },
         len: {
-          args:[[1,100]],
-          msg: "firstName cannot be shorter than 1 alphabet or longer than 100 alphabets."
+          args: [[1, 100]],
+          msg: "firstName cannot be shorter than 1 alphabet or longer than 100 alphabets.",
         },
-      }
+      },
     },
     lastName: {
       type: DataTypes.STRING(100),
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Name cannot be empty."
+          msg: "Name cannot be empty.",
         },
         len: {
-          args:[[1,100]],
-          msg: "lastName cannot be shorter than 1 alphabet or longer than 100 alphabets."
+          args: [[1, 100]],
+          msg: "lastName cannot be shorter than 1 alphabet or longer than 100 alphabets.",
         },
-      }
+      },
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Email cannot be empty."
+          msg: "Email cannot be empty.",
         },
-        len: {args: [[5,254]], msg: "Email cannot be shorter than 5 characters or longer than 254 characters."},
+        len: {
+          args: [[5, 254]],
+          msg: "Email cannot be shorter than 5 characters or longer than 254 characters.",
+        },
         isEmail: {
-          msg: "Invalid email address format."
+          msg: "Invalid email address format.",
         },
-      }
+      },
     },
     password: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Password cannot be empty."
+          msg: "Password cannot be empty.",
         },
-        len: {args: [[6,255]], msg: "Password cannot be shorter than 6 characters or longer than 255 characters."},
-      }
+        len: {
+          args: [[6, 255]],
+          msg: "Password cannot be shorter than 6 characters or longer than 255 characters.",
+        },
+      },
     },
     phone: {
       type: DataTypes.STRING(11),
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Phone number cannot be empty."
+          msg: "Phone number cannot be empty.",
         },
         len: {
-          msg: "Phone number must be exactly 11 digits long. For example, 03451234567. Do not use dashes or spaces."
+          msg: "Phone number must be exactly 11 digits long. For example, 03451234567. Do not use dashes or spaces.",
         },
-        is:{args: [/\d\d\d\d\d\d\d\d\d\d\d/i], msg: "Phone number invalid. Please make sure it has no alphabets, symbols, dashes, or spaces."},
+        is: {
+          args: [/\d\d\d\d\d\d\d\d\d\d\d/i],
+          msg: "Phone number invalid. Please make sure it has no alphabets, symbols, dashes, or spaces.",
+        },
       },
     },
     cnic: {
       type: DataTypes.STRING(15),
       allowNull: false,
-      unique:true,
+      unique: true,
       validate: {
-        is:{args:[/\d\d\d\d\d-\d\d\d\d\d\d\d-\d/i], msg: "CNIC Format Invalid. Correct format: xxxxx-xxxxxxx-x"},
+        is: {
+          args: [/\d\d\d\d\d-\d\d\d\d\d\d\d-\d/i],
+          msg: "CNIC Format Invalid. Correct format: xxxxx-xxxxxxx-x",
+        },
         notEmpty: {
-          msg: "CNIC cannot be empty."
+          msg: "CNIC cannot be empty.",
         },
         len: {
-          args:[15],
-          msg: "CNIC must be exactly 15 characters long (13 digits and 2 dashes)."
+          args: [15],
+          msg: "CNIC must be exactly 15 characters long (13 digits and 2 dashes).",
         },
-      }
+      },
     },
     age: {
       type: DataTypes.TINYINT.UNSIGNED,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Age cannot be empty."
+          msg: "Age cannot be empty.",
         },
         min: {
           args: [5],
-          msg: "Age must be between 5 and 110"
+          msg: "Age must be between 5 and 110",
         },
-        max:{
+        max: {
           args: [110],
-          msg: "Age must be between 5 and 110"
+          msg: "Age must be between 5 and 110",
         },
-      }
+      },
     },
     gender: {
       type: DataTypes.STRING(15),
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Gender cannot be empty."
+          msg: "Gender cannot be empty.",
         },
-        len: {args: [[2,15]], msg: "Gender name must be between 2 and 15 characters long."},
-      }
+        len: {
+          args: [[2, 15]],
+          msg: "Gender name must be between 2 and 15 characters long.",
+        },
+      },
     },
     city: {
       type: DataTypes.STRING(100),
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "City cannot be empty."
+          msg: "City cannot be empty.",
         },
-        len: {args: [[2,100]], msg: "City name must be between 2 and 100 characters long."},
-      }
+        len: {
+          args: [[2, 100]],
+          msg: "City name must be between 2 and 100 characters long.",
+        },
+      },
     },
     address: {
       type: DataTypes.STRING(300),
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: "Address cannot be empty."
+          msg: "Address cannot be empty.",
         },
-        len: {args: [[10,300]], msg: "Address cannot be shorter than 10 characters and longer than 300 characters."},
-      }
+        len: {
+          args: [[10, 300]],
+          msg: "Address cannot be shorter than 10 characters and longer than 300 characters.",
+        },
+      },
     },
     hasUnsubscribedFromEmails: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
-    }
+      defaultValue: false,
+    },
   },
   {
     sequelize,
@@ -199,8 +220,8 @@ Assignment.init(
     timeOfLastReminderEmail: {
       type: DataTypes.BIGINT,
       allowNull: false,
-      defaultValue: 0
-    }
+      defaultValue: 0,
+    },
   },
   {
     sequelize,
@@ -216,7 +237,7 @@ Attempt.init(
     statusText: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Not Started"
+      defaultValue: "Not Started",
     },
     startTime: {
       type: DataTypes.BIGINT,
@@ -229,7 +250,7 @@ Attempt.init(
     duration: {
       type: DataTypes.BIGINT,
       allowNull: true,
-    }
+    },
   },
   {
     sequelize,
@@ -245,8 +266,8 @@ Score.init(
     score: {
       type: DataTypes.FLOAT,
       allowNull: false,
-      defaultValue: 0
-    }
+      defaultValue: 0,
+    },
   },
   {
     sequelize,
@@ -260,16 +281,18 @@ Answer.init({}, { sequelize, modelName: "Answer" });
 
 class PasswordResetLink extends Model {}
 
-PasswordResetLink.init({
-  key: {
-    type: DataTypes.STRING(255),
-    allowNull: false,
+PasswordResetLink.init(
+  {
+    key: {
+      type: DataTypes.STRING(255),
+      allowNull: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "PasswordResetLink",
   }
-},{
-  sequelize,
-  modelName: "PasswordResetLink",
-})
-
+);
 
 // Quiz, Student, and Invite relationships
 Quiz.hasMany(Invite, {
@@ -277,16 +300,13 @@ Quiz.hasMany(Invite, {
   onUpdate: "CASCADE",
   foreignKey: {
     allowNull: false,
-  }
+  },
 });
 Invite.belongsTo(Quiz);
 
 Student.belongsTo(Invite, {
   onDelete: "SET NULL",
   onUpdate: "CASCADE",
-  foreignKey: {
-    allowNull: false
-  }
 });
 Invite.hasMany(Student);
 
@@ -332,12 +352,10 @@ Option.hasMany(Answer, {
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
   foreignKey: {
-    defaultValue: null,
-    allowNull: true
-  }
+    allowNull: false,
+  },
 });
 Answer.belongsTo(Option);
-
 
 // Assignment and Attempt relationship
 Assignment.hasMany(Attempt, {
@@ -346,9 +364,9 @@ Assignment.hasMany(Attempt, {
   foreignKey: {
     allowNull: false,
   },
-})
+});
 
-Attempt.belongsTo(Assignment)
+Attempt.belongsTo(Assignment);
 
 // Attempt and Section relationship
 Section.hasMany(Attempt, {
@@ -357,15 +375,23 @@ Section.hasMany(Attempt, {
   foreignKey: {
     allowNull: false,
   },
-})
-Attempt.belongsTo(Section)
+});
+Attempt.belongsTo(Section);
 
 // Attempt and Score relationship
-Attempt.hasOne(Score)
-Score.belongsTo(Attempt)
+Attempt.hasOne(Score);
+Score.belongsTo(Attempt);
 
-Student.hasMany(PasswordResetLink)
-PasswordResetLink.belongsTo(Student)
+Student.hasMany(PasswordResetLink);
+PasswordResetLink.belongsTo(Student);
 
-
-module.exports = { User, Student, Invite, Assignment, Answer, Attempt, Score, PasswordResetLink };
+module.exports = {
+  User,
+  Student,
+  Invite,
+  Assignment,
+  Answer,
+  Attempt,
+  Score,
+  PasswordResetLink,
+};

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
-const compression = require("compression")
+const compression = require("compression");
 const fs = require("fs");
 const util = require("util");
 const csv_parser = require("csv-parse");
@@ -21,7 +21,7 @@ const initializeDatabase = require("./db/initialize");
 const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAuthenticated = require("./db/check-student-authenticated");
 const checkAdminAlreadyLoggedIn = require("./db/check-admin-already-logged-in");
-const checkAnyoneAuthenticated = require("./db/check-anyone-authenticated")
+const checkAnyoneAuthenticated = require("./db/check-anyone-authenticated");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
 const {
   Quiz,
@@ -36,7 +36,7 @@ const {
   Assignment,
   Answer,
   Attempt,
-  PasswordResetLink
+  PasswordResetLink,
 } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const {
@@ -48,31 +48,41 @@ const csvToState = require("./functions/csvToState");
 const deleteQuiz = require("./functions/deleteQuiz");
 const saveQuizProgress = require("./functions/saveQuizProgress");
 const setSectionStatusToInProgress = require("./functions/setSectionStatusToInProgress");
-const retrieveStatus = require("./functions/retrieveStatus")
-const scoreSectionAndSendEmail = require("./functions/scoreSectionAndSendEmail")
-const {getQuizResults,getQuizResultsWithAnalysis} = require("./functions/getQuizResults")
-const {sendTextMail, sendHTMLMail} = require("./functions/sendEmail")
-const flatten2DArray = require("./functions/flatten2DArray")
-const sendFileInResponse = require("./functions/sendFileInResponse")
+const retrieveStatus = require("./functions/retrieveStatus");
+const scoreSectionAndSendEmail = require("./functions/scoreSectionAndSendEmail");
+const {
+  getQuizResults,
+  getQuizResultsWithAnalysis,
+} = require("./functions/getQuizResults");
+const { sendTextMail, sendHTMLMail } = require("./functions/sendEmail");
+const flatten2DArray = require("./functions/flatten2DArray");
+const sendFileInResponse = require("./functions/sendFileInResponse");
 const stateToCSV = require("./functions/stateToCSV.js");
 
 // starting cron-jobs
-const {assessment_reminder_mailer_task, score_past_deadline_attempts} = require("./functions/cron-ping")
+const {
+  assessment_reminder_mailer_task,
+  score_past_deadline_attempts,
+} = require("./functions/cron-ping");
 
 assessment_reminder_mailer_task.start();
-score_past_deadline_attempts.start()
-
+score_past_deadline_attempts.start();
 
 const getAssignment = require("./db/getAssignment");
 const getSection = require("./db/getSection");
-const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMinutesAndSeconds");
+const {
+  millisecondsToMinutesAndSeconds,
+} = require("./functions/millisecondsToMinutesAndSeconds");
 const { rejects } = require("assert");
 const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
 const { Sequelize } = require("sequelize");
 const { encode } = require("punycode");
 const { resolveSoa } = require("dns");
-const { getQuestionObjectsFromArrayOfQuestionIds, getQuestionIdsFromArrayOfAnswers } = require("./functions/utilities.js");
+const {
+  getQuestionObjectsFromArrayOfQuestionIds,
+  getQuestionIdsFromArrayOfAnswers,
+} = require("./functions/utilities.js");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -90,14 +100,12 @@ var img_storage = multer.diskStorage({
   },
 });
 
-
-
 var img_upload = multer({ storage: img_storage });
 
 // Multer config for file upload (image and audio allowed)
 var file_storage = multer.diskStorage({
-  destination: function(req,file,cb) {
-    switch(file.mimetype) {
+  destination: function (req, file, cb) {
+    switch (file.mimetype) {
       case "image/jpeg":
         upload_folder = "./uploads/images";
         break;
@@ -108,7 +116,7 @@ var file_storage = multer.diskStorage({
         upload_folder = "./uploads/audio";
         break;
     }
-    cb(null, upload_folder)
+    cb(null, upload_folder);
   },
   filename: function (req, file, cb) {
     switch (file.mimetype) {
@@ -125,8 +133,6 @@ var file_storage = multer.diskStorage({
     cb(null, file.originalname + "-" + Date.now() + ext);
   },
 });
-
-
 
 var file_upload = multer({ storage: file_storage });
 
@@ -151,9 +157,11 @@ require("dotenv").config();
 
 // Middleware
 app.set("view-engine", "ejs");
-app.use(express.json({limit: '50mb'}));
+app.use(express.json({ limit: "50mb" }));
 app.use(express.static("resources"));
-app.use(express.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
+app.use(
+  express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 })
+);
 app.use(flash());
 app.use(cookieParser());
 app.use(
@@ -162,13 +170,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     // Cookie Options
-    maxAge: 3 * 24 * 60 * 60 * 1000 // 72 hours
+    maxAge: 3 * 24 * 60 * 60 * 1000, // 72 hours
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(compression())
-
+app.use(compression());
 
 // Initializing Stuff
 initializePassport(passport);
@@ -211,54 +218,52 @@ app.get("/admin", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/mail/compose",checkAdminAuthenticated,(req,res)=>{
+app.get("/mail/compose", checkAdminAuthenticated, (req, res) => {
   res.render("admin/email/compose.ejs", {
-    user_type: req.user.type
-  })
-})
+    user_type: req.user.type,
+  });
+});
 
-app.post("/mail/preview", checkAdminAuthenticated, (req,res)=>{
-  res.render("templates/mail-template-1.ejs",{
+app.post("/mail/preview", checkAdminAuthenticated, (req, res) => {
+  res.render("templates/mail-template-1.ejs", {
     heading: req.body.heading,
     inner_text: req.body.body,
     button_announcer: req.body.button_announcer,
     button_text: req.body.button_text,
-    button_link: req.body.button_url
-  })
-})
+    button_link: req.body.button_url,
+  });
+});
 
-app.post("/mail/send/batch", checkAdminAuthenticated, async (req,res)=>{
+app.post("/mail/send/batch", checkAdminAuthenticated, async (req, res) => {
   try {
-    await new Promise(resolve=>{
-      let num_emails = 0
-      let target_num_emails = req.body.email_addresses.length
-      req.body.email_addresses.forEach(async (email)=>{
+    await new Promise((resolve) => {
+      let num_emails = 0;
+      let target_num_emails = req.body.email_addresses.length;
+      req.body.email_addresses.forEach(async (email) => {
         try {
-          await sendHTMLMail(email, req.body.email_content.subject, 
-          { 
+          await sendHTMLMail(email, req.body.email_content.subject, {
             heading: req.body.email_content.heading,
             inner_text: req.body.email_content.inner_text,
             button_announcer: req.body.email_content.button_announcer,
             button_text: req.body.email_content.button_text,
-            button_link: req.body.email_content.button_link
-          })
-          num_emails++
-          if (num_emails == target_num_emails) resolve()
-        } catch(err) {
-          console.log("Email sending failed.",err)
-          num_emails++
-          if (num_emails == target_num_emails) resolve()
+            button_link: req.body.email_content.button_link,
+          });
+          num_emails++;
+          if (num_emails == target_num_emails) resolve();
+        } catch (err) {
+          console.log("Email sending failed.", err);
+          num_emails++;
+          if (num_emails == target_num_emails) resolve();
         }
-      })
-    })
-  
-    res.sendStatus(200)
+      });
+    });
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
-  catch(err) {
-    console.log(err)
-    res.sendStatus(500)
-  }
-})
+});
 
 app.get("/new", checkAdminAuthenticated, (req, res) => {
   res.render("new_quiz.ejs", { quizId: "", user_type: req.user.type });
@@ -296,7 +301,7 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
   } else {
     res.render("student/signup/index.ejs", {
       link: req.params.link,
-      query: req.query
+      query: req.query,
     });
   }
 });
@@ -459,7 +464,8 @@ app.get("/quizState/:quizId", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/quiz/duplicate/:quizId",
+app.get(
+  "/quiz/duplicate/:quizId",
   checkAdminAuthenticated,
   async (req, res) => {
     const old_quiz = await Quiz.findOne({
@@ -574,11 +580,11 @@ app.get("/quiz/duplicate/:quizId",
   }
 );
 
-app.get("/quiz/:quizId/details",
+app.get(
+  "/quiz/:quizId/details",
   checkStudentAuthenticated,
   async (req, res) => {
     try {
-      
       let quiz = await Quiz.findOne({
         where: {
           id: req.params.quizId,
@@ -622,12 +628,11 @@ app.get("/quiz/:quizId/details",
   }
 );
 
-app.get("/test", async(req, res) => {
+app.get("/test", async (req, res) => {
   try {
-    await sendHTMLMail("22100063@lums.edu.pk", `Assessment Completed`, 
-      { 
-        heading: `All Sections Completed`,
-        inner_text: `Dear Student
+    await sendHTMLMail("22100063@lums.edu.pk", `Assessment Completed`, {
+      heading: `All Sections Completed`,
+      inner_text: `Dear Student
         <br>
         This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
         <br>
@@ -635,15 +640,15 @@ app.get("/test", async(req, res) => {
         <br>
         Sincerely, 
         IEC Admissions Team`,
-        button_announcer: "Visit out website to learn more about us",
-        button_text: "Visit",
-        button_link: "https://iec.org.pk"
-      })
-    console.log("Email sent")
-    res.sendStatus(200)
-  } catch(err) {
-      console.log("Email sending failed.", err)
-      res.sendStatus(500)
+      button_announcer: "Visit out website to learn more about us",
+      button_text: "Visit",
+      button_link: "https://iec.org.pk",
+    });
+    console.log("Email sent");
+    res.sendStatus(200);
+  } catch (err) {
+    console.log("Email sending failed.", err);
+    res.sendStatus(500);
   }
 });
 
@@ -659,14 +664,14 @@ app.get(
     );
 
     // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
-    const now = new Date()
-    const timeDiff = (now - assignment.createdAt)
-    if (timeDiff > 259200000) //>72h
-    {
-      await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id)
+    const now = new Date();
+    const timeDiff = now - assignment.createdAt;
+    if (timeDiff > 259200000) {
+      //>72h
+      await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
 
       res.render("templates/error.ejs", {
-        additional_info:"Deadline Passed :(",
+        additional_info: "Deadline Passed :(",
         error_message:
           "You had 72 hours to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
         action_link: "/student",
@@ -690,70 +695,69 @@ app.get(
         },
       });
 
-        try {
-          // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
-          // An Attempt is characterized by an AssignmentId and a SectionId
-          const attempt = await Attempt.findOne({
-            where: {
-              AssignmentId: assignment.id,
-              SectionId: section.id,
-            },
-          });
+      try {
+        // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
+        // An Attempt is characterized by an AssignmentId and a SectionId
+        const attempt = await Attempt.findOne({
+          where: {
+            AssignmentId: assignment.id,
+            SectionId: section.id,
+          },
+        });
 
-          if (attempt != null) {
-            // attempt exists for this section by this student, so we check if there is time remaining
-            if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
-              // this means that the section is timed and the time for this section is already over
-              res.render("templates/error.ejs", {
-                additional_info:"Time Limit Over :(",
-                error_message:
-                  "The time for this section of the assessment has ended. You cannot continue to attempt it anymore.",
-                action_link: "/student",
-                action_link_text: "Click here to go to student home page.",
-              });
-            } else {
-              // the student still has time to continue this section
-              res.render("student/attempt.ejs", {
-                user_type: req.user.type,
-                sectionId: req.params.sectionId,
-                sectionTitle: section.title,
-                quizTitle: assignment.Quiz.title,
-                env: process.env.NODE_ENV,
-                previewOrNot: 0
-              });
-            }
+        if (attempt != null) {
+          // attempt exists for this section by this student, so we check if there is time remaining
+          if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
+            // this means that the section is timed and the time for this section is already over
+            res.render("templates/error.ejs", {
+              additional_info: "Time Limit Over :(",
+              error_message:
+                "The time for this section of the assessment has ended. You cannot continue to attempt it anymore.",
+              action_link: "/student",
+              action_link_text: "Click here to go to student home page.",
+            });
           } else {
-            // the student has never attempted or started to attempt this section before
-
-            // add this section to sectionStatus
-            await setSectionStatusToInProgress(
-              assignment,
-              section,
-              req.params.sectionId
-            );
-
+            // the student still has time to continue this section
             res.render("student/attempt.ejs", {
               user_type: req.user.type,
               sectionId: req.params.sectionId,
               sectionTitle: section.title,
               quizTitle: assignment.Quiz.title,
               env: process.env.NODE_ENV,
-              previewOrNot: 0
+              previewOrNot: 0,
             });
           }
-        } catch (err) {
-          console.log(err);
-          res.send("Error 45. Contact Admin.");
-        }
+        } else {
+          // the student has never attempted or started to attempt this section before
 
+          // add this section to sectionStatus
+          await setSectionStatusToInProgress(
+            assignment,
+            section,
+            req.params.sectionId
+          );
+
+          res.render("student/attempt.ejs", {
+            user_type: req.user.type,
+            sectionId: req.params.sectionId,
+            sectionTitle: section.title,
+            quizTitle: assignment.Quiz.title,
+            env: process.env.NODE_ENV,
+            previewOrNot: 0,
+          });
+        }
+      } catch (err) {
+        console.log(err);
+        res.send("Error 45. Contact Admin.");
+      }
     }
   }
 );
 
-app.get("/quiz/preview/:quizId/section/:sectionId",
+app.get(
+  "/quiz/preview/:quizId/section/:sectionId",
   checkAdminAuthenticated,
   async (req, res) => {
-    
     // Get the section that the student wants to attempt.
     // getSection(sectionId, [what_other_models_to_include_in_results])
     const quiz = await Quiz.findOne({
@@ -761,8 +765,13 @@ app.get("/quiz/preview/:quizId/section/:sectionId",
         id: req.params.quizId,
       },
       attributes: ["title"],
-      include: {model:Section, where: {id: req.params.sectionId}, attributes: ["title"], limit:1}
-  })
+      include: {
+        model: Section,
+        where: { id: req.params.sectionId },
+        attributes: ["title"],
+        limit: 1,
+      },
+    });
 
     try {
       res.render("student/attempt.ejs", {
@@ -771,38 +780,38 @@ app.get("/quiz/preview/:quizId/section/:sectionId",
         sectionTitle: quiz.Sections[0].title,
         quizTitle: quiz.title,
         env: process.env.NODE_ENV,
-        previewOrNot: 1
+        previewOrNot: 1,
       });
-    } catch(err) {
-      console.log(err)
-      res.sendStatus(500)
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
     }
   }
 );
 
-app.get("/quiz/preview/:quiz_id", checkAdminAuthenticated, async (req,res)=>{
-    // Get the section that the student wants to attempt.
-    // getSection(sectionId, [what_other_models_to_include_in_results])
-    const quiz = await Quiz.findOne({
-      where: {
-        id: req.params.quiz_id,
-      },
-      attributes: ["title"],
-      include: {model:Section, attributes: ["id","title"]}
-  })
+app.get("/quiz/preview/:quiz_id", checkAdminAuthenticated, async (req, res) => {
+  // Get the section that the student wants to attempt.
+  // getSection(sectionId, [what_other_models_to_include_in_results])
+  const quiz = await Quiz.findOne({
+    where: {
+      id: req.params.quiz_id,
+    },
+    attributes: ["title"],
+    include: { model: Section, attributes: ["id", "title"] },
+  });
 
   try {
     res.render("admin/preview.ejs", {
-      user_type:req.user.type,
+      user_type: req.user.type,
       quiz_id: req.params.quiz_id,
       quiz_title: quiz.title,
-      sections: quiz.Sections
+      sections: quiz.Sections,
     });
-  } catch(err) {
-    console.log(err)
-    res.sendStatus(500)
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
-})
+});
 
 app.get(
   "/section/:sectionId/all-questions",
@@ -815,7 +824,7 @@ app.get(
       where: {
         id: req.params.sectionId,
       },
-      order: [[Question, 'questionOrder', 'asc']],
+      order: [[Question, "questionOrder", "asc"]],
       include: [
         Quiz,
         {
@@ -826,62 +835,92 @@ app.get(
       ],
     });
 
-    let selected_question_indexes = []
-    let final_questions_array = []
+    let selected_question_indexes = [];
+    let final_questions_array = [];
     let result = [];
     let passages = [];
-    
+
     if (section.poolCount < section.Questions.length) {
       // first getting the list of question IDs of all questions in this section
-      const all_questions = await Question.findAll({where:{SectionId: req.params.sectionId}, attributes:["id"]})
-      const all_question_ids = all_questions.map((question)=>question.id)
-      
+      const all_questions = await Question.findAll({
+        where: { SectionId: req.params.sectionId },
+        attributes: ["id"],
+      });
+      const all_question_ids = all_questions.map((question) => question.id);
 
       // now get all answers of this student that are about any of the above questions
-      const answers = await Answer.findAll({where:{StudentId: req.user.user.id, QuestionId:{[Sequelize.Op.in]:all_question_ids}}, include:[Question]})
+      const answers = await Answer.findAll({
+        where: {
+          StudentId: req.user.user.id,
+          QuestionId: { [Sequelize.Op.in]: all_question_ids },
+        },
+        include: [Question],
+      });
 
-      if (answers.length==0) {
-        console.log("hey")
+      if (answers.length == 0) {
+        console.log("hey");
         // student hasn't attempted this section before so we create a new randomized sequence of questions
 
         // generating p random numbers in a [low,high] range where p=poolCount, low=0 and high=total_num_questions
-        function generateUniqueRandomNumbersInRange(number_of_random_numbers, start_of_range, end_of_range) {
-          let random_numbers = []
+        function generateUniqueRandomNumbersInRange(
+          number_of_random_numbers,
+          start_of_range,
+          end_of_range
+        ) {
+          let random_numbers = [];
 
-          for (let i=0;i<number_of_random_numbers;i++) {
+          for (let i = 0; i < number_of_random_numbers; i++) {
             let question_no;
             do {
-              question_no = parseInt(Math.random() * (end_of_range - start_of_range) + start_of_range)
-            } while (random_numbers.indexOf(question_no)!==-1);
-            random_numbers.push(question_no)
+              question_no = parseInt(
+                Math.random() * (end_of_range - start_of_range) + start_of_range
+              );
+            } while (random_numbers.indexOf(question_no) !== -1);
+            random_numbers.push(question_no);
           }
-          return random_numbers
+          return random_numbers;
         }
 
-        selected_question_indexes = generateUniqueRandomNumbersInRange(section.poolCount, 0, section.Questions.length-1)
+        selected_question_indexes = generateUniqueRandomNumbersInRange(
+          section.poolCount,
+          0,
+          section.Questions.length - 1
+        );
 
-        function getArrayElementsUsingArrayOfIndexes(main_array, array_of_indexes) {
+        function getArrayElementsUsingArrayOfIndexes(
+          main_array,
+          array_of_indexes
+        ) {
           // array_of_indexes contains index numbers of the main_array. We return a new array that only contains those indexe
-          let new_array = []
-          for (let i=0;i<array_of_indexes.length;i++) {
-            new_array.push(main_array[array_of_indexes[i]])
+          let new_array = [];
+          for (let i = 0; i < array_of_indexes.length; i++) {
+            new_array.push(main_array[array_of_indexes[i]]);
           }
-          return new_array
+          return new_array;
         }
 
-        final_questions_array = getArrayElementsUsingArrayOfIndexes(section.Questions, selected_question_indexes)
-        console.log(selected_question_indexes)
+        final_questions_array = getArrayElementsUsingArrayOfIndexes(
+          section.Questions,
+          selected_question_indexes
+        );
+        console.log(selected_question_indexes);
 
         // to save these selected questions, we create empty answers (Question-Student mapping)
         function createEmptyAnswersForArrayOfQuestions(array_of_questions) {
-          let promises = []
-          array_of_questions.forEach((question)=>{
-            promises.push(Answer.create({QuestionId: question.id, StudentId: req.user.user.id}))
-          })
-          return Promise.all(promises)
+          let promises = [];
+          array_of_questions.forEach((question) => {
+            promises.push(
+              Answer.create({
+                QuestionId: question.id,
+                StudentId: req.user.user.id,
+                OptionId: 1,
+              })
+            );
+          });
+          return Promise.all(promises);
         }
 
-        await createEmptyAnswersForArrayOfQuestions(final_questions_array)
+        await createEmptyAnswersForArrayOfQuestions(final_questions_array);
 
         // constructing a results array to send
         let prev_passage = null;
@@ -901,8 +940,9 @@ app.get(
               });
 
               prev_passage_index--;
-              passage_id_to_array_index_mapping[final_questions_array[i].Passage.id] =
-                prev_passage_index;
+              passage_id_to_array_index_mapping[
+                final_questions_array[i].Passage.id
+              ] = prev_passage_index;
             }
           }
         }
@@ -922,7 +962,9 @@ app.get(
               passage: passage_id_to_array_index_mapping.hasOwnProperty(
                 final_questions_array[i].PassageId
               )
-                ? passage_id_to_array_index_mapping[final_questions_array[i].PassageId]
+                ? passage_id_to_array_index_mapping[
+                    final_questions_array[i].PassageId
+                  ]
                 : null,
             },
             options: [],
@@ -939,6 +981,13 @@ app.get(
             })
               .then(async (options_array) => {
                 result[i].options = options_array;
+                if (final_questions_array[i].type == "MCQ-M") {
+                  let default_answers_array = [];
+                  options_array.forEach((opt) => {
+                    default_answers_array.push(false);
+                  });
+                  result[i].answer = default_answers_array;
+                }
                 count++;
                 if (count == section.poolCount) resolve(result);
               })
@@ -946,15 +995,16 @@ app.get(
                 console.log(err);
                 reject();
               });
-            }
-          });
+          }
+        });
       } else {
-        
         // student has started/finished this section so we get the already chosen set of questions
 
-        let selected_question_ids = []
-        selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers)
-        final_questions_array = await getQuestionObjectsFromArrayOfQuestionIds(selected_question_ids)
+        let selected_question_ids = [];
+        selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers);
+        final_questions_array = await getQuestionObjectsFromArrayOfQuestionIds(
+          selected_question_ids
+        );
 
         // constructing a results array to send
         let prev_passage = null;
@@ -974,8 +1024,9 @@ app.get(
               });
 
               prev_passage_index--;
-              passage_id_to_array_index_mapping[final_questions_array[i].Passage.id] =
-                prev_passage_index;
+              passage_id_to_array_index_mapping[
+                final_questions_array[i].Passage.id
+              ] = prev_passage_index;
             }
           }
         }
@@ -995,7 +1046,9 @@ app.get(
               passage: passage_id_to_array_index_mapping.hasOwnProperty(
                 final_questions_array[i].PassageId
               )
-                ? passage_id_to_array_index_mapping[final_questions_array[i].PassageId]
+                ? passage_id_to_array_index_mapping[
+                    final_questions_array[i].PassageId
+                  ]
                 : null,
             },
             options: [],
@@ -1022,7 +1075,8 @@ app.get(
                   });
 
                   result[i].options = options_array;
-                  if (old_answer != null) result[i].answer = old_answer.OptionId;
+                  if (old_answer != null)
+                    result[i].answer = old_answer.OptionId;
                 } else if (final_questions_array[i].type == "MCQ-M") {
                   const old_answers = await Answer.findAll({
                     where: {
@@ -1058,7 +1112,7 @@ app.get(
                 console.log(err);
                 reject();
               });
-            }
+          }
         });
       }
     } else {
@@ -1101,7 +1155,9 @@ app.get(
             passage: passage_id_to_array_index_mapping.hasOwnProperty(
               section.Questions[i].PassageId
             )
-              ? passage_id_to_array_index_mapping[section.Questions[i].PassageId]
+              ? passage_id_to_array_index_mapping[
+                  section.Questions[i].PassageId
+                ]
               : null,
           },
           options: [],
@@ -1164,8 +1220,8 @@ app.get(
               console.log(err);
               reject();
             });
-          }
-        });
+        }
+      });
     }
 
     res.json({ success: true, data: result, passages: passages });
@@ -1212,16 +1268,16 @@ app.get(
 );
 
 app.post("/upload", file_upload.single("file"), (req, res) => {
-  console.log("uploading file")
-  const file_type = req.file.mimetype.slice(0,5)
-  let file_name = ""
-  if (file_type == "image") file_name = "/img/"
-  else if (file_type == "audio") file_name = "/audio/"
+  console.log("uploading file");
+  const file_type = req.file.mimetype.slice(0, 5);
+  let file_name = "";
+  if (file_type == "image") file_name = "/img/";
+  else if (file_type == "audio") file_name = "/audio/";
 
   let response_object = {
-    status: true, 
-    filename:  file_name + req.file.filename
-  }
+    status: true,
+    filename: file_name + req.file.filename,
+  };
   res.status(200).json(response_object);
 });
 
@@ -1240,36 +1296,39 @@ app.post("/quiz/save-progress", checkStudentAuthenticated, (req, res) => {
     });
 });
 
-app.post("/quiz/edit-reminder-setting", checkAdminAuthenticated, async (req,res) => {
-  try {
-    const quiz = await Quiz.findOne({where: {id:req.body.quiz_id}})
-    if (quiz!=null) {
-      const cur_reminder_setting = req.body.current_reminder_setting == "true" ? true : false
-      const new_reminder_setting = !cur_reminder_setting
-      quiz.sendReminderEmails = new_reminder_setting
-      await quiz.save()
-      res.json({success:true, new_reminder_setting: new_reminder_setting})
-    } else res.json({success:false})
-  } catch(err) {
-    res.json({success:false})
-    console.log(err)
+app.post(
+  "/quiz/edit-reminder-setting",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const quiz = await Quiz.findOne({ where: { id: req.body.quiz_id } });
+      if (quiz != null) {
+        const cur_reminder_setting =
+          req.body.current_reminder_setting == "true" ? true : false;
+        const new_reminder_setting = !cur_reminder_setting;
+        quiz.sendReminderEmails = new_reminder_setting;
+        await quiz.save();
+        res.json({ success: true, new_reminder_setting: new_reminder_setting });
+      } else res.json({ success: false });
+    } catch (err) {
+      res.json({ success: false });
+      console.log(err);
+    }
   }
-})
+);
 
 app.get(
   "/quiz/attempt/:sectionId/score",
   checkStudentAuthenticated,
   async (req, res) => {
-
     // answers are already saved in Database, so we create a Score object and send student completion email
-    await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id)
+    await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
 
     res.json({ success: true });
   }
 );
 
 app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
-
   const final_response = await getQuizResults(req.params.quizId);
 
   res.render("admin/view_detailed_results.ejs", {
@@ -1281,17 +1340,21 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
   });
 });
 
-app.get("/quiz/:quiz_id/analysis", checkAdminAuthenticated, async (req,res)=>{
-  const final_response = await getQuizResultsWithAnalysis(req.params.quiz_id);
+app.get(
+  "/quiz/:quiz_id/analysis",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    const final_response = await getQuizResultsWithAnalysis(req.params.quiz_id);
 
-  res.render("admin/view_result_analysis.ejs", {
-    user_type: req.user.type,
-    myname: req.user.user.firstName,
-    data_obj: final_response,
-    moment: moment,
-    millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
-  });
-})
+    res.render("admin/view_result_analysis.ejs", {
+      user_type: req.user.type,
+      myname: req.user.user.firstName,
+      data_obj: final_response,
+      moment: moment,
+      millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
+    });
+  }
+);
 
 // CSV for Quiz State upload
 app.post(
@@ -1323,32 +1386,40 @@ app.post(
   }
 );
 
-app.post("/upload/email/csv", checkAdminAuthenticated, csv_upload.single("file"), (req,res)=>{
-  csv_parser(
-    fs.readFileSync(
-      path.join(__dirname, "/uploads/csv/" + req.file.filename)
-    ),
-    {},
-    async (err, data) => {
-      // deleting file because it is not needed anymore
-      fs.unlink(path.join(__dirname, "/uploads/csv/" + req.file.filename), ()=>{
-        if (!err) {
-          /* data = [
+app.post(
+  "/upload/email/csv",
+  checkAdminAuthenticated,
+  csv_upload.single("file"),
+  (req, res) => {
+    csv_parser(
+      fs.readFileSync(
+        path.join(__dirname, "/uploads/csv/" + req.file.filename)
+      ),
+      {},
+      async (err, data) => {
+        // deleting file because it is not needed anymore
+        fs.unlink(
+          path.join(__dirname, "/uploads/csv/" + req.file.filename),
+          () => {
+            if (!err) {
+              /* data = [
             ["Emails"],
             ["rohanhussain1@yahoo.com"],
             ["dkhn.act@gmail.com"],
             ["22100063@lums.edu.pk"]    
           ] */
-          data = flatten2DArray(data)
-          res.status(200).json(data)
-      } else {
-        console.log(err);
-        res.sendStatus(500);
+              data = flatten2DArray(data);
+              res.status(200).json(data);
+            } else {
+              console.log(err);
+              res.sendStatus(500);
+            }
+          }
+        );
       }
-      })
-    }
-  );
-})
+    );
+  }
+);
 
 app.post("/state-to-csv", checkAdminAuthenticated, async (req, res) => {
   const [mcqs, passages] = req.body;
@@ -1448,16 +1519,15 @@ app.get("/registrations/:link", checkAdminAuthenticated, async (req, res) => {
 });
 
 app.get("/img/:filename", (req, res) => {
-  sendFileInResponse(req, res, "uploads/images")
+  sendFileInResponse(req, res, "uploads/images");
 });
 
 app.get("/audio/:filename", (req, res) => {
-  sendFileInResponse(req, res, "uploads/audio")
+  sendFileInResponse(req, res, "uploads/audio");
 });
 
-
 app.get("/csv/:filename", (req, res) => {
-  sendFileInResponse(req, res, "downloads/csv")
+  sendFileInResponse(req, res, "downloads/csv");
 });
 
 app.post(
@@ -1479,7 +1549,7 @@ app.post(
     // successRedirect: "/student",
     if (req.hasOwnProperty("user")) {
       try {
-        if (req.body.link!="") {
+        if (req.body.link != "") {
           const invite = await Invite.findOne({
             where: { link: req.body.link },
             include: { model: Quiz, attributes: ["id"] },
@@ -1489,14 +1559,14 @@ app.post(
             where: { StudentId: req.user.user.id, QuizId: quizId },
           });
         }
-        if (req.body.redirect!="") res.redirect(req.body.redirect)
+        if (req.body.redirect != "") res.redirect(req.body.redirect);
         else res.redirect("/student");
       } catch (err) {
-        console.log(err)
+        console.log(err);
         res.redirect("/student/login");
       }
     } else {
-      console.log("hey")
+      console.log("hey");
     }
   }
 );
@@ -1514,7 +1584,6 @@ app.post("/student/signup", async (req, res) => {
     address = req.body.address,
     invite_link = req.body.invite;
 
-
   try {
     const invite = await Invite.findOne({
       where: {
@@ -1531,14 +1600,14 @@ app.post("/student/signup", async (req, res) => {
       phone: phone,
       cnic: cnic,
       age: age,
-      gender:gender,
+      gender: gender,
       city: city,
       address: address,
       InviteId: invite.id,
     });
 
     if (await student.validate()) {
-      student = await student.save()
+      student = await student.save();
 
       // assign the quiz associated with the invite to this student
       await Assignment.create({
@@ -1548,16 +1617,16 @@ app.post("/student/signup", async (req, res) => {
 
       // send automated email to student
       try {
-        await sendHTMLMail(email, `Welcome to IEC LCMS`, 
-        { 
-          heading: 'Welcome to the IEC LCMS',
-          inner_text: "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
+        await sendHTMLMail(email, `Welcome to IEC LCMS`, {
+          heading: "Welcome to the IEC LCMS",
+          inner_text:
+            "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
           button_announcer: "Click on the button below to solve the Assessment",
           button_text: "Solve Assessment",
-          button_link: "https://apply.iec.org.pk/student/login"
-        })
-      } catch(err) {
-        console.log("Email sending failed.")
+          button_link: "https://apply.iec.org.pk/student/login",
+        });
+      } catch (err) {
+        console.log("Email sending failed.");
       }
       res.redirect("/student/login");
     }
@@ -1568,10 +1637,13 @@ app.post("/student/signup", async (req, res) => {
         "/invite/" +
           invite_link +
           "?error=" +
-          encodeURIComponent(err.errors[0].type)
-          + "&field=" + encodeURIComponent(err.errors[0].path)
-          + "&type=" + encodeURIComponent(err.errors[0].validatorName)
-          + "&message=" + encodeURIComponent(err.errors[0].message)
+          encodeURIComponent(err.errors[0].type) +
+          "&field=" +
+          encodeURIComponent(err.errors[0].path) +
+          "&type=" +
+          encodeURIComponent(err.errors[0].validatorName) +
+          "&message=" +
+          encodeURIComponent(err.errors[0].message)
       );
     } else res.redirect("/invite/" + invite_link);
   }
@@ -1658,40 +1730,44 @@ app.get("/student/login", checkStudentAlreadyLoggedIn, async (req, res) => {
     email: req.query.email,
     cnic: req.query.cnic,
     success: req.query.success,
-    redirect: req.query.url
+    redirect: req.query.url,
   });
 });
 
-app.get("/student/forgot-password", checkStudentAlreadyLoggedIn, async (req, res) => {
-  res.render("student/login/forgot_password.ejs", {
-    link: req.query.link,
-    error: req.query.error
-  });
-});
+app.get(
+  "/student/forgot-password",
+  checkStudentAlreadyLoggedIn,
+  async (req, res) => {
+    res.render("student/login/forgot_password.ejs", {
+      link: req.query.link,
+      error: req.query.error,
+    });
+  }
+);
 
-app.post("/student/change-password", async (req,res)=>{
+app.post("/student/change-password", async (req, res) => {
   if (req.body.password1 == req.body.password2) {
     try {
-      const password = req.body.password1
+      const password = req.body.password1;
       const password_reset_link = await PasswordResetLink.findOne({
-        where:{
+        where: {
           key: req.body.key,
-          StudentId: req.body.id
+          StudentId: req.body.id,
         },
-        include:[Student]
-      })
-    
-      if (password_reset_link!=null) {
+        include: [Student],
+      });
+
+      if (password_reset_link != null) {
         await password_reset_link.Student.update({
           password: await bcrypt.hash(password, 10),
-        })
+        });
 
-        await password_reset_link.destroy()
-    
-        res.redirect("/student/login?success=password-reset")
+        await password_reset_link.destroy();
+
+        res.redirect("/student/login?success=password-reset");
       } else {
         res.render("templates/error.ejs", {
-          additional_info:"Invalid Link",
+          additional_info: "Invalid Link",
           error_message:
             "The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.",
           action_link: "/student/login",
@@ -1699,64 +1775,66 @@ app.post("/student/change-password", async (req,res)=>{
         });
       }
     } catch (err) {
-      console.log(err)
-      res.sendStatus(500)
+      console.log(err);
+      res.sendStatus(500);
     }
   } else {
     res.render("student/login/set_new_password.ejs", {
       key: req.body.key,
       student_id: req.body.id,
-      error: "Passwords do not match"
-    })
+      error: "Passwords do not match",
+    });
   }
-  
-})
+});
 
-app.get("/set-new-password/:key", async (req,res)=>{
+app.get("/set-new-password/:key", async (req, res) => {
   const password_reset_link = await PasswordResetLink.findOne({
-    where:{
-      key: req.params.key
-    }
-  })
+    where: {
+      key: req.params.key,
+    },
+  });
 
-  if (password_reset_link!=null) {
+  if (password_reset_link != null) {
     res.render("student/login/set_new_password.ejs", {
       key: req.params.key,
       student_id: password_reset_link.StudentId,
-      error:false
-    })
+      error: false,
+    });
   } else {
     res.render("templates/error.ejs", {
-      additional_info:"Wrong Link",
+      additional_info: "Wrong Link",
       error_message:
         "The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.",
       action_link: "/student/login",
       action_link_text: "Student Login Page",
     });
   }
-})
+});
 
-app.post("/student/reset-password", checkStudentAlreadyLoggedIn, async(req,res)=>{
-  const student = await Student.findOne({
-    where:{
-      email: req.body.email,
-      cnic: req.body.cnic
-    }
-  })
+app.post(
+  "/student/reset-password",
+  checkStudentAlreadyLoggedIn,
+  async (req, res) => {
+    const student = await Student.findOne({
+      where: {
+        email: req.body.email,
+        cnic: req.body.cnic,
+      },
+    });
 
-  if (student != null) {
-    const key = randomstring.generate(255)
-    PasswordResetLink.create({
-      key: key,
-      StudentId: student.id
-    })
-    
-    const reset_link = process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
-    console.log(reset_link)
+    if (student != null) {
+      const key = randomstring.generate(255);
+      PasswordResetLink.create({
+        key: key,
+        StudentId: student.id,
+      });
 
-    try {
-      await sendHTMLMail(student.email, `Reset Password`, 
-        { 
+      const reset_link =
+        process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
+      console.log(reset_link);
+
+      try {
+        await sendHTMLMail(student.email, `Reset Password`, {
           heading: `Reset Password`,
           inner_text: `Dear Student
           <br>
@@ -1766,29 +1844,31 @@ app.post("/student/reset-password", checkStudentAlreadyLoggedIn, async(req,res)=
           <br>
           Sincerely, 
           IEC Admissions Team`,
-          button_announcer: "Or you can click on the following button to change your password",
+          button_announcer:
+            "Or you can click on the following button to change your password",
           button_text: "Change Password",
-          button_link: reset_link
-        })
-      console.log("Password reset email sent")
-      res.render("templates/error.ejs", {
-        additional_info: "Check Your Inbox",
-        error_message:
-          "If your email and CNIC were correct, then we have sent you a Password Reset link at your email address. Please also check your spam folder.",
-        action_link: "/student/login",
-        action_link_text: "Click here to go to the student login page.",
-      });
-    } catch(err) {
-        console.log("Password reset email sending failed.", err)
-        res.sendStatus(500)
+          button_link: reset_link,
+        });
+        console.log("Password reset email sent");
+        res.render("templates/error.ejs", {
+          additional_info: "Check Your Inbox",
+          error_message:
+            "If your email and CNIC were correct, then we have sent you a Password Reset link at your email address. Please also check your spam folder.",
+          action_link: "/student/login",
+          action_link_text: "Click here to go to the student login page.",
+        });
+      } catch (err) {
+        console.log("Password reset email sending failed.", err);
+        res.sendStatus(500);
+      }
+    } else {
+      redirect("/student/forgot-password?error=wrong-credentials");
     }
-  } else {
-    redirect("/student/forgot-password?error=wrong-credentials")
   }
-})
+);
 
-app.get("/email-template", (req,res)=>{
-  res.render("templates/mail-template-1.ejs",{
+app.get("/email-template", (req, res) => {
+  res.render("templates/mail-template-1.ejs", {
     heading: `All Sections Completed`,
     inner_text: `Dear Student
     <br>
@@ -1800,36 +1880,34 @@ app.get("/email-template", (req,res)=>{
     IEC Admissions Team`,
     button_announcer: "Visit out website to learn more about us",
     button_text: "Visit",
-    button_link: "https://iec.org.pk"
-  })
-})
+    button_link: "https://iec.org.pk",
+  });
+});
 
-app.get("/mail/unsubscribe", checkStudentAuthenticated ,async (req,res)=>{
+app.get("/mail/unsubscribe", checkStudentAuthenticated, async (req, res) => {
   try {
-    const student = await Student.findOne({where:{id: req.user.user.id}})
-    if (student!=null) {
-      student.hasUnsubscribedFromEmails = true
-      await student.save()
+    const student = await Student.findOne({ where: { id: req.user.user.id } });
+    if (student != null) {
+      student.hasUnsubscribedFromEmails = true;
+      await student.save();
       res.render("templates/error.ejs", {
-        additional_info:
-          "Successfully Unsubscribed",
+        additional_info: "Successfully Unsubscribed",
         error_message:
           "You will not receive any more similar automated emails from the IEC LCMS.",
         action_link: "/",
         action_link_text: "Click here to go to the IEC LCMS home page.",
       });
     }
-  } catch(err) {
+  } catch (err) {
     res.render("templates/error.ejs", {
-      additional_info:
-        "Failed",
+      additional_info: "Failed",
       error_message:
         "We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at mail@iec.org.pk for assistance.",
       action_link: "/",
       action_link_text: "Click here to go to the IEC LCMS home page.",
     });
   }
-})
+});
 
 app.get("/student/assignments", checkStudentAuthenticated, async (req, res) => {
   try {
