@@ -1165,9 +1165,9 @@ const Section = (props) => {
 
 const SectionHeader = (props) => {
   const [state, setState] = useContext(MyContext);
-  const [poolCountChanged, setPoolCountChanged] = useState(false);
+  let poolCountChanged = React.useRef(false);
   const [poolCount, setPoolCount] = useState(
-    poolCountChanged == true
+    poolCountChanged.current == true
       ? state.mcqs[props.sectionIndex].poolCount
       : state.mcqs[props.sectionIndex].questions.length
   );
@@ -1177,20 +1177,29 @@ const SectionHeader = (props) => {
   );
   const toggle = React.useRef();
 
+  // useEffect(() => {
+  //   setPoolCount(
+  //     poolCountChanged == true
+  //       ? state.mcqs[props.sectionIndex].poolCount
+  //       : state.mcqs[props.sectionIndex].questions.length
+  //   );
+  //   if (!poolCountChanged) {
+  //     if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
+  //       setPoolCount(state.mcqs[props.sectionIndex].poolCount) 
+  //     }
+  //   }
+  // }, [state.mcqs, state.passages, toggle]);
+
   useEffect(() => {
-    if (state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
-      setPoolCountChanged(true)
-    }
-    setPoolCount(
-      poolCountChanged == true
-        ? state.mcqs[props.sectionIndex].poolCount
-        : state.mcqs[props.sectionIndex].questions.length
-    );
-    if (!poolCountChanged) {
-      if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
-        console.log("fixing")
-        setPoolCount(state.mcqs[props.sectionIndex].poolCount)  
-      }
+    console.log("h",poolCountChanged.current)
+    if (poolCountChanged.current===false && state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
+      setState((cur) => {
+        let obj = { ...cur };
+        let copy = obj.mcqs.slice();
+        copy[props.sectionIndex].poolCount = copy[props.sectionIndex].questions.length
+        obj.mcqs = copy;
+        return obj;
+      });
     }
   }, [state.mcqs, state.passages, toggle]);
 
@@ -1351,10 +1360,9 @@ const SectionHeader = (props) => {
               min="0"
               max={state.mcqs[props.sectionIndex].questions.length}
               name="pool_count"
-              value={poolCount}
+              value={state.mcqs[props.sectionIndex].poolCount}
               onChange={(e) => {
-                setPoolCountChanged(true);
-                setPoolCount(e.target.value);
+                poolCountChanged.current = true
                 setState((cur) => {
                   let obj = { ...cur };
                   let copy = obj.mcqs.slice();

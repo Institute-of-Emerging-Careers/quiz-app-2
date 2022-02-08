@@ -72,6 +72,7 @@ const sequelize = require("./db/connect.js");
 const { Sequelize } = require("sequelize");
 const { encode } = require("punycode");
 const { resolveSoa } = require("dns");
+const { getQuestionObjectsFromArrayOfQuestionIds, getQuestionIdsFromArrayOfAnswers } = require("./functions/utilities.js");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -829,9 +830,6 @@ app.get(
     let final_questions_array = []
     let result = [];
     let passages = [];
-    // checking if student has previously attempted this section
-    const assignment = await Assignment.findOne({where:{QuizId:section.Quiz.id, StudentId: req.user.user.id}})
-    // const attempt = await Attempt.findOne({where:{AssignmentId: assignment.id, SectionId: req.params.sectionId}})
     
     if (section.poolCount < section.Questions.length) {
       // first getting the list of question IDs of all questions in this section
@@ -955,37 +953,7 @@ app.get(
         // student has started/finished this section so we get the already chosen set of questions
 
         let selected_question_ids = []
-        function getQuestionIdsFromArrayOfAnswers(answers) {
-          // the problem is that a single MCQ-M question can have multiple Answers
-          let question_ids = []
-          for (let i=0;i<answers.length;i++) {
-            if (answers[i].Question.type == "MCQ-S") question_ids.push(answers[i].Question.id)
-            else if (answers[i].Question.type == "MCQ-M") {
-              if (question_ids.indexOf(answers[i].Question.id)===-1) {
-                question_ids.push(answers[i].Question.id)
-              }
-            }
-          }
-          return question_ids
-        }
-        
         selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers)
-        
-        function getQuestionObjectsFromArrayOfQuestionIds(question_ids) {
-          return new Promise(resolve=>{
-            let result = []
-            let i=0;
-            let n = question_ids.length
-            question_ids.forEach(question_id=>{
-              Question.findOne({where:{id:question_id}, include:[Passage]})
-              .then((question)=>{
-                result.push(question)
-                i++
-                if (i==n) resolve(result)
-              })
-            })
-          })
-        }
         final_questions_array = await getQuestionObjectsFromArrayOfQuestionIds(selected_question_ids)
 
         // constructing a results array to send
