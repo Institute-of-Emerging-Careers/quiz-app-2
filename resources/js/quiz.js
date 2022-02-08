@@ -1178,20 +1178,19 @@ const SectionHeader = (props) => {
   const toggle = React.useRef();
 
   useEffect(() => {
+    if (state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
+      setPoolCountChanged(true)
+    }
     setPoolCount(
       poolCountChanged == true
         ? state.mcqs[props.sectionIndex].poolCount
         : state.mcqs[props.sectionIndex].questions.length
     );
     if (!poolCountChanged) {
-      if (state.mcqs[props.sectionIndex].poolCount != poolCount)
-        setState((cur) => {
-          let obj = { ...cur };
-          let copy = obj.mcqs.slice();
-          copy[props.sectionIndex].poolCount = poolCount;
-          obj.mcqs = copy;
-          return obj;
-        });
+      if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
+        console.log("fixing")
+        setPoolCount(state.mcqs[props.sectionIndex].poolCount)  
+      }
     }
   }, [state.mcqs, state.passages, toggle]);
 

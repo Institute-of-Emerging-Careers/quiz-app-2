@@ -69,6 +69,7 @@ const {millisecondsToMinutesAndSeconds} = require("./functions/millisecondsToMin
 const { rejects } = require("assert");
 const { resolve } = require("path");
 const sequelize = require("./db/connect.js");
+const { Sequelize } = require("sequelize");
 const { encode } = require("punycode");
 const { resolveSoa } = require("dns");
 
@@ -815,6 +816,7 @@ app.get(
       },
       order: [[Question, 'questionOrder', 'asc']],
       include: [
+        Quiz,
         {
           model: Question,
           required: true,
@@ -823,112 +825,380 @@ app.get(
       ],
     });
 
-    // constructing a results array to send
+    let selected_question_indexes = []
+    let final_questions_array = []
     let result = [];
     let passages = [];
+    // checking if student has previously attempted this section
+    const assignment = await Assignment.findOne({where:{QuizId:section.Quiz.id, StudentId: req.user.user.id}})
+    // const attempt = await Attempt.findOne({where:{AssignmentId: assignment.id, SectionId: req.params.sectionId}})
+    
+    if (section.poolCount < section.Questions.length) {
+      // first getting the list of question IDs of all questions in this section
+      const all_questions = await Question.findAll({where:{SectionId: req.params.sectionId}, attributes:["id"]})
+      const all_question_ids = all_questions.map((question)=>question.id)
+      
 
-    let prev_passage = null;
-    let prev_passage_index = null;
-    let passage_id_to_array_index_mapping = {};
+      // now get all answers of this student that are about any of the above questions
+      const answers = await Answer.findAll({where:{StudentId: req.user.user.id, QuestionId:{[Sequelize.Op.in]:all_question_ids}}, include:[Question]})
 
-    for (let i = 0; i < section.poolCount; i++) {
-      if (section.Questions[i].Passage != null) {
-        if (prev_passage != section.Questions[i].Passage.id) {
-          prev_passage = section.Questions[i].Passage.id;
-          prev_passage_index = passages.push({
-            id: section.Questions[i].Passage.id,
-            statement: section.Questions[i].Passage.statement,
-            place_after_question:
-              section.Questions[i].Passage.place_after_question,
+      if (answers.length==0) {
+        console.log("hey")
+        // student hasn't attempted this section before so we create a new randomized sequence of questions
+
+        // generating p random numbers in a [low,high] range where p=poolCount, low=0 and high=total_num_questions
+        function generateUniqueRandomNumbersInRange(number_of_random_numbers, start_of_range, end_of_range) {
+          let random_numbers = []
+
+          for (let i=0;i<number_of_random_numbers;i++) {
+            let question_no;
+            do {
+              question_no = parseInt(Math.random() * (end_of_range - start_of_range) + start_of_range)
+            } while (random_numbers.indexOf(question_no)!==-1);
+            random_numbers.push(question_no)
+          }
+          return random_numbers
+        }
+
+        selected_question_indexes = generateUniqueRandomNumbersInRange(section.poolCount, 0, section.Questions.length-1)
+
+        function getArrayElementsUsingArrayOfIndexes(main_array, array_of_indexes) {
+          // array_of_indexes contains index numbers of the main_array. We return a new array that only contains those indexe
+          let new_array = []
+          for (let i=0;i<array_of_indexes.length;i++) {
+            new_array.push(main_array[array_of_indexes[i]])
+          }
+          return new_array
+        }
+
+        final_questions_array = getArrayElementsUsingArrayOfIndexes(section.Questions, selected_question_indexes)
+        console.log(selected_question_indexes)
+
+        // to save these selected questions, we create empty answers (Question-Student mapping)
+        function createEmptyAnswersForArrayOfQuestions(array_of_questions) {
+          let promises = []
+          array_of_questions.forEach((question)=>{
+            promises.push(Answer.create({QuestionId: question.id, StudentId: req.user.user.id}))
+          })
+          return Promise.all(promises)
+        }
+
+        await createEmptyAnswersForArrayOfQuestions(final_questions_array)
+
+        // constructing a results array to send
+        let prev_passage = null;
+        let prev_passage_index = null;
+        let passage_id_to_array_index_mapping = {};
+
+        // constructing unique passages array
+        for (let i = 0; i < section.poolCount; i++) {
+          if (final_questions_array[i].Passage != null) {
+            if (prev_passage != final_questions_array[i].Passage.id) {
+              prev_passage = final_questions_array[i].Passage.id;
+              prev_passage_index = passages.push({
+                id: final_questions_array[i].Passage.id,
+                statement: final_questions_array[i].Passage.statement,
+                place_after_question:
+                  final_questions_array[i].Passage.place_after_question,
+              });
+
+              prev_passage_index--;
+              passage_id_to_array_index_mapping[final_questions_array[i].Passage.id] =
+                prev_passage_index;
+            }
+          }
+        }
+
+        // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
+        for (let i = 0; i < section.poolCount; i++) {
+          result.push({
+            question: {
+              id: final_questions_array[i].id,
+              questionOrder: section.Questions[i].questionOrder,
+              statement: final_questions_array[i].statement,
+              type: final_questions_array[i].type,
+              marks: final_questions_array[i].marks,
+              image: final_questions_array[i].image,
+              link_url: final_questions_array[i].link_url,
+              link_text: final_questions_array[i].link_text,
+              passage: passage_id_to_array_index_mapping.hasOwnProperty(
+                final_questions_array[i].PassageId
+              )
+                ? passage_id_to_array_index_mapping[final_questions_array[i].PassageId]
+                : null,
+            },
+            options: [],
+            answer: -1, //student's old answers, not the correct answers
           });
+        }
 
-          prev_passage_index--;
-          passage_id_to_array_index_mapping[section.Questions[i].Passage.id] =
-            prev_passage_index;
+        let count = 0;
+        await new Promise((resolve, reject) => {
+          for (let i = 0; i < section.poolCount; i++) {
+            Option.findAll({
+              where: { QuestionId: final_questions_array[i].id },
+              order: [["optionOrder", "asc"]],
+            })
+              .then(async (options_array) => {
+                result[i].options = options_array;
+                count++;
+                if (count == section.poolCount) resolve(result);
+              })
+              .catch((err) => {
+                console.log(err);
+                reject();
+              });
+            }
+          });
+      } else {
+        
+        // student has started/finished this section so we get the already chosen set of questions
+
+        let selected_question_ids = []
+        function getQuestionIdsFromArrayOfAnswers(answers) {
+          // the problem is that a single MCQ-M question can have multiple Answers
+          let question_ids = []
+          for (let i=0;i<answers.length;i++) {
+            if (answers[i].Question.type == "MCQ-S") question_ids.push(answers[i].Question.id)
+            else if (answers[i].Question.type == "MCQ-M") {
+              if (question_ids.indexOf(answers[i].Question.id)===-1) {
+                question_ids.push(answers[i].Question.id)
+              }
+            }
+          }
+          return question_ids
+        }
+        
+        selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers)
+        
+        function getQuestionObjectsFromArrayOfQuestionIds(question_ids) {
+          return new Promise(resolve=>{
+            let result = []
+            let i=0;
+            let n = question_ids.length
+            question_ids.forEach(question_id=>{
+              Question.findOne({where:{id:question_id}, include:[Passage]})
+              .then((question)=>{
+                result.push(question)
+                i++
+                if (i==n) resolve(result)
+              })
+            })
+          })
+        }
+        final_questions_array = await getQuestionObjectsFromArrayOfQuestionIds(selected_question_ids)
+
+        // constructing a results array to send
+        let prev_passage = null;
+        let prev_passage_index = null;
+        let passage_id_to_array_index_mapping = {};
+
+        // constructing unique passages array
+        for (let i = 0; i < section.poolCount; i++) {
+          if (final_questions_array[i].Passage != null) {
+            if (prev_passage != final_questions_array[i].Passage.id) {
+              prev_passage = final_questions_array[i].Passage.id;
+              prev_passage_index = passages.push({
+                id: final_questions_array[i].Passage.id,
+                statement: final_questions_array[i].Passage.statement,
+                place_after_question:
+                  final_questions_array[i].Passage.place_after_question,
+              });
+
+              prev_passage_index--;
+              passage_id_to_array_index_mapping[final_questions_array[i].Passage.id] =
+                prev_passage_index;
+            }
+          }
+        }
+
+        // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
+        for (let i = 0; i < section.poolCount; i++) {
+          result.push({
+            question: {
+              id: final_questions_array[i].id,
+              questionOrder: final_questions_array[i].questionOrder,
+              statement: final_questions_array[i].statement,
+              type: final_questions_array[i].type,
+              marks: final_questions_array[i].marks,
+              image: final_questions_array[i].image,
+              link_url: final_questions_array[i].link_url,
+              link_text: final_questions_array[i].link_text,
+              passage: passage_id_to_array_index_mapping.hasOwnProperty(
+                final_questions_array[i].PassageId
+              )
+                ? passage_id_to_array_index_mapping[final_questions_array[i].PassageId]
+                : null,
+            },
+            options: [],
+            answer: -1, //student's old answers, not the correct answers
+          });
+        }
+
+        let count = 0;
+        await new Promise((resolve, reject) => {
+          for (let i = 0; i < section.poolCount; i++) {
+            Option.findAll({
+              where: { QuestionId: final_questions_array[i].id },
+              order: [["optionOrder", "asc"]],
+            })
+              .then(async (options_array) => {
+                if (final_questions_array[i].type == "MCQ-S") {
+                  // student may have already attempted this quiz partly, so we are getting his/her old answer
+                  const old_answer = await Answer.findOne({
+                    where: {
+                      StudentId: req.user.user.id,
+                      QuestionId: final_questions_array[i].id,
+                    },
+                    attributes: ["OptionId"],
+                  });
+
+                  result[i].options = options_array;
+                  if (old_answer != null) result[i].answer = old_answer.OptionId;
+                } else if (final_questions_array[i].type == "MCQ-M") {
+                  const old_answers = await Answer.findAll({
+                    where: {
+                      StudentId: req.user.user.id,
+                      QuestionId: final_questions_array[i].id,
+                    },
+                    attributes: ["OptionId"],
+                    order: [["OptionId", "asc"]],
+                  });
+                  let default_answers_array = []; //all false
+                  if (old_answers == null) {
+                    options_array.forEach((opt) => {
+                      default_answers_array.push(false);
+                    });
+                  } else {
+                    options_array.forEach((opt) => {
+                      let found = false;
+                      old_answers.forEach((old_answer) => {
+                        if (opt.id == old_answer.OptionId) {
+                          found = true;
+                        }
+                      });
+                      default_answers_array.push(found);
+                    });
+                  }
+                  result[i].options = options_array;
+                  result[i].answer = default_answers_array;
+                }
+                count++;
+                if (count == section.poolCount) resolve(result);
+              })
+              .catch((err) => {
+                console.log(err);
+                reject();
+              });
+            }
+        });
+      }
+    } else {
+      // constructing a results array to send
+      let prev_passage = null;
+      let prev_passage_index = null;
+      let passage_id_to_array_index_mapping = {};
+
+      // constructing unique passages array
+      for (let i = 0; i < section.poolCount; i++) {
+        if (section.Questions[i].Passage != null) {
+          if (prev_passage != section.Questions[i].Passage.id) {
+            prev_passage = section.Questions[i].Passage.id;
+            prev_passage_index = passages.push({
+              id: section.Questions[i].Passage.id,
+              statement: section.Questions[i].Passage.statement,
+              place_after_question:
+                section.Questions[i].Passage.place_after_question,
+            });
+
+            prev_passage_index--;
+            passage_id_to_array_index_mapping[section.Questions[i].Passage.id] =
+              prev_passage_index;
+          }
         }
       }
-    }
 
-    // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
-    for (let i = 0; i < section.poolCount; i++) {
-      result.push({
-        question: {
-          id: section.Questions[i].id,
-          questionOrder: section.Questions[i].questionOrder,
-          statement: section.Questions[i].statement,
-          type: section.Questions[i].type,
-          marks: section.Questions[i].marks,
-          image: section.Questions[i].image,
-          link_url: section.Questions[i].link_url,
-          link_text: section.Questions[i].link_text,
-          passage: passage_id_to_array_index_mapping.hasOwnProperty(
-            section.Questions[i].PassageId
-          )
-            ? passage_id_to_array_index_mapping[section.Questions[i].PassageId]
-            : null,
-        },
-        options: [],
-        answer: -1, //student's old answers, not the correct answers
-      });
-    }
-
-    let count = 0;
-    await new Promise((resolve, reject) => {
+      // adding questions right now so that their order does not get messed up due to out-of-order fulfilment of promises in the loop below
       for (let i = 0; i < section.poolCount; i++) {
-        Option.findAll({
-          where: { QuestionId: section.Questions[i].id },
-          order: [["optionOrder", "asc"]],
-        })
-          .then(async (options_array) => {
-            if (section.Questions[i].type == "MCQ-S") {
-              // student may have already attempted this quiz partly, so we are getting his/her old answer
-              const old_answer = await Answer.findOne({
-                where: {
-                  StudentId: req.user.user.id,
-                  QuestionId: section.Questions[i].id,
-                },
-                attributes: ["OptionId"],
-              });
-
-              result[i].options = options_array;
-              if (old_answer != null) result[i].answer = old_answer.OptionId;
-            } else if (section.Questions[i].type == "MCQ-M") {
-              const old_answers = await Answer.findAll({
-                where: {
-                  StudentId: req.user.user.id,
-                  QuestionId: section.Questions[i].id,
-                },
-                attributes: ["OptionId"],
-                order: [["OptionId", "asc"]],
-              });
-              let default_answers_array = []; //all false
-              if (old_answers == null) {
-                options_array.forEach((opt) => {
-                  default_answers_array.push(false);
-                });
-              } else {
-                options_array.forEach((opt) => {
-                  let found = false;
-                  old_answers.forEach((old_answer) => {
-                    if (opt.id == old_answer.OptionId) {
-                      found = true;
-                    }
-                  });
-                  default_answers_array.push(found);
-                });
-              }
-              result[i].options = options_array;
-              result[i].answer = default_answers_array;
-            }
-            count++;
-            if (count == section.poolCount) resolve(result);
-          })
-          .catch((err) => {
-            console.log(err);
-            reject();
-          });
+        result.push({
+          question: {
+            id: section.Questions[i].id,
+            questionOrder: section.Questions[i].questionOrder,
+            statement: section.Questions[i].statement,
+            type: section.Questions[i].type,
+            marks: section.Questions[i].marks,
+            image: section.Questions[i].image,
+            link_url: section.Questions[i].link_url,
+            link_text: section.Questions[i].link_text,
+            passage: passage_id_to_array_index_mapping.hasOwnProperty(
+              section.Questions[i].PassageId
+            )
+              ? passage_id_to_array_index_mapping[section.Questions[i].PassageId]
+              : null,
+          },
+          options: [],
+          answer: -1, //student's old answers, not the correct answers
+        });
       }
-    });
+
+      let count = 0;
+      await new Promise((resolve, reject) => {
+        for (let i = 0; i < section.poolCount; i++) {
+          Option.findAll({
+            where: { QuestionId: section.Questions[i].id },
+            order: [["optionOrder", "asc"]],
+          })
+            .then(async (options_array) => {
+              if (section.Questions[i].type == "MCQ-S") {
+                // student may have already attempted this quiz partly, so we are getting his/her old answer
+                const old_answer = await Answer.findOne({
+                  where: {
+                    StudentId: req.user.user.id,
+                    QuestionId: section.Questions[i].id,
+                  },
+                  attributes: ["OptionId"],
+                });
+
+                result[i].options = options_array;
+                if (old_answer != null) result[i].answer = old_answer.OptionId;
+              } else if (section.Questions[i].type == "MCQ-M") {
+                const old_answers = await Answer.findAll({
+                  where: {
+                    StudentId: req.user.user.id,
+                    QuestionId: section.Questions[i].id,
+                  },
+                  attributes: ["OptionId"],
+                  order: [["OptionId", "asc"]],
+                });
+                let default_answers_array = []; //all false
+                if (old_answers == null) {
+                  options_array.forEach((opt) => {
+                    default_answers_array.push(false);
+                  });
+                } else {
+                  options_array.forEach((opt) => {
+                    let found = false;
+                    old_answers.forEach((old_answer) => {
+                      if (opt.id == old_answer.OptionId) {
+                        found = true;
+                      }
+                    });
+                    default_answers_array.push(found);
+                  });
+                }
+                result[i].options = options_array;
+                result[i].answer = default_answers_array;
+              }
+              count++;
+              if (count == section.poolCount) resolve(result);
+            })
+            .catch((err) => {
+              console.log(err);
+              reject();
+            });
+          }
+        });
+    }
 
     res.json({ success: true, data: result, passages: passages });
   }

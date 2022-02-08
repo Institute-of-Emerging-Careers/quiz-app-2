@@ -332,8 +332,9 @@ Option.hasMany(Answer, {
   onDelete: "RESTRICT",
   onUpdate: "CASCADE",
   foreignKey: {
-    allowNull: false,
-  },
+    defaultValue: null,
+    allowNull: true
+  }
 });
 Answer.belongsTo(Option);
 
