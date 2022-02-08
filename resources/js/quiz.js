@@ -409,10 +409,9 @@ const ImageOrAudio = (props) => {
   }
 
   if (
-    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
-      1,
-      4
-    ) == "img"
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf(
+      "img/"
+    ) !== -1
   ) {
     return (
       <div className="relative w-max">
@@ -430,10 +429,9 @@ const ImageOrAudio = (props) => {
       </div>
     );
   } else if (
-    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
-      1,
-      6
-    ) == "audio"
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf(
+      "audio/"
+    ) !== -1
   ) {
     return (
       <div className="w-max flex items-center">
@@ -1185,18 +1183,23 @@ const SectionHeader = (props) => {
   //   );
   //   if (!poolCountChanged) {
   //     if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
-  //       setPoolCount(state.mcqs[props.sectionIndex].poolCount) 
+  //       setPoolCount(state.mcqs[props.sectionIndex].poolCount)
   //     }
   //   }
   // }, [state.mcqs, state.passages, toggle]);
 
   useEffect(() => {
-    console.log("h",poolCountChanged.current)
-    if (poolCountChanged.current===false && state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
+    console.log("h", poolCountChanged.current);
+    if (
+      poolCountChanged.current === false &&
+      state.mcqs[props.sectionIndex].poolCount !=
+        state.mcqs[props.sectionIndex].questions.length
+    ) {
       setState((cur) => {
         let obj = { ...cur };
         let copy = obj.mcqs.slice();
-        copy[props.sectionIndex].poolCount = copy[props.sectionIndex].questions.length
+        copy[props.sectionIndex].poolCount =
+          copy[props.sectionIndex].questions.length;
         obj.mcqs = copy;
         return obj;
       });
@@ -1362,7 +1365,7 @@ const SectionHeader = (props) => {
               name="pool_count"
               value={state.mcqs[props.sectionIndex].poolCount}
               onChange={(e) => {
-                poolCountChanged.current = true
+                poolCountChanged.current = true;
                 setState((cur) => {
                   let obj = { ...cur };
                   let copy = obj.mcqs.slice();
