@@ -196,7 +196,7 @@ const csvToState = (data) => {
           image:
             data[row][column_index_of_question_image] == "null"
               ? null
-              : data[row][12],
+              : data[row][column_index_of_question_image],
           marks: parseFloat(data[row][column_index_of_question_marks]),
           link: {
             url:
