@@ -671,11 +671,11 @@ app.get(
         action_link_text: "Click here to go to student home page.",
       });
     } else {
-      // deadline has not passed, so let student edit quiz if time limit has not reached (deadline is 72 hours, time limit is the quiz's time in minutes)
+      // deadline has not passed, so let student edit quiz if timer has not ended (deadline is 72 hours, timer is the quiz's time in minutes)
 
       // make this quiz non-editable because someone has started attempting it
       if (assignment.allow_edit)
-      await assignment.Quiz.update({ allow_edit: false });
+        await assignment.Quiz.update({ allow_edit: false });
 
       // Get the section that the student wants to attempt.
       // getSection(sectionId, [what_other_models_to_include_in_results])
@@ -687,27 +687,6 @@ app.get(
           SectionId: req.params.sectionId,
         },
       });
-
-      if (sections_attempted.count == 0) {
-        //student hasn't attempted any sections previously, which means we don't need to check whether or not the student has attempted this section before
-
-        // update the assignment's status and sectionStatus to show that this student has now started solving this section
-        await setSectionStatusToInProgress(
-          assignment,
-          section,
-          req.params.sectionId
-        );
-
-        res.render("student/attempt.ejs", {
-          user_type: req.user.type,
-          sectionId: req.params.sectionId,
-          sectionTitle: section.title,
-          quizTitle: assignment.Quiz.title,
-          env: process.env.NODE_ENV,
-          previewOrNot: 0
-        });
-      } else {
-        // means that one or more of the sections of this quiz has been either started or have been finished
 
         try {
           // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
@@ -764,7 +743,6 @@ app.get(
           console.log(err);
           res.send("Error 45. Contact Admin.");
         }
-      }
 
     }
   }
