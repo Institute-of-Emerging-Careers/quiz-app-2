@@ -13,7 +13,6 @@ const initializePassport = require("./passport-config.js");
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcrypt");
 const moment = require("moment");
-const csvStringify = require("csv-stringify");
 const randomstring = require("randomstring");
 
 // My requirements
@@ -37,6 +36,7 @@ const {
   Answer,
   Attempt,
   PasswordResetLink,
+  Email,
 } = require("./db/models/user");
 const { saveNewQuiz } = require("./functions/saveNewQuiz.js");
 const {
@@ -54,7 +54,7 @@ const {
   getQuizResults,
   getQuizResultsWithAnalysis,
 } = require("./functions/getQuizResults");
-const { sendTextMail, sendHTMLMail } = require("./functions/sendEmail");
+const { sendHTMLMail } = require("./functions/sendEmail");
 const flatten2DArray = require("./functions/flatten2DArray");
 const sendFileInResponse = require("./functions/sendFileInResponse");
 const stateToCSV = require("./functions/stateToCSV.js");
@@ -218,9 +218,11 @@ app.get("/admin", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
-app.get("/mail/compose", checkAdminAuthenticated, (req, res) => {
+app.get("/mail/compose", checkAdminAuthenticated, async (req, res) => {
+  const emails = await Email.findAll({ limit: 10, order: [["id", "desc"]] });
   res.render("admin/email/compose.ejs", {
     user_type: req.user.type,
+    emails: emails,
   });
 });
 
@@ -236,6 +238,15 @@ app.post("/mail/preview", checkAdminAuthenticated, (req, res) => {
 
 app.post("/mail/send/batch", checkAdminAuthenticated, async (req, res) => {
   try {
+    // saving this email to Email history model
+    await Email.create({
+      subject: req.body.email_content.subject,
+      heading: req.body.email_content.heading,
+      body: req.body.email_content.inner_text,
+      button_pre_text: req.body.email_content.button_announcer,
+      button_label: req.body.email_content.button_text,
+      button_url: req.body.email_content.button_link,
+    });
     await new Promise((resolve) => {
       let num_emails = 0;
       let target_num_emails = req.body.email_addresses.length;
@@ -1646,6 +1657,18 @@ app.post("/student/signup", async (req, res) => {
           encodeURIComponent(err.errors[0].message)
       );
     } else res.redirect("/invite/" + invite_link);
+  }
+});
+
+app.get("/email/get/:email_id", async (req, res) => {
+  try {
+    const email = await Email.findOne({ where: { id: req.params.email_id } });
+    if (email != null) {
+      res.json(email);
+    }
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

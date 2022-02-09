@@ -294,6 +294,41 @@ PasswordResetLink.init(
   }
 );
 
+class Email extends Model {}
+
+Email.init(
+  {
+    subject: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    heading: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    body: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    button_pre_text: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+    },
+    button_label: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    button_url: {
+      type: DataTypes.STRING(1000),
+      allowNull: true,
+    },
+  },
+  {
+    sequelize,
+    modelName: "Email",
+  }
+);
+
 // Quiz, Student, and Invite relationships
 Quiz.hasMany(Invite, {
   onDelete: "RESTRICT",
@@ -394,4 +429,5 @@ module.exports = {
   Attempt,
   Score,
   PasswordResetLink,
+  Email,
 };

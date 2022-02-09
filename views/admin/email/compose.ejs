@@ -44,7 +44,20 @@
 
       <p id="recepients_list"></p>
 
-      <br><br>
+      <br>
+      <label>Load Previously Sent Email: </label>
+      <% if (emails.length>0) {
+        %>
+        <select id="prev_email_selector" class="py-3 px-2">
+            <option value="" selected disabled hidden>Select</option>
+            <% for (let i=0; i<emails.length; i++) {
+            %>
+                <option value="<%=emails[i].id%>">Subject: "<%= emails[i].subject %>" | Sent: <%= emails[i].createdAt %></option> 
+            <%} %>
+        </select>
+        <%} else {%> <%="No Emails Found"%> <%}%>
+        <i className="fas fa-spinner animate-spin hidden" id="load_previous_email_spinner"></i>
+        <br><span class="text-gray-500">Note: Previous recepients' email addresses are not loaded. Only email content is loaded.</span><br><br>
       <form id="mail-form" action="/mail/preview" method="POST" target="_blank" class="flex flex-col gap-y-4">
         <div id='recepient_field'>
             <label>Recepient Email: </label>
