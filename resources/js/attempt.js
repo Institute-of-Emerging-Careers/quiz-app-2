@@ -8,7 +8,7 @@ const useMemo = React.useMemo;
 const sectionId = parseInt(document.getElementById("sectionId").value);
 const quizTitle = document.getElementById("quizTitle").innerText;
 const sectionTitle = document.getElementById("sectionTitle").innerText;
-const preview_or_not = parseInt(document.getElementById("previewOrNot").value)
+const preview_or_not = parseInt(document.getElementById("previewOrNot").value);
 
 function millisecondsToMinutesAndSeconds(millis) {
   var minutes = Math.floor(millis / 60000);
@@ -162,7 +162,7 @@ const PassageQuestionPrompt = (props) => {
 
   return (
     <span>
-      Questions {props.questionIndex+1} isi about the following comprehension
+      Questions {props.questionIndex + 1} is about the following comprehension
       passage: <br></br>
     </span>
   );
@@ -195,21 +195,27 @@ const Passage = (props) => {
 };
 
 const ImageOrAudio = (props) => {
-  if (props.question.image!=null && props.question.image != "null") {
-    if (props.question.image.slice(1,4)=="img") {
-      return (<img
-        src={props.question.image}
-        className="max-w-xl max-h-xl w-auto h-auto"
-      ></img>)
-    } else if (props.question.image.slice(1,6) == "audio") {
+  if (props.question.image != null && props.question.image != "null") {
+    if (props.question.image.indexOf("img/") !== -1) {
       return (
-      <audio controls>
-        <source src={props.question.image} type="audio/mpeg"></source>
-        <span>Your browser does not support the audio element. Use a modern browser.</span>
-      </audio>)
-    } else return <div></div>
-  } else return <div></div>
-}
+        <img
+          src={props.question.image}
+          className="max-w-xl max-h-xl w-auto h-auto"
+        ></img>
+      );
+    } else if (props.question.image.indexOf("audio/") !== -1) {
+      return (
+        <audio controls>
+          <source src={props.question.image} type="audio/mpeg"></source>
+          <span>
+            Your browser does not support the audio element. Use a modern
+            browser.
+          </span>
+        </audio>
+      );
+    } else return <div></div>;
+  } else return <div></div>;
+};
 
 const Question = (props) => {
   const { questionsObj } = useContext(MyContext);
@@ -388,7 +394,8 @@ const Main = () => {
               " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
             }
             onClick={saveQuizProgress}
-            disabled={preview_or_not}>
+            disabled={preview_or_not}
+          >
             <i
               className={
                 saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
@@ -402,7 +409,8 @@ const Main = () => {
               " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
             }
             onClick={submitQuiz}
-          disabled={preview_or_not}>
+            disabled={preview_or_not}
+          >
             <i
               className={
                 submitSpinner
