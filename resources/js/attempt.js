@@ -451,6 +451,42 @@ const Main = () => {
       ) : (
         <div></div>
       )}
+      <div className="grid grid-cols-1 justify-end mb-6">
+        <div className="justify-self-center sm:justify-self-end flex flex-row gap-2">
+          <button
+            className={
+              saveButtonColor +
+              " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
+            }
+            onClick={saveQuizProgress}
+            disabled={preview_or_not}
+          >
+            <i
+              className={
+                saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
+              }
+            ></i>{" "}
+            {saveButtonText}
+          </button>
+          <button
+            className={
+              submitButtonColor +
+              " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2"
+            }
+            onClick={submitQuiz}
+            disabled={preview_or_not}
+          >
+            <i
+              className={
+                submitSpinner
+                  ? "fas fa-spinner animate-spin"
+                  : "far fa-paper-plane"
+              }
+            ></i>{" "}
+            Finish & Submit Quiz
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -506,7 +542,7 @@ const Header = () => {
   }, []);
 
   return (
-    <div>
+    <div class="sticky top-0 shadow-lg">
       <div
         id="quiz-header"
         className="bg-white m-auto mb-1 gap-y-2 px-8 py-4 rounded-2xl grid grid-cols-4 justify-between text-lg"
