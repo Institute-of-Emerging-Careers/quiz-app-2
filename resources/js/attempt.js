@@ -162,11 +162,7 @@ const PassageQuestionPrompt = (props) => {
 
   return (
     <span>
-<<<<<<< HEAD
-      Questions {props.questionIndex + 1} is about the following comprehension
-=======
       Questions {props.questionIndex+1} is about the following comprehension
->>>>>>> pooling
       passage: <br></br>
     </span>
   );
