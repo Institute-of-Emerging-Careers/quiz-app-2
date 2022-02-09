@@ -409,10 +409,9 @@ const ImageOrAudio = (props) => {
   }
 
   if (
-    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
-      1,
-      4
-    ) == "img"
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf(
+      "img/"
+    ) !== -1
   ) {
     return (
       <div className="relative w-max">
@@ -430,10 +429,9 @@ const ImageOrAudio = (props) => {
       </div>
     );
   } else if (
-    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.slice(
-      1,
-      6
-    ) == "audio"
+    state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf(
+      "audio/"
+    ) !== -1
   ) {
     return (
       <div className="w-max flex items-center">
@@ -1165,9 +1163,9 @@ const Section = (props) => {
 
 const SectionHeader = (props) => {
   const [state, setState] = useContext(MyContext);
-  const [poolCountChanged, setPoolCountChanged] = useState(false);
+  let poolCountChanged = React.useRef(false);
   const [poolCount, setPoolCount] = useState(
-    poolCountChanged == true
+    poolCountChanged.current == true
       ? state.mcqs[props.sectionIndex].poolCount
       : state.mcqs[props.sectionIndex].questions.length
   );
@@ -1177,21 +1175,34 @@ const SectionHeader = (props) => {
   );
   const toggle = React.useRef();
 
+  // useEffect(() => {
+  //   setPoolCount(
+  //     poolCountChanged == true
+  //       ? state.mcqs[props.sectionIndex].poolCount
+  //       : state.mcqs[props.sectionIndex].questions.length
+  //   );
+  //   if (!poolCountChanged) {
+  //     if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
+  //       setPoolCount(state.mcqs[props.sectionIndex].poolCount)
+  //     }
+  //   }
+  // }, [state.mcqs, state.passages, toggle]);
+
   useEffect(() => {
-    setPoolCount(
-      poolCountChanged == true
-        ? state.mcqs[props.sectionIndex].poolCount
-        : state.mcqs[props.sectionIndex].questions.length
-    );
-    if (!poolCountChanged) {
-      if (state.mcqs[props.sectionIndex].poolCount != poolCount)
-        setState((cur) => {
-          let obj = { ...cur };
-          let copy = obj.mcqs.slice();
-          copy[props.sectionIndex].poolCount = poolCount;
-          obj.mcqs = copy;
-          return obj;
-        });
+    console.log("h", poolCountChanged.current);
+    if (
+      poolCountChanged.current === false &&
+      state.mcqs[props.sectionIndex].poolCount !=
+        state.mcqs[props.sectionIndex].questions.length
+    ) {
+      setState((cur) => {
+        let obj = { ...cur };
+        let copy = obj.mcqs.slice();
+        copy[props.sectionIndex].poolCount =
+          copy[props.sectionIndex].questions.length;
+        obj.mcqs = copy;
+        return obj;
+      });
     }
   }, [state.mcqs, state.passages, toggle]);
 
@@ -1352,10 +1363,9 @@ const SectionHeader = (props) => {
               min="0"
               max={state.mcqs[props.sectionIndex].questions.length}
               name="pool_count"
-              value={poolCount}
+              value={state.mcqs[props.sectionIndex].poolCount}
               onChange={(e) => {
-                setPoolCountChanged(true);
-                setPoolCount(e.target.value);
+                poolCountChanged.current = true;
                 setState((cur) => {
                   let obj = { ...cur };
                   let copy = obj.mcqs.slice();

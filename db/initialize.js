@@ -116,6 +116,10 @@ const initializeDatabase = async () => {
       const studentUser = await sequelize.models.Student.create({
         firstName: "Rohan",
         lastName: "Hussain",
+        age: 20,
+        city: "Lahore",
+        address: "Street",
+        gender: "Male",
         email: "rohanhussain1@yahoo.com",
         password: hashedPwd,
         phone: "03320460729",

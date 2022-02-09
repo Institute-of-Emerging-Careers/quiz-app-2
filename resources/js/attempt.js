@@ -162,7 +162,11 @@ const PassageQuestionPrompt = (props) => {
 
   return (
     <span>
+<<<<<<< HEAD
       Questions {props.questionIndex + 1} is about the following comprehension
+=======
+      Questions {props.questionIndex+1} is about the following comprehension
+>>>>>>> pooling
       passage: <br></br>
     </span>
   );
@@ -178,6 +182,7 @@ const Passage = (props) => {
         {/* Comprehension Passage {props.passageIndex + 1} of {passages.length} */}
         <PassageQuestionPrompt
           passageIndex={props.passageIndex}
+          questionIndex={props.questionIndex}
         ></PassageQuestionPrompt>
       </div>
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
@@ -226,7 +231,7 @@ const Question = (props) => {
   return (
     <div className="single-question rounded-lg pb-4 text-left mx-auto mt-4">
       <div className="single-question-header rounded-t-lg px-4 py-2 text-white bg-iec-blue text-md">
-        Question {question.questionOrder + 1} of {props.total_questions}
+        Question {props.questionIndex + 1} of {props.total_questions}
       </div>
       <div className="single-question-body bg-white text-gray-900 py-4 px-8 rounded-b-lg">
         <ImageOrAudio question={question}></ImageOrAudio>
@@ -248,7 +253,7 @@ const Question = (props) => {
             <Option
               option={option}
               optionIndex={index}
-              name={question.questionOrder}
+              name={props.questionIndex}
               questionIndex={props.questionIndex}
               questionType={question.type}
               key={option.id}
@@ -435,6 +440,7 @@ const Main = () => {
             <div>
               <Passage
                 passage={passages[obj.question.passage]}
+                questionIndex={index}
                 passageIndex={obj.question.passage}
               ></Passage>
               <Question
