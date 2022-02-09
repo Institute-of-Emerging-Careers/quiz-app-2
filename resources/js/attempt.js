@@ -51,7 +51,8 @@ const MCQSOption = (props) => {
         type="radio"
         name={props.name}
         value={props.option.id}
-        className="mb-2"
+        className="mb-2 align-baseline"
+        style={{ height: "17px", width: "17px" }}
         onChange={(e) => {
           setQuestions((cur) => {
             let copy = cur.slice();
@@ -162,7 +163,7 @@ const PassageQuestionPrompt = (props) => {
 
   return (
     <span>
-      Questions {props.questionIndex+1} is about the following comprehension
+      Questions {props.questionIndex + 1} is about the following comprehension
       passage: <br></br>
     </span>
   );
