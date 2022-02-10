@@ -1892,7 +1892,6 @@ app.post(
         cnic: req.body.cnic,
       },
     });
-
     if (student != null) {
       const key = randomstring.generate(255);
       PasswordResetLink.create({
@@ -1937,7 +1936,7 @@ app.post(
         res.sendStatus(500);
       }
     } else {
-      redirect("/student/forgot-password?error=wrong-credentials");
+      res.redirect("/student/forgot-password?error=wrong-credentials");
     }
   }
 );
