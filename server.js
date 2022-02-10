@@ -1708,7 +1708,7 @@ app.post("/student/signup", async (req, res) => {
   }
 });
 
-app.get("/email/get/:email_id", async (req, res) => {
+app.get("/email/get/:email_id", checkAdminAuthenticated, async (req, res) => {
   try {
     const email = await Email.findOne({ where: { id: req.params.email_id } });
     if (email != null) {
