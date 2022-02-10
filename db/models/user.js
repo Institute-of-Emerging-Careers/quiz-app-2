@@ -414,7 +414,10 @@ Section.hasMany(Attempt, {
 Attempt.belongsTo(Section);
 
 // Attempt and Score relationship
-Attempt.hasOne(Score);
+Attempt.hasOne(Score, {
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 Score.belongsTo(Attempt);
 
 Student.hasMany(PasswordResetLink);

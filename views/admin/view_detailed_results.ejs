@@ -58,6 +58,7 @@
                     %>
                     <th class="py-3 px-6">Total Score<br>(out of <%=data_obj.quiz_total_score%>)</th>
                     <th class="py-3 px-6">Percentage Total Score</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody class="w-full" id='score-table-body'>
@@ -91,7 +92,7 @@
                     %>
                     <td class="py-3 px-6"><%= student_row.total_score %></td>
                     <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
-                </tr>
+
                 <% } else {
                     // this section is to print those students who have not solved any sections
                 %>
@@ -111,9 +112,13 @@
                     %>
                     <td class="py-3 px-6"><%= student_row.total_score %></td>
                     <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
-                </tr>
+
                 <%
                     }
+                %>
+                    <td class="py-3 px-6"><a class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline" href="/reset-assignment/student/<%=student_row.student_id%>/quiz/<%=quiz_id%>" target="_blank">Reset Assignment</a></td>
+                    </tr>
+                <%
                     }) 
                 %>
             </tbody>
