@@ -84,6 +84,7 @@ const {
   getQuestionIdsFromArrayOfAnswers,
 } = require("./functions/utilities.js");
 const allSectionsSolved = require("./functions/allSectionsSolved.js");
+const resetStudentAssignment = require("./functions/resetStudentAssignment.js");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -1357,6 +1358,8 @@ app.get("/quiz/:quizId/results", checkAdminAuthenticated, async (req, res) => {
 
   res.render("admin/view_detailed_results.ejs", {
     user_type: req.user.type,
+    user_id: req.user.user.id,
+    quiz_id: req.params.quizId,
     myname: req.user.user.firstName,
     data_obj: final_response,
     moment: moment,
@@ -1541,6 +1544,38 @@ app.get("/registrations/:link", checkAdminAuthenticated, async (req, res) => {
     full_link: process.env.SITE_DOMAIN_NAME + "/" + req.params.link,
   });
 });
+
+app.get(
+  "/reset-assignment/student/:student_id/quiz/:quiz_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    const t = await sequelize.transaction();
+    try {
+      await resetStudentAssignment(
+        req.params.student_id,
+        req.params.quiz_id,
+        t
+      );
+      t.commit();
+      res.render("templates/error.ejs", {
+        additional_info: "Assignment Reset Successfully",
+        error_message:
+          "Successfully reset the student's assignment status. Please ask the student to login using the already set email and password. The student will see a fresh assignment ready to be solved.",
+        action_link: "/admin",
+        action_link_text: "Return to Admin Panel",
+      });
+    } catch (err) {
+      t.rollback();
+      res.render("templates/error.ejs", {
+        additional_info: "Assignment Reset Failed :(",
+        error_message:
+          "Could not reset the student's assignment status. Please Contact the IT Team.",
+        action_link: "/admin",
+        action_link_text: "Return to Admin Panel",
+      });
+    }
+  }
+);
 
 app.get("/img/:filename", (req, res) => {
   sendFileInResponse(req, res, "uploads/images");
