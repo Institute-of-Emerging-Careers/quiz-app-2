@@ -1902,12 +1902,14 @@ app.post(
 
       const reset_link =
         process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
-      console.log(reset_link);
 
       try {
-        await sendHTMLMail(student.email, `Reset Password`, {
-          heading: `Reset Password`,
-          inner_text: `Dear Student
+        await sendHTMLMail(
+          student.email,
+          `Reset Password`,
+          {
+            heading: `Reset Password`,
+            inner_text: `Dear Student
           <br>
           This email contains your password reset link. Either copy paste the following link in your browser:
           <br>
@@ -1915,11 +1917,13 @@ app.post(
           <br>
           Sincerely, 
           IEC Admissions Team`,
-          button_announcer:
-            "Or you can click on the following button to change your password",
-          button_text: "Change Password",
-          button_link: reset_link,
-        });
+            button_announcer:
+              "Or you can click on the following button to change your password",
+            button_text: "Change Password",
+            button_link: reset_link,
+          },
+          true
+        );
         console.log("Password reset email sent");
         res.render("templates/error.ejs", {
           additional_info: "Check Your Inbox",
