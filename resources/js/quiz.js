@@ -1114,6 +1114,29 @@ const Passage = (props) => {
 
 const Section = (props) => {
   const [state, setState] = useContext(MyContext);
+  const [autoPoolCount, setAutoPoolCount] = useState(
+    state.mcqs[props.sectionIndex].poolCount ==
+      state.mcqs[props.sectionIndex].questions.length
+      ? true
+      : false
+  );
+
+  useEffect(() => {
+    if (
+      autoPoolCount &&
+      state.mcqs[props.sectionIndex].poolCount !=
+        state.mcqs[props.sectionIndex].questions.length
+    ) {
+      setState((cur) => {
+        let obj = { ...cur };
+        let copy = obj.mcqs.slice();
+        copy[props.sectionIndex].poolCount =
+          state.mcqs[props.sectionIndex].questions.length;
+        obj.mcqs = copy;
+        return obj;
+      });
+    }
+  }, [autoPoolCount]);
 
   return (
     <div>
@@ -1122,7 +1145,9 @@ const Section = (props) => {
         sectionNumber={props.sectionNumber}
         sectionIndex={props.sectionNumber - 1}
         totalSections={props.totalSections}
-        key={props.sectionNumber}
+        key={props.sectionNumber + "a"}
+        autoPoolCount={autoPoolCount}
+        setAutoPoolCount={setAutoPoolCount}
       />
       <div>
         {state.mcqs[props.sectionIndex].questions.map((question, index) => {
@@ -1155,7 +1180,9 @@ const Section = (props) => {
         sectionNumber={props.sectionNumber}
         sectionIndex={props.sectionNumber - 1}
         totalSections={props.totalSections}
-        key={props.sectionNumber}
+        key={props.sectionNumber + "b"}
+        autoPoolCount={autoPoolCount}
+        setAutoPoolCount={setAutoPoolCount}
       />
     </div>
   );
@@ -1163,48 +1190,31 @@ const Section = (props) => {
 
 const SectionHeader = (props) => {
   const [state, setState] = useContext(MyContext);
-  let poolCountChanged = React.useRef(false);
-  const [poolCount, setPoolCount] = useState(
-    poolCountChanged.current == true
-      ? state.mcqs[props.sectionIndex].poolCount
-      : state.mcqs[props.sectionIndex].questions.length
-  );
   const [time, setTime] = useState(state.mcqs[props.sectionIndex].time);
   const [timeOrNot, setTimeOrNot] = useState(
     state.mcqs[props.sectionIndex].time == 0 ? false : true
   );
   const toggle = React.useRef();
-
-  // useEffect(() => {
-  //   setPoolCount(
-  //     poolCountChanged == true
-  //       ? state.mcqs[props.sectionIndex].poolCount
-  //       : state.mcqs[props.sectionIndex].questions.length
-  //   );
-  //   if (!poolCountChanged) {
-  //     if (state.mcqs[props.sectionIndex].poolCount != poolCount) {
-  //       setPoolCount(state.mcqs[props.sectionIndex].poolCount)
-  //     }
-  //   }
-  // }, [state.mcqs, state.passages, toggle]);
+  const autoPoolCount = props.autoPoolCount;
+  const setAutoPoolCount = props.setAutoPoolCount;
 
   useEffect(() => {
-    console.log("h", poolCountChanged.current);
-    if (
-      poolCountChanged.current === false &&
-      state.mcqs[props.sectionIndex].poolCount !=
+    if (autoPoolCount) {
+      if (
+        state.mcqs[props.sectionIndex].poolCount !=
         state.mcqs[props.sectionIndex].questions.length
-    ) {
-      setState((cur) => {
-        let obj = { ...cur };
-        let copy = obj.mcqs.slice();
-        copy[props.sectionIndex].poolCount =
-          copy[props.sectionIndex].questions.length;
-        obj.mcqs = copy;
-        return obj;
-      });
+      ) {
+        setState((cur) => {
+          let obj = { ...cur };
+          let copy = obj.mcqs.slice();
+          copy[props.sectionIndex].poolCount =
+            state.mcqs[props.sectionIndex].questions.length;
+          obj.mcqs = copy;
+          return obj;
+        });
+      }
     }
-  }, [state.mcqs, state.passages, toggle]);
+  }, [state.mcqs]);
 
   const closeDropdown = () => {
     const el = ReactDOM.findDOMNode(toggle.current);
@@ -1353,29 +1363,43 @@ const SectionHeader = (props) => {
         </div>
 
         <div className="flex gap-x-2 w-full mt-4 mb-2">
-          <div className="">
-            <label className="px-4 py-3">
-              No. of Questions to be Randomly Selected:{" "}
-            </label>
-            <input
-              type="number"
-              className="h-12 w-16 bg-gray-100 text-center"
-              min="0"
-              max={state.mcqs[props.sectionIndex].questions.length}
-              name="pool_count"
-              value={state.mcqs[props.sectionIndex].poolCount}
-              onChange={(e) => {
-                poolCountChanged.current = true;
-                setState((cur) => {
-                  let obj = { ...cur };
-                  let copy = obj.mcqs.slice();
-                  copy[props.sectionIndex].poolCount = e.target.value;
-                  obj.mcqs = copy;
-                  return obj;
-                });
-              }}
-            ></input>
-          </div>
+          <input
+            type="checkbox"
+            name="autoPoolCount"
+            checked={autoPoolCount}
+            onChange={(e) => {
+              console.log("changing autoPoolCount");
+              setAutoPoolCount(e.target.checked);
+            }}
+          ></input>
+          <label className="self-center">Show all questions to student</label>
+
+          {!autoPoolCount ? (
+            <div className="">
+              <label className="px-4 py-3">
+                No. of Questions to be Randomly Selected:{" "}
+              </label>
+              <input
+                type="number"
+                className="h-12 w-16 bg-gray-100 text-center"
+                min="0"
+                max={state.mcqs[props.sectionIndex].questions.length}
+                name="pool_count"
+                value={state.mcqs[props.sectionIndex].poolCount}
+                onChange={(e) => {
+                  setState((cur) => {
+                    let obj = { ...cur };
+                    let copy = obj.mcqs.slice();
+                    copy[props.sectionIndex].poolCount = e.target.value;
+                    obj.mcqs = copy;
+                    return obj;
+                  });
+                }}
+              ></input>
+            </div>
+          ) : (
+            <div></div>
+          )}
           <div className="flex gap-4 ml-4">
             <div className="self-center">
               <input
@@ -1686,7 +1710,7 @@ const Main = () => {
             {uploading2 == true ? (
               <i className="fas fa-spinner animate-spin self-center"></i>
             ) : (
-              <div className="hidden"></div>
+              <i className="hidden"></i>
             )}
             {savedStatus}
           </p>
