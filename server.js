@@ -83,6 +83,7 @@ const {
   getQuestionObjectsFromArrayOfQuestionIds,
   getQuestionIdsFromArrayOfAnswers,
 } = require("./functions/utilities.js");
+const allSectionsSolved = require("./functions/allSectionsSolved.js");
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -1334,8 +1335,20 @@ app.get(
   async (req, res) => {
     // answers are already saved in Database, so we create a Score object and send student completion email
     await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
-
-    res.json({ success: true });
+    const section = await Section.findOne({
+      where: { id: req.params.sectionId },
+      attributes: ["id"],
+      include: [Quiz],
+    });
+    const assignment = await Assignment.findOne({
+      where: { QuizId: section.Quiz.id, StudentId: req.user.user.id },
+      attributes: ["id"],
+    });
+    const all_sections_solved = await allSectionsSolved(
+      section.Quiz.id,
+      assignment
+    );
+    res.json({ success: true, all_sections_solved: all_sections_solved });
   }
 );
 
@@ -1889,6 +1902,12 @@ app.post(
     }
   }
 );
+
+app.get("/student/feedback", checkStudentAuthenticated, (req, res) => {
+  res.render("student/feedback/index.ejs", {
+    user_type: req.user.type,
+  });
+});
 
 app.get("/email-template", (req, res) => {
   res.render("templates/mail-template-1.ejs", {

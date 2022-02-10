@@ -336,19 +336,17 @@ const Main = () => {
   }
 
   function sendScoringRequest(time) {
-    $.get(
-      "/quiz/attempt/" + sectionId + "/score?time=" + time,
-      function (resp) {
-        if (resp.success == true) {
-          setSubmitSpinner(false);
-          setSubmitButtonColor("bg-green-500");
-          console.log("Quiz submitted successfully.");
-          window.location = "/student?success=true";
-        } else {
-          console.log("Error submitting quiz.");
-        }
+    $.get("/quiz/attempt/" + sectionId + "/score", function (resp) {
+      if (resp.success == true) {
+        setSubmitSpinner(false);
+        setSubmitButtonColor("bg-green-500");
+        console.log("Quiz submitted successfully.");
+        if (resp.all_sections_solved) window.location = "/student/feedback";
+        else window.location = "/student?success=true";
+      } else {
+        console.log("Error submitting quiz.");
       }
-    );
+    });
   }
 
   function submitQuiz() {
