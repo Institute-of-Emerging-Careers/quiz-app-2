@@ -51,7 +51,7 @@ async function sendReminderEmails() {
               ).plus({ days: 3 }); //timeOfAssignment + 72 hours
 
               const deadline_diff = deadline
-                .diff(DateTime.now(), ["days", "hours"])
+                .diff(DateTime.now(), ["days", "hours", "minutes"])
                 .toObject();
               const remaining_days = deadline_diff.days;
               const remaining_hours = deadline_diff.hours;
