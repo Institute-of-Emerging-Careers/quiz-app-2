@@ -55,6 +55,10 @@ async function sendReminderEmails() {
                 .toObject();
               const remaining_days = deadline_diff.days;
               const remaining_hours = deadline_diff.hours;
+              const remaining_time_in_words = `${remaining_days} day`;
+              if (remaining_days != 1) remaining_time_in_words += "s";
+              remaining_time_in_words += `${remaining_hours} hour`;
+              if (remaining_hours != 1) remaining_time_in_words += "s";
 
               if (remaining_days > 0 && remaining_days < 3) {
                 //if remaining time more than 0 days and less than 3 days then send email, because we don't want to be sending reminder emails to students whose 72 hours have already passed
@@ -65,9 +69,7 @@ async function sendReminderEmails() {
                   `Reminder | IEC Assessment Deadline`,
                   {
                     heading: "IEC Assessment Due",
-                    inner_text: `Dear Student<br>You only have<br>
-                      ${remaining_days} days and ${remaining_hours} hours left<br>
-                      to solve the IEC Assessment.`,
+                    inner_text: `Dear Student<br>You only have ${remaining_time_in_words} to solve the IEC Assessment.`,
                     button_announcer:
                       "Click on the button below to solve the Assessment",
                     button_text: "Solve Assessment",
