@@ -149,10 +149,8 @@ const getQuizResults = (quiz_id) => {
               );
           });
           const all_sections_solved = await allSectionsSolved(quiz_id, assignment)
-          console.log(assignment.Student.email, all_sections_solved)
           if (all_sections_solved) {
             data[data_prev_index].completed = true;
-            console.log(data[data_prev_index].student_email, all_sections_solved)
           }
         }
         i++
