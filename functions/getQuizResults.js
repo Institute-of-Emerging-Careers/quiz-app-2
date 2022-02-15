@@ -179,7 +179,13 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
   return new Promise(async (resolve) => {
     const quiz = await Quiz.findOne({
       where: { id: quiz_id },
-      include: [{ model: Section, order: ["id"] }],
+      include: [
+        {
+          model: Section,
+          order: ["id"],
+          include: { model: Question, attributes: ["id"] },
+        },
+      ],
     });
 
     // column_headings will tell the result page how many sections this quiz had, so that the displayed table has the right header row
@@ -189,7 +195,11 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
       let count = 0;
       quiz.Sections.forEach(async (section, index) => {
         // get the maximum achievable (total) score of a section
-        const maximum_score = await getTotalMarksOfSection(section.id);
+        const maximum_score = await getTotalMarksOfSection(
+          section.id,
+          section.poolCount,
+          section.Questions.length
+        );
 
         quiz_total_score += maximum_score;
         quiz_sections.push({
@@ -221,13 +231,13 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
         0, //number of students with percentage between 0% to 10.00%
         0, //number of students with percentage between 10.01% to 20.00%
         0, //number of students with percentage between 20.01% to 30.00%
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
+        0, //number of students with percentage between 30.01% to 40.00%
+        0, //number of students with percentage between 40.01% to 50.00%
+        0, //number of students with percentage between 50.01% to 60.00%
+        0, //number of students with percentage between 60.01% to 70.00%
+        0, //number of students with percentage between 70.01% to 80.00%
+        0, //number of students with percentage between 80.01% to 90.00%
+        0, //number of students with percentage between 90.01% to 100.00%
       ],
       num_students_who_completed: 0,
       num_students_who_started_but_did_not_complete: 0,
@@ -326,8 +336,10 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
         }
         const cur_student_percentage = data[cur_index].percentage_total;
 
+        const percentage_range_index =
+          (cur_student_percentage - (cur_student_percentage % 10)) / 10;
         analysis.percentage_ranges[
-          (cur_student_percentage - (cur_student_percentage % 10)) / 10
+          percentage_range_index == 0 ? 0 : percentage_range_index - 1
         ]++;
       }
     });
