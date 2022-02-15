@@ -56,8 +56,8 @@ function validateAddress(address) {
 }
 
 function validateAge(age) {
-  if (age < 10 || age > 100) {
-    return "Age must be between 10 and 100";
+  if (age < 10 || age > 100 || !Number.isInteger(parseFloat(age))) {
+    return "Age must be a positive non-decimal number between 10 and 100";
   } else return true;
 }
 
