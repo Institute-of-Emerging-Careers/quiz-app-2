@@ -5,7 +5,12 @@ const calculateScore = require("../../functions/calculateScore");
 (async () => {
   const quiz = await Quiz.findOne({
     where: { id: 34 },
-    include: [{ model: Assignment, include: [{ model: Attempt }] }],
+    include: [
+      {
+        model: Assignment,
+        include: [{ model: Attempt, where: { statusText: "Completed" } }],
+      },
+    ],
   });
 
   let arr_of_section_student_pairs = [];
