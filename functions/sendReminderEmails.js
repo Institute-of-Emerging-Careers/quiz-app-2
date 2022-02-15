@@ -57,7 +57,7 @@ async function sendReminderEmails() {
               const remaining_hours = deadline_diff.hours;
               let remaining_time_in_words = `${remaining_days} day`;
               if (remaining_days != 1) remaining_time_in_words += "s";
-              remaining_time_in_words += `${remaining_hours} hour`;
+              remaining_time_in_words += ` ${remaining_hours} hour`;
               if (remaining_hours != 1) remaining_time_in_words += "s";
 
               if (remaining_days > 0 && remaining_days < 3) {
