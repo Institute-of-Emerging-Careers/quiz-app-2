@@ -49,6 +49,8 @@
             <input type="number" id="num_other" value="<%=analysis.gender_other%>">
             
             <input type="text" id="age_distribution_string" value="<% for (let age in analysis.age_distribution) {%><%=age%>,<%=analysis.age_distribution[age]%>,<% } %>">
+            <input type="text" id="city_distribution_string" value="<% for (let city in analysis.city_distribution) {%><%=city%>,<%=analysis.city_distribution[city]%>,<% } %>">
+
         </div>
 
         <div class="grid grid-cols-1 gap-x-4 gap-y-16 md:grid-cols-2">
@@ -63,6 +65,9 @@
             </div> 
             <div class="md:col-span-2">
                 <canvas id="age_chart"></canvas>
+            </div> 
+            <div class="md:col-span-2">
+                <canvas id="city_chart"></canvas>
             </div> 
         </div>
         <%

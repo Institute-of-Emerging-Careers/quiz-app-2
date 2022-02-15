@@ -84,9 +84,9 @@ const getQuizResults = (quiz_id) => {
       ],
     });
 
-    await new Promise(small_resolve=>{
-      let i=0;
-      const n = assignments.length
+    await new Promise((small_resolve) => {
+      let i = 0;
+      const n = assignments.length;
       assignments.forEach(async (assignment) => {
         // Note: we also show scores of students who have NOT YET attempted this quiz
         let data_prev_index = data.push({
@@ -101,7 +101,7 @@ const getQuizResults = (quiz_id) => {
           maximum_total_score: 0,
           percentage_total: 0,
         });
-        data_prev_index--
+        data_prev_index--;
         if (assignment.Attempts.length > 0) {
           quiz_sections.forEach((section) => {
             let found = false;
@@ -148,17 +148,20 @@ const getQuizResults = (quiz_id) => {
                 (data[data_prev_index].total_score / quiz_total_score) * 100
               );
           });
-          const all_sections_solved = await allSectionsSolved(quiz_id, assignment)
+          const all_sections_solved = await allSectionsSolved(
+            quiz_id,
+            assignment
+          );
           if (all_sections_solved) {
             data[data_prev_index].completed = true;
           }
         }
-        i++
-        if (i==n) {
-          small_resolve()
+        i++;
+        if (i == n) {
+          small_resolve();
         }
       });
-    })
+    });
 
     let final_response = {
       quiz_title: quiz.title,
@@ -233,6 +236,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
       gender_female: 0,
       gender_other: 0,
       age_distribution: {},
+      city_distribution: {},
     };
 
     assignments.forEach((assignment) => {
@@ -259,6 +263,15 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
         analysis.age_distribution[assignment.Student.age]++;
       else analysis.age_distribution[assignment.Student.age] = 1;
 
+      if (
+        analysis.city_distribution.hasOwnProperty(
+          assignment.Student.city.toLowerCase()
+        )
+      ) {
+        analysis.city_distribution[assignment.Student.city.toLowerCase()]++;
+      } else {
+        analysis.city_distribution[assignment.Student.city.toLowerCase()] = 1;
+      }
       if (assignment.Attempts.length > 0) {
         quiz_sections.forEach((section) => {
           let found = false;
