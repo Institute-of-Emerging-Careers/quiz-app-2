@@ -1,9 +1,10 @@
 const { Sequelize } = require("sequelize");
-console.log(process.env.DEBUG)
+console.log(process.env.DEBUG);
 
 const sequelize = new Sequelize(process.env.MYSQL_CONNECTION_STRING, {
   dialect: "mysql",
-  timezone:process.env.TIMEZONE_OFFSET,
+  logging: false,
+  timezone: process.env.TIMEZONE_OFFSET,
 });
 
 sequelize
