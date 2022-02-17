@@ -1,18 +1,20 @@
 const { Attempt } = require("../db/models/user");
+const { DateTime, Settings } = require("luxon");
 
 async function setSectionStatusToInProgress(assignment, section, sectionId) {
   let cur_section_status = assignment.sectionStatus;
   // if section time is equal to 0, that means that the quiz is untimed.
   if (section.time != 0) {
     // if the section is timed
-    const startTime = Date.now();
+    Settings.defaultZone = "Asia/Karachi";
+    const startTime = DateTime.now({ zone: "Asia/Karachi" });
 
     // converting section.time which is in minutes to milliseconds
-    const endTime = startTime + section.time * 60 * 1000;
+    const endTime = startTime.plus({ minutes: section.time }).toMillis();
 
     // creating new rows in the new Attempts table. This will replace the above logic
     return Attempt.create({
-      startTime: startTime,
+      startTime: startTime.toMillis(),
       endTime: endTime,
       statusText: "In Progress",
       AssignmentId: assignment.id,
@@ -23,7 +25,7 @@ async function setSectionStatusToInProgress(assignment, section, sectionId) {
     const startTime = Date.now();
 
     return Attempt.create({
-      startTime: startTime,
+      startTime: startTime.toMillis(),
       endTime: 0,
       statusText: "In Progress",
       AssignmentId: assignment.id,
