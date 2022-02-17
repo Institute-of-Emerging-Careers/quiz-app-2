@@ -1264,15 +1264,22 @@ app.get(
 
       const attempt = await Attempt.findOne({
         where: { AssignmentId: assignment.id, SectionId: req.params.sectionId },
-        attributes: ["endTime"],
+        attributes: ["endTime", "startTime"],
       });
       let endTime = attempt.endTime;
-      console.log("endTime: ", endTime);
+
       if (attempt.endTime == null) {
         endTime = 0;
       }
+      const startTime = attempt.startTime;
+      let duration_left = attempt.endTime - Date.now();
+      if (attempt.endTime == null) duration_left = 0;
 
-      res.json({ success: true, endTime: endTime });
+      res.json({
+        success: true,
+        endTime: endTime,
+        duration_left: duration_left,
+      });
     } catch (err) {
       console.log(err);
       res.json({ success: false });

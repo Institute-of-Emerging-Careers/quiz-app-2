@@ -499,26 +499,23 @@ const Header = () => {
   const [remainingTime, setRemainingTime] = useState("Please wait");
   const timeRef = useRef(null); //stores the setInterval object
 
-  endTimeRef.current = endTime;
+  // endTimeRef.current = endTime;
 
   function myFunction() {
-    console.log(endTimeRef.current);
-    if (endTimeRef.current == 0) {
+    // console.log(endTimeRef.current);
+    if (remainingTime == 0) {
       setRemainingTime("No Time Limit");
       clearInterval(timeRef.current);
-    } else if (
-      endTimeRef.current != null &&
-      endTimeRef.current - Date.now() < 1000
-    ) {
+    } else if (remainingTime != null && remainingTime < 2000) {
       setTimeout(() => {
         setRemainingTime("Time Over");
         setDisplayQuestions(false);
       }, 1000);
       clearInterval(timeRef.current);
-    } else if (endTimeRef.current != null) {
-      setRemainingTime(
-        millisecondsToMinutesAndSeconds(endTimeRef.current - Date.now())
-      );
+    } else if (remainingTime != null) {
+      setRemainingTime((cur) => {
+        return cur - 1000;
+      });
     }
   }
 
@@ -528,8 +525,8 @@ const Header = () => {
       "/section/" + sectionId + "/endTime",
       (resp) => {
         if (resp.success == true) {
-          edt = resp.endTime;
-          setEndTime(edt);
+          edt = resp.duration_left;
+          setRemainingTime(edt);
         } else {
           // handle error
           console.log("Error getting endTime.");
@@ -560,7 +557,7 @@ const Header = () => {
                 "justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"
           }
         >
-          {remainingTime}
+          {millisecondsToMinutesAndSeconds(remainingTime)}
         </p>
       </div>
     </div>
