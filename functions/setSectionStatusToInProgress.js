@@ -7,7 +7,7 @@ async function setSectionStatusToInProgress(assignment, section, sectionId) {
   if (section.time != 0) {
     // if the section is timed
     Settings.defaultZone = "Asia/Karachi";
-    const startTime = DateTime.now({ zone: "Asia/Karachi" });
+    const startTime = DateTime.utc();
 
     // converting section.time which is in minutes to milliseconds
     const endTime = startTime.plus({ minutes: section.time }).toMillis();
@@ -22,7 +22,7 @@ async function setSectionStatusToInProgress(assignment, section, sectionId) {
     });
   } else {
     // if the section is untimed
-    const startTime = Date.now();
+    const startTime = DateTime.utc();
 
     return Attempt.create({
       startTime: startTime.toMillis(),
