@@ -249,99 +249,115 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
       city_distribution: {},
     };
 
-    assignments.forEach((assignment) => {
-      // Note: we also show scores of students who have NOT YET attempted this quiz
-      let cur_index = data.push({
-        student_id: assignment.Student.id,
-        student_name:
-          assignment.Student.firstName + " " + assignment.Student.lastName,
-        student_cnic: assignment.Student.cnic,
-        student_email: assignment.Student.email,
-        sections: [],
-        completed: false, //this tells if the student has completed all sections or not
-        total_score: 0,
-        maximum_total_score: 0,
-        percentage_total: 0,
-      });
-      cur_index--;
-
-      if (assignment.Student.gender == "male") analysis.gender_male++;
-      else if (assignment.Student.gender == "female") analysis.gender_female++;
-      else if (assignment.Student.gender == "other") analysis.gender_other++;
-
-      if (analysis.age_distribution.hasOwnProperty(assignment.Student.age))
-        analysis.age_distribution[assignment.Student.age]++;
-      else analysis.age_distribution[assignment.Student.age] = 1;
-
-      if (
-        analysis.city_distribution.hasOwnProperty(
-          assignment.Student.city.toLowerCase()
-        )
-      ) {
-        analysis.city_distribution[assignment.Student.city.toLowerCase()]++;
-      } else {
-        analysis.city_distribution[assignment.Student.city.toLowerCase()] = 1;
-      }
-      if (assignment.Attempts.length > 0) {
-        quiz_sections.forEach((section) => {
-          let found = false;
-          assignment.Attempts.forEach((attempt) => {
-            // if we simply start pushing each section attempt to the data array, and if the student has only attempted 1 of 2 sections,
-            // then the results page will have to deal with the complex task of checking which section's results we have sent
-            // and which we haven't for each student. So we will rather do it here. We will, for each section of the quiz that exists in the quiz,
-            // check whether or not the student has attempted it. If yes, we push the scores to the data array, otherwise
-            // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
-            // array
-            if (section.section_id == attempt.SectionId) {
-              const section_score =
-                attempt.Score == null ? 0 : attempt.Score.score;
-              const percentage_score = roundToTwoDecimalPlaces(
-                (section_score / section.maximum_score) * 100
-              );
-
-              data[cur_index].sections.push({
-                status: "Attempted",
-                section_id: attempt.SectionId,
-                section_score: section_score,
-                percentage_score: percentage_score,
-                start_time: attempt.startTime,
-                end_time: attempt.endTime,
-                duration: attempt.duration,
-              });
-
-              found = true;
-              data[cur_index].total_score += section_score;
-            }
-          });
-          if (!found)
-            data[cur_index].sections.push({
-              status: "Not Attempted yet",
-              section_score: 0,
-              percentage_score: 0,
-              start_time: 0,
-              end_time: 0,
-              duration: 0,
-            });
-          else
-            data[cur_index].percentage_total = roundToTwoDecimalPlaces(
-              (data[cur_index].total_score / quiz_total_score) * 100
-            );
+    await new Promise((resolve) => {
+      let i = 0;
+      const n = assignments.length;
+      assignments.forEach(async (assignment) => {
+        // Note: we also show scores of students who have NOT YET attempted this quiz
+        let cur_index = data.push({
+          student_id: assignment.Student.id,
+          student_name:
+            assignment.Student.firstName + " " + assignment.Student.lastName,
+          student_cnic: assignment.Student.cnic,
+          student_email: assignment.Student.email,
+          sections: [],
+          completed: false, //this tells if the student has completed all sections or not
+          total_score: 0,
+          maximum_total_score: 0,
+          percentage_total: 0,
         });
-        if (quiz_sections.length == data[cur_index].sections.length) {
-          // this student has completed the assessment
-          analysis.num_students_who_completed++;
-          data[cur_index].completed = true;
-        } else {
-          analysis.num_students_who_started_but_did_not_complete++;
-        }
-        const cur_student_percentage = data[cur_index].percentage_total;
+        cur_index--;
 
-        const percentage_range_index =
-          (cur_student_percentage - (cur_student_percentage % 10)) / 10;
-        analysis.percentage_ranges[
-          percentage_range_index == 0 ? 0 : percentage_range_index - 1
-        ]++;
-      }
+        console.log(assignment.Student.gender);
+        if (assignment.Student.gender.toLowerCase() == "male")
+          analysis.gender_male++;
+        else if (assignment.Student.gender.toLowerCase() == "female")
+          analysis.gender_female++;
+        else if (assignment.Student.gender.toLowerCase() == "other")
+          analysis.gender_other++;
+
+        if (analysis.age_distribution.hasOwnProperty(assignment.Student.age))
+          analysis.age_distribution[assignment.Student.age]++;
+        else analysis.age_distribution[assignment.Student.age] = 1;
+
+        if (
+          analysis.city_distribution.hasOwnProperty(
+            assignment.Student.city.toLowerCase()
+          )
+        ) {
+          analysis.city_distribution[assignment.Student.city.toLowerCase()]++;
+        } else {
+          analysis.city_distribution[assignment.Student.city.toLowerCase()] = 1;
+        }
+        if (assignment.Attempts.length > 0) {
+          quiz_sections.forEach((section) => {
+            let found = false;
+            assignment.Attempts.forEach((attempt) => {
+              // if we simply start pushing each section attempt to the data array, and if the student has only attempted 1 of 2 sections,
+              // then the results page will have to deal with the complex task of checking which section's results we have sent
+              // and which we haven't for each student. So we will rather do it here. We will, for each section of the quiz that exists in the quiz,
+              // check whether or not the student has attempted it. If yes, we push the scores to the data array, otherwise
+              // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
+              // array
+              if (section.section_id == attempt.SectionId) {
+                const section_score =
+                  attempt.Score == null ? 0 : attempt.Score.score;
+                const percentage_score = roundToTwoDecimalPlaces(
+                  (section_score / section.maximum_score) * 100
+                );
+
+                data[cur_index].sections.push({
+                  status: "Attempted",
+                  section_id: attempt.SectionId,
+                  section_score: section_score,
+                  percentage_score: percentage_score,
+                  start_time: attempt.startTime,
+                  end_time: attempt.endTime,
+                  duration: attempt.duration,
+                });
+
+                found = true;
+                data[cur_index].total_score += section_score;
+              }
+            });
+            if (!found)
+              data[cur_index].sections.push({
+                status: "Not Attempted yet",
+                section_score: 0,
+                percentage_score: 0,
+                start_time: 0,
+                end_time: 0,
+                duration: 0,
+              });
+            else
+              data[cur_index].percentage_total = roundToTwoDecimalPlaces(
+                (data[cur_index].total_score / quiz_total_score) * 100
+              );
+          });
+
+          const all_sections_solved = await allSectionsSolved(
+            quiz_id,
+            assignment
+          );
+
+          if (all_sections_solved) {
+            // this student has completed the assessment
+            analysis.num_students_who_completed++;
+            data[cur_index].completed = true;
+          } else {
+            analysis.num_students_who_started_but_did_not_complete++;
+          }
+          const cur_student_percentage = data[cur_index].percentage_total;
+
+          const percentage_range_index =
+            (cur_student_percentage - (cur_student_percentage % 10)) / 10;
+          analysis.percentage_ranges[
+            percentage_range_index == 0 ? 0 : percentage_range_index - 1
+          ]++;
+        }
+        i++;
+        if (i == n) resolve();
+      });
     });
 
     let final_response = {
