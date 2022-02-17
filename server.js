@@ -701,13 +701,6 @@ app.get(
       // getSection(sectionId, [what_other_models_to_include_in_results])
       const section = await getSection(req.params.sectionId, []);
 
-      const sections_attempted = await Attempt.count({
-        where: {
-          AssignmentId: assignment.id,
-          SectionId: req.params.sectionId,
-        },
-      });
-
       try {
         // check if an Attempt exists for this section (that would mean that this user is currently attempting or has attempted this section)
         // An Attempt is characterized by an AssignmentId and a SectionId
@@ -871,7 +864,6 @@ app.get(
       });
 
       if (answers.length == 0) {
-        console.log("hey");
         // student hasn't attempted this section before so we create a new randomized sequence of questions
 
         // generating p random numbers in a [low,high] range where p=poolCount, low=0 and high=total_num_questions

@@ -502,13 +502,12 @@ const Header = () => {
   endTimeRef.current = endTime;
 
   function myFunction() {
-    console.log(endTimeRef.current);
     if (endTimeRef.current == 0) {
       setRemainingTime("No Time Limit");
       clearInterval(timeRef.current);
     } else if (
       endTimeRef.current != null &&
-      endTimeRef.current - Date.now() < 1000
+      endTimeRef.current.diff(luxon.DateTime.now()).toMillis() < 1000
     ) {
       setTimeout(() => {
         setRemainingTime("Time Over");
@@ -517,7 +516,9 @@ const Header = () => {
       clearInterval(timeRef.current);
     } else if (endTimeRef.current != null) {
       setRemainingTime(
-        millisecondsToMinutesAndSeconds(endTimeRef.current - Date.now())
+        millisecondsToMinutesAndSeconds(
+          endTimeRef.current.diff(luxon.DateTime.now()).toMillis()
+        )
       );
     }
   }
@@ -529,10 +530,12 @@ const Header = () => {
       (resp) => {
         if (resp.success == true) {
           edt = resp.endTime;
+          edt = luxon.DateTime.fromMillis(new Date(edt).getTime());
           setEndTime(edt);
         } else {
           // handle error
           console.log("Error getting endTime.");
+          alert("Please contact IT team at rohan.hussain@iec.org.pk");
         }
       },
       "json"
