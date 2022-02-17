@@ -11,15 +11,18 @@ const sectionTitle = document.getElementById("sectionTitle").innerText;
 const preview_or_not = parseInt(document.getElementById("previewOrNot").value);
 
 function millisecondsToMinutesAndSeconds(millis) {
-  var minutes = Math.floor(millis / 60000);
-  var seconds = ((millis % 60000) / 1000).toFixed(0);
-  return (
-    minutes +
-    " minutes and " +
-    (seconds < 10 ? "0" : "") +
-    seconds +
-    " seconds remaining"
-  );
+  if (millis==0) return "No Time Limit"
+  else {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return (
+      minutes +
+      " minutes and " +
+      (seconds < 10 ? "0" : "") +
+      seconds +
+      " seconds remaining"
+    );
+  }
 }
 
 const ContextProvider = (props) => {
@@ -499,27 +502,24 @@ const Header = () => {
   const [remainingTime, setRemainingTime] = useState("Please wait");
   const timeRef = useRef(null); //stores the setInterval object
 
-  endTimeRef.current = endTime;
+  // endTimeRef.current = endTime;
 
   function myFunction() {
-    if (endTimeRef.current == 0) {
+    // console.log(endTimeRef.current);
+    console.log("remainingTime",remainingTime)
+    if (remainingTime == 0) {
       setRemainingTime("No Time Limit");
       clearInterval(timeRef.current);
-    } else if (
-      endTimeRef.current != null &&
-      endTimeRef.current.diff(luxon.DateTime.utc()).toMillis() < 1000
-    ) {
+    } else if (remainingTime != null && remainingTime < 2000) {
       setTimeout(() => {
         setRemainingTime("Time Over");
         setDisplayQuestions(false);
       }, 1000);
       clearInterval(timeRef.current);
-    } else if (endTimeRef.current != null) {
-      setRemainingTime(
-        millisecondsToMinutesAndSeconds(
-          endTimeRef.current.diff(luxon.DateTime.utc()).toMillis()
-        )
-      );
+    } else if (remainingTime != null) {
+      setRemainingTime((cur) => {
+        return cur - 1000;
+      });
     }
   }
 
@@ -529,9 +529,9 @@ const Header = () => {
       "/section/" + sectionId + "/endTime",
       (resp) => {
         if (resp.success == true) {
-          edt = resp.endTime;
-          edt = luxon.DateTime.utc(edt);
-          setEndTime(edt);
+          edt = resp.duration_left;
+          setRemainingTime(edt);
+          if (edt!=0) timeRef.current = setInterval(myFunction, 1000);
         } else {
           // handle error
           console.log("Error getting endTime.");
@@ -540,7 +540,6 @@ const Header = () => {
       },
       "json"
     );
-    timeRef.current = setInterval(myFunction, 1000);
   }, []);
 
   return (
@@ -563,7 +562,7 @@ const Header = () => {
                 "justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"
           }
         >
-          {remainingTime}
+          {millisecondsToMinutesAndSeconds(remainingTime)}
         </p>
       </div>
     </div>
