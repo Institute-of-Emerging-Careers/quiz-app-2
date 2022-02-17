@@ -11,7 +11,7 @@ const sectionTitle = document.getElementById("sectionTitle").innerText;
 const preview_or_not = parseInt(document.getElementById("previewOrNot").value);
 
 function millisecondsToMinutesAndSeconds(millis) {
-  if (millis==0) return "No Time Limit"
+  if (millis == 0) return "No Time Limit";
   else {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -282,7 +282,7 @@ const Main = () => {
     setSaveButtonText("Save Current Progress");
   }, [questions]);
 
-  useMemo(() => {
+  useEffect(() => {
     if (displayQuestions == false) submitQuiz();
   }, [displayQuestions]);
 
@@ -496,27 +496,25 @@ const Main = () => {
 const Header = () => {
   const { questionsObj, displayQuestionsObj } = useContext(MyContext);
   const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
-
-  const [endTime, setEndTime] = useState(null);
-  const endTimeRef = useRef(0);
   const [remainingTime, setRemainingTime] = useState("Please wait");
+  const remainingTimeRef = useRef("Please wait");
   const timeRef = useRef(null); //stores the setInterval object
 
-  // endTimeRef.current = endTime;
-
+  remainingTimeRef.current = remainingTime;
   function myFunction() {
-    // console.log(endTimeRef.current);
-    console.log("remainingTime",remainingTime)
-    if (remainingTime == 0) {
+    if (remainingTimeRef.current == 0) {
       setRemainingTime("No Time Limit");
       clearInterval(timeRef.current);
-    } else if (remainingTime != null && remainingTime < 2000) {
+    } else if (
+      remainingTimeRef.current != null &&
+      remainingTimeRef.current < 2000
+    ) {
       setTimeout(() => {
-        setRemainingTime("Time Over");
         setDisplayQuestions(false);
+        setRemainingTime("Time Over");
       }, 1000);
       clearInterval(timeRef.current);
-    } else if (remainingTime != null) {
+    } else if (remainingTimeRef.current != null) {
       setRemainingTime((cur) => {
         return cur - 1000;
       });
@@ -531,7 +529,10 @@ const Header = () => {
         if (resp.success == true) {
           edt = resp.duration_left;
           setRemainingTime(edt);
-          if (edt!=0) timeRef.current = setInterval(myFunction, 1000);
+          if (edt != 0) {
+            console.log("interval set");
+            timeRef.current = setInterval(myFunction, 1000);
+          }
         } else {
           // handle error
           console.log("Error getting endTime.");
