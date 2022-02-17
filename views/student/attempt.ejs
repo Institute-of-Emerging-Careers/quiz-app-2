@@ -5,29 +5,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../templates/global.ejs') %>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <script src="/js/luxon.js"></script>
+    <script></script>
     <!-- ReactJS and ReactDOM -->
     <% if (env=="development") {%>
     <!-- Replace these with production links. These are dev links. -->
-    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
     <%} else if (env=="production") {%>
-      <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-      <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
+    ></script>
     <%}%>
     <!-- Babel -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
     <title>Attempt Quiz - Student Panel</title>
   </head>
-  <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen px-6 sm:px-16 md:px-40 pt-24 sm:pt-32">
+  <body
+    class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen px-6 sm:px-16 md:px-40 pt-24 sm:pt-32"
+  >
     <%- include('../templates/header-attempt.ejs') %>
 
     <input type="hidden" id="sectionId" value="<%= sectionId %>" />
     <p class="hidden" id="sectionTitle"><%= sectionTitle %></p>
     <p class="hidden" id="quizTitle"><%= quizTitle %></p>
-    <input type="hidden" id="previewOrNot" value="<%= previewOrNot %>">
+    <input type="hidden" id="previewOrNot" value="<%= previewOrNot %>" />
     <div id="app"></div>
     <script src="/js/attempt.js" type="text/babel"></script>
   </body>
