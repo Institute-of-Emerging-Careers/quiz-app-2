@@ -507,7 +507,9 @@ const Header = () => {
       clearInterval(timeRef.current);
     } else if (
       endTimeRef.current != null &&
-      endTimeRef.current.diff(luxon.DateTime.now().toLocal()).toMillis() < 1000
+      endTimeRef.current
+        .diff(luxon.DateTime.now().setZone("Asia/Karachi"))
+        .toMillis() < 1000
     ) {
       setTimeout(() => {
         setRemainingTime("Time Over");
@@ -517,7 +519,9 @@ const Header = () => {
     } else if (endTimeRef.current != null) {
       setRemainingTime(
         millisecondsToMinutesAndSeconds(
-          endTimeRef.current.diff(luxon.DateTime.now().toLocal()).toMillis()
+          endTimeRef.current
+            .diff(luxon.DateTime.now().setZone("Asia/Karachi"))
+            .toMillis()
         )
       );
     }
@@ -530,7 +534,10 @@ const Header = () => {
       (resp) => {
         if (resp.success == true) {
           edt = resp.endTime;
-          edt = luxon.DateTime.fromMillis(new Date(edt).getTime()).toLocal();
+          Settings.defaultZone = "Asia/Karachi";
+          edt = luxon.DateTime.fromMillis(new Date(edt).getTime(), {
+            zone: "Asia/Karachi",
+          });
           setEndTime(edt);
         } else {
           // handle error
