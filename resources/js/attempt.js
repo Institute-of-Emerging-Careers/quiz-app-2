@@ -530,7 +530,7 @@ const Header = () => {
       (resp) => {
         if (resp.success == true) {
           edt = resp.endTime;
-          edt = luxon.DateTime.fromMillis(new Date(edt).getTime());
+          edt = luxon.DateTime.fromMillis(new Date(edt).getTime()).toLocal();
           setEndTime(edt);
         } else {
           // handle error
