@@ -507,7 +507,7 @@ const Header = () => {
       clearInterval(timeRef.current);
     } else if (
       endTimeRef.current != null &&
-      endTimeRef.current.diff(luxon.DateTime.now()).toMillis() < 1000
+      endTimeRef.current.diff(luxon.DateTime.now().toLocal()).toMillis() < 1000
     ) {
       setTimeout(() => {
         setRemainingTime("Time Over");
@@ -517,7 +517,7 @@ const Header = () => {
     } else if (endTimeRef.current != null) {
       setRemainingTime(
         millisecondsToMinutesAndSeconds(
-          endTimeRef.current.diff(luxon.DateTime.now()).toMillis()
+          endTimeRef.current.diff(luxon.DateTime.now().toLocal()).toMillis()
         )
       );
     }
