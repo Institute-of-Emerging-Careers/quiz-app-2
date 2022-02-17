@@ -535,9 +535,7 @@ const Header = () => {
         if (resp.success == true) {
           edt = resp.endTime;
           luxon.Settings.defaultZone = "Asia/Karachi";
-          edt = luxon.DateTime.fromMillis(new Date(edt).getTime()).setZone(
-            "Asia/Karachi"
-          );
+          edt = luxon.DateTime.fromMillis(edt, { zone: "Asia/Karachi" });
           setEndTime(edt);
         } else {
           // handle error
