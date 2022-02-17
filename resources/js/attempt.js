@@ -508,7 +508,7 @@ const Header = () => {
     } else if (
       endTimeRef.current != null &&
       endTimeRef.current
-        .diff(luxon.DateTime.now({ zone: "Asia/Karachi" }))
+        .diff(luxon.DateTime.local({ zone: "Asia/Karachi" }))
         .toMillis() < 1000
     ) {
       setTimeout(() => {
@@ -520,7 +520,7 @@ const Header = () => {
       setRemainingTime(
         millisecondsToMinutesAndSeconds(
           endTimeRef.current
-            .diff(luxon.DateTime.now({ zone: "Asia/Karachi" }))
+            .diff(luxon.DateTime.local({ zone: "Asia/Karachi" }))
             .toMillis()
         )
       );
