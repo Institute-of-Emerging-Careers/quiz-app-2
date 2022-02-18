@@ -736,21 +736,49 @@ app.get(
         } else {
           // the student has never attempted or started to attempt this section before
 
+          function matchAssignmentAndSectionId(assignment_id, section_id) {
+            return new Promise(async (resolve) => {
+              let found = false;
+              const assignment = await Assignment.findOne({
+                where: { id: assignment_id },
+                include: [
+                  {
+                    model: Quiz,
+                    include: [{ model: Section, attributes: ["id"] }],
+                  },
+                ],
+              });
+              assignment.Quiz.Sections.forEach((section) => {
+                if (section.id == section_id) found = true;
+              });
+              resolve(found);
+            });
+          }
           // add this section to sectionStatus
-          await setSectionStatusToInProgress(
-            assignment,
-            section,
-            req.params.sectionId
-          );
+          // confirm that this sectionId belongs to the quiz that this Assignment is linked to
+          if (
+            await matchAssignmentAndSectionId(
+              assignment.id,
+              req.params.sectionId
+            )
+          ) {
+            await setSectionStatusToInProgress(
+              assignment,
+              section,
+              req.params.sectionId
+            );
 
-          res.render("student/attempt.ejs", {
-            user_type: req.user.type,
-            sectionId: req.params.sectionId,
-            sectionTitle: section.title,
-            quizTitle: assignment.Quiz.title,
-            env: process.env.NODE_ENV,
-            previewOrNot: 0,
-          });
+            res.render("student/attempt.ejs", {
+              user_type: req.user.type,
+              sectionId: req.params.sectionId,
+              sectionTitle: section.title,
+              quizTitle: assignment.Quiz.title,
+              env: process.env.NODE_ENV,
+              previewOrNot: 0,
+            });
+          } else {
+            res.sendStatus(500);
+          }
         }
       } catch (err) {
         console.log(err);
@@ -1265,8 +1293,11 @@ app.get(
       }
       const startTime = attempt.startTime;
       let duration_left;
-      if (attempt.endTime == null || attempt.endTime == 0) {duration_left = 0;}
-      else {duration_left = attempt.endTime - Date.now();}
+      if (attempt.endTime == null || attempt.endTime == 0) {
+        duration_left = 0;
+      } else {
+        duration_left = attempt.endTime - Date.now();
+      }
 
       res.json({
         success: true,

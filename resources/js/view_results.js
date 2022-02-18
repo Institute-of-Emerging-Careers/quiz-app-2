@@ -49,7 +49,6 @@ let items = document.getElementsByClassName("endtime");
 
 function filterRows(minimum_percentage, filter) {
   const int_value = parseInt(minimum_percentage);
-  console.log(int_value);
 
   // show all rows and then hide the ones you need to hide based on the new overall filtering scheme
   $("#results_table tr").show();
