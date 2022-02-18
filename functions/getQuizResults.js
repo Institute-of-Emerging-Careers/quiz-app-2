@@ -80,6 +80,8 @@ const getQuizResults = (quiz_id) => {
         if (count == quiz.Sections.length) resolve();
       });
     });
+    console.log("quiz_sections:",quiz_sections)
+    console.log("section_id_to_array_index_mapping:",section_id_to_array_index_mapping)
 
     let data = [];
     let assignments = await Assignment.findAll({
@@ -123,33 +125,37 @@ const getQuizResults = (quiz_id) => {
 
         if (assignment.Attempts.length > 0) {
           assignment.Attempts.forEach((attempt) => {
-            const percentage_score = roundToTwoDecimalPlaces(
-              ((attempt.Score == null ? 0 : attempt.Score.score) /
-                quiz_sections[
-                  section_id_to_array_index_mapping[attempt.SectionId]
-                ].maximum_score) *
-                100
-            );
-
-            const section_score =
-              attempt.Score == null ? 0 : attempt.Score.score;
-
-            data[data_prev_index].sections[
+            if (quiz_sections[
               section_id_to_array_index_mapping[attempt.SectionId]
-            ] = {
-              status: "Attempted",
-              section_id: attempt.SectionId,
-              section_score: section_score,
-              percentage_score: percentage_score,
-              start_time: attempt.startTime,
-              end_time: DateTime.fromMillis(attempt.endTime).toFormat(
-                "hh:mm a dd LLL yyyy"
-              ),
-              duration: Duration.fromMillis(attempt.duration).toFormat(
-                "mm 'minutes' ss 'seconds'"
-              ),
-            };
-            data[data_prev_index].total_score += section_score;
+            ]!=undefined) {
+              const percentage_score = roundToTwoDecimalPlaces(
+                ((attempt.Score == null ? 0 : attempt.Score.score) /
+                  quiz_sections[
+                    section_id_to_array_index_mapping[attempt.SectionId]
+                  ].maximum_score) *
+                  100
+              );
+
+              const section_score =
+                attempt.Score == null ? 0 : attempt.Score.score;
+
+              data[data_prev_index].sections[
+                section_id_to_array_index_mapping[attempt.SectionId]
+              ] = {
+                status: "Attempted",
+                section_id: attempt.SectionId,
+                section_score: section_score,
+                percentage_score: percentage_score,
+                start_time: attempt.startTime,
+                end_time: DateTime.fromMillis(attempt.endTime).toFormat(
+                  "hh:mm a dd LLL yyyy"
+                ),
+                duration: Duration.fromMillis(attempt.duration).toFormat(
+                  "mm 'minutes' ss 'seconds'"
+                ),
+              };
+              data[data_prev_index].total_score += section_score;
+            }
           });
           data[data_prev_index].percentage_total = roundToTwoDecimalPlaces(
             (data[data_prev_index].total_score / quiz_total_score) * 100
