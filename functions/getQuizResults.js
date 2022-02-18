@@ -142,8 +142,12 @@ const getQuizResults = (quiz_id) => {
               section_score: section_score,
               percentage_score: percentage_score,
               start_time: attempt.startTime,
-              end_time: DateTime.fromMillis(attempt.endTime).toString(),
-              duration: millisecondsToMinutesAndSeconds(attempt.duration),
+              end_time: DateTime.fromMillis(attempt.endTime).toFormat(
+                "hh:mm a dd LLL yyyy"
+              ),
+              duration: Duration.fromMillis(attempt.duration).toFormat(
+                "mm 'minutes' ss 'seconds'"
+              ),
             };
             data[data_prev_index].total_score += section_score;
           });
