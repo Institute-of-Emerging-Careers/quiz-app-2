@@ -4,7 +4,10 @@ const getTotalMarksOfSection = require("./getTotalMarksOfSection");
 const sequelize = require("../db/connect.js");
 const roundToTwoDecimalPlaces = require("./roundToTwoDecimalPlaces.js");
 const allSectionsSolved = require("./allSectionsSolved");
-
+const { DateTime, Duration } = require("luxon");
+const {
+  millisecondsToMinutesAndSeconds,
+} = require("./millisecondsToMinutesAndSeconds");
 /*
   Final result format:
   [{
@@ -139,8 +142,8 @@ const getQuizResults = (quiz_id) => {
               section_score: section_score,
               percentage_score: percentage_score,
               start_time: attempt.startTime,
-              end_time: attempt.endTime,
-              duration: attempt.duration,
+              end_time: DateTime.fromMillis(attempt.endTime).toString(),
+              duration: millisecondsToMinutesAndSeconds(attempt.duration),
             };
             data[data_prev_index].total_score += section_score;
           });

@@ -47,12 +47,6 @@ function download_table_as_csv(table_id, separator = ",") {
 
 let items = document.getElementsByClassName("endtime");
 
-for (let i = 0; i < items.length; i++) {
-  items.item(i).innerText = moment(
-    parseInt(items.item(i).innerText) + new Date().getTimezoneOffset()
-  ).format("h:mma | ddd D MMM Y");
-}
-
 function filterRows(minimum_percentage, filter) {
   const int_value = parseInt(minimum_percentage);
   console.log(int_value);

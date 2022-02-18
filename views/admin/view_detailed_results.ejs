@@ -12,7 +12,6 @@
             background-color:#f6f6f6;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 </head>
 <body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
@@ -79,7 +78,7 @@
                             %>
                                 <td class="py-3 px-6"><%=section.section_score%></td>
                                 <td class="py-3 px-6"><%=section.percentage_score%>%</td>
-                                <td class="py-3 px-6"><%=millisecondsToMinutesAndSeconds(section.duration)%></td>
+                                <td class="py-3 px-6"><%=section.duration%></td>
                                 <td class="py-3 px-6 endtime"><%= section.end_time %></td>
                             <%
                             } else {%>
