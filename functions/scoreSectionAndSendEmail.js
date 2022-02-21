@@ -1,4 +1,4 @@
-const { Assignment, Student } = require("../db/models/user");
+const { Assignment, Student, Attempt } = require("../db/models/user");
 const { Section, Quiz } = require("../db/models/quizmodel");
 const allSectionsSolved = require("./allSectionsSolved");
 const calculateScore = require("./calculateScore");
@@ -16,15 +16,20 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
       });
 
       const quizId = section.Quiz.id;
-
       if (assignment === null) {
         assignment = await Assignment.findOne({
           where: { StudentId: student_id, QuizId: quizId },
         })
       }
       if (assignment !== null) {
-        const score = await calculateScore(section_id, student_id);
-  
+        // checking if an attempt exists, because if not then this means we're scoring this assignment due to it being past deadline
+        let score;
+        const attempt = await Attempt.findOne({where:{AssignmentId: assignment.id, SectionId: section_id}})
+        if (attempt == null) {
+          score=0
+        } else {
+          score = await calculateScore(section_id, student_id);
+        }
         await updateScore(section_id, assignment.id, score);
   
         await setSectionStatusToComplete(assignment.id, section_id);

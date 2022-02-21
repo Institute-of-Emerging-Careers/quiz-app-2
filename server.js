@@ -675,14 +675,14 @@ app.get(
       req.params.quizId,
       [Quiz]
     );
-
     // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
+    console.log(timeDiff)
     if (timeDiff > 259200000) {
       //>72h
       await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
-
+      
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
         error_message:
@@ -735,7 +735,6 @@ app.get(
           }
         } else {
           // the student has never attempted or started to attempt this section before
-
           function matchAssignmentAndSectionId(assignment_id, section_id) {
             return new Promise(async (resolve) => {
               let found = false;
@@ -762,6 +761,7 @@ app.get(
               req.params.sectionId
             )
           ) {
+
             await setSectionStatusToInProgress(
               assignment,
               section,
@@ -777,6 +777,7 @@ app.get(
               previewOrNot: 0,
             });
           } else {
+
             res.sendStatus(500);
           }
         }
