@@ -274,7 +274,7 @@ app.post("/mail/send/batch", checkAdminAuthenticated, async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.log(err);
-    res.status(500).send(err)
+    res.status(500).send(err);
   }
 });
 
@@ -678,12 +678,12 @@ app.get(
     // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
-    const deadline_from_signup = 30 //days
-    
+    const deadline_from_signup = 30; //days
+
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
       //>72h
       await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
-      
+
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
         error_message:
@@ -716,6 +716,11 @@ app.get(
           // attempt exists for this section by this student, so we check if there is time remaining
           if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
             // this means that the section is timed and the time for this section is already over
+            await scoreSectionAndSendEmail(
+              req.params.sectionId,
+              req.user.user.id
+            );
+
             res.render("templates/error.ejs", {
               additional_info: "Time Limit Over :(",
               error_message:
@@ -762,7 +767,6 @@ app.get(
               req.params.sectionId
             )
           ) {
-
             await setSectionStatusToInProgress(
               assignment,
               section,
@@ -778,7 +782,6 @@ app.get(
               previewOrNot: 0,
             });
           } else {
-
             res.sendStatus(500);
           }
         }
