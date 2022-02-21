@@ -19,9 +19,13 @@ const assessment_reminder_mailer_task = cron.schedule('0 0 */3 * * *', () => {
 });
 
 const score_past_deadline_attempts = cron.schedule('0 */3 * * * *', async () => {
-  console.log("Running 3-minutely script to score past-deadline assignments")
-  await scoreAttemptsWhoseTimerHasEnded()
-  await scoreAssignmentsWhoseDeadlineHasPassed()
+  try {
+    console.log("Running 3-minutely script to score past-timer and past-deadline assignments")
+    await scoreAttemptsWhoseTimerHasEnded()
+    await scoreAssignmentsWhoseDeadlineHasPassed()
+  } catch(err) {
+    console.log(err)
+  }
 },{
   scheduled: false
 })

@@ -3,19 +3,29 @@ const { Attempt, Assignment, Score } = require("../db/models/user")
 const scoreSectionAndSendEmail = require("./scoreSectionAndSendEmail")
 
 async function scoreAttemptsWhoseTimerHasEnded() {
-    const attempts = await Attempt.findAll({include:[{model: Assignment, attributes:["StudentId"]}, {model: Section, attributes: ["id"]}, {model: Score, attributes: ["id"]}], attributes: ["endTime"]})
+    let attempts;
+    try {
+        attempts = await Attempt.findAll({include:[{model: Assignment, attributes:["StudentId"]}, {model: Section, attributes: ["id"]}, {model: Score, attributes: ["id"]}], attributes: ["endTime", "AssignmentId"]})
+    } catch(err) {
+        console.log(err)
+    }
     return new Promise(resolve=>{
-        let i=0;
-        const n = attempts.length
-        attempts.forEach(async (attempt)=>{
-            if (attempt.Score == null) {
-                if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
-                    await scoreSectionAndSendEmail(attempt.Section.id, attempt.Assignment.StudentId)
+        try {
+            console.log("starting")
+            let i=0;
+            const n = attempts.length
+            attempts.forEach(async (attempt)=>{
+                if (attempt.Score == null && attempt.AssignmentId!=null && attempt.statusText!="Completed") {
+                    if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
+                        await scoreSectionAndSendEmail(attempt.Section.id, attempt.Assignment.StudentId)
+                    }
+                    i++
+                    if (i==n) resolve()
                 }
-                i++
-                if (i==n) resolve()
-            }
-        })
+            })
+        } catch(err) {
+            console.log(err)
+        }
     })
 }
 

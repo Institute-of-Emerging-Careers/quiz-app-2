@@ -11,8 +11,6 @@ async function retrieveStatus(assignment, sectionId) {
       },
     });
 
-    console.log(attempt)
-
     if (attempt == null || attempt.statusText == "Not Started") return ["Not Started", "Start"];
     else if (attempt.statusText == "In Progress")
       return ["In Progress", "Continue"];
