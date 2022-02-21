@@ -274,7 +274,7 @@ app.post("/mail/send/batch", checkAdminAuthenticated, async (req, res) => {
     res.sendStatus(200);
   } catch (err) {
     console.log(err);
-    res.sendStatus(500);
+    res.status(500).send(err)
   }
 });
 

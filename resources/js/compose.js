@@ -119,6 +119,7 @@ function sendEmails() {
           alert("Emails sent successfully");
         } else {
           alert("There was an error sending emails. Contact IT.");
+          console.log(response)
         }
       })
       .catch((err) => {
