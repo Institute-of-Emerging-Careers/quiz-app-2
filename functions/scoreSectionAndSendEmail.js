@@ -31,9 +31,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
           score = await calculateScore(section_id, student_id);
         }
         await updateScore(section_id, assignment.id, score);
-  
         await setSectionStatusToComplete(assignment.id, section_id);
-  
         // sending completion email to student
         const email = (
           await Student.findOne({
@@ -58,7 +56,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
             button_text: "Visit",
             button_link: "https://iec.org.pk",
           });
-          console.log("Mail sent");
+          console.log("Scoring mail sent");
         } else {
           await sendHTMLMail(email, `Section Solved`, {
             heading: `Section "${section.title}" Solved`,
@@ -74,7 +72,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
             button_text: "Student Portal",
             button_link: "https://apply.iec.org.pk/student/login",
           });
-          console.log("Mail sent");
+          console.log("Scoring mail sent");
         }
         resolve();
       }

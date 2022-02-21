@@ -11,9 +11,10 @@ async function getQuestionsOfStudent(sectionId, studentId) {
 
     // now get all answers of this student that are about any of the above questions
     const answers = await Answer.findAll({where:{StudentId: studentId, QuestionId:{[Sequelize.Op.in]:all_question_ids}}, include:[Question]})
-
+    if (answers.length==0) {return new Promise(resolve=>{resolve([])})}
     let selected_question_ids = []
     selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers)
+    console.log(selected_question_ids)
     return getQuestionObjectsFromArrayOfQuestionIds(selected_question_ids)
 }
 
