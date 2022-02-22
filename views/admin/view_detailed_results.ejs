@@ -45,8 +45,13 @@
                 <tr class="w-full header_row">
                     <th class="py-3 px-6">No.</th>
                     <th class="py-3 px-6">Student Name</th>
+                    <th class="py-3 px-6">Student Gender</th>
+                    <th class="py-3 px-6">Student Age</th>
                     <th class="py-3 px-6">Student Email</th>
                     <th class="py-3 px-6">Student CNIC</th>
+                    <th class="py-3 px-6">Student Phone</th>
+                    <th class="py-3 px-6">Student City</th>
+                    <th class="py-3 px-6">Student Address</th>
                     <% const quiz_sections = data_obj.quiz_sections
                         quiz_sections.forEach(section=>{%>
                             <th class="py-3 px-6"><%=section.section_title%> Student Score<br>(out of <%= section.maximum_score %>)</th>
@@ -71,8 +76,13 @@
                 <tr class="solved <% if (student_row.completed) {%> completed_all_sections <%} %>">
                     <td class="py-3 px-6"><%= sr_no %></td>
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
+                    <td class="py-3 px-6"><%=student_row.student_gender%></td>
+                    <td class="py-3 px-6"><%=student_row.student_age%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
+                    <td class="py-3 px-6"><%=student_row.student_phone%></td>
+                    <td class="py-3 px-6"><%=student_row.student_city%></td>
+                    <td class="py-3 px-6"><%=student_row.student_address%></td>
                         <%student_row.sections.forEach(section=>{
                             if (section.status == "Attempted") {
                             %>
@@ -98,8 +108,13 @@
                 <tr class="unsolved">
                     <td class="py-3 px-6"><%= sr_no %></td>
                     <td class="py-3 px-6"><%=student_row.student_name%></td>
+                    <td class="py-3 px-6"><%=student_row.student_gender%></td>
+                    <td class="py-3 px-6"><%=student_row.student_age%></td>
                     <td class="py-3 px-6"><%=student_row.student_email%></td>
                     <td class="py-3 px-6"><%=student_row.student_cnic%></td>
+                    <td class="py-3 px-6"><%=student_row.student_phone%></td>
+                    <td class="py-3 px-6"><%=student_row.student_city%></td>
+                    <td class="py-3 px-6"><%=student_row.student_address%></td>
                         <%quiz_sections.forEach(section=>{
                             %>
                                 <td class="py-3 px-6">Not Attempted Yet</td>

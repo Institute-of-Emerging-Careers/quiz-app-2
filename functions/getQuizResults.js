@@ -80,8 +80,6 @@ const getQuizResults = (quiz_id) => {
         if (count == quiz.Sections.length) resolve();
       });
     });
-    console.log("quiz_sections:",quiz_sections)
-    console.log("section_id_to_array_index_mapping:",section_id_to_array_index_mapping)
 
     let data = [];
     let assignments = await Assignment.findAll({
@@ -103,6 +101,11 @@ const getQuizResults = (quiz_id) => {
             assignment.Student.firstName + " " + assignment.Student.lastName,
           student_cnic: assignment.Student.cnic,
           student_email: assignment.Student.email,
+          student_city: assignment.Student.city,
+          student_age: assignment.Student.age,
+          student_phone: assignment.Student.phone,
+          student_gender: assignment.Student.gender.toLowerCase(),
+          student_address: assignment.Student.address,
           sections: [],
           completed: false, //this tells if the student has completed all sections or not
           total_score: 0,
@@ -125,9 +128,11 @@ const getQuizResults = (quiz_id) => {
 
         if (assignment.Attempts.length > 0) {
           assignment.Attempts.forEach((attempt) => {
-            if (quiz_sections[
-              section_id_to_array_index_mapping[attempt.SectionId]
-            ]!=undefined) {
+            if (
+              quiz_sections[
+                section_id_to_array_index_mapping[attempt.SectionId]
+              ] != undefined
+            ) {
               const percentage_score = roundToTwoDecimalPlaces(
                 ((attempt.Score == null ? 0 : attempt.Score.score) /
                   quiz_sections[

@@ -715,13 +715,11 @@ app.get(
         if (attempt != null) {
           // attempt exists for this section by this student, so we check if there is time remaining
           if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
-            console.log("here1")
             // this means that the section is timed and the time for this section is already over
             await scoreSectionAndSendEmail(
               req.params.sectionId,
               req.user.user.id
             );
-              console.log("here2")
             res.render("templates/error.ejs", {
               additional_info: "Time Limit Over :(",
               error_message:
@@ -942,23 +940,23 @@ app.get(
           section.Questions,
           selected_question_indexes
         );
-        console.log("selected_question_indexes:",selected_question_indexes);
+        console.log("selected_question_indexes:", selected_question_indexes);
 
         // to save these selected questions, we create empty answers (Question-Student mapping)
         function createEmptyAnswersForArrayOfQuestions(array_of_questions) {
-          return new Promise(resolve=>{
+          return new Promise((resolve) => {
             const n = array_of_questions.length;
-            let i=0;
+            let i = 0;
             array_of_questions.forEach(async (question) => {
-                await Answer.create({
-                  QuestionId: question.id,
-                  StudentId: req.user.user.id,
-                  OptionId: 1,
-                })
-                i++
-                if (i==n) resolve()
+              await Answer.create({
+                QuestionId: question.id,
+                StudentId: req.user.user.id,
+                OptionId: 1,
+              });
+              i++;
+              if (i == n) resolve();
             });
-          })
+          });
         }
 
         await createEmptyAnswersForArrayOfQuestions(final_questions_array);
