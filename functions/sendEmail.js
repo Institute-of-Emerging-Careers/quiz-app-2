@@ -21,7 +21,9 @@ async function sendTextMail(recepient, subject, text) {
           ciphers: "SSLv3",
         },
         pool: true,
-        rateLimit: 0.5,
+        maxConnections: 1,
+        rateDelta: 60000,
+        rateLimit: 30,
       });
 
       var mailOptions = {
@@ -63,7 +65,9 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
           ciphers: "SSLv3",
         },
         pool: true,
-        rateLimit: 0.5,
+        maxConnections: 1,
+        rateDelta: 60000,
+        rateLimit: 30,
       });
 
       const html = await ejs.renderFile(
