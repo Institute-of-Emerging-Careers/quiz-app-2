@@ -1459,7 +1459,7 @@ const Main = () => {
   useEffect(async () => {
     if (globalQuizId != null) {
       let state, title, passages_object;
-      const response = await fetch("/quizState/" + globalQuizId.toString());
+      const response = await fetch("/quiz/state/" + globalQuizId.toString());
       const finalResponse = await response.json();
       if (finalResponse.success == true) {
         state = finalResponse.stateObject;
@@ -1542,7 +1542,7 @@ const Main = () => {
     }
 
     if (!anyErrors) {
-      fetch("/save-quiz", {
+      fetch("/quiz/save", {
         method: "POST",
         mode: "same-origin",
         cache: "no-cache",

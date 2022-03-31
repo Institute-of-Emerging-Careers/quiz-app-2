@@ -70,9 +70,30 @@ function details(elem) {
         let action = "";
         let statusColor = assignStatusColor(section.status[0]);
         if (section.time == 0) section.time = "Unlimited";
-        action = "<a class='text-blue-600 underline' href='/quiz/attempt/" + elem.id + "/section/" + section.id + "'>" + section.status[1] +"</a>";
-        console.log(section.status)
-        modal_section_table_body.append("<tr><td>" + section.title + "</td><td>" + section.num_questions + "</td><td>" + section.time + " minute(s)</td><td class='" + statusColor + "'>" + section.status[0] + "</td><td>" + action + "</td></tr>");
+        action =
+          "<a class='text-blue-600 underline' href='/quiz/attempt/" +
+          elem.id +
+          "/section/" +
+          section.id +
+          "'>" +
+          section.status[1] +
+          "</a>";
+        console.log(section.status);
+        modal_section_table_body.append(
+          "<tr><td>" +
+            section.title +
+            "</td><td>" +
+            section.num_questions +
+            "</td><td>" +
+            section.time +
+            " minute(s)</td><td class='" +
+            statusColor +
+            "'>" +
+            section.status[0] +
+            "</td><td>" +
+            action +
+            "</td></tr>"
+        );
       });
       // show modal
       showModal();
@@ -92,7 +113,7 @@ $(document).ready(function () {
     function (data) {
       console.log(data);
       data.forEach((item) => {
-        let [status, action] = item.status
+        let [status, action] = item.status;
         let statusColor = assignStatusColor(status);
         assessments_table_body.append(
           "<tr><td>" +
