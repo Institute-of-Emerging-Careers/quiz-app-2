@@ -41,6 +41,22 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/orientation/summary", checkAdminAuthenticated, (req, res) => {
+  res.render("admin/orientation/summary.ejs", {
+    myname: req.user.user.firstName,
+    user_type: req.user.type,
+    site_domain_name: process.env.SITE_DOMAIN_NAME,
+  });
+});
+
+router.get("/orientation", checkAdminAuthenticated, (req, res) => {
+  res.render("admin/orientation/index.ejs", {
+    myname: req.user.user.firstName,
+    user_type: req.user.type,
+    site_domain_name: process.env.SITE_DOMAIN_NAME,
+  });
+});
+
 router.get("/login", checkAdminAlreadyLoggedIn, (req, res) => {
   res.render("admin/login/index.ejs");
 });
