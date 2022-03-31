@@ -3,17 +3,12 @@ const app = express();
 const path = require("path");
 const compression = require("compression");
 const fs = require("fs");
-const util = require("util");
 const csv_parser = require("csv-parse");
-const multer = require("multer");
 const passport = require("passport");
 const flash = require("express-flash");
 const session = require("cookie-session");
 const initializePassport = require("./passport-config.js");
 const cookieParser = require("cookie-parser");
-const bcrypt = require("bcrypt");
-const moment = require("moment");
-const randomstring = require("randomstring");
 
 // routes
 const studentRouter = require("./routes/student");
