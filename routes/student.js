@@ -34,6 +34,27 @@ router.use((req, res, next) => {
   next();
 });
 
+router.get("/orientation", (req, res) => {
+  res.render("student/orientation/index.ejs", {
+    user_type: req.user.type,
+    query: req.query,
+  });
+});
+
+router.get("/interview", (req, res) => {
+  res.render("student/interview/index.ejs", {
+    user_type: req.user.type,
+    query: req.query,
+  });
+});
+
+router.get("/onboarding", (req, res) => {
+  res.render("student/onboarding/index.ejs", {
+    user_type: req.user.type,
+    query: req.query,
+  });
+});
+
 router.post("/signup", async (req, res) => {
   const firstName = req.body.firstName,
     lastName = req.body.lastName,
