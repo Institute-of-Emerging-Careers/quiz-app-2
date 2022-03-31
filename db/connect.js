@@ -3,7 +3,7 @@ console.log(process.env.DEBUG);
 
 const sequelize = new Sequelize(process.env.MYSQL_CONNECTION_STRING, {
   dialect: "mysql",
-  logging: false,
+  logging: process.env.DEBUG == "true" ? true : false,
   timezone: process.env.TIMEZONE_OFFSET,
 });
 

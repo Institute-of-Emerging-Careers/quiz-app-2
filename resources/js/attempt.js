@@ -372,7 +372,7 @@ const Main = () => {
 
   useEffect(() => {
     $.get(
-      "/section/" + sectionId + "/all-questions",
+      "/quiz/section/" + sectionId + "/all-questions",
       (resp) => {
         if (resp.success == true) {
           const mcqs = resp.data;
@@ -524,7 +524,7 @@ const Header = () => {
   useEffect(() => {
     let edt;
     $.get(
-      "/section/" + sectionId + "/endTime",
+      "/quiz/section/" + sectionId + "/endTime",
       (resp) => {
         if (resp.success == true) {
           edt = resp.duration_left;

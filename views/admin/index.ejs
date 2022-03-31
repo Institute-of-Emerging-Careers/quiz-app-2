@@ -73,7 +73,7 @@
 
             <% for (var i = 0; i <all_invites.length;  i++ ) { %>
               <tr>
-                <td><%= site_domain_name %>/invite/<span class="text-blue-600"><%= all_invites[i].link %></span></td><td><%= all_invites[i].Quiz.title %></td><td class="text-blue-600"><a href="registrations/<%= all_invites[i].link%>"><%= all_invites[i].registrations %> (View All)</a></td><td><%= moment(all_invites[i].createdAt).format('Do MMMM, YYYY') %></td>
+                <td><%= site_domain_name %>/invite/<span class="text-blue-600"><%= all_invites[i].link %></span></td><td><%= all_invites[i].Quiz.title %></td><td class="text-blue-600"><a href="quiz/registrations/<%= all_invites[i].link%>"><%= all_invites[i].registrations %> (View All)</a></td><td><%= moment(all_invites[i].createdAt).format('Do MMMM, YYYY') %></td>
               </tr>
             <% } %>
             </tbody>
@@ -104,7 +104,7 @@
           
         </div>
         <div class="w-full">
-          <h2 class="text-xl mt-6 mb-4 font-bold">Quizzes <a href="/new" class="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full">NEW</a></h2>
+          <h2 class="text-xl mt-6 mb-4 font-bold">Quizzes <a href="/quiz/new" class="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full">NEW</a></h2>
           <% if (all_quizzes.length==0) { %>
             <p>No quizzes to show.</p>
           <% } else { %> 
@@ -115,7 +115,7 @@
             <% for (let i=0;i<all_quizzes.length;i++) { %>
             <div class="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card">
               <div class="grid grid-cols-8 col-span-8 h-16 bg-iec-blue justify-center content-center">
-                <a href="/edit/<%= all_quizzes[i].id %>" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Edit Quiz"><i class="far fa-edit "></i></a>
+                <a href="/quiz/edit/<%= all_quizzes[i].id %>" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Edit Quiz"><i class="far fa-edit "></i></a>
                 <a class="text-white text-xl col-start-3 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" href="/quiz/duplicate/<%= all_quizzes[i].id %>" title="Duplicate Quiz"><i class="far fa-copy"></i></a>
                 <a class="text-white text-xl col-start-4 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" onClick="copyToClipboard(<%= all_quizzes[i].id %>)" title="Invite Links"><i class="fas fa-link"></i></a>
                 <input type="url" class="hidden" value="<%= 'https://assessments.iec.com/solve/' + all_quizzes[i].id %>" id="<%= 'quiz-'+all_quizzes[i].id %>">
@@ -126,7 +126,7 @@
                   <div class="absolute z-10 w-max border shadow-lg hidden text-sm" id="quiz-dropdown-<%=all_quizzes[i].id%>">
                     <ul>
                       <li class="py-3 px-6 bg-white hover:bg-gray-100 grid grid-cols-6" data-current-reminder-setting="<%=all_quizzes[i].sendReminderEmails%>" data-quiz-id="<%= all_quizzes[i].id %>" onClick="toggleReminderEmailSetting(this)"><%- all_quizzes[i].sendReminderEmails ? "<i class='fas fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 self-start w-max'>Disable Reminder Emails</span>" : "<i class='far fa-envelope col-start-1 col-span-1 self-center'></i> <span class='col-start-2 col-span-5 w-max'>Enable Reminder Emails</span>" %></li>
-                      <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6" href="/delete/quiz/<%= all_quizzes[i].id %>"><i class="fas fa-trash col-start-1 col-span-1 self-center"></i> <span class='col-start-2 col-span-5 self-start w-max'>Delete Quiz</span></a></li>
+                      <li class="py-3 px-6 bg-white hover:bg-gray-100"><a class="grid grid-cols-6" href="/quiz/delete/<%= all_quizzes[i].id %>"><i class="fas fa-trash col-start-1 col-span-1 self-center"></i> <span class='col-start-2 col-span-5 self-start w-max'>Delete Quiz</span></a></li>
                     </ul>
                   </div>
                 </div>
