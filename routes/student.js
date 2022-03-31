@@ -69,6 +69,7 @@ router.post("/signup", async (req, res) => {
     invite_link = req.body.invite;
 
   try {
+    // to count the number of students who have registered using this particular invite link:
     const invite = await Invite.findOne({
       where: {
         link: invite_link,
@@ -76,6 +77,7 @@ router.post("/signup", async (req, res) => {
     });
     invite.increment("registrations");
 
+    // creating student
     let student = Student.build({
       firstName: firstName,
       lastName: lastName,
@@ -90,6 +92,7 @@ router.post("/signup", async (req, res) => {
       InviteId: invite.id,
     });
 
+    // validating student information
     if (await student.validate()) {
       student = await student.save();
 
@@ -99,7 +102,7 @@ router.post("/signup", async (req, res) => {
         QuizId: invite.QuizId,
       });
 
-      // send automated email to student
+      // send automated Welcome email to student
       try {
         await sendHTMLMail(email, `Welcome to IEC LCMS`, {
           heading: "Welcome to the IEC LCMS",
@@ -110,7 +113,7 @@ router.post("/signup", async (req, res) => {
           button_link: "https://apply.iec.org.pk/student/login",
         });
       } catch (err) {
-        console.log("Email sending failed.");
+        console.log("Welcome email sending failed.");
       }
       res.redirect("/student/login");
     }
