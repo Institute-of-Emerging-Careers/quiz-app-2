@@ -19,7 +19,7 @@
     </style>
   </head>
   <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
-    <%- include('../templates/header.ejs') %>
+    <%- include('../templates/header-7-by-8.ejs') %>
 
     <div id="modal" class="absolute inset-0 bg-black bg-opacity-60 hidden-imp z-20">
       <div class="absolute rounded-lg z-10 top-16 w-3/4 bg-white translate-x-2/4 shadow-2xl pb-2" style="left: 12.5%">
@@ -45,26 +45,45 @@
         </div>
       </div>
     </div>
-    <div id="assessments-box" class="bg-white w-4/5 rounded-lg m-auto mt-32">
-      <div id="assessments-title-box" class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg">My Assessments</div>
-      <div id="assessments-box-content" class="px-10 py-8 overflow-x-auto">
-        <% if (query.success=="true") {%>
-        <p class="bg-green-500 py-2 px-2 w-full text-white" id="quiz-success">Quiz Submitted Successfully</p>
-        <%} %>
-        <p>The following is a list of your assessments:</p>
-        <br />
-        <table class="w-full text-left mytable">
-          <thead class="bg-gray-200">
-            <tr>
-              <th>Assessment Title</th>
-              <th>Number of Sections</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody id="assessments-table-body"></tbody>
-        </table>
-      </div>
+
+    <div class="flex items-center content-center align-middle">
+      <section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 mt-16 fixed w-2/8 md:w-1/8 top-0" id="side-menu">        
+        <div class="cursor-pointer">
+          <a class="px-4 py-2 md:py-4 border-t border-white bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessment</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/mail/compose"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 2: Orientation</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/mail/compose"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 3: Interviews</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/mail/compose"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 4: Onboarding</span>
+          </span></a>
+        </div>
+      </section>
+      <section class="p-10 w-6/8 md:w-7/8 mx-auto mr-0" id="main-section">
+        <div id="assessments-box" class="bg-white w-7/8 rounded-lg m-auto mt-16">
+          <div id="assessments-title-box" class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg">My Assessments</div>
+          <div id="assessments-box-content" class="px-10 py-8 overflow-x-auto">
+            <% if (query.success=="true") {%>
+            <p class="bg-green-500 py-2 px-2 w-full text-white" id="quiz-success">Quiz Submitted Successfully</p>
+            <%} %>
+            <p>The following is a list of your assessments:</p>
+            <br />
+            <table class="w-full text-left mytable">
+              <thead class="bg-gray-200">
+                <tr>
+                  <th>Assessment Title</th>
+                  <th>Number of Sections</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="assessments-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      
     </div>
 
     <script src="/js/student-panel.js" defer></script>
