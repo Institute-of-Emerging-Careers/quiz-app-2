@@ -28,6 +28,8 @@
     </style>
   </head>
   <body class="min-h-screen bg-gray-200">
+    <%- include('../templates/header-7-by-8.ejs') %>
+
     <% 
         function print_plural(singular, n) {
             if (n > 1 || n == 0) {return singular + "s";}
@@ -81,8 +83,7 @@
     </div>
 
     <div>
-      <section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 fixed w-2/8 md:w-1/8">
-        <div class="py-2 md:py-4 px-4 bg-green-400 w-full text-white">Admin Panel</div>
+      <section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 fixed w-2/8 md:w-1/8 mt-16" id="side-menu">
         <div class="cursor-pointer">
           <a class="px-4 py-2 md:py-4 bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Quizzes</span>
           </span></a>
@@ -91,8 +92,7 @@
         </div>
       </section>
 
-      <section class="p-10 w-6/8 md:w-7/8 float-right mr-0">
-        <%- include('../templates/header-7-by-8.ejs') %>
+      <section class="p-10 w-6/8 md:w-7/8 float-right mr-0" id="main-section">
         <div class="mt-16">
           <h1 class="text-2xl">Welcome <%= myname %></h1>
           
