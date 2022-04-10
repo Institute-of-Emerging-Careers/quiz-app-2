@@ -20,6 +20,7 @@ const quizRouter = require("./routes/quiz");
 const initializeDatabase = require("./db/initialize");
 const checkAdminAuthenticated = require("./db/check-admin-authenticated");
 const checkStudentAlreadyLoggedIn = require("./db/check-student-already-logged-in");
+const youtubePlaylistToCSV = require("./functions/youtube-playlist-to-csv");
 const { Quiz } = require("./db/models/quizmodel.js");
 const {
   Student,
@@ -384,4 +385,16 @@ app.get("/email-template", (req, res) => {
     button_text: "Visit",
     button_link: "https://iec.org.pk",
   });
+});
+
+app.get("/youtube/csv", (req, res) => {
+  res.render("youtube-csv.ejs");
+});
+
+app.get("/youtube/csv/download", (req, res) => {
+  youtubePlaylistToCSV(req.query.access_token, req.query.playlist_id).then(
+    (file_name) => {
+      res.redirect(`/csv/${file_name}`);
+    }
+  );
 });
