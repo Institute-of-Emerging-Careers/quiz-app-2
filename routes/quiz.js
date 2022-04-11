@@ -56,6 +56,52 @@ router.get("/new", checkAdminAuthenticated, (req, res) => {
   res.render("new_quiz.ejs", { quizId: "", user_type: req.user.type });
 });
 
+router.get(
+  "/all-titles-and-num-attempts",
+  checkAdminAuthenticated,
+  (req, res) => {
+    let data = [];
+
+    // We're going to return the names and number_of_attempts of all quizzes.
+
+    Quiz.findAll({ attributes: ["id", "title"], order: [["id", "desc"]] }).then(
+      async (all_quizzes) => {
+        await new Promise(async (resolve, reject) => {
+          let num_sections = 0;
+          await new Promise((minorResolve, minorReject) => {
+            let i = 0;
+            const n = all_quizzes.length;
+            all_quizzes.forEach(async (quiz) => {
+              const num_sections_in_this_quiz = await quiz.countSections();
+              num_sections += num_sections_in_this_quiz;
+              i++;
+              if (i == n) minorResolve();
+            });
+          });
+
+          let i = 0;
+          all_quizzes.forEach(async (quiz) => {
+            let cur_index =
+              data.push({ id: quiz.id, title: quiz.title, num_attempts: 0 }) -
+              1;
+            const sections = await quiz.getSections();
+            sections.forEach(async (section) => {
+              const num_attempts = await section.countAttempts();
+              data[cur_index].num_attempts += num_attempts;
+              i++;
+              if (i == num_sections) {
+                resolve();
+              }
+            });
+          });
+        });
+
+        res.json(data);
+      }
+    );
+  }
+);
+
 router.get("/edit/:quizId", checkAdminAuthenticated, (req, res) => {
   res.render("new_quiz.ejs", {
     quizId: req.params.quizId,

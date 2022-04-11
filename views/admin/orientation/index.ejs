@@ -33,7 +33,7 @@
     <div>
       <section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 fixed w-2/8 md:w-1/8 mt-16" id="side-menu">
         <div class="cursor-pointer">
-          <a class="px-4 py-2 md:py-4 bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessments</span>
+          <a class="px-4 py-2 md:py-4 bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessments</span>
           </span></a>
           <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin/orientation"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 2: Orientation</span>
           </span></a>
@@ -51,10 +51,8 @@
           <h1 class="text-2xl">Welcome <%= myname %></h1>
           
         </div>
-        <div class="w-full">
-          <h2 class="text-xl mt-6 mb-4 font-bold">Orientations <a href="/admin/orientation/new" class="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full">NEW</a></h2>
-          <div id="all-orientations">
-          </div>
+        <div class="w-full" id="app">
+          
         </div>
       </section>
     </div>

@@ -1,6 +1,8 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../connect");
 
+const { Quiz } = require("./quizmodel");
+
 class Orientation extends Model {}
 
 Orientation.init(
@@ -15,5 +17,8 @@ Orientation.init(
     modelName: "Orientation",
   }
 );
+
+Quiz.hasOne(Orientation);
+Orientation.belongsTo(Quiz);
 
 module.exports = { Orientation };

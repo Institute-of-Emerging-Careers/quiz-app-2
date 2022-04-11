@@ -4,6 +4,7 @@ const { DateTime } = require("luxon");
 // My requirements
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
 const { Orientation } = require("../db/models/orientation");
+const { Student } = require("../db/models/user");
 
 //this file deals with /admin/orientation/...
 
@@ -38,19 +39,24 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
   });
 });
 
-router.get("/new", checkAdminAuthenticated, (req, res) => {
+router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
   res.render("admin/orientation/new.ejs", {
     edit: false,
+    orientation_name: "",
+    quiz_id: req.params.quiz_id,
     env: process.env.NODE_ENV,
     user_type: req.user.type,
   });
 });
 
-router.get("/create-new", checkAdminAuthenticated, (req, res) => {
+router.get("/create-new/:quiz_id", checkAdminAuthenticated, (req, res) => {
   const new_orientation_name = `Orientation ${DateTime.now().toFormat(
     "hh:mm:ss-yyyy-LLL-dd"
   )}`;
-  Orientation.create({ title: new_orientation_name }).then((orientation) => {
+  Orientation.create({
+    title: new_orientation_name,
+    QuizId: req.params.quiz_id,
+  }).then((orientation) => {
     res.json({
       success: true,
       orientation_id: orientation.id,
@@ -81,6 +87,36 @@ router.get(
         action_link: "/orientation",
         action_link_text: "Click here to go to the orientations page.",
       });
+    }
+  }
+);
+
+router.get(
+  "/students-list/:orientation_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    console.log(req.params.orientation_id);
+    const orientation = await Orientation.findOne({
+      where: { id: req.params.orientation_id },
+      attributes: ["id"],
+    });
+
+    if (orientation != null) {
+      const students = await orientation.getStudents({
+        attributes: [
+          "firstName",
+          "lastName",
+          "email",
+          "age",
+          "gender",
+          "city",
+          "score",
+        ],
+      });
+
+      res.json({ success: true, data: students });
+    } else {
+      res.json({ success: false });
     }
   }
 );

@@ -1,6 +1,7 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
+const { Orientation } = require("./orientation");
 
 class User extends Model {}
 
@@ -422,6 +423,9 @@ Score.belongsTo(Attempt);
 
 Student.hasMany(PasswordResetLink);
 PasswordResetLink.belongsTo(Student);
+
+Orientation.hasMany(Student);
+Student.belongsTo(Orientation);
 
 module.exports = {
   User,
