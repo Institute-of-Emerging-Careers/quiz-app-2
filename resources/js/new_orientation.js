@@ -105,20 +105,14 @@ const StudentsList = () => {
     current_students_object,
   } = useContext(MyContext);
 
-  const [orientation_id, setOrientationId] = orientation_id_object;
-  const [orientation_name, setOrientationName] = orientation_name_object;
   const [current_students, setCurrentStudents] = current_students_object;
 
   useEffect(() => {
     if (document.getElementById("edit-field").value != "false") {
-      fetch(
-        `/admin/orientation/students-list/${
-          document.getElementById("edit-field").value
-        }`
-      )
+      const orientation_id_field = document.getElementById("edit-field");
+      fetch(`/admin/orientation/students-list/${orientation_id_field.value}`)
         .then((response) => {
           response.json().then((parsed_response) => {
-            console.log(parsed_response);
             if (parsed_response.success) {
               setCurrentStudents(parsed_response.data);
             } else
@@ -159,11 +153,110 @@ const StudentsList = () => {
   );
 };
 
+const NewStudentAdder = () => {
+  const {
+    orientation_id_object,
+    orientation_name_object,
+    current_students_object,
+  } = useContext(MyContext);
+
+  const [candidates, setCandidates] = useState([]);
+  const [show_candidates, setShowCandidates] = useState(false);
+  // ^when this becomes true, we get a list of candidates from the server. Who are candidates? These are students who attempted the Assessment that is linked to this Orientation and hence "can" be invited to this orientation.
+
+  const [current_students, setCurrentStudents] = current_students_object;
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (show_candidates) {
+      const orientation_id_field = document.getElementById("edit-field");
+      setLoading(true);
+      fetch(
+        `/admin/orientation/all-candidates/${orientation_id_field.value}`
+      ).then((raw_response) => {
+        console.log(raw_response);
+        raw_response
+          .json()
+          .then((response) => {
+            if (response.success) {
+              setCandidates(response.data);
+            } else {
+              alert("Something went wrong while getting a list of candidates.");
+            }
+          })
+          .catch((err) => {
+            alert("Something went wrong while getting a list of candidates.");
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      });
+    }
+  }, [show_candidates]);
+
+  const toggleShowCandidates = () => {
+    setShowCandidates((cur) => !cur);
+  };
+
+  return (
+    <div className="mt-6">
+      {!show_candidates ? (
+        <button
+          onClick={toggleShowCandidates}
+          className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
+        >
+          <i class="fas fa-plus"></i> Add More Students to this Orientation
+        </button>
+      ) : (
+        <div>
+          <button className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover">
+            Add Selected Students to Orientation
+          </button>
+          <br></br>
+          {loading ? (
+            <i className="fas fa-spinner animate-spin text-lg"></i>
+          ) : (
+            <div></div>
+          )}
+          <table className="w-full text-left px-2">
+            <thead>
+              <tr className="py-4">
+                <th>Added to Orientation or Not</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Gender</th>
+                <th>Score (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {candidates.map((candidate) => (
+                <tr className="py-2">
+                  <td>
+                    <input type="checkbox" id={candidate.id}></input>
+                  </td>
+                  <td>{candidate.name}</td>
+                  <td>{candidate.email}</td>
+                  <td>{candidate.age}</td>
+                  <td>{candidate.gender}</td>
+                  <td>{candidate.percentage_score}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const App = () => {
   return (
     <ContextProvider>
       <NameForm />
       <StudentsList />
+      <hr></hr>
+      <NewStudentAdder />
     </ContextProvider>
   );
 };
