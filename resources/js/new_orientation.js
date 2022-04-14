@@ -130,7 +130,7 @@ const StudentsList = () => {
 
   return (
     <div className="mt-2">
-      <h2 className="text-base">
+      <h2 className="text-base text-center mb-2">
         <b>List of Students added to this Orientation</b>
       </h2>
       <table className="w-full text-left text-base">
@@ -166,6 +166,7 @@ const NewStudentAdder = () => {
 
   const [current_students, setCurrentStudents] = current_students_object;
   const [loading, setLoading] = useState(false);
+  const [filter_min_score, setFilterMinScore] = useState(0);
 
   useEffect(() => {
     if (show_candidates) {
@@ -199,7 +200,7 @@ const NewStudentAdder = () => {
   };
 
   return (
-    <div className="mt-6">
+    <div className="mt-16">
       {!show_candidates ? (
         <button
           onClick={toggleShowCandidates}
@@ -209,9 +210,30 @@ const NewStudentAdder = () => {
         </button>
       ) : (
         <div>
-          <button className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover">
-            Add Selected Students to Orientation
-          </button>
+          <h2 className="text-base text-center mb-2">
+            <b>List of Candidates that can be added to this Orientation</b>
+          </h2>
+          <div className="grid grid-cols-2">
+            <div>
+              <label for="filter_min_score">Filter by Minimum Score: </label>
+              <input
+                type="number"
+                min="0"
+                max="100"
+                increment="1"
+                value={filter_min_score}
+                name="filter_min_score"
+                onChange={(e) => {
+                  setFilterMinScore(e.target.value);
+                }}
+                className="ml-2 p-2 w-72 border"
+              ></input>
+              %
+            </div>
+            <button className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover">
+              Add Selected Students to Orientation
+            </button>
+          </div>
           <br></br>
           {loading ? (
             <i className="fas fa-spinner animate-spin text-lg"></i>
@@ -221,7 +243,7 @@ const NewStudentAdder = () => {
           <table className="w-full text-left px-2">
             <thead>
               <tr className="py-4">
-                <th>Added to Orientation or Not</th>
+                <th>Selection</th>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Age</th>
@@ -230,18 +252,22 @@ const NewStudentAdder = () => {
               </tr>
             </thead>
             <tbody>
-              {candidates.map((candidate) => (
-                <tr className="py-2">
-                  <td>
-                    <input type="checkbox" id={candidate.id}></input>
-                  </td>
-                  <td>{candidate.name}</td>
-                  <td>{candidate.email}</td>
-                  <td>{candidate.age}</td>
-                  <td>{candidate.gender}</td>
-                  <td>{candidate.percentage_score}</td>
-                </tr>
-              ))}
+              {candidates
+                .filter(
+                  (candidate) => candidate.percentage_score >= filter_min_score
+                )
+                .map((candidate) => (
+                  <tr className="py-2">
+                    <td>
+                      <input type="checkbox" id={candidate.id}></input>
+                    </td>
+                    <td>{candidate.name}</td>
+                    <td>{candidate.email}</td>
+                    <td>{candidate.age}</td>
+                    <td>{candidate.gender}</td>
+                    <td>{candidate.percentage_score}</td>
+                  </tr>
+                ))}
             </tbody>
           </table>
         </div>
