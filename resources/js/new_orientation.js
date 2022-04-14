@@ -32,6 +32,8 @@ const NameForm = () => {
   const [orientation_name, setOrientationName] = orientation_name_object;
   const [students, setStudents] = students_object;
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (document.getElementById("edit-field").value == "false") {
       fetch(
@@ -57,6 +59,7 @@ const NameForm = () => {
   const saveData = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    setLoading(true);
     fetch(
       `/admin/orientation/save/${document.getElementById("edit-field").value}`,
       {
@@ -72,7 +75,7 @@ const NameForm = () => {
     ).then((response) => {
       response.json().then((parsed_response) => {
         if (parsed_response.success) {
-          alert("Orientation data saved successfully!");
+          setLoading(false);
         }
       });
     });
@@ -95,7 +98,15 @@ const NameForm = () => {
           type="submit"
           className="ml-2 bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
         >
-          <i class="fas fa-save"></i> Save All Data
+          {loading ? (
+            <span>
+              <i className="fas fa-spinner animate-spin text-lg"></i> Saving
+            </span>
+          ) : (
+            <span>
+              <i class="fas fa-save"></i> Save All Data
+            </span>
+          )}
         </button>
       </form>
     </div>
