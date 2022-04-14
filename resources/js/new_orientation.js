@@ -30,6 +30,7 @@ const NameForm = () => {
 
   const [orientation_id, setOrientationId] = orientation_id_object;
   const [orientation_name, setOrientationName] = orientation_name_object;
+  const [students, setStudents] = students_object;
 
   useEffect(() => {
     if (document.getElementById("edit-field").value == "false") {
@@ -56,19 +57,22 @@ const NameForm = () => {
   const saveData = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    fetch("/admin/orientation/change-name/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        orientation_name: orientation_name,
-        orientation_id: orientation_id,
-      }),
-    }).then((response) => {
+    fetch(
+      `/admin/orientation/save/${document.getElementById("edit-field").value}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orientation_name: orientation_name,
+          students: students,
+        }),
+      }
+    ).then((response) => {
       response.json().then((parsed_response) => {
         if (parsed_response.success) {
-          alert("Orientation name changed successfully!");
+          alert("Orientation data saved successfully!");
         }
       });
     });
@@ -141,9 +145,6 @@ const NewStudentAdder = () => {
   const { orientation_id_object, orientation_name_object, students_object } =
     useContext(MyContext);
 
-  const [show_candidates, setShowCandidates] = useState(false);
-  // ^when this becomes true, we get a list of candidates from the server. Who are candidates? These are students who attempted the Assessment that is linked to this Orientation and hence "can" be invited to this orientation.
-
   const [students, setStudents] = students_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
@@ -152,12 +153,10 @@ const NewStudentAdder = () => {
   const section2 = useRef(null);
 
   useEffect(() => {
-    if (show_candidates) {
-      const orientation_id_field = document.getElementById("edit-field");
-      setLoading(true);
-      fetch(
-        `/admin/orientation/all-candidates/${orientation_id_field.value}`
-      ).then((raw_response) => {
+    const orientation_id_field = document.getElementById("edit-field");
+    setLoading(true);
+    fetch(`/admin/orientation/all-students/${orientation_id_field.value}`).then(
+      (raw_response) => {
         raw_response
           .json()
           .then((response) => {
@@ -180,13 +179,9 @@ const NewStudentAdder = () => {
           .finally(() => {
             setLoading(false);
           });
-      });
-    }
-  }, [show_candidates]);
-
-  const toggleShowCandidates = () => {
-    setShowCandidates((cur) => !cur);
-  };
+      }
+    );
+  }, []);
 
   const setAllCheckboxes = (new_val) => {
     setStudents((cur) => {
@@ -215,103 +210,89 @@ const NewStudentAdder = () => {
       <h2 className="text-base text-center mb-2">
         <b>List of Candidates that can be added to this Orientation</b>
       </h2>
-      {!show_candidates ? (
-        <button
-          onClick={toggleShowCandidates}
-          className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
-        >
-          <i className="fas fa-plus"></i> Add More Students to this Orientation
-        </button>
-      ) : (
-        <div ref={section2}>
-          <div className="grid grid-cols-3">
-            <div className="col-span-1">
-              <label htmlFor="filter_min_score">
-                Filter by Minimum Score:{" "}
-              </label>
-              <input
-                type="number"
-                min="0"
-                max="100"
-                increment="1"
-                value={filter_min_score}
-                name="filter_min_score"
-                onChange={(e) => {
-                  setFilterMinScore(e.target.value);
-                }}
-                className="ml-2 p-2 w-72 border"
-              ></input>
-              %
-            </div>
-            <a
-              className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
-              onClick={selectAll}
-            >
-              Click here to select all below
-            </a>
-            <a
-              className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
-              onClick={deSelectAll}
-            >
-              Click here to deselect all below
-            </a>
+
+      <div ref={section2}>
+        <div className="grid grid-cols-3">
+          <div className="col-span-1">
+            <label htmlFor="filter_min_score">Filter by Minimum Score: </label>
+            <input
+              type="number"
+              min="0"
+              max="100"
+              increment="1"
+              value={filter_min_score}
+              name="filter_min_score"
+              onChange={(e) => {
+                setFilterMinScore(e.target.value);
+              }}
+              className="ml-2 p-2 w-72 border"
+            ></input>
+            %
           </div>
-          <br></br>
-          {loading ? (
-            <i className="fas fa-spinner animate-spin text-lg"></i>
-          ) : (
-            <div></div>
-          )}
-          <table className="w-full text-left px-2">
-            <thead>
-              <tr className="py-4">
-                <th>Selection</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Age</th>
-                <th>Gender</th>
-                <th>Score (%)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students
-                .filter(
-                  (student) => student.percentage_score >= filter_min_score
-                )
-                .map((student) => (
-                  <tr className="py-2" key={student.id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        id={student.id}
-                        checked={student.added}
-                        onChange={() => {
-                          setStudents((cur) => {
-                            let copy = cur.slice();
-                            copy[
-                              student_id_to_array_index_map.current[student.id]
-                            ].added =
-                              !copy[
-                                student_id_to_array_index_map.current[
-                                  student.id
-                                ]
-                              ].added;
-                            return copy;
-                          });
-                        }}
-                      ></input>
-                    </td>
-                    <td>{student.name}</td>
-                    <td>{student.email}</td>
-                    <td>{student.age}</td>
-                    <td>{student.gender}</td>
-                    <td>{student.percentage_score}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <a
+            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+            onClick={selectAll}
+          >
+            Click here to select all below
+          </a>
+          <a
+            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+            onClick={deSelectAll}
+          >
+            Click here to deselect all below
+          </a>
         </div>
-      )}
+        <br></br>
+        {loading ? (
+          <i className="fas fa-spinner animate-spin text-lg"></i>
+        ) : (
+          <div></div>
+        )}
+        <table className="w-full text-left px-2">
+          <thead>
+            <tr className="py-4">
+              <th>Selection</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Age</th>
+              <th>Gender</th>
+              <th>Score (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students
+              .filter((student) => student.percentage_score >= filter_min_score)
+              .map((student) => (
+                <tr className="py-2" key={student.id}>
+                  <td>
+                    <input
+                      type="checkbox"
+                      id={student.id}
+                      checked={student.added}
+                      onChange={() => {
+                        setStudents((cur) => {
+                          let copy = cur.slice();
+                          copy[
+                            student_id_to_array_index_map.current[student.id]
+                          ].added =
+                            !copy[
+                              student_id_to_array_index_map.current[student.id]
+                            ].added;
+                          return copy;
+                        });
+                      }}
+                    ></input>
+                  </td>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.age}</td>
+                  <td>{student.gender}</td>
+                  <td>{student.percentage_score}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

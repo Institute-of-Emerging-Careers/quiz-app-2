@@ -1,7 +1,7 @@
 const { Sequelize, DataTypes, Model } = require("sequelize");
 const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
-const { Orientation } = require("./orientation");
+const { Orientation, OrientationInvite } = require("./orientation");
 
 class User extends Model {}
 
@@ -424,14 +424,14 @@ Score.belongsTo(Attempt);
 Student.hasMany(PasswordResetLink);
 PasswordResetLink.belongsTo(Student);
 
-Orientation.hasMany(Student);
-Student.belongsTo(Orientation);
-
-Quiz.hasOne(Orientation);
+Quiz.hasOne(Orientation, {
+  onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+});
 Orientation.belongsTo(Quiz);
 
-Orientation.hasMany(Student);
-Student.belongsTo(Orientation);
+Orientation.belongsToMany(Student, { through: OrientationInvite });
+Student.belongsToMany(Orientation, { through: OrientationInvite });
 
 module.exports = {
   User,
