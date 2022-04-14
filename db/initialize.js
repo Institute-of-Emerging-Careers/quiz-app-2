@@ -7,6 +7,7 @@ const initializeDatabase = async () => {
     alterandforce = false;
     // Sync models with database
     await sequelize.sync({ alter: alterandforce, force: alterandforce });
+    console.log("Sync complete.");
 
     if (alterandforce) {
       // Add a single admin user

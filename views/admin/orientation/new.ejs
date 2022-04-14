@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+    <%- include('../../templates/react-includes.ejs') %>
+    <title>Create New Orientation - Admin Panell</title>
+  </head>
+
+  <body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../../templates/header.ejs') %>
+    <h1 class="text-2xl">New Orientation</h1>
+    <input id="edit-field" type="hidden" class="hidden" value="<%=edit%>"></input> 
+    <!--if edit is "false", then we create a new orientation. If it is not "false", then it stores the ID of the orientation that we are going to edit.-->
+    
+    <input id="orientation-name-field" type="hidden" class="hidden" value="<%=orientation_name%>"></input>
+    <input id="quiz-id-field" type="hidden" class="hidden" value="<%=quiz_id%>"></input>
+    <section
+      id="app"
+    ></section>
+
+    <script src="/js/new_orientation.js" type="text/babel"></script>
+  </body>
+</html>

@@ -15,6 +15,7 @@ const studentRouter = require("./routes/student");
 const adminRouter = require("./routes/admin");
 const mailRouter = require("./routes/mail");
 const quizRouter = require("./routes/quiz");
+const orientationRouter = require("./routes/orientation");
 
 // My requirements
 const initializeDatabase = require("./db/initialize");
@@ -81,6 +82,7 @@ app.use("/student", studentRouter);
 app.use("/admin", adminRouter);
 app.use("/mail", mailRouter);
 app.use("/quiz", quizRouter);
+app.use("/orientation", orientationRouter);
 
 // Initializing Stuff
 initializePassport(passport);
