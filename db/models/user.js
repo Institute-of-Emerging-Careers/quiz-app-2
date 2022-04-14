@@ -427,6 +427,12 @@ PasswordResetLink.belongsTo(Student);
 Orientation.hasMany(Student);
 Student.belongsTo(Orientation);
 
+Quiz.hasOne(Orientation);
+Orientation.belongsTo(Quiz);
+
+Orientation.hasMany(Student);
+Student.belongsTo(Orientation);
+
 module.exports = {
   User,
   Student,

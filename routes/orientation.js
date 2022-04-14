@@ -126,62 +126,69 @@ router.get(
       include: [{ model: Quiz, include: [Section] }],
     });
 
-    // finding total score of quiz
-    let quiz_total_score = 0;
-    await new Promise((resolve) => {
-      let i = 0;
-      const n3 = orientation.Quiz.Sections.length;
-      orientation.Quiz.Sections.forEach(async (section) => {
-        const num_questions_in_section = await section.countQuestions();
-        const section_maximum_score = await getTotalMarksOfSection(
-          section.id,
-          section.poolCount,
-          num_questions_in_section
+    if (orientation.QuizId != null) {
+      // finding total score of quiz
+      let quiz_total_score = 0;
+      await new Promise((resolve) => {
+        let i = 0;
+        const n3 = orientation.Quiz.Sections.length;
+        orientation.Quiz.Sections.forEach(async (section) => {
+          const num_questions_in_section = await section.countQuestions();
+          const section_maximum_score = await getTotalMarksOfSection(
+            section.id,
+            section.poolCount,
+            num_questions_in_section
+          );
+          quiz_total_score += section_maximum_score;
+          i++;
+          if (i == n3) resolve();
+        });
+      });
+
+      let data = []; //list of students who have solved this quiz
+      let assignments = await Assignment.findAll({
+        where: { QuizId: orientation.QuizId },
+        include: [
+          Student,
+          {
+            model: Attempt,
+            include: [{ model: Section, order: ["id"] }, Score],
+          },
+        ],
+      });
+      console.log("here");
+      assignments.forEach(async (assignment) => {
+        const cur_index =
+          data.push({
+            id: assignment.Student.id,
+            name:
+              assignment.Student.firstName + " " + assignment.Student.lastName,
+            email: assignment.Student.email,
+            age: assignment.Student.age,
+            gender: assignment.Student.gender,
+            total_score_achieved: 0,
+            percentage_score: 0,
+          }) - 1;
+
+        let remove_student = false;
+        assignment.Attempts.forEach(async (attempt) => {
+          if (attempt == null || attempt.Score == null) {
+            remove_student = true;
+          } else {
+            data[cur_index].total_score_achieved += attempt.Score.score;
+          }
+        });
+
+        data[cur_index].percentage_score = roundToTwoDecimalPlaces(
+          (data[cur_index].total_score_achieved / quiz_total_score) * 100
         );
-        quiz_total_score += section_maximum_score;
-        i++;
-        if (i == n3) resolve();
+        if (remove_student) data.pop();
       });
-    });
-
-    let data = []; //list of students who have solved this quiz
-    let assignments = await Assignment.findAll({
-      where: { QuizId: orientation.QuizId },
-      include: [
-        Student,
-        { model: Attempt, include: [{ model: Section, order: ["id"] }, Score] },
-      ],
-    });
-    console.log("here");
-    assignments.forEach(async (assignment) => {
-      const cur_index =
-        data.push({
-          id: assignment.Student.id,
-          name:
-            assignment.Student.firstName + " " + assignment.Student.lastName,
-          email: assignment.Student.email,
-          age: assignment.Student.age,
-          gender: assignment.Student.gender,
-          total_score_achieved: 0,
-          percentage_score: 0,
-        }) - 1;
-
-      let remove_student = false;
-      assignment.Attempts.forEach(async (attempt) => {
-        if (attempt == null || attempt.Score == null) {
-          remove_student = true;
-        } else {
-          data[cur_index].total_score_achieved += attempt.Score.score;
-        }
-      });
-
-      data[cur_index].percentage_score = roundToTwoDecimalPlaces(
-        (data[cur_index].total_score_achieved / quiz_total_score) * 100
-      );
-      if (remove_student) data.pop();
-    });
-    console.log(data);
-    res.json({ success: true, data: data });
+      console.log(data);
+      res.json({ success: true, data: data });
+    } else {
+      res.json({ success: false });
+    }
   }
 );
 
