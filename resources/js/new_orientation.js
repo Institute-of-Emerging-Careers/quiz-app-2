@@ -223,8 +223,8 @@ const NewStudentAdder = () => {
       </h2>
 
       <div ref={section2}>
-        <div className="grid grid-cols-3">
-          <div className="col-span-1">
+        <div className="grid grid-cols-4 items-center">
+          <div className="col-span-2">
             <label htmlFor="filter_min_score">Filter by Minimum Score: </label>
             <input
               type="number"
@@ -244,13 +244,13 @@ const NewStudentAdder = () => {
             className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={selectAll}
           >
-            Click here to select all below
+            <i class="fas fa-check-square"></i> Click here to select all below
           </a>
           <a
             className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={deSelectAll}
           >
-            Click here to deselect all below
+            <i class="far fa-square"></i> Click here to deselect all below
           </a>
         </div>
         <br></br>
