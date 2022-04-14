@@ -97,26 +97,6 @@ router.get(
 );
 
 router.get(
-  "/students-list/:orientation_id",
-  checkAdminAuthenticated,
-  async (req, res) => {
-    const orientation = await Orientation.findOne({
-      where: { id: req.params.orientation_id },
-      attributes: ["id"],
-    });
-
-    if (orientation != null) {
-      const students = await orientation.getStudents({
-        attributes: ["firstName", "lastName", "email", "age", "gender", "city"],
-      });
-      res.json({ success: true, data: students });
-    } else {
-      res.json({ success: false });
-    }
-  }
-);
-
-router.get(
   "/all-candidates/:orientation_id",
   checkAdminAuthenticated,
   async (req, res) => {

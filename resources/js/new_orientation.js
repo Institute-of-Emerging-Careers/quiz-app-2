@@ -53,7 +53,7 @@ const NameForm = () => {
     }
   }, []);
 
-  const changeOrientationName = (e) => {
+  const saveData = (e) => {
     e.preventDefault();
     e.stopPropagation();
     fetch("/admin/orientation/change-name/", {
@@ -76,8 +76,8 @@ const NameForm = () => {
 
   return (
     <div>
-      <form onSubmit={changeOrientationName} autoFocus>
-        <label>Change Orientation Name: </label>
+      <form onSubmit={saveData} autoFocus>
+        <label>Orientation Name: </label>
         <input
           type="text"
           name="orientation"
@@ -87,10 +87,12 @@ const NameForm = () => {
           }}
           className="ml-2 px-4 py-4 w-72 border"
         ></input>
-        <input
+        <button
           type="submit"
-          className="bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
-        ></input>
+          className="ml-2 bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
+        >
+          <i class="fas fa-save"></i> Save All Data
+        </button>
       </form>
     </div>
   );
@@ -102,52 +104,35 @@ const StudentsList = () => {
 
   let [students, setStudents] = students_object;
 
-  useEffect(() => {
-    if (document.getElementById("edit-field").value != "false") {
-      const orientation_id_field = document.getElementById("edit-field");
-      fetch(`/admin/orientation/students-list/${orientation_id_field.value}`)
-        .then((response) => {
-          response.json().then((parsed_response) => {
-            if (parsed_response.success) {
-              setStudents(parsed_response.data);
-            } else
-              alert(
-                "Something went wrong on the server while getting list of students."
-              );
-          });
-        })
-        .catch((err) => {
-          alert("Error getting list of students.");
-          console.log(err);
-        });
-    }
-  }, []);
-
   return (
-    <div className="mt-2">
-      <h2 className="text-base text-center mb-2">
+    <div>
+      <h2 className="text-base text-center mb-4">
         <b>List of Students added to this Orientation</b>
       </h2>
-      <table className="w-full text-left text-sm">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students
-            .filter((student) => student.added)
-            .map((student) => (
-              <tr key={student.id}>
-                <td>{student.name}</td>
-                <td>{student.email}</td>
-                <td>{student.percentage_score}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
+      {students.length > 0 ? (
+        <table className="w-full text-left text-sm">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {students
+              .filter((student) => student.added)
+              .map((student) => (
+                <tr key={student.id}>
+                  <td>{student.name}</td>
+                  <td>{student.email}</td>
+                  <td>{student.percentage_score}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No students added yet.</p>
+      )}
     </div>
   );
 };
@@ -163,7 +148,8 @@ const NewStudentAdder = () => {
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
 
-  const candidate_id_to_array_index_map = useRef({});
+  const student_id_to_array_index_map = useRef({});
+  const section2 = useRef(null);
 
   useEffect(() => {
     if (show_candidates) {
@@ -177,8 +163,7 @@ const NewStudentAdder = () => {
           .then((response) => {
             if (response.success) {
               for (let i = 0; i < response.data.length; i++) {
-                candidate_id_to_array_index_map.current[response.data[i].id] =
-                  i;
+                student_id_to_array_index_map.current[response.data[i].id] = i;
               }
               setStudents(response.data);
             } else {
@@ -203,22 +188,33 @@ const NewStudentAdder = () => {
     setShowCandidates((cur) => !cur);
   };
 
-  const addSelectedStudentsToOrientation = () => {
-    let list_of_added_candidates = []; //based on checked checkboxes
-    for (let i = 0; i < students.length; i++) {
-      if (students[i].added) {
-        list_of_added_candidates.push(students[i]);
-      }
-    }
-
+  const setAllCheckboxes = (new_val) => {
     setStudents((cur) => {
-      let copy = [...cur, ...list_of_added_candidates];
+      let copy = cur.slice();
+      for (let i = 0; i < copy.length; i++) {
+        if (copy[i].percentage_score >= filter_min_score) {
+          copy[i].added = new_val;
+        }
+      }
       return copy;
     });
   };
 
+  const selectAll = () => {
+    setAllCheckboxes(true);
+    section2.current.scrollIntoView();
+  };
+
+  const deSelectAll = () => {
+    setAllCheckboxes(false);
+    section2.current.scrollIntoView();
+  };
+
   return (
-    <div className="mt-16">
+    <div>
+      <h2 className="text-base text-center mb-2">
+        <b>List of Candidates that can be added to this Orientation</b>
+      </h2>
       {!show_candidates ? (
         <button
           onClick={toggleShowCandidates}
@@ -227,12 +223,9 @@ const NewStudentAdder = () => {
           <i className="fas fa-plus"></i> Add More Students to this Orientation
         </button>
       ) : (
-        <div>
-          <h2 className="text-base text-center mb-2">
-            <b>List of Candidates that can be added to this Orientation</b>
-          </h2>
-          <div className="grid grid-cols-2">
-            <div>
+        <div ref={section2}>
+          <div className="grid grid-cols-3">
+            <div className="col-span-1">
               <label htmlFor="filter_min_score">
                 Filter by Minimum Score:{" "}
               </label>
@@ -250,12 +243,18 @@ const NewStudentAdder = () => {
               ></input>
               %
             </div>
-            <button
-              className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
-              onClick={addSelectedStudentsToOrientation}
+            <a
+              className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+              onClick={selectAll}
             >
-              Add Selected Students to Orientation
-            </button>
+              Click here to select all below
+            </a>
+            <a
+              className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+              onClick={deSelectAll}
+            >
+              Click here to deselect all below
+            </a>
           </div>
           <br></br>
           {loading ? (
@@ -290,12 +289,10 @@ const NewStudentAdder = () => {
                           setStudents((cur) => {
                             let copy = cur.slice();
                             copy[
-                              candidate_id_to_array_index_map.current[
-                                student.id
-                              ]
+                              student_id_to_array_index_map.current[student.id]
                             ].added =
                               !copy[
-                                candidate_id_to_array_index_map.current[
+                                student_id_to_array_index_map.current[
                                   student.id
                                 ]
                               ].added;
@@ -322,10 +319,16 @@ const NewStudentAdder = () => {
 const App = () => {
   return (
     <ContextProvider>
-      <NameForm />
-      <StudentsList />
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+        <NameForm />
+      </div>
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+        <StudentsList />
+      </div>
       <hr></hr>
-      <NewStudentAdder />
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen text-sm">
+        <NewStudentAdder />
+      </div>
     </ContextProvider>
   );
 };
