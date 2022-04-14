@@ -126,7 +126,7 @@ router.get(
       include: [{ model: Quiz, include: [Section] }],
     });
 
-    if (orientation.QuizId != null) {
+    if (orientation != null && orientation.QuizId != null) {
       // finding total score of quiz
       let quiz_total_score = 0;
       await new Promise((resolve) => {
@@ -156,35 +156,39 @@ router.get(
           },
         ],
       });
-      console.log("here");
-      assignments.forEach(async (assignment) => {
-        const cur_index =
-          data.push({
-            id: assignment.Student.id,
-            name:
-              assignment.Student.firstName + " " + assignment.Student.lastName,
-            email: assignment.Student.email,
-            age: assignment.Student.age,
-            gender: assignment.Student.gender,
-            total_score_achieved: 0,
-            percentage_score: 0,
-          }) - 1;
 
-        let remove_student = false;
-        assignment.Attempts.forEach(async (attempt) => {
-          if (attempt == null || attempt.Score == null) {
-            remove_student = true;
-          } else {
-            data[cur_index].total_score_achieved += attempt.Score.score;
-          }
+      if (assignments != null && assignments.length > 0) {
+        assignments.forEach(async (assignment) => {
+          const cur_index =
+            data.push({
+              added: false,
+              id: assignment.Student.id,
+              name:
+                assignment.Student.firstName +
+                " " +
+                assignment.Student.lastName,
+              email: assignment.Student.email,
+              age: assignment.Student.age,
+              gender: assignment.Student.gender,
+              total_score_achieved: 0,
+              percentage_score: 0,
+            }) - 1;
+
+          let remove_student = false;
+          assignment.Attempts.forEach(async (attempt) => {
+            if (attempt == null || attempt.Score == null) {
+              remove_student = true;
+            } else {
+              data[cur_index].total_score_achieved += attempt.Score.score;
+            }
+          });
+
+          data[cur_index].percentage_score = roundToTwoDecimalPlaces(
+            (data[cur_index].total_score_achieved / quiz_total_score) * 100
+          );
+          if (remove_student) data.pop();
         });
-
-        data[cur_index].percentage_score = roundToTwoDecimalPlaces(
-          (data[cur_index].total_score_achieved / quiz_total_score) * 100
-        );
-        if (remove_student) data.pop();
-      });
-      console.log(data);
+      }
       res.json({ success: true, data: data });
     } else {
       res.json({ success: false });
