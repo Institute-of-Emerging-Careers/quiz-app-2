@@ -6,56 +6,43 @@ const useRef = React.useRef;
 const useMemo = React.useMemo;
 
 const App = () => {
-  const [orientations, setOrientations] = useState([]);
-  const [show_modal, setShowModal] = useState(false);
+  const [interview_rounds, setInterviewRounds] = useState([]);
   const [all_assessments, setAllAssessments] = useState([]);
-  const [updateAllOrientations, setUpdateAllOrientations] = useState(0);
+  const [show_modal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetch("/admin/orientation/all").then((response) => {
-      response.json().then((parsed_response) => {
-        if (parsed_response.success) {
-          setOrientations(parsed_response.data);
-        } else
-          alert(
-            "There was a problem while getting the orientations. Contact IT."
-          );
+    fetch("/admin/interview/all")
+      .then((raw_response) => {
+        raw_response
+          .json()
+          .then((response) => {
+            if (response.success) setInterviewRounds(response.interview_rounds);
+            else
+              alert(
+                "Something went wrong while getting interview rounds. Error code 01."
+              );
+          })
+          .catch((err) => {
+            alert(
+              "Error while understanding the server's response. Error code 02."
+            );
+          });
+      })
+      .catch((err) => {
+        alert(
+          "Please check your internet connection and try again. Error code 03."
+        );
       });
-    });
 
     fetch("/quiz/all-titles-and-num-attempts").then((response) => {
       response.json().then((parsed_response) => {
         setAllAssessments(parsed_response);
       });
     });
-  }, [updateAllOrientations]);
+  }, []);
 
-  const createNewOrientation = (e) => {
-    window.location = `/admin/orientation/new/${e.target.value}`;
-  };
-
-  const deleteOrientation = (orientation_id) => {
-    fetch(`/admin/orientation/delete/${orientation_id}`)
-      .then((raw_response) => {
-        raw_response
-          .json()
-          .then((response) => {
-            if (response.success) {
-              alert("Orientation deleted successfully.");
-              setUpdateAllOrientations((cur) => cur + 1);
-            } else {
-              alert(
-                "Orientation could not be deleted due to an error. Code 01."
-              );
-            }
-          })
-          .catch((err) => {
-            alert("Orientation could not be deleted due to an error. Code 02.");
-          });
-      })
-      .catch((err) => {
-        alert("Orientation could not be deleted due to an error. Code 03.");
-      });
+  const createNewInterview = (e) => {
+    window.location = `/admin/interview/new/${e.target.value}`;
   };
 
   return (
@@ -72,7 +59,7 @@ const App = () => {
           <div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
             <h3 className="text-xl col-auto justify-self-start self-center">
               <i className="fas fa-link text-xl text-white"></i> Create New
-              Orientation
+              Interview Round
             </h3>
             <i
               className="fas fa-times text-white cursor-pointer col-auto justify-self-end self-center"
@@ -83,11 +70,11 @@ const App = () => {
           </div>
           <div className="p-8">
             <p>
-              Please choose an Assessment to link to this Orientation. You will
-              add Students to this Orientation based on their results in this
-              chosen Assessment.
+              Please choose an Assessment to link to this Interview Round. You
+              will invite Students to this Interview Round based on their
+              results in the chosen Assessment.
             </p>
-            <select className="w-full p-2" onChange={createNewOrientation}>
+            <select className="w-full p-2" onChange={createNewInterview}>
               <option className="p-2" selected disabled>
                 Choose an Assessment
               </option>
@@ -105,42 +92,39 @@ const App = () => {
         </div>
       </div>
       <h2 className="text-xl mt-6 mb-4 font-bold">
-        Orientations{" "}
+        Interview Rounds
         <button
+          className="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full"
           onClick={() => {
             setShowModal((cur) => !cur);
           }}
-          className="text-xs px-4 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white rounded-full"
         >
           NEW
         </button>
       </h2>
       <div className="flex flex-wrap justify-start gap-y-10 gap-x-10">
-        {orientations.map((orientation, index) => (
+        {interview_rounds.map((interview_round, index) => (
           <div
             className="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card"
             key={index}
           >
             <div className="grid grid-cols-2 col-span-8 h-16 bg-iec-blue justify-center content-center">
               <a
-                href={`/admin/orientation/edit/${orientation.id}`}
+                href={`/admin/interview/edit/${interview_round.id}`}
                 className="text-white text-xl col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
-                title="Edit Orientation"
+                title="Edit Interview Round"
               >
                 <i className="far fa-edit "></i>
               </a>
               <a
-                onClick={() => {
-                  deleteOrientation(orientation.id);
-                }}
                 className="text-white text-xl col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
-                title="Delete Orientation"
+                title="Delete Interview Round"
               >
                 <i className="fas fa-trash "></i>
               </a>
             </div>
             <h3 className="col-span-6 font-semibold text-lg px-4">
-              {orientation.title}
+              {interview_round.title}
             </h3>
             <div className="col-start-1 col-span-3">
               <p className="pl-4 pt-0">0 invited</p>
