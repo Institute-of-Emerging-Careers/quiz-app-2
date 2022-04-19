@@ -90,6 +90,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
       });
     }
   } else {
+    console.log("Dummy email sent to: ", recepient);
     return new Promise((resolve) => {
       resolve();
     });

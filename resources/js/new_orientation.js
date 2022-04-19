@@ -313,9 +313,11 @@ const StudentsList = () => {
               .filter((student) => student.added)
               .map((student) => (
                 <tr key={student.id}>
-                  <td>{student.name}</td>
-                  <td>{student.email}</td>
-                  <td>{student.percentage_score}</td>
+                  <td className="border px-4 py-2">{student.name}</td>
+                  <td className="border px-4 py-2">{student.email}</td>
+                  <td className="border px-4 py-2">
+                    {student.percentage_score}
+                  </td>
                 </tr>
               ))}
           </tbody>
@@ -454,7 +456,7 @@ const NewStudentAdder = () => {
               .filter((student) => student.percentage_score >= filter_min_score)
               .map((student) => (
                 <tr className="py-2" key={student.id}>
-                  <td>
+                  <td className="border px-4 py-2">
                     <input
                       type="checkbox"
                       id={student.id}
@@ -473,11 +475,13 @@ const NewStudentAdder = () => {
                       }}
                     ></input>
                   </td>
-                  <td>{student.name}</td>
-                  <td>{student.email}</td>
-                  <td>{student.age}</td>
-                  <td>{student.gender}</td>
-                  <td>{student.percentage_score}</td>
+                  <td className="border px-4 py-2">{student.name}</td>
+                  <td className="border px-4 py-2">{student.email}</td>
+                  <td className="border px-4 py-2">{student.age}</td>
+                  <td className="border px-4 py-2">{student.gender}</td>
+                  <td className="border px-4 py-2">
+                    {student.percentage_score}
+                  </td>
                 </tr>
               ))}
           </tbody>
