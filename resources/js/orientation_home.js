@@ -9,6 +9,7 @@ const App = () => {
   const [orientations, setOrientations] = useState([]);
   const [show_modal, setShowModal] = useState(false);
   const [all_assessments, setAllAssessments] = useState([]);
+  const [updateAllOrientations, setUpdateAllOrientations] = useState(0);
 
   useEffect(() => {
     fetch("/admin/orientation/all").then((response) => {
@@ -27,10 +28,34 @@ const App = () => {
         setAllAssessments(parsed_response);
       });
     });
-  }, []);
+  }, [updateAllOrientations]);
 
   const createNewOrientation = (e) => {
     window.location = `/admin/orientation/new/${e.target.value}`;
+  };
+
+  const deleteOrientation = (orientation_id) => {
+    fetch(`/admin/orientation/delete/${orientation_id}`)
+      .then((raw_response) => {
+        raw_response
+          .json()
+          .then((response) => {
+            if (response.success) {
+              alert("Orientation deleted successfully.");
+              setUpdateAllOrientations((cur) => cur + 1);
+            } else {
+              alert(
+                "Orientation could not be deleted due to an error. Code 01."
+              );
+            }
+          })
+          .catch((err) => {
+            alert("Orientation could not be deleted due to an error. Code 02.");
+          });
+      })
+      .catch((err) => {
+        alert("Orientation could not be deleted due to an error. Code 03.");
+      });
   };
 
   return (
@@ -103,15 +128,18 @@ const App = () => {
             >
               <div className="grid grid-cols-2 col-span-8 h-16 bg-iec-blue justify-center content-center">
                 <a
-                  href={`/orientation/edit/${orientation.id}`}
+                  href={`/admin/orientation/edit/${orientation.id}`}
                   className="text-white text-xl col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
-                  title="Edit Quiz"
+                  title="Edit Orientation"
                 >
                   <i className="far fa-edit "></i>
                 </a>
                 <a
+                  onClick={() => {
+                    deleteOrientation(orientation.id);
+                  }}
                   className="text-white text-xl col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
-                  title="Delete Quiz"
+                  title="Delete Orientation"
                 >
                   <i className="fas fa-trash "></i>
                 </a>
