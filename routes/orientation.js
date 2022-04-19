@@ -10,6 +10,7 @@ const getTotalMarksOfSection = require("../functions/getTotalMarksOfSection");
 const allSectionsSolved = require("../functions/allSectionsSolved");
 const roundToTwoDecimalPlaces = require("../functions/roundToTwoDecimalPlaces");
 const getQuizTotalScore = require("../functions/getQuizTotalScore");
+const { sendHTMLMail } = require("../functions/sendEmail");
 
 //this file deals with /admin/orientation/...
 
@@ -225,5 +226,34 @@ router.get(
     }
   }
 );
+
+router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
+  if (req.body.students != null && req.body.students.length > 0) {
+    const email_content = req.body.email_content;
+
+    let students = req.body.students.filter((student) => student.added);
+
+    try {
+      await new Promise((resolve) => {
+        let i = 0;
+        const n = students.length;
+        students.forEach(async (student) => {
+          await sendHTMLMail(student.email, `${email_content.subject}`, {
+            heading: email_content.heading,
+            inner_text: email_content.body,
+            button_announcer: email_content.button_pre_text,
+            button_text: email_content.button_label,
+            button_link: email_content.button_url,
+          });
+          i++;
+          if (i == n) resolve();
+        });
+      });
+      res.json({ success: true });
+    } catch (err) {
+      res.json({ success: false });
+    }
+  }
+});
 
 module.exports = router;
