@@ -186,7 +186,7 @@ const EmailForm = () => {
           </button>
           <button
             type="button"
-            className="w-full py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800"
+            className="w-full py-3 px-6 bg-iec-blue text-white mt-4 cursor-pointer hover:bg-iec-blue-hover"
             id="email-button"
             onClick={sendEmails}
           >

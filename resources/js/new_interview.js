@@ -70,7 +70,116 @@ const StepMenu = () => {
 };
 
 const Step1 = () => {
-  return <div>Step 1</div>;
+  const [interviewers, setInterviewers] = useState([]);
+  const [new_interviewer_name, setNewInterviewerName] = useState("");
+  const [new_interviewer_email, setNewInterviewerEmail] = useState("");
+  const name_field = useRef();
+
+  const saveData = () => {};
+
+  const sendEmailsToInterviewers = () => {};
+
+  return (
+    <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+      <form className="flex flex-col">
+        <h2 className="text-lg">Add New Interviewer</h2>
+        <div className="w-full flex gap-x-4 items-center">
+          <label htmlFor="new-interviewer" className="min-w-max">
+            Full Name:{" "}
+          </label>
+          <input
+            type="text"
+            maxLength="150"
+            name="name"
+            className="w-full border py-3 px-4 mt-1 hover:shadow-sm"
+            value={new_interviewer_name}
+            onChange={(e) => {
+              setNewInterviewerName(e.target.value);
+            }}
+            ref={name_field}
+            active="true"
+          ></input>
+          <label htmlFor="new-interviewer" className="min-w-max">
+            Email:{" "}
+          </label>
+          <input
+            type="email"
+            maxLength="200"
+            name="email"
+            value={new_interviewer_email}
+            className="w-full border py-3 px-4 mt-1 hover:shadow-sm"
+            onChange={(e) => {
+              setNewInterviewerEmail(e.target.value);
+            }}
+          ></input>
+
+          <button
+            type="submit"
+            className="w-full py-3 px-6 border-2 border-gray-700 text-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white"
+            onClick={(e) => {
+              e.preventDefault();
+              setInterviewers((cur) => {
+                let copy = cur.slice();
+                copy.push({
+                  name: new_interviewer_name,
+                  email: new_interviewer_email,
+                  time_declared: false,
+                });
+                return copy;
+              });
+              setNewInterviewerName("");
+              setNewInterviewerEmail("");
+              ReactDOM.findDOMNode(name_field.current).focus();
+            }}
+          >
+            Add
+          </button>
+        </div>
+      </form>
+      <hr className="mt-4"></hr>
+
+      <div className="flex mt-4 mb-4 justify-between items-center">
+        <h2 className="text-lg">Interviewers Added</h2>
+        <div className="flex">
+          <button
+            type="button"
+            className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
+            onClick={sendEmailsToInterviewers}
+          >
+            <i className="fas fa-paper-plane"></i> Send Emails and Ask
+            Interviewers to Declare Time Slots
+          </button>
+          <button
+            type="button"
+            className="py-3 px-6 bg-green-500 text-white cursor-pointer hover:bg-green-600"
+            onClick={saveData}
+          >
+            <i className="fas fa-save"></i> Save Data
+          </button>
+        </div>
+      </div>
+      <table className="w-full text-left text-sm">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Time Declared</th>
+          </tr>
+        </thead>
+        <tbody>
+          {interviewers.map((interviewer, index) => (
+            <tr key={index}>
+              <td className="border px-4 py-2">{interviewer.name}</td>
+              <td className="border px-4 py-2">{interviewer.email}</td>
+              <td className="border px-4 py-2">
+                {interviewer.time_declared ? "Yes" : "No"}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 const Step2 = () => {
   return <div>Step 2</div>;
