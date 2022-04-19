@@ -44,17 +44,20 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
   });
 });
 
-router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
-  res.render("admin/orientation/new.ejs", {
-    edit: false,
-    orientation_name: "",
-    quiz_id: req.params.quiz_id,
-    env: process.env.NODE_ENV,
-    user_type: req.user.type,
-  });
-});
+router.get(
+  "/delete/:orientation_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      await Orientation.destroy({ where: { id: req.params.orientation_id } });
+      res.json({ success: true });
+    } catch (err) {
+      res.json({ success: false });
+    }
+  }
+);
 
-router.get("/create-new/:quiz_id", checkAdminAuthenticated, (req, res) => {
+router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
   const new_orientation_name = `Orientation ${DateTime.now().toFormat(
     "hh:mm:ss-yyyy-LLL-dd"
   )}`;
@@ -62,13 +65,16 @@ router.get("/create-new/:quiz_id", checkAdminAuthenticated, (req, res) => {
     title: new_orientation_name,
     QuizId: req.params.quiz_id,
   }).then((orientation) => {
-    res.json({
-      success: true,
-      orientation_id: orientation.id,
+    res.render("admin/orientation/new.ejs", {
       orientation_name: new_orientation_name,
+      orientation_id: orientation.id,
+      env: process.env.NODE_ENV,
+      user_type: req.user.type,
     });
   });
 });
+
+router.get("/create-new/:quiz_id", checkAdminAuthenticated, (req, res) => {});
 
 router.get(
   "/edit/:orientation_id",
@@ -80,8 +86,7 @@ router.get(
     });
     if (orientation != null) {
       res.render("admin/orientation/new.ejs", {
-        edit: orientation.id,
-        quiz_id: -1,
+        orientation_id: orientation.id,
         orientation_name: orientation.title,
         env: process.env.NODE_ENV,
         user_type: req.user.type,
@@ -105,7 +110,7 @@ router.post(
       const orientation = await Orientation.findOne({
         where: { id: req.params.orientation_id },
       });
-      await orientation.update({ title: req.params.orientation_name });
+      await orientation.update({ title: req.body.orientation_name });
 
       // let's get all students who have already been invited to this Orientation and create a hashmap.
       let orientation_invites = await OrientationInvite.findAll({
@@ -215,6 +220,7 @@ router.get(
       }
       res.json({ success: true, data: data });
     } else {
+      console.log("Error: QuizId: or orientation:", orientation, "is NULL");
       res.json({ success: false });
     }
   }

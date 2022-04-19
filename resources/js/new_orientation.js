@@ -24,6 +24,107 @@ const ContextProvider = (props) => {
   );
 };
 
+const EmailForm = () => {
+  const sendEmails = () => {};
+
+  return (
+    <div>
+      <h2 className="text-lg mt-4 mb-1">
+        <i className="fas fa-mail-bulk"></i> Compose Email
+      </h2>
+      <form
+        action="/mail/preview"
+        method="POST"
+        target="_blank"
+        className="flex flex-col gap-y-2"
+      >
+        <div>
+          <label>Subject: </label>
+          <input
+            type="text"
+            id="subject"
+            maxlength="100"
+            name="subject"
+            placeholder="e.g. Invite"
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            required
+          ></input>
+        </div>
+        <div>
+          <label>Heading: </label>
+          <input
+            type="text"
+            id="heading"
+            maxlength="100"
+            name="heading"
+            placeholder="This will be the heading inside the body of the email."
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+          ></input>
+        </div>
+        <div>
+          <label>Body: </label>
+          <textarea
+            maxlength="5000"
+            id="body"
+            name="body"
+            placeholder="This will be the the body of the email. Limit: 5000 characters."
+            className="border w-full h-48 py-3 px-4 mt-1 hover:shadow-sm"
+            required
+          ></textarea>
+        </div>
+        <div>
+          <label>Button Pre-text: </label>
+          <input
+            type="text"
+            maxlength="100"
+            id="button_announcer"
+            name="button_announcer"
+            placeholder="This text comes before a button and invites the user to click the button. You can leave it empty if you want."
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+          ></input>
+        </div>
+        <div>
+          <label>Button Label: </label>
+          <input
+            type="text"
+            maxlength="50"
+            id="button_text"
+            name="button_text"
+            placeholder="What does the button say? Limit: 50 characters"
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+          ></input>
+        </div>
+        <div>
+          <label>Button URL: </label>
+          <input
+            type="url"
+            name="button_url"
+            id="button_url"
+            placeholder="Where does the button take the user?"
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+          ></input>
+        </div>
+        <div className="flex">
+          <button
+            type="submit"
+            className="w-full py-3 px-6 bg-gray-700 text-white mt-4 cursor-pointer hover:bg-gray-600"
+          >
+            <i className="far fa-eye"></i> Preview Mail
+          </button>
+          <button
+            type="button"
+            className="w-full py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800"
+            id="email-button"
+            onClick={sendEmails}
+          >
+            <i className="far fa-paper-plane"></i> Send Email(s)
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 const NameForm = () => {
   const { orientation_id_object, orientation_name_object, students_object } =
     useContext(MyContext);
@@ -31,37 +132,26 @@ const NameForm = () => {
   const [orientation_id, setOrientationId] = orientation_id_object;
   const [orientation_name, setOrientationName] = orientation_name_object;
   const [students, setStudents] = students_object;
+  const [show_email_form, setShowEmailForm] = useState(false);
 
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (document.getElementById("edit-field").value == "false") {
-      fetch(
-        `/admin/orientation/create-new/${
-          document.getElementById("quiz-id-field").value
-        }`
-      ).then((response) => {
-        response.json().then((parsed_response) => {
-          if (parsed_response.success) {
-            setOrientationId(parsed_response.orientation_id);
-            setOrientationName(parsed_response.orientation_name);
-          }
-        });
-      });
-    } else {
-      setOrientationId(parseInt(document.getElementById("edit-field").value));
-      setOrientationName(
-        document.getElementById("orientation-name-field").value
-      );
-    }
+    setOrientationId(
+      parseInt(document.getElementById("orientation-id-field").value)
+    );
+    setOrientationName(document.getElementById("orientation-name-field").value);
   }, []);
 
   const saveData = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setLoading(true);
+    console.log(orientation_name);
     fetch(
-      `/admin/orientation/save/${document.getElementById("edit-field").value}`,
+      `/admin/orientation/save/${
+        document.getElementById("orientation-id-field").value
+      }`,
       {
         method: "POST",
         headers: {
@@ -82,7 +172,7 @@ const NameForm = () => {
   };
 
   return (
-    <div>
+    <div className={show_email_form ? "" : "flex"}>
       <form onSubmit={saveData} autoFocus>
         <label>Orientation Name: </label>
         <input
@@ -104,11 +194,23 @@ const NameForm = () => {
             </span>
           ) : (
             <span>
-              <i class="fas fa-save"></i> Save All Data
+              <i className="fas fa-save"></i> Save All Data
             </span>
           )}
         </button>
       </form>
+      {show_email_form ? (
+        <EmailForm />
+      ) : (
+        <button
+          className="ml-2 bg-gray-400 hover:bg-gray-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
+          onClick={() => {
+            setShowEmailForm((cur) => !cur);
+          }}
+        >
+          <i className="fas fa-mail-bulk"></i> Send Emails to Invited Students
+        </button>
+      )}
     </div>
   );
 };
@@ -122,7 +224,7 @@ const StudentsList = () => {
   return (
     <div>
       <h2 className="text-base text-center mb-4">
-        <b>List of Students added to this Orientation</b>
+        <b>List of Students invited to this Orientation</b>
       </h2>
       {students.length > 0 ? (
         <table className="w-full text-left text-sm">
@@ -157,6 +259,7 @@ const NewStudentAdder = () => {
     useContext(MyContext);
 
   const [students, setStudents] = students_object;
+  const [orientation_id, setOrientationId] = orientation_id_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
 
@@ -164,7 +267,9 @@ const NewStudentAdder = () => {
   const section2 = useRef(null);
 
   useEffect(() => {
-    const orientation_id_field = document.getElementById("edit-field");
+    const orientation_id_field = document.getElementById(
+      "orientation-id-field"
+    );
     setLoading(true);
     fetch(`/admin/orientation/all-students/${orientation_id_field.value}`).then(
       (raw_response) => {
@@ -192,7 +297,7 @@ const NewStudentAdder = () => {
           });
       }
     );
-  }, []);
+  }, [orientation_id]);
 
   const setAllCheckboxes = (new_val) => {
     setStudents((cur) => {
@@ -244,13 +349,14 @@ const NewStudentAdder = () => {
             className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={selectAll}
           >
-            <i class="fas fa-check-square"></i> Click here to select all below
+            <i className="fas fa-check-square"></i> Click here to select all
+            below
           </a>
           <a
             className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={deSelectAll}
           >
-            <i class="far fa-square"></i> Click here to deselect all below
+            <i className="far fa-square"></i> Click here to deselect all below
           </a>
         </div>
         <br></br>

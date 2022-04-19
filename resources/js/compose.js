@@ -39,14 +39,6 @@ function stringIsEmail(str) {
   return regexExp.test(str);
 }
 
-function removeNonEmailsFromArray(arr) {
-  let result = [];
-  for (let i = 0; i < arr.length; i++) {
-    if (stringIsEmail(arr[i])) result.push(arr[i]);
-  }
-  return result;
-}
-
 function uploadCSV(e) {
   let data = new FormData(csv_form);
 
@@ -59,7 +51,9 @@ function uploadCSV(e) {
         response
           .json()
           .then((array_of_emails) => {
-            array_of_emails = removeNonEmailsFromArray(array_of_emails);
+            array_of_emails = array_of_emails.filter((email) =>
+              stringIsEmail(email)
+            );
             const email_string = arrayToCommaDeliminatedString(array_of_emails);
             recepients_list.innerText = "Recepients: " + email_string;
             recepient_field.classList.add("hidden");
@@ -70,7 +64,7 @@ function uploadCSV(e) {
             console.log(err);
           });
       } else if (response.status == 401) {
-        console.log("Fuck");
+        console.log("Something went wrong.");
       } else {
         console.log("error uploading csv file");
       }
@@ -119,7 +113,7 @@ function sendEmails() {
           alert("Emails sent successfully");
         } else {
           alert("There was an error sending emails. Contact IT.");
-          console.log(response)
+          console.log(response);
         }
       })
       .catch((err) => {
