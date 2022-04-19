@@ -25,7 +25,55 @@ const ContextProvider = (props) => {
 };
 
 const EmailForm = () => {
-  const sendEmails = () => {};
+  const { orientation_id_object, orientation_name_object, students_object } =
+    useContext(MyContext);
+
+  const [students, setStudents] = students_object;
+  const [email_subject, setEmailSubject] = useState("");
+  const [email_heading, setEmailHeading] = useState("");
+  const [email_body, setEmailBody] = useState("");
+  const [email_button_pre_text, setEmailButtonPreText] = useState("");
+  const [email_button_label, setEmailButtonLabel] = useState("");
+  const [email_button_url, setEmailButtonUrl] = useState("");
+
+  const form_ref = useRef();
+
+  const sendEmails = () => {
+    fetch("/admin/orientation/send-emails", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        students: students,
+        email_content: {
+          subject: email_subject,
+          heading: email_heading,
+          body: email_body,
+          button_pre_text: email_button_pre_text,
+          button_label: email_button_label,
+          button_url: email_button_url,
+        },
+      }),
+    })
+      .then((raw_response) => {
+        raw_response
+          .json()
+          .then((response) => {
+            if (response.success) {
+              alert("Emails sent successfully.");
+            } else {
+              alert("There was an error while sending emails. Error code 01.");
+            }
+          })
+          .catch((err) => {
+            alert("There was an error while sending emails. Error code 02.");
+          });
+      })
+      .catch((err) => {
+        alert(
+          "There was a problem while sending the request to the server. Please check your internet connection. Error code 03."
+        );
+      });
+  };
 
   return (
     <div>
@@ -37,16 +85,21 @@ const EmailForm = () => {
         method="POST"
         target="_blank"
         className="flex flex-col gap-y-2"
+        ref={form_ref}
       >
         <div>
           <label>Subject: </label>
           <input
             type="text"
             id="subject"
-            maxlength="100"
+            maxLength="100"
             name="subject"
             placeholder="e.g. Invite"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_subject}
+            onChange={(e) => {
+              setEmailSubject(e.target.value);
+            }}
             required
           ></input>
         </div>
@@ -55,20 +108,28 @@ const EmailForm = () => {
           <input
             type="text"
             id="heading"
-            maxlength="100"
+            maxLength="100"
             name="heading"
             placeholder="This will be the heading inside the body of the email."
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_heading}
+            onChange={(e) => {
+              setEmailHeading(e.target.value);
+            }}
           ></input>
         </div>
         <div>
           <label>Body: </label>
           <textarea
-            maxlength="5000"
+            maxLength="5000"
             id="body"
             name="body"
             placeholder="This will be the the body of the email. Limit: 5000 characters."
             className="border w-full h-48 py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_body}
+            onChange={(e) => {
+              setEmailBody(e.target.value);
+            }}
             required
           ></textarea>
         </div>
@@ -76,22 +137,30 @@ const EmailForm = () => {
           <label>Button Pre-text: </label>
           <input
             type="text"
-            maxlength="100"
+            maxLength="100"
             id="button_announcer"
             name="button_announcer"
             placeholder="This text comes before a button and invites the user to click the button. You can leave it empty if you want."
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_button_pre_text}
+            onChange={(e) => {
+              setEmailButtonPreText(e.target.value);
+            }}
           ></input>
         </div>
         <div>
           <label>Button Label: </label>
           <input
             type="text"
-            maxlength="50"
+            maxLength="50"
             id="button_text"
             name="button_text"
             placeholder="What does the button say? Limit: 50 characters"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_button_label}
+            onChange={(e) => {
+              setEmailButtonLabel(e.target.value);
+            }}
           ></input>
         </div>
         <div>
@@ -102,6 +171,10 @@ const EmailForm = () => {
             id="button_url"
             placeholder="Where does the button take the user?"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={email_button_url}
+            onChange={(e) => {
+              setEmailButtonUrl(e.target.value);
+            }}
           ></input>
         </div>
         <div className="flex">
