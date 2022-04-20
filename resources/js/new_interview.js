@@ -181,7 +181,7 @@ const Step1 = () => {
             className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
             onClick={sendEmailsToInterviewers}
           >
-            <i className="fas fa-paper-plane"></i> Send Emails and Ask
+            <i className="fas fa-paper-plane"></i> Send Emails asking all
             Interviewers to Declare Time Slots
           </button>
           <button
@@ -199,6 +199,7 @@ const Step1 = () => {
             <th>Name</th>
             <th>Email</th>
             <th>Time Declared</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -208,6 +209,16 @@ const Step1 = () => {
               <td className="border px-4 py-2">{interviewer.email}</td>
               <td className="border px-4 py-2">
                 {interviewer.time_declared ? "Yes" : "No"}
+              </td>
+              <td className="border px-4 py-2">
+                <a className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover">
+                  <i className="fas fa-trash-alt"></i> Delete
+                </a>{" "}
+                |{" "}
+                <a className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover">
+                  <i className="far fa-paper-plane"></i> Send Email asking{" "}
+                  {interviewer.name} to Declare Time Slots
+                </a>
               </td>
             </tr>
           ))}
