@@ -194,8 +194,68 @@ const Step4 = () => {
 const Main = () => {
   const { steps_object } = useContext(MyContext);
   const [steps, setSteps] = steps_object;
+  const [editInterviewRoundTitle, setEditInterviewRoundTitle] = useState(false);
+  const [interviewRoundTitle, setInterviewRoundTitle] = useState(
+    document.getElementById("interview-round-name-field").value
+  );
+
+  const updateInterviewRoundTitle = (e) => {
+    e.preventDefault();
+    console.log(interviewRoundTitle);
+    fetch(
+      `/admin/interview/update-round-title/${
+        document.getElementById("interview-round-id-field").value
+      }`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: interviewRoundTitle }),
+      }
+    )
+      .then((response) => {
+        if (response.ok) {
+          setEditInterviewRoundTitle(false);
+        } else {
+          alert(
+            `Error changing interview round name. Response code ${response.status}.`
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          "Something went worng. Make sure you have a working internet connection or contact IT. Error code 02."
+        );
+      });
+  };
+
   return (
     <div>
+      {editInterviewRoundTitle ? (
+        <form onSubmit={updateInterviewRoundTitle}>
+          <input
+            type="text"
+            maxLength="50"
+            name="interview-round-title"
+            value={interviewRoundTitle}
+            onChange={(e) => {
+              setInterviewRoundTitle(e.target.value);
+            }}
+            className="px-4 py-2 min-w-max"
+          ></input>
+          <input type="submit" className="hidden"></input>
+        </form>
+      ) : (
+        <h1 className="text-2xl">
+          {`${interviewRoundTitle} `}
+          <i
+            className="fas fa-edit cursor-pointer"
+            onClick={() => {
+              setEditInterviewRoundTitle((cur) => !cur);
+            }}
+          ></i>
+        </h1>
+      )}
       <div>
         <StepMenu />
       </div>

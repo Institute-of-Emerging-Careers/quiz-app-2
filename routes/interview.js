@@ -62,6 +62,25 @@ router.get("/edit/:interview_round_id", checkAdminAuthenticated, (req, res) => {
     });
 });
 
+router.patch(
+  "/update-round-title/:interview_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
+      if (interview_round == null) res.sendStatus(401);
+      else {
+        await interview_round.update({ title: req.body.title });
+        res.sendStatus(200);
+      }
+    } catch (err) {
+      res.sendStatus(501);
+    }
+  }
+);
+
 router.get("/all", checkAdminAuthenticated, (req, res) => {
   InterviewRound.findAll({ order: [["id", "desc"]] })
     .then((interview_rounds) => {
