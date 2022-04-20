@@ -75,7 +75,42 @@ const Step1 = () => {
   const [new_interviewer_email, setNewInterviewerEmail] = useState("");
   const name_field = useRef();
 
-  const saveData = () => {};
+  const interview_round_id = document.getElementById(
+    "interview-round-id-field"
+  ).value;
+
+  useEffect(() => {
+    fetch(`/admin/interview/interviewers/all/${interview_round_id}`).then(
+      (raw_response) => {
+        if (raw_response.ok) {
+          raw_response.json().then((response) => {
+            setInterviewers(response);
+          });
+        } else {
+          alert("Error in URL. Wrong Interview Round. Please go to home page.");
+        }
+      }
+    );
+  }, []);
+
+  const saveData = () => {
+    fetch(`/admin/interview/update-interviewer-list/${interview_round_id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ interviewers: interviewers }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.ok) alert("Saved");
+        else {
+          alert("Error");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Something went wrong. Check your internet connection.");
+      });
+  };
 
   const sendEmailsToInterviewers = () => {};
 

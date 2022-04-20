@@ -2,7 +2,11 @@ const { Sequelize, DataTypes, Model } = require("sequelize");
 const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
 const { Orientation, OrientationInvite } = require("./orientation");
-const { InterviewRound } = require("./interview");
+const {
+  InterviewRound,
+  Interviewer,
+  InterviewerInvite,
+} = require("./interview");
 
 class User extends Model {}
 
@@ -439,6 +443,13 @@ Quiz.hasOne(InterviewRound, {
   onDelete: "CASCADE",
 });
 InterviewRound.belongsTo(Quiz);
+
+Interviewer.belongsToMany(InterviewRound, {
+  through: InterviewerInvite,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+InterviewRound.belongsToMany(Interviewer, { through: InterviewerInvite });
 
 module.exports = {
   User,

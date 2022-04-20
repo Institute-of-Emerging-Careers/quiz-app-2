@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
-const { InterviewRound } = require("../db/models/interview");
+const {
+  InterviewRound,
+  Interviewer,
+  InterviewerInvite,
+} = require("../db/models/interview");
 const { DateTime } = require("luxon");
 
 // middleware that is specific to this router
@@ -77,6 +81,96 @@ router.patch(
       }
     } catch (err) {
       res.sendStatus(501);
+    }
+  }
+);
+
+router.post(
+  "/update-interviewer-list/:interview_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
+      const interviewers = await interview_round.getInterviewers();
+      let db_interviewers_map = new Map();
+      interviewers.forEach((interviewer_object) => {
+        db_interviewers_map.set(interviewer_object.email, interviewer_object);
+      });
+
+      let new_interviewers_map = new Map();
+      req.body.interviewers.forEach((interviewer) => {
+        new_interviewers_map.set(interviewer.email, true);
+      });
+
+      await new Promise((resolve) => {
+        let i = 0;
+        const n = req.body.interviewers.length;
+        if (req.body.interviewers.length == 0) resolve();
+        else {
+          req.body.interviewers.forEach(async (interviewer) => {
+            if (!db_interviewers_map.has(interviewer.email)) {
+              const new_interviewer = await Interviewer.create({
+                name: interviewer.name,
+                email: interviewer.email,
+                password: "testpassword",
+              });
+              await InterviewerInvite.create({
+                InterviewerId: new_interviewer.id,
+                InterviewRoundId: req.params.interview_round_id,
+              });
+              db_interviewers_map.delete(interviewer.email);
+            }
+            i++;
+            if (i == n) resolve();
+          });
+        }
+      });
+
+      await new Promise(async (resolve) => {
+        let i = 0;
+        const n = db_interviewers_map.size;
+        if (n == 0) resolve();
+        else {
+          for (const interviewer of db_interviewers_map) {
+            if (!new_interviewers_map.has(interviewer[1].email)) {
+              await interviewer[1].destroy();
+              await InterviewerInvite.destroy({
+                where: {
+                  InterviewerId: interviewer[1].id,
+                  InterviewRoundId: req.params.interview_round_id,
+                },
+              });
+            }
+            i++;
+            if (i == n) resolve();
+          }
+        }
+      });
+
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(501);
+    }
+  }
+);
+
+router.get(
+  "/interviewers/all/:interview_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    const interview_round = await InterviewRound.findOne({
+      where: { id: req.params.interview_round_id },
+    });
+
+    if (interview_round == null) res.sendStatus(404);
+    else {
+      const interviewers = await interview_round.getInterviewers({
+        attributes: ["name", "email"],
+      });
+      res.status(200).json(interviewers);
     }
   }
 );
