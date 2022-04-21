@@ -1,12 +1,17 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
+
+const randomstring = require("randomstring");
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
+const { generateRandomNumberInRange } = require("../functions/utilities");
 const {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
 } = require("../db/models/interview");
 const { DateTime } = require("luxon");
+const { sendHTMLMail } = require("../functions/sendEmail");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -84,6 +89,29 @@ router.patch(
     }
   }
 );
+router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
+  const email_content = req.body.email_content;
+  try {
+    await new Promise((resolve) => {
+      let i = 0;
+      const n = req.body.interviewers.length;
+      req.body.interviewers.forEach(async (interviewer) => {
+        await sendHTMLMail(interviewer.email, `${email_content.subject}`, {
+          heading: email_content.heading,
+          inner_text: email_content.body,
+          button_announcer: email_content.button_pre_text,
+          button_text: email_content.button_label,
+          button_link: email_content.button_url,
+        });
+        i++;
+        if (i == n) resolve();
+      });
+    });
+    res.sendStatus(200);
+  } catch (err) {
+    res.sendStatus(501);
+  }
+});
 
 router.post(
   "/update-interviewer-list/:interview_round_id",
@@ -114,7 +142,12 @@ router.post(
               const new_interviewer = await Interviewer.create({
                 name: interviewer.name,
                 email: interviewer.email,
-                password: "testpassword",
+                password: await bcrypt.hash(
+                  randomstring.generate({
+                    length: generateRandomNumberInRange(14, 20),
+                  }),
+                  10
+                ),
               });
               await InterviewerInvite.create({
                 InterviewerId: new_interviewer.id,

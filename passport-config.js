@@ -2,7 +2,9 @@ const LocalStrategy = require("passport-local").Strategy;
 const getAdminByEmail = require("./db/get-admin-by-email"),
   getStudentByEmail = require("./db/get-student-by-email"),
   getAdminById = require("./db/get-admin-by-id"),
-  getStudentById = require("./db/get-student-by-id");
+  getStudentById = require("./db/get-student-by-id"),
+  getInterviewerByEmail = require("./db/get-interviewer-by-email"),
+  getInterviewerById = require("./db/get-interviewer-by-id");
 const bcrypt = require("bcrypt");
 
 const initialize = (passport) => {
@@ -18,7 +20,6 @@ const initialize = (passport) => {
       if (await bcrypt.compare(password, user.password)) {
         return done(null, { type: "admin", user: user });
       } else {
-        console.log(password,"\n",user.password)
         return done(null, false, { message: "Email or password incorrect." });
       }
     } catch (e) {
@@ -45,12 +46,33 @@ const initialize = (passport) => {
     }
   };
 
+  const authenticateInterviewer = async (email, password, done) => {
+    const user = await getInterviewerByEmail(email);
+
+    if (user == null) {
+      return done(null, false, { message: "Email or password incorrect." });
+      // Done => (error, authenticated user, message object)
+    }
+
+    try {
+      if (await bcrypt.compare(password, user.password)) {
+        return done(null, { type: "interviewer", user: user });
+      } else {
+        return done(null, false, { message: "Email or password incorrect." });
+      }
+    } catch (e) {
+      return done(e);
+    }
+  };
+
   const registerStudent = async (email, password, done) => {
     const user = await getStudentByEmail(email);
 
     if (user != null) {
       // if email already exists
-      return done(null, false, { message: "Email address already registered." });
+      return done(null, false, {
+        message: "Email address already registered.",
+      });
     } else {
       // if email address is new
       const firstName = req.body.firstName,
@@ -59,7 +81,14 @@ const initialize = (passport) => {
         cnic = req.body.cnic;
 
       try {
-        const student = await sequelize.models.Student.create({ firstName: firstName, lastName: lastName, email: email, password: await bcrypt.hash(password, 10), phone: phone, cnic: cnic });
+        const student = await sequelize.models.Student.create({
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: await bcrypt.hash(password, 10),
+          phone: phone,
+          cnic: cnic,
+        });
 
         return done(null, { type: "student", user: student });
       } catch (err) {
@@ -73,7 +102,7 @@ const initialize = (passport) => {
     "admin-login",
     new LocalStrategy(
       {
-        usernameField: "email"
+        usernameField: "email",
       },
       authenticateAdmin
     )
@@ -86,6 +115,16 @@ const initialize = (passport) => {
         usernameField: "email",
       },
       authenticateStudent
+    )
+  );
+
+  passport.use(
+    "interviewer-login",
+    new LocalStrategy(
+      {
+        usernameField: "email",
+      },
+      authenticateInterviewer
     )
   );
 
@@ -104,8 +143,18 @@ const initialize = (passport) => {
   });
 
   passport.deserializeUser(async (obj, done) => {
-    if (obj.type == "admin") return done(null, { type: "admin", user: await getAdminById(obj.id) });
-    else if (obj.type == "student") return done(null, { type: "student", user: await getStudentById(obj.id) });
+    if (obj.type == "admin")
+      return done(null, { type: "admin", user: await getAdminById(obj.id) });
+    else if (obj.type == "student")
+      return done(null, {
+        type: "student",
+        user: await getStudentById(obj.id),
+      });
+    else if (obj.type == "interviewer")
+      return done(null, {
+        type: "interviewer",
+        user: await getInterviewerById(obj.id),
+      });
   });
 };
 
