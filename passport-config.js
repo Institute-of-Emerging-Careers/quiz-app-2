@@ -55,7 +55,7 @@ const initialize = (passport) => {
     }
 
     try {
-      if (await bcrypt.compare(password, user.password)) {
+      if (password == user.password) {
         return done(null, { type: "interviewer", user: user });
       } else {
         return done(null, false, { message: "Email or password incorrect." });

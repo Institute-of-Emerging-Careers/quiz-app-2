@@ -90,7 +90,12 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
       });
     }
   } else {
-    console.log("Dummy email sent to: ", recepient);
+    console.log(
+      "Dummy email sent to: ",
+      recepient,
+      "Link: ",
+      ejs_obj.button_link
+    );
     return new Promise((resolve) => {
       resolve();
     });

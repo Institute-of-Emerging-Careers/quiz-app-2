@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 
 const randomstring = require("randomstring");
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
+const checkInterviewerAuthenticated = require("../db/check-interviewer-authenticated");
 const { generateRandomNumberInRange } = require("../functions/utilities");
 const {
   InterviewRound,
@@ -12,6 +13,7 @@ const {
 } = require("../db/models/interview");
 const { DateTime } = require("luxon");
 const { sendHTMLMail } = require("../functions/sendEmail");
+const passport = require("passport");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -96,12 +98,23 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
       let i = 0;
       const n = req.body.interviewers.length;
       req.body.interviewers.forEach(async (interviewer) => {
+        const interviewer_password = (
+          await Interviewer.findOne({
+            where: { email: interviewer.email },
+            attributes: ["password"],
+          })
+        ).password;
+        const interviewer_login_link = `${
+          process.env.SITE_DOMAIN_NAME
+        }/admin/interview/login/${
+          interviewer.email
+        }?password=${encodeURIComponent(interviewer_password)}`;
         await sendHTMLMail(interviewer.email, `${email_content.subject}`, {
           heading: email_content.heading,
           inner_text: email_content.body,
           button_announcer: email_content.button_pre_text,
           button_text: email_content.button_label,
-          button_link: email_content.button_url,
+          button_link: interviewer_login_link,
         });
         i++;
         if (i == n) resolve();
@@ -139,16 +152,19 @@ router.post(
         else {
           req.body.interviewers.forEach(async (interviewer) => {
             if (!db_interviewers_map.has(interviewer.email)) {
-              const new_interviewer = await Interviewer.create({
-                name: interviewer.name,
-                email: interviewer.email,
-                password: await bcrypt.hash(
-                  randomstring.generate({
-                    length: generateRandomNumberInRange(14, 20),
-                  }),
-                  10
-                ),
-              });
+              const new_interviewer = (
+                await Interviewer.findOrCreate({
+                  where: { email: interviewer.email },
+                  defaults: {
+                    name: interviewer.name,
+                    email: interviewer.email,
+                    password: randomstring.generate({
+                      length: generateRandomNumberInRange(14, 20),
+                    }),
+                  },
+                })
+              )[0];
+
               await InterviewerInvite.create({
                 InterviewerId: new_interviewer.id,
                 InterviewRoundId: req.params.interview_round_id,
@@ -189,6 +205,37 @@ router.post(
     }
   }
 );
+
+router.get("/login/:email", async (req, res) => {
+  if (req.query.hasOwnProperty("password")) {
+    res.render("interviewer/login/index.ejs", {
+      email: req.params.email,
+      password: req.query.password,
+    });
+  } else {
+    res.sendStatus(400);
+  }
+});
+
+router.post(
+  "/login",
+  passport.authenticate("interviewer-login", {
+    failureRedirect: "/",
+    failureFlash: true,
+  }),
+  async (req, res) => {
+    if (req.hasOwnProperty("user")) {
+      res.redirect("/admin/interview/panel");
+    } else {
+      res.sendStatus(403);
+    }
+  }
+);
+
+router.get("/panel", checkInterviewerAuthenticated, (req, res) => {
+  // continue here. Interviewer login is done. Now make Interviewer Panel where he declares his time slots.
+  res.send("Hello");
+});
 
 router.get(
   "/interviewers/all/:interview_round_id",

@@ -71,12 +71,18 @@ const StepMenu = () => {
 
 const EmailForm = (props) => {
   const interviewers = props.interviewers;
-  const [email_subject, setEmailSubject] = useState("");
-  const [email_heading, setEmailHeading] = useState("");
-  const [email_body, setEmailBody] = useState("");
-  const [email_button_pre_text, setEmailButtonPreText] = useState("");
-  const [email_button_label, setEmailButtonLabel] = useState("");
-  const [email_button_url, setEmailButtonUrl] = useState("");
+  const [email_subject, setEmailSubject] = useState("IEC Interview Time Slots");
+  const [email_heading, setEmailHeading] = useState("IEC Interview Time Slots");
+  const [email_body, setEmailBody] = useState(
+    "Dear Team Member<br>We hope you are well.<br>Please let us know when you are free to conduct some interviews. You can do so below.<br>"
+  );
+  const [email_button_pre_text, setEmailButtonPreText] = useState(
+    "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview."
+  );
+  const [email_button_label, setEmailButtonLabel] = useState("Log In");
+  const [email_button_url, setEmailButtonUrl] = useState(
+    "Will be automatically set for each user"
+  );
 
   const [loading, setLoading] = useState(false);
 
@@ -203,15 +209,13 @@ const EmailForm = (props) => {
         <div>
           <label>Button URL: </label>
           <input
-            type="url"
+            type="text"
             name="button_url"
             id="button_url"
             placeholder="Where does the button take the user?"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
             value={email_button_url}
-            onChange={(e) => {
-              setEmailButtonUrl(e.target.value);
-            }}
+            readOnly
           ></input>
         </div>
         <div className="flex">
