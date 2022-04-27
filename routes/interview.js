@@ -232,9 +232,22 @@ router.post(
   }
 );
 
-router.get("/panel", checkInterviewerAuthenticated, (req, res) => {
-  // continue here. Interviewer login is done. Now make Interviewer Panel where he declares his time slots.
-  res.send("Hello");
+router.get("/panel", checkInterviewerAuthenticated, async (req, res) => {
+  try {
+    const interviewer = await Interviewer.findOne({
+      where: { id: req.user.user.id },
+    });
+    const interview_rounds = await interviewer.getInterviewRounds();
+
+    res.render("interviewer/panel.ejs", {
+      env: process.env.NODE_ENV,
+      myname: req.user.user.name,
+      user_type: req.user.type,
+      interview_rounds: interview_rounds,
+    });
+  } catch (err) {
+    res.sendStatus(500);
+  }
 });
 
 router.get(
