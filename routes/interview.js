@@ -240,7 +240,7 @@ router.get("/panel", checkInterviewerAuthenticated, async (req, res) => {
     const interview_rounds = await interviewer.getInterviewRounds();
 
     res.render("interviewer/panel.ejs", {
-      env: process.env.NODE_ENV,
+      env: process.env.NODE_ENV, //required when deciding which React dependencies to include (prod or dev)
       myname: req.user.user.name,
       user_type: req.user.type,
       interview_rounds: interview_rounds,
@@ -250,6 +250,26 @@ router.get("/panel", checkInterviewerAuthenticated, async (req, res) => {
   }
 });
 
+router.get(
+  "/declare-time-slots/:interview_round_id",
+  checkInterviewerAuthenticated,
+  async (req, res) => {
+    // const interviewer = await Interviewer.findOne({
+    //   where: { id: req.user.user.id },
+    // });
+    const interview_round = await InterviewRound.findOne({
+      where: { id: req.params.interview_round_id },
+    });
+    // continue here by creating the datetime picker page.
+    res.render("interviewer/time-slots-picker.ejs", {
+      env: process.env.NODE_ENV,
+      myname: req.user.user.name,
+      user_type: req.user.type,
+      interview_round_id: req.params.interview_round_id,
+      interview_round_title: interview_round.title,
+    });
+  }
+);
 router.get(
   "/interviewers/all/:interview_round_id",
   checkAdminAuthenticated,
