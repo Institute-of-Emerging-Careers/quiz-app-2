@@ -6,6 +6,7 @@ const {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
+  InterviewerSlot,
 } = require("./interview");
 
 class User extends Model {}
@@ -450,6 +451,9 @@ Interviewer.belongsToMany(InterviewRound, {
   onUpdate: "CASCADE",
 });
 InterviewRound.belongsToMany(Interviewer, { through: InterviewerInvite });
+
+InterviewerInvite.hasMany(InterviewerSlot);
+InterviewerSlot.belongsTo(InterviewerInvite);
 
 module.exports = {
   User,

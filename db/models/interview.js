@@ -46,18 +46,20 @@ InterviewerSlot.init(
   {
     start: {
       type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+      allowNull: false,
     },
     end: {
       type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+      allowNull: false,
     },
     duration: {
       type: DataTypes.INTEGER,
+      allowNull: false,
     },
   },
   {
     sequelize,
-    modelName: "Interviewer",
-    indexes: [{ unique: true, fields: ["email"] }],
+    modelName: "InterviewerSlot",
   }
 );
 
@@ -65,7 +67,12 @@ InterviewerSlot.init(
 class InterviewerInvite extends Model {}
 InterviewerInvite.init({}, { sequelize, modelName: "InterviewerInvite" });
 
-module.exports = { InterviewRound, Interviewer, InterviewerInvite };
+module.exports = {
+  InterviewRound,
+  Interviewer,
+  InterviewerInvite,
+  InterviewerSlot,
+};
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs
 // see https://stackoverflow.com/questions/50615835/hasmany-called-with-something-thats-not-a-subclass-of-sequelize-model
