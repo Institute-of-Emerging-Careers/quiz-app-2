@@ -40,6 +40,27 @@ Interviewer.init(
   }
 );
 
+class InterviewerSlot extends Model {}
+
+InterviewerSlot.init(
+  {
+    start: {
+      type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+    },
+    end: {
+      type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+    },
+    duration: {
+      type: DataTypes.INTEGER,
+    },
+  },
+  {
+    sequelize,
+    modelName: "Interviewer",
+    indexes: [{ unique: true, fields: ["email"] }],
+  }
+);
+
 // InterviewerInvite is junction model for the many-to-many relationship between "Interviewer" and "InterviewRound"
 class InterviewerInvite extends Model {}
 InterviewerInvite.init({}, { sequelize, modelName: "InterviewerInvite" });
