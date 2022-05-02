@@ -17,6 +17,11 @@
         <div class="mt-16">
           <h1 class="text-2xl"><%= myname %>'s Time Slots</h1>
           <section class="p-8 bg-white rounded-md w-full mx-auto mt-8">
+            <input
+              type="hidden"
+              id="interview-round-id"
+              value="<%=interview_round_id%>"
+            />
             <h2 class="text-xl font-bold">
               Interview Round: <%=interview_round_title%>
             </h2>

@@ -10,6 +10,7 @@ const {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
+  InterviewerSlot,
 } = require("../db/models/interview");
 const { DateTime } = require("luxon");
 const { sendHTMLMail } = require("../functions/sendEmail");
@@ -135,6 +136,9 @@ router.post(
         where: { id: req.params.interview_round_id },
       });
       const interviewers = await interview_round.getInterviewers();
+
+      // we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
+
       let db_interviewers_map = new Map();
       interviewers.forEach((interviewer_object) => {
         db_interviewers_map.set(interviewer_object.email, interviewer_object);
@@ -254,9 +258,6 @@ router.get(
   "/declare-time-slots/:interview_round_id",
   checkInterviewerAuthenticated,
   async (req, res) => {
-    // const interviewer = await Interviewer.findOne({
-    //   where: { id: req.user.user.id },
-    // });
     const interview_round = await InterviewRound.findOne({
       where: { id: req.params.interview_round_id },
     });
@@ -270,6 +271,49 @@ router.get(
     });
   }
 );
+
+router.post(
+  "/interviewer/save-time-slots",
+  checkInterviewerAuthenticated,
+  async (req, res) => {
+    const interviewer_invite = await InterviewerInvite.findOne({
+      where: {
+        InterviewerId: req.user.user.id,
+        InterviewRoundId: req.body.interview_round_id,
+      },
+    });
+    await interviewer_invite.deleteSlots(); //custom class instance method I declared in models/interview.js
+    let promises = [];
+    req.body.time_slots.forEach((time_slot) => {
+      promises.push(interviewer_invite.createInterviewerSlot(time_slot));
+    });
+    Promise.all(promises)
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+);
+
+router.get(
+  "/interviewer/time-slots/:interview_round_id",
+  checkInterviewerAuthenticated,
+  async (req, res) => {
+    const interviewer_invite = await InterviewerInvite.findOne({
+      where: {
+        InterviewerId: req.user.user.id,
+        InterviewRoundId: req.params.interview_round_id,
+      },
+    });
+    const time_slots = await interviewer_invite.getInterviewerSlots();
+
+    res.json({ success: true, time_slots: time_slots });
+  }
+);
+
 router.get(
   "/interviewers/all/:interview_round_id",
   checkAdminAuthenticated,

@@ -64,8 +64,22 @@ InterviewerSlot.init(
 );
 
 // InterviewerInvite is junction model for the many-to-many relationship between "Interviewer" and "InterviewRound"
-class InterviewerInvite extends Model {}
-InterviewerInvite.init({}, { sequelize, modelName: "InterviewerInvite" });
+class InterviewerInvite extends Model {
+  deleteSlots() {
+    return InterviewerSlot.destroy({ where: { InterviewerInviteId: this.id } });
+  }
+}
+InterviewerInvite.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+  },
+  { sequelize, modelName: "InterviewerInvite" }
+);
 
 module.exports = {
   InterviewRound,

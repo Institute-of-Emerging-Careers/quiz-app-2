@@ -249,6 +249,7 @@ const Step1 = () => {
   const [new_interviewer_name, setNewInterviewerName] = useState("");
   const [new_interviewer_email, setNewInterviewerEmail] = useState("");
   const [show_email_composer, setShowEmailComposer] = useState(false);
+  const [saving, setSaving] = useState(false);
   const name_field = useRef();
 
   const interview_round_id = document.getElementById(
@@ -270,16 +271,16 @@ const Step1 = () => {
   }, []);
 
   const saveData = () => {
+    setSaving(true);
     fetch(`/admin/interview/update-interviewer-list/${interview_round_id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ interviewers: interviewers }),
     })
       .then((response) => {
-        console.log(response);
-        if (response.ok) alert("Saved");
-        else {
-          alert("Error");
+        setSaving(false);
+        if (!response.ok) {
+          alert("Error while saving.");
         }
       })
       .catch((err) => {
@@ -287,6 +288,8 @@ const Step1 = () => {
         alert("Something went wrong. Check your internet connection.");
       });
   };
+
+  useEffect(saveData, [interviewers]);
 
   return (
     <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
@@ -371,7 +374,12 @@ const Step1 = () => {
             className="py-3 px-6 bg-green-500 text-white cursor-pointer hover:bg-green-600"
             onClick={saveData}
           >
-            <i className="fas fa-save"></i> Save Data
+            {saving ? (
+              <i className="fas fa-spinner animate-spin self-center"></i>
+            ) : (
+              <i className="fas fa-save"></i>
+            )}{" "}
+            Save Data
           </button>
         </div>
       </div>
