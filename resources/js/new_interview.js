@@ -251,9 +251,65 @@ const EmailForm = (props) => {
 
 const Step1 = () => {
   const { students_object } = useContext(MyContext);
+  const [students, setStudents] = students_object;
+  const [loading, setLoading] = useState(false);
 
+  const saveData = () => {
+    fetch("/admin/interview/interviewees/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        students: students,
+        interview_round_id: interview_round_id,
+      }),
+    })
+      .then((response) => {
+        console.log(response);
+        if (response.ok) {
+          response
+            .json()
+            .then((parsed_response) => {
+              console.log(parsed_response);
+              if (parsed_response.success) {
+                alert("Saved successfully.");
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+              alert("Something went wrong. Error code 02.");
+            });
+        } else {
+          alert("Could not save interviewees.");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          "Something went wrong. Error code 01. Check your internet connection."
+        );
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
   return (
     <div>
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm text-center">
+        <button
+          onClick={saveData}
+          className="ml-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 active:shadow-inner cursor-pointer"
+        >
+          {loading ? (
+            <span>
+              <i className="fas fa-spinner animate-spin text-lg"></i> Saving
+            </span>
+          ) : (
+            <span>
+              <i className="fas fa-save"></i> Save Interviewees
+            </span>
+          )}
+        </button>
+      </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <StudentsList students_object={students_object} title="Interview" />
       </div>

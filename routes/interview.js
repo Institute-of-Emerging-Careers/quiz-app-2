@@ -12,6 +12,7 @@ const {
   Interviewer,
   InterviewerInvite,
   InterviewerSlot,
+  StudentInterviewRoundInvite,
 } = require("../db/models/interview");
 const { DateTime } = require("luxon");
 const { sendHTMLMail } = require("../functions/sendEmail");
@@ -301,6 +302,53 @@ router.post(
   }
 );
 
+router.post("/interviewees/save", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const interview_round_id = req.body.interview_round_id;
+
+    // let's get all students who have already been invited to this InterviewRound and create a hashmap.
+    let interview_round_invites = await StudentInterviewRoundInvite.findAll({
+      where: { InterviewRoundId: interview_round_id },
+    });
+
+    let students_already_invited = new Map();
+    interview_round_invites.map((invite) => {
+      students_already_invited.set(invite.StudentId, invite);
+    });
+
+    let i = 0;
+    const n = req.body.students.length;
+
+    await new Promise((resolve, reject) => {
+      req.body.students.map(async (student) => {
+        if (
+          student.added == false &&
+          students_already_invited.has(student.id)
+        ) {
+          students_already_invited.get(student.id).destroy();
+        } else if (
+          student.added == true &&
+          !students_already_invited.has(student.id)
+        ) {
+          await StudentInterviewRoundInvite.create({
+            StudentId: student.id,
+            InterviewRoundId: interview_round_id,
+          });
+        }
+        i++;
+        if (i == n) {
+          resolve();
+        }
+      });
+    });
+
+    res.json({ success: true });
+  } catch (err) {
+    console.log(err);
+    res.json({ success: false });
+  }
+});
+
 router.get(
   "/all-students/:interview_round_id",
   checkAdminAuthenticated,
@@ -334,7 +382,6 @@ router.get(
       if (assignments != null && assignments.length > 0) {
         assignments.forEach((assignment) => {
           // checking if this orientation exists in the
-
           const cur_index =
             data.push({
               added: assignment.Student.InterviewRounds.length > 0,

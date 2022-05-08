@@ -238,13 +238,20 @@ const NameForm = () => {
           students: students,
         }),
       }
-    ).then((response) => {
-      response.json().then((parsed_response) => {
-        if (parsed_response.success) {
-          setLoading(false);
-        }
+    )
+      .then((response) => {
+        response.json().then((parsed_response) => {
+          if (parsed_response.success) {
+            setLoading(false);
+          }
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        alert(
+          "Something went wrong. Error code 01. Check your internet connection."
+        );
       });
-    });
   };
 
   return (
@@ -262,7 +269,7 @@ const NameForm = () => {
         ></input>
         <button
           type="submit"
-          className="ml-2 bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
+          className="ml-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 active:shadow-inner cursor-pointer"
         >
           {loading ? (
             <span>
