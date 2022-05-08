@@ -6,6 +6,7 @@ const randomstring = require("randomstring");
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
 const checkInterviewerAuthenticated = require("../db/check-interviewer-authenticated");
 const { generateRandomNumberInRange } = require("../functions/utilities");
+const getQuizTotalScore = require("../functions/getQuizTotalScore");
 const {
   InterviewRound,
   Interviewer,
@@ -15,7 +16,9 @@ const {
 const { DateTime } = require("luxon");
 const { sendHTMLMail } = require("../functions/sendEmail");
 const passport = require("passport");
-
+const { Quiz, Section } = require("../db/models/quizmodel");
+const { Score, Assignment, Student, Attempt } = require("../db/models/user");
+const roundToTwoDecimalPlaces = require("../functions/roundToTwoDecimalPlaces");
 // middleware that is specific to this router
 router.use((req, res, next) => {
   next();
@@ -295,6 +298,78 @@ router.post(
         console.log(err);
         res.sendStatus(500);
       });
+  }
+);
+
+router.get(
+  "/all-students/:interview_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    const interview_round = await InterviewRound.findOne({
+      where: { id: req.params.interview_round_id },
+      attributes: ["id", "QuizId"],
+      include: [{ model: Quiz, include: [Section] }],
+    });
+
+    if (interview_round != null && interview_round.QuizId != null) {
+      // finding total score of quiz
+      let quiz_total_score = await getQuizTotalScore(interview_round.Quiz);
+
+      let data = []; //list of students who have solved this quiz and their data
+
+      let assignments = await Assignment.findAll({
+        where: { QuizId: interview_round.QuizId },
+        include: [
+          {
+            model: Student,
+            include: [InterviewRound],
+          },
+          {
+            model: Attempt,
+            include: [{ model: Section, order: ["id"] }, Score],
+          },
+        ],
+      });
+
+      if (assignments != null && assignments.length > 0) {
+        assignments.forEach((assignment) => {
+          // checking if this orientation exists in the
+
+          const cur_index =
+            data.push({
+              added: assignment.Student.InterviewRounds.length > 0,
+              id: assignment.Student.id,
+              name:
+                assignment.Student.firstName +
+                " " +
+                assignment.Student.lastName,
+              email: assignment.Student.email,
+              age: assignment.Student.age,
+              gender: assignment.Student.gender,
+              total_score_achieved: 0,
+              percentage_score: 0,
+            }) - 1;
+
+          let remove_student = false; //we remove student from data if student turns out to have an unsolved section (no attempt)
+          assignment.Attempts.forEach((attempt) => {
+            if (attempt == null || attempt.Score == null) {
+              remove_student = true;
+            } else {
+              data[cur_index].total_score_achieved += attempt.Score.score;
+            }
+          });
+
+          data[cur_index].percentage_score = roundToTwoDecimalPlaces(
+            (data[cur_index].total_score_achieved / quiz_total_score) * 100
+          );
+          if (remove_student) data.pop();
+        });
+      }
+      res.json({ success: true, data: data });
+    } else {
+      console.log("Error: QuizId: or orientation:", orientation, "is NULL");
+      res.json({ success: false });
+    }
   }
 );
 

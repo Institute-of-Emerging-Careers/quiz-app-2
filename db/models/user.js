@@ -7,6 +7,7 @@ const {
   Interviewer,
   InterviewerInvite,
   InterviewerSlot,
+  StudentInterviewRoundInvite,
 } = require("./interview");
 
 class User extends Model {}
@@ -451,6 +452,13 @@ Interviewer.belongsToMany(InterviewRound, {
   onUpdate: "CASCADE",
 });
 InterviewRound.belongsToMany(Interviewer, { through: InterviewerInvite });
+
+Student.belongsToMany(InterviewRound, {
+  through: StudentInterviewRoundInvite,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+InterviewRound.belongsToMany(Student, { through: StudentInterviewRoundInvite });
 
 InterviewerInvite.hasMany(InterviewerSlot);
 InterviewerSlot.belongsTo(InterviewerInvite);

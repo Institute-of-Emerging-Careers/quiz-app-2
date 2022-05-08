@@ -4,20 +4,25 @@ const useState = React.useState;
 const useContext = React.useContext;
 const useRef = React.useRef;
 const useMemo = React.useMemo;
+const interview_round_id = document.getElementById(
+  "interview-round-id-field"
+).value;
 
 const ContextProvider = (props) => {
   const [steps, setSteps] = useState([
-    { title: "Step 1: Add Interviewers", active: true },
-    { title: "Step 2: Add Interviewees", active: false },
+    { title: "Step 1: Add Interviewees (Students)", active: true },
+    { title: "Step 2: Add Interviewers", active: false },
     { title: "Step 3: Send Invites", active: false },
     { title: "Step 4: Results", active: false },
   ]);
+  const [students, setStudents] = useState([]);
   // once we get our list of candidates (i.e. all students who complete the assessment), we create an object where keys are student.id and values are true/false depending on whether that student has been added to this orientation or not
 
   return (
     <MyContext.Provider
       value={{
         steps_object: [steps, setSteps],
+        students_object: [students, setStudents],
       }}
     >
       {props.children}
@@ -46,7 +51,7 @@ const StepMenu = () => {
         <div key={index}>
           {step.active ? (
             <div
-              className="cursor-default bg-iec-blue text-white shadow-inner px-8 py-4 border-r w-full h-full"
+              className="cursor-default bg-iec-blue text-white shadow-inner px-6 py-4 border-r w-full h-full"
               id={index}
               key={index}
               onClick={changeMenu}
@@ -55,7 +60,7 @@ const StepMenu = () => {
             </div>
           ) : (
             <div
-              className="cursor-pointer px-8 py-4 bg-white border-r w-full h-full"
+              className="cursor-pointer px-6 py-4 bg-white border-r w-full h-full"
               id={index}
               key={index}
               onClick={changeMenu}
@@ -245,16 +250,30 @@ const EmailForm = (props) => {
 };
 
 const Step1 = () => {
+  const { students_object } = useContext(MyContext);
+
+  return (
+    <div>
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+        <StudentsList students_object={students_object} title="Interview" />
+      </div>
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+        <NewStudentAdder
+          all_students_api_endpoint_url={`/admin/interview/all-students/${interview_round_id}`}
+          students_object={students_object}
+          title="Interview"
+        />
+      </div>
+    </div>
+  );
+};
+const Step2 = () => {
   const [interviewers, setInterviewers] = useState([]);
   const [new_interviewer_name, setNewInterviewerName] = useState("");
   const [new_interviewer_email, setNewInterviewerEmail] = useState("");
   const [show_email_composer, setShowEmailComposer] = useState(false);
   const [saving, setSaving] = useState(false);
   const name_field = useRef();
-
-  const interview_round_id = document.getElementById(
-    "interview-round-id-field"
-  ).value;
 
   useEffect(() => {
     fetch(`/admin/interview/interviewers/all/${interview_round_id}`).then(
@@ -416,9 +435,6 @@ const Step1 = () => {
       </table>
     </div>
   );
-};
-const Step2 = () => {
-  return <div>Step 2</div>;
 };
 const Step3 = () => {
   return <div>Step 3</div>;

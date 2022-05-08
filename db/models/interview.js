@@ -81,11 +81,26 @@ InterviewerInvite.init(
   { sequelize, modelName: "InterviewerInvite" }
 );
 
+// StudentInterviewRoundInvite is junction model for the many-to-many relationship between "Student" and "InterviewRound"
+class StudentInterviewRoundInvite extends Model {}
+StudentInterviewRoundInvite.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+  },
+  { sequelize, modelName: "StudentInterviewRoundInvite" }
+);
+
 module.exports = {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
   InterviewerSlot,
+  StudentInterviewRoundInvite,
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs
