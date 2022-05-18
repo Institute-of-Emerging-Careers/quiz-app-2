@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
 
 const randomstring = require("randomstring");
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");

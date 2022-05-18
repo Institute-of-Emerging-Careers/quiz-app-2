@@ -8,10 +8,12 @@ const checkAdminAuthenticated = require("../db/check-admin-authenticated");
 const checkAdminAlreadyLoggedIn = require("../db/check-admin-already-logged-in");
 const orientationRouter = require("./orientation");
 const interviewRouter = require("./interview");
+const applicationRouter = require("./application");
 const { Quiz } = require("../db/models/quizmodel.js");
 const { Invite } = require("../db/models/user");
 
 // middleware that is specific to this router
+router.use("/application", applicationRouter);
 router.use("/orientation", orientationRouter);
 router.use("/interview", interviewRouter);
 
