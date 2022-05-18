@@ -494,6 +494,11 @@ const Step2 = () => {
 };
 const Step3 = () => {
   return <div>Step 3</div>;
+  // continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
+  // ask the Admin how many minutes should each interview last. Then calcualte reactively on the frontend, whether or not
+  // we have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students
+  // If yes, create a time slot assignment
+  // if no, ask Admin to go back to "Step 2" and either increase interviewers or resend emails asking them to increase their times.
 };
 const Step4 = () => {
   return <div>Step 4</div>;

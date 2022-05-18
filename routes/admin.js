@@ -32,6 +32,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
       all_quizzes[i].num_questions = total_questions;
     }
     const all_invites = await Invite.findAll({ include: [Quiz] });
+    console.log(req.url);
     res.render("admin/index.ejs", {
       myname: req.user.user.firstName,
       user_type: req.user.type,
@@ -40,6 +41,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
       site_domain_name: process.env.SITE_DOMAIN_NAME,
       moment: moment,
       query: req.query,
+      current_url: `/admin${req.url}`,
     });
   } catch (err) {
     res.sendStatus(500);

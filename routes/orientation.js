@@ -20,11 +20,13 @@ router.use((req, res, next) => {
 });
 
 router.get("/", checkAdminAuthenticated, (req, res) => {
+  console.log(`/admin/orientation${req.url}`);
   res.render("admin/orientation/index.ejs", {
     env: process.env.NODE_ENV,
     myname: req.user.user.firstName,
     user_type: req.user.type,
     site_domain_name: process.env.SITE_DOMAIN_NAME,
+    current_url: `/admin/orientation${req.url}`,
   });
 });
 

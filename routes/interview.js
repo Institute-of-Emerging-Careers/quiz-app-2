@@ -31,6 +31,7 @@ router.get("/", checkAdminAuthenticated, (req, res) => {
     myname: req.user.user.firstName,
     user_type: req.user.type,
     site_domain_name: process.env.SITE_DOMAIN_NAME,
+    current_url: `/admin/interview${req.url}`,
   });
 });
 
