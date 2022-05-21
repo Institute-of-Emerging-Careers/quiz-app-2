@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apply to IEC</title>
+    <link rel="stylesheet" href="/css/application.css" />
+
+    <!-- jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Roboto Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Fontawesome Icons -->
+    <script
+      src="https://kit.fontawesome.com/13ad6678d8.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+  </head>
+  <body
+    style="
+      background-image: url('/img/45degreee_fabric.png');
+      background-repeat: repeat;
+    "
+  >
+    <div class="container bg-white rounded-3 w-75 p-5 mt-3">
+      <h1 class="">Apply to IEC</h1>
+      <div class="progress mt-3">
+        <div
+          class="progress-bar progress-bar-striped"
+          style="width: 25%"
+          id="step1-bar"
+        >
+          Step 1
+        </div>
+        <div
+          class="progress-bar bg-secondary"
+          id="step2-bar"
+          style="width: 25%"
+        >
+          Step 2
+        </div>
+        <div
+          class="progress-bar bg-secondary"
+          id="step3-bar"
+          style="width: 25%"
+        >
+          Step 3
+        </div>
+        <div
+          class="progress-bar bg-secondary"
+          id="step4-bar"
+          style="width: 25%"
+        >
+          Step 4
+        </div>
+      </div>
+      <form>
+        <div id="step1">
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Name:</span>
+              <input
+                type="text"
+                class="form-control"
+                id="firstName"
+                placeholder="First Name"
+                name="firstName"
+              />
+              <input
+                type="text"
+                class="form-control"
+                id="lastName"
+                placeholder="Last Name"
+                name="lastName"
+              />
+            </div>
+          </div>
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Email: </span>
+              <input
+                type="email"
+                class="form-control"
+                id="email"
+                placeholder="Enter email"
+                name="email"
+              />
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="step1-next-button">
+            Next Step
+          </button>
+        </div>
+        <div id="step2" class="hidden">
+          Step 2
+          <div class="btn-group">
+            <button
+              type="button"
+              id="step2-prev-button"
+              class="btn btn-secondary"
+            >
+              Previous Step
+            </button>
+            <button
+              type="button"
+              id="step2-next-button"
+              class="btn btn-primary"
+            >
+              Next Step
+            </button>
+          </div>
+        </div>
+        <div id="step3" class="hidden">
+          Step 3
+          <div class="btn-group">
+            <button
+              type="button"
+              id="step3-prev-button"
+              class="btn btn-secondary"
+            >
+              Previous Step
+            </button>
+            <button
+              type="button"
+              id="step3-next-button"
+              class="btn btn-primary"
+            >
+              Next Step
+            </button>
+          </div>
+        </div>
+        <div id="step4" class="hidden">
+          Step 4
+          <div class="btn-group">
+            <button
+              type="button"
+              id="step4-prev-button"
+              class="btn btn-secondary"
+            >
+              Previous Step
+            </button>
+            <button
+              type="submit"
+              id="step4-next-button"
+              class="btn btn-primary"
+            >
+              Finish & Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <script src="/js/application.js"></script>
+  </body>
+</html>

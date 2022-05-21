@@ -1,9 +1,5 @@
 module.exports = {
-  purge: [
-    './**/*.html',
-    './**/*.js',
-    './**/*.ejs',
-  ],
+  purge: ["./**/*.html", "./**/*.js", "./**/*.ejs"],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -15,22 +11,22 @@ module.exports = {
         "1/8": "12.5%",
       },
       width: {
-        "1/8":"12.5%",
-        "2/8":"25%",
-        "6/8":"75%",
-        "7/8": "87.5%"
+        "1/8": "12.5%",
+        "2/8": "25%",
+        "6/8": "75%",
+        "7/8": "87.5%",
       },
-      dropShadow:{
-        'gradient':"0 15px 15px rgba(72,8,94,0.5)",
-        'little':"0 3px 3px rgba(72,8,94,0.5)",
-        'none':"0 0 0"
+      dropShadow: {
+        gradient: "0 15px 15px rgba(72,8,94,0.5)",
+        little: "0 3px 3px rgba(72,8,94,0.5)",
+        none: "0 0 0",
       },
       maxWidth: {
-        'my1':"200px"
+        my1: "200px",
       },
       inset: {
-        "my1":'55%'
-      }
+        my1: "55%",
+      },
     },
   },
   fontFamily: {
@@ -40,7 +36,7 @@ module.exports = {
     extend: {
       backgroundColor: ["active"],
       backgroundOpacity: ["focus"],
-      dropShadow: ["hover","active"]
+      dropShadow: ["hover", "active"],
     },
   },
   plugins: [],
