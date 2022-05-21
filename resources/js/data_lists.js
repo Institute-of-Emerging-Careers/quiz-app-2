@@ -177,7 +177,7 @@ const countries = [
   "Andorra",
   "Angola",
   "Anguilla",
-  "Antigua &amp; Barbuda",
+  "Antigua & Barbuda",
   "Argentina",
   "Armenia",
   "Aruba",
@@ -195,7 +195,7 @@ const countries = [
   "Bermuda",
   "Bhutan",
   "Bolivia",
-  "Bosnia &amp; Herzegovina",
+  "Bosnia & Herzegovina",
   "Botswana",
   "Brazil",
   "British Virgin Islands",
@@ -326,7 +326,7 @@ const countries = [
   "Romania",
   "Russia",
   "Rwanda",
-  "Saint Pierre &amp; Miquelon",
+  "Saint Pierre & Miquelon",
   "Samoa",
   "San Marino",
   "Satellite",
@@ -342,7 +342,7 @@ const countries = [
   "South Korea",
   "Spain",
   "Sri Lanka",
-  "St Kitts &amp; Nevis",
+  "St Kitts & Nevis",
   "St Lucia",
   "St Vincent",
   "St. Lucia",
@@ -359,11 +359,11 @@ const countries = [
   "Timor L'Este",
   "Togo",
   "Tonga",
-  "Trinidad &amp; Tobago",
+  "Trinidad & Tobago",
   "Tunisia",
   "Turkey",
   "Turkmenistan",
-  "Turks &amp; Caicos",
+  "Turks & Caicos",
   "Uganda",
   "Ukraine",
   "United Arab Emirates",
@@ -388,7 +388,7 @@ const education_levels = [
   "PhD",
 ];
 
-const type_of_employment = ["Part Time", "Full Time"];
+const type_of_employment = ["Part Time", "Full Time", "Not Employed"];
 
 module.exports = {
   cities,

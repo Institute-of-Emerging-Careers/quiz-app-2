@@ -328,11 +328,7 @@ Student.init(
         },
       },
     },
-    computer_access: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-    },
-    internet_access: {
+    computer_and_internet_access: {
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
@@ -392,6 +388,10 @@ Student.init(
     },
     how_heard_about_iec: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    acknowledge_online: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     hasUnsubscribedFromEmails: {

@@ -44,12 +44,14 @@
       background-repeat: repeat;
     "
   >
-    <div class="container bg-white rounded-3 w-75 p-5 mt-3">
-      <h1 class="">Apply to IEC</h1>
+  
+  <div class="container bg-white rounded-3 w-md-75 p-5 mt-3">
+      <h1><img src="/img/iec_logo_only.png" height="50px"> Apply to IEC</h1>
+      <!-- Progress Bar Starts -->
       <div class="progress mt-3">
         <div
           class="progress-bar progress-bar-striped"
-          style="width: 25%"
+          style="width: 20%;"
           id="step1-bar"
         >
           Step 1
@@ -57,27 +59,37 @@
         <div
           class="progress-bar bg-secondary"
           id="step2-bar"
-          style="width: 25%"
+          style="width: 20%;"
         >
           Step 2
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step3-bar"
-          style="width: 25%"
+          style="width: 20%;"
         >
           Step 3
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step4-bar"
-          style="width: 25%"
+          style="width: 20%;"
         >
           Step 4
         </div>
+        <div
+          class="progress-bar bg-secondary"
+          id="step5-bar"
+          style="width: 20%;"
+        >
+          Step 5
+        </div>
       </div>
-      <form>
-        <div id="step1">
+      <!-- Progress Bar Ends -->
+
+      <form id="application-form" class="needs-validation">
+        <div id="step1" class="mt-3">
+          <h3 class="mt-3">Step 1: Basic Information</h3>
           <div class="mb-3 mt-3">
             <div class="input-group">
               <span class="input-group-text">Name:</span>
@@ -87,6 +99,7 @@
                 id="firstName"
                 placeholder="First Name"
                 name="firstName"
+                required
               />
               <input
                 type="text"
@@ -94,6 +107,7 @@
                 id="lastName"
                 placeholder="Last Name"
                 name="lastName"
+                required
               />
             </div>
           </div>
@@ -106,6 +120,7 @@
                 id="email"
                 placeholder="Enter email"
                 name="email"
+                required
               />
             </div>
           </div>
@@ -114,16 +129,148 @@
             Next Step
           </button>
         </div>
-        <div id="step2" class="hidden">
-          Step 2
-          <div class="btn-group">
-            <button
-              type="button"
-              id="step2-prev-button"
-              class="btn btn-secondary"
-            >
-              Previous Step
-            </button>
+        <div id="step2" class="hidden mt-5">
+          <h3 class="mt-3">Step 2: Personal Information</h3>
+          <!-- Age & Gender -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Age: </span>
+              <input
+                type="number"
+                class="form-control"
+                id="age"
+                min="6"
+                max="100"
+                placeholder="Enter Age"
+                name="age"
+                required
+              />
+              <span class="input-group-text">Gender: </span>
+              <select class="form-select" name="gender" required>
+                <option value="female">Female</option>
+                <option value="male">Male</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+          <!-- Phone Number -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Phone Number: </span>
+              <input
+                type="tel"
+                class="form-control"
+                id="phone"
+                placeholder="e.g. 03021234567"
+                minlength="11"
+                maxlength="11"
+                name="phone"
+                required
+              />
+            </div>
+          </div>
+          <!-- CNIC Number -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">CNIC Number: </span>
+              <input
+                type="text"
+                id="cnic"
+                minlength="15"
+                maxlength="15"
+                name="cnic"
+                placeholder="e.g. 35201-1234567-8"
+                class="form-control"
+                pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d"
+                required
+              />
+            </div>
+          </div>
+          <!-- Father's Name -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Father's Name: </span>
+              <input
+                type="text"
+                class="form-control"
+                id="father-name"
+                placeholder="Enter Father's Name"
+                name="father-name"
+                required
+              />
+            </div>
+          </div>
+          <!-- City, Province, Country -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <!-- City -->
+              <span class="input-group-text">City of Residence: </span>
+              <select class="form-select" name="city" required>
+                <% for (let i=0;i<cities.length;i++) { %>
+                  <option value="<%=cities[i]%>"><%=cities[i]%></option>
+                <% } %>
+              </select>
+
+              <!-- Province -->
+              <span class="input-group-text">Province: </span>
+              <select class="form-select" name="province" required>
+                <% for (let i=0;i<provinces.length;i++) { %>
+                  <option value="<%=provinces[i]%>"><%=provinces[i]%></option>
+                <% } %>
+              </select>
+
+              <!-- Country -->
+              <span class="input-group-text">Country: </span>
+              <select class="form-select" name="country" required>
+                <% for (let i=0;i<countries.length;i++) 
+                { 
+                  if (countries[i]=="Pakistan") {
+                %>
+                    <option value="<%=countries[i]%>" selected><%=countries[i]%></option>
+                <%
+                  } else {
+                %>
+                  <option value="<%=countries[i]%>"><%=countries[i]%></option>
+                <% 
+                  }
+                } 
+                %>
+              </select>
+
+            </div>
+          </div>
+          
+          <!-- Home Address -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Home Address: </span>
+              <textarea
+                type="text"
+                class="form-control"
+                id="home-address"
+                placeholder="Enter Home Address"
+                name="home-address"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Current Address -->
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text">Current Address: </span>
+              <textarea
+                type="text"
+                class="form-control"
+                id="current-address"
+                placeholder="Enter Current Address"
+                name="current-address"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Next Button -->
             <button
               type="button"
               id="step2-next-button"
@@ -131,45 +278,349 @@
             >
               Next Step
             </button>
-          </div>
         </div>
-        <div id="step3" class="hidden">
-          Step 3
-          <div class="btn-group">
+        <div id="step3" class="hidden mt-5">
+          <h3 class="mt-3">Step 3: Education Information</h3>
+          
+          <div class="row mb-4">
+            <!-- Education Completed -->
+            <label class="col-sm-2 col-form-label">Education Completed: </label>
+            <div class="col-sm-10">
+              <select class="form-select mb-2" name="education-completed" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<education_levels.length;i++) { %>
+                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
+                <% } %>
+              </select>
+              <input
+                type="text"
+                class="form-control"
+                id="education-completed-major"
+                placeholder="Education Major e.g. Biology"
+                name="education-completed-major"
+                required
+              />
+            </div>
+          </div>
+          <div class="row mb-4">
+            <!-- Education Ongoing -->
+            <label class="col-sm-2 col-form-label">Education Ongoing: </label>
+            <div class="col-sm-10">
+              <select class="form-select mb-2" name="education-ongoing" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<education_levels.length;i++) { %>
+                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
+                <% } %>
+              </select>
+              <input
+                type="text"
+                class="form-control"
+                id="education-ongoing-major"
+                placeholder="Education Major e.g. Biology"
+                name="education-ongoing-major"
+                required
+              />
+            </div>
+          </div>
+
+          <fieldset class="row mb-4">
+            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?</label>
+            <div class="col-sm-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is-comp-sci-grad" id="is-comp-sci-grad-yes" value="1" required>
+                <label class="form-check-label" for="is-comp-sci-grad-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is-comp-sci-grad" id="is-comp-sci-grad-no" value="0">
+                <label class="form-check-label" for="is-comp-sci-grad-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="row mb-4 input-group">
+            <label for="digi-skills-certifications" class="col-sm-4 col-form-label">Do you have any digital skills certifications? If yes, please share their names and the name of the institution. If no, leave empty.</label>
+            <textarea
+                type="text"
+                class="form-control col-sm-8"
+                id="digi-skills-certifications"
+                placeholder="Certifications"
+                name="digi-skills-certifications"
+              ></textarea>
+          </fieldset>
+
+          <button
+            type="button"
+            id="step3-next-button"
+            class="btn btn-primary"
+          >
+            Next Step
+          </button>
+
+        </div>
+        <div id="step4" class="hidden mt-5">
+          <h3 class="mt-3">Step 4: Financial Information</h3>
+
+          <!-- Monthly Income -->
+          <div class="row mb-4">
+            <label class="col-lg-4 col-form-label">Monthly Family Income: </label>
+            <div class="col-lg-8">
+              <input
+                type="number"
+                class="form-control"
+                id="monthly-income"
+                min="0"
+                placeholder="Enter Monthly Family Income"
+                name="monthly-income"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Employment -->
+          <fieldset class="row mb-4">
+            <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is-employed" id="is-employed-yes" value="1">
+                <label class="form-check-label" for="is-employed-yes" required>
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is-employed" id="is-employed-no" value="0">
+                <label class="form-check-label" for="is-employed-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+          <div class="hidden" id="additional-employment-questions">
+            <fieldset class="row mb-4">
+              <label for="type-of-employment" class="col-lg-4 col-form-label">Are you working part-time or full-time?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type-of-employment" id="part-time" value="Part Time">
+                  <label class="form-check-label" for="part-time">
+                    Part-time
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="type-of-employment" id="full-time" value="Full Time">
+                  <label class="form-check-label" for="full-time">
+                    Full-time
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+            <fieldset class="row mb-4">
+              <label class="col-lg-4 col-form-label">Your Current Salary: </label>
+              <div class="col-lg-8">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="salary"
+                  min="0"
+                  placeholder="Enter Your Salary"
+                  name="salary"
+                />
+              </div>
+            </fieldset>
+            <fieldset class="row mb-4">
+              <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="will-leave-job" id="will-leave-job-yes" value="1">
+                  <label class="form-check-label" for="will-leave-job-yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="will-leave-job" id="will-leave-job-no" value="0">
+                  <label class="form-check-label" for="will-leave-job-no">
+                    No
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+
+          
+          <fieldset class="row mb-4">
+            <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="computer-and-internet-access" id="computer-and-internet-access-yes" value="1" required>
+                <label class="form-check-label" for="computer-and-internet-access-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="computer-and-internet-access" id="computer-and-internet-access-no" value="0">
+                <label class="form-check-label" for="computer-and-internet-access-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="internet-facility-in-area" id="internet-facility-in-area-yes" value="1" required>
+                <label class="form-check-label" for="internet-facility-in-area-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="internet-facility-in-area" id="internet-facility-in-area-no" value="0">
+                <label class="form-check-label" for="internet-facility-in-area-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+
+ 
             <button
               type="button"
-              id="step3-prev-button"
-              class="btn btn-secondary"
-            >
-              Previous Step
-            </button>
-            <button
-              type="button"
-              id="step3-next-button"
+              id="step4-next-button"
               class="btn btn-primary"
             >
               Next Step
             </button>
-          </div>
+
         </div>
-        <div id="step4" class="hidden">
-          Step 4
-          <div class="btn-group">
-            <button
-              type="button"
-              id="step4-prev-button"
-              class="btn btn-secondary"
-            >
-              Previous Step
-            </button>
+
+        <div id="step5" class="hidden mt-5">
+          <h3 class="mt-3">Step 4: Final Information</h3>
+
+          <fieldset class="row mb-4">
+            <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="time-commitment" id="time-commitment-yes" value="1" required>
+                <label class="form-check-label" for="time-commitment-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="time-commitment" id="time-commitment-no" value="0">
+                <label class="form-check-label" for="time-commitment-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="has-applied-before" id="has-applied-before-yes" value="1" required>
+                <label class="form-check-label" for="has-applied-before-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="has-applied-before" id="has-applied-before-no" value="0">
+                <label class="form-check-label" for="has-applied-before-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+          <div class="row mb-4 gy-2">
+            <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="first-preference" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                  <option value="<%=courses[i].title%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                <% } %>
+              </select>
+            </div>
+
+            <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="second-preference" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                  <option value="<%=courses[i].title%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                <% } %>
+              </select>
+            </div>
+
+            <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="third-preference" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                  <option value="<%=courses[i].title%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <!-- Reasons for Preferences -->
+          <fieldset class="row mb-4 input-group">
+            <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.</label>
+            <textarea
+                type="text"
+                class="form-control col-sm-8"
+                id="preference-reason"
+                placeholder="Reasons"
+                name="preference-reason"
+              ></textarea>
+          </fieldset>
+
+
+          <!-- How did you hear -->
+          <fieldset class="row mb-4 input-group">
+            <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC? (Name of the Institution/Website/Person OR Social Media)</label>
+            <input
+                type="text"
+                class="form-control col-sm-8"
+                id="how-heard-about-iec"
+                placeholder="Name of Person / Social Media / Institution"
+                name="how-heard-about-iec"
+              >
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="acknowledge-online" id="acknowledge-online-yes" value="1" required>
+                <label class="form-check-label" for="acknowledge-online-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="acknowledge-online" id="acknowledge-online-no" value="0">
+                <label class="form-check-label" for="acknowledge-online-no">
+                  No
+                </label>
+              </div>
+            </div>
+          </fieldset>
+
+
+
             <button
               type="submit"
-              id="step4-next-button"
+              id="step5-next-button"
               class="btn btn-primary"
             >
               Finish & Submit
             </button>
-          </div>
+
         </div>
       </form>
     </div>
