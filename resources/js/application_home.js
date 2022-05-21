@@ -247,7 +247,7 @@ const App = () => {
                   data-id={application_round.id}
                   onClick={(e) => {
                     navigator.clipboard.writeText(
-                      `${site_domain_name}/application/${e.target.dataset.id}`
+                      `${site_domain_name}/application/fill/${e.target.dataset.id}`
                     );
                     setShowCopiedBox(true);
                     window.setTimeout(() => {
