@@ -10,6 +10,8 @@ const App = () => {
   const [show_modal, setShowModal] = useState(false);
   const [update_data, setUpdateData] = useState(0);
   const [show_copied_box, setShowCopiedBox] = useState(false);
+  const [deleting_application_round, setDeletingApplicationRound] =
+    useState(false);
 
   useEffect(() => {
     fetch("/admin/application/rounds/all")
@@ -72,6 +74,27 @@ const App = () => {
         } else alert("Could not create application round.");
       });
     }
+  };
+
+  const deleteApplicationRound = (
+    application_round_id,
+    application_round_index
+  ) => {
+    setDeletingApplicationRound(true);
+    fetch(`/admin/application/rounds/delete/${application_round_id}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        setDeletingApplicationRound(false);
+        if (response.ok) {
+          setUpdateData((cur) => cur + 1);
+        } else
+          alert("Could not delete application round due to an error. Code 01.");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert("Could not delete application round due to an error. Code 02.");
+      });
   };
 
   const addNewCourse = () => {
@@ -185,7 +208,7 @@ const App = () => {
               <input
                 type="submit"
                 value="Create Application Round"
-                className="px-4 py-2 mt-4 bg-iec-blue hover:bg-iec-blue-hover text-white"
+                className="px-4 py-2 mt-4 bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer"
               ></input>
             </form>
           </div>
@@ -214,11 +237,11 @@ const App = () => {
             >
               <div className="grid grid-cols-5 col-span-6 h-16 bg-iec-blue justify-center content-center">
                 <a
-                  href={`/admin/application/edit/${application_round.id}`}
+                  href={`/admin/application/view/${application_round.id}`}
                   className="text-white text-xl col-start-2 justify-self-center col-span-1 hover:text-gray-100 cursor-pointer"
-                  title="Edit Application Round"
+                  title="View Application Round Details"
                 >
-                  <i className="far fa-edit "></i>
+                  <i className="fa fa-eye"></i>
                 </a>
                 <a
                   data-id={application_round.id}
@@ -249,8 +272,24 @@ const App = () => {
                 <a
                   className="text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"
                   title="Delete Application Round"
+                  data-id={application_round.id}
+                  data-index={index}
+                  onClick={(e) => {
+                    deleteApplicationRound(
+                      e.target.dataset.id,
+                      e.target.dataset.index
+                    );
+                  }}
                 >
-                  <i className="fas fa-trash "></i>
+                  {deleting_application_round ? (
+                    <i className="fas fa-spinner animate-spin"></i>
+                  ) : (
+                    <i
+                      className="fas fa-trash"
+                      data-id={application_round.id}
+                      data-index={index}
+                    ></i>
+                  )}
                 </a>
               </div>
               <h3 className="col-span-6 font-semibold text-lg px-4">

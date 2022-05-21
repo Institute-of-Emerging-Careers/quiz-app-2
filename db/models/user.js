@@ -699,7 +699,6 @@ Course.belongsToMany(ApplicationRound, {
 Student.belongsTo(Course, { as: "first preference" });
 Student.belongsTo(Course, { as: "second preference" });
 Student.belongsTo(Course, { as: "third preference" });
-// continue here
 
 module.exports = {
   User,

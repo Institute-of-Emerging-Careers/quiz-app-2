@@ -2,15 +2,18 @@ const express = require("express");
 const router = express.Router();
 const { DateTime } = require("luxon");
 // My requirements
-const checkAdminAuthenticated = require("../db/check-admin-authenticated");
-const { Orientation, OrientationInvite } = require("../db/models/orientation");
-const { Student, Assignment, Attempt, Score } = require("../db/models/user");
-const { Quiz, Section } = require("../db/models/quizmodel.js");
-const getTotalMarksOfSection = require("../functions/getTotalMarksOfSection");
-const allSectionsSolved = require("../functions/allSectionsSolved");
-const roundToTwoDecimalPlaces = require("../functions/roundToTwoDecimalPlaces");
-const getQuizTotalScore = require("../functions/getQuizTotalScore");
-const { sendHTMLMail } = require("../functions/sendEmail");
+const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
+const {
+  Orientation,
+  OrientationInvite,
+} = require("../../db/models/orientation");
+const { Student, Assignment, Attempt, Score } = require("../../db/models/user");
+const { Quiz, Section } = require("../../db/models/quizmodel.js");
+const getTotalMarksOfSection = require("../../functions/getTotalMarksOfSection");
+const allSectionsSolved = require("../../functions/allSectionsSolved");
+const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces");
+const getQuizTotalScore = require("../../functions/getQuizTotalScore");
+const { sendHTMLMail } = require("../../functions/sendEmail");
 
 //this file deals with /admin/orientation/...
 

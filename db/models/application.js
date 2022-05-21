@@ -33,7 +33,6 @@ Course.init(
 
 // junction table for ApplicaitonRound and Course (many-to-many relationship)
 class ApplicationRoundCourseJunction extends Model {}
-// continue here as well
 ApplicationRoundCourseJunction.init(
   {
     id: {

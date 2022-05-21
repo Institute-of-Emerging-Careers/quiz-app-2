@@ -2,23 +2,23 @@ const express = require("express");
 const router = express.Router();
 
 const randomstring = require("randomstring");
-const checkAdminAuthenticated = require("../db/check-admin-authenticated");
-const checkInterviewerAuthenticated = require("../db/check-interviewer-authenticated");
-const { generateRandomNumberInRange } = require("../functions/utilities");
-const getQuizTotalScore = require("../functions/getQuizTotalScore");
+const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
+const checkInterviewerAuthenticated = require("../../db/check-interviewer-authenticated");
+const { generateRandomNumberInRange } = require("../../functions/utilities");
+const getQuizTotalScore = require("../../functions/getQuizTotalScore");
 const {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
   InterviewerSlot,
   StudentInterviewRoundInvite,
-} = require("../db/models/interview");
+} = require("../../db/models/interview");
 const { DateTime } = require("luxon");
-const { sendHTMLMail } = require("../functions/sendEmail");
+const { sendHTMLMail } = require("../../functions/sendEmail");
 const passport = require("passport");
-const { Quiz, Section } = require("../db/models/quizmodel");
-const { Score, Assignment, Student, Attempt } = require("../db/models/user");
-const roundToTwoDecimalPlaces = require("../functions/roundToTwoDecimalPlaces");
+const { Quiz, Section } = require("../../db/models/quizmodel");
+const { Score, Assignment, Student, Attempt } = require("../../db/models/user");
+const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces");
 // middleware that is specific to this router
 router.use((req, res, next) => {
   next();
@@ -265,7 +265,6 @@ router.get(
     const interview_round = await InterviewRound.findOne({
       where: { id: req.params.interview_round_id },
     });
-    // continue here by creating the datetime picker page.
     res.render("interviewer/time-slots-picker.ejs", {
       env: process.env.NODE_ENV,
       myname: req.user.user.name,

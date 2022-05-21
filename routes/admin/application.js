@@ -4,9 +4,9 @@ const {
   ApplicationRound,
   Course,
   ApplicationRoundCourseJunction,
-} = require("../db/models/application");
+} = require("../../db/models/application");
 
-const checkAdminAuthenticated = require("../db/check-admin-authenticated");
+const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -63,5 +63,21 @@ router.post("/rounds/new", checkAdminAuthenticated, async (req, res) => {
       res.sendStatus(501);
     });
 });
+
+router.delete(
+  "/rounds/delete/:application_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      await ApplicationRound.destroy({
+        where: { id: req.params.application_round_id },
+      });
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(501);
+    }
+  }
+);
 
 module.exports = router;
