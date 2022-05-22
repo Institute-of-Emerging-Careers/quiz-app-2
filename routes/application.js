@@ -70,63 +70,61 @@ router.post(
     try {
       // continue here. Fill all information below. Figure out what to do with InviteId. Also figure out how to send back errors to HTML form if sequelize validation fails.
 
-      // creating student
-      let student = Student.build({
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        password: await bcrypt.hash(req.body.password, 10),
-        phone: req.body.phone,
-        cnic: req.body.cnic,
-        age: req.body.age,
-        gender: req.body.gender,
-        city: req.body.city,
-        address: req.body.address,
-        InviteId: invite.id,
+      // construct student object
+      let obj = {};
+      const unset_attributes = [
+        "createdAt",
+        "updatedAt",
+        "id",
+        "hasUnsubscribedFromEmails",
+      ]; //to let these be set automatically
+      for (let key in Student.rawAttributes) {
+        obj[key] = req.body.hasOwnProperty(key) ? req.body[key] : null;
+      }
+      unset_attributes.forEach((attr) => {
+        delete obj[attr];
       });
 
+      // creating student
+      let student = Student.build(obj);
+
       // validating student information
-      if (await student.validate()) {
-        student = await student.save();
+      await student.validate(); //the "catch" gets this if validation fails
+      console.log("Student saved");
+      student = await student.save();
+      res.sendStatus(201);
 
-        // assign the quiz associated with the invite to this student
-        await Assignment.create({
-          StudentId: student.id,
-          QuizId: invite.QuizId,
-        });
+      // // assign the quiz associated with the invite to this student
+      // await Assignment.create({
+      //   StudentId: student.id,
+      //   QuizId: invite.QuizId,
+      // });
 
-        // send automated Welcome email to student
-        try {
-          await sendHTMLMail(email, `Welcome to IEC LCMS`, {
-            heading: "Welcome to the IEC LCMS",
-            inner_text:
-              "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
-            button_announcer:
-              "Click on the button below to solve the Assessment",
-            button_text: "Solve Assessment",
-            button_link: "https://apply.iec.org.pk/student/login",
-          });
-        } catch (err) {
-          console.log("Welcome email sending failed.");
-        }
-        res.redirect("/student/login");
-      }
+      // // send automated Welcome email to student
+      // try {
+      //   await sendHTMLMail(email, `Welcome to IEC LCMS`, {
+      //     heading: "Welcome to the IEC LCMS",
+      //     inner_text:
+      //       "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
+      //     button_announcer:
+      //       "Click on the button below to solve the Assessment",
+      //     button_text: "Solve Assessment",
+      //     button_link: "https://apply.iec.org.pk/student/login",
+      //   });
+      // } catch (err) {
+      //   console.log("Welcome email sending failed.");
+      // }
     } catch (err) {
       console.log(err);
       if (err.errors) {
-        res.redirect(
-          "/invite/" +
-            invite_link +
-            "?error=" +
-            encodeURIComponent(err.errors[0].type) +
-            "&field=" +
-            encodeURIComponent(err.errors[0].path) +
-            "&type=" +
-            encodeURIComponent(err.errors[0].validatorName) +
-            "&message=" +
-            encodeURIComponent(err.errors[0].message)
-        );
-      } else res.redirect("/invite/" + invite_link);
+        console.log(err.errors[0]);
+        res.status(400).json({
+          error: err.errors[0].type,
+          field: err.errors[0].path.split(".")[1],
+          type: err.errors[0].validatorName,
+          message: err.errors[0].message,
+        });
+      } else res.sendStatus(500);
     }
   }
 );

@@ -92,7 +92,7 @@
           <h3 class="mt-3">Step 1: Basic Information</h3>
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Name:</span>
+              <span class="input-group-text"><i class="fas fa-user"></i></span>
               <input
                 type="text"
                 class="form-control"
@@ -113,13 +113,34 @@
           </div>
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Email: </span>
+              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
               <input
                 type="email"
                 class="form-control"
                 id="email"
                 placeholder="Enter email"
                 name="email"
+                required
+              />
+            </div>
+          </div>
+          <div class="mb-3 mt-3">
+            <div class="input-group">
+              <span class="input-group-text"><i class="fas fa-key"></i></span>
+              <input
+                type="password"
+                class="form-control"
+                id="password"
+                placeholder="Set a new password"
+                name="password"
+                required
+              />
+              <input
+                type="password"
+                class="form-control"
+                id="password2"
+                placeholder="Type password again"
+                name="password2"
                 required
               />
             </div>
@@ -171,7 +192,7 @@
           </div>
           <!-- CNIC Number -->
           <div class="mb-3 mt-3">
-            <div class="input-group">
+            <div class="input-group has-validation">
               <span class="input-group-text">CNIC Number: </span>
               <input
                 type="text"
@@ -184,6 +205,14 @@
                 pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d"
                 required
               />
+              <div id="cnic-error-message" class="invalid-feedback"></div>
+              <!-- continue here by displaying the error message. See browser console upon submission of form.
+              The problem is that the response.field variable should be the name of the input field that is invalid,
+            and it is working for most, but for email, it is appearing as "students_email". Find a workaround.
+          
+          Also fix the issue of no additional financial questions appearing when you check a checkbox using your keyboard.
+                
+        -->
             </div>
           </div>
           <!-- Father's Name -->
@@ -195,7 +224,7 @@
                 class="form-control"
                 id="father-name"
                 placeholder="Enter Father's Name"
-                name="father-name"
+                name="father_name"
                 required
               />
             </div>
@@ -206,6 +235,7 @@
               <!-- City -->
               <span class="input-group-text">City of Residence: </span>
               <select class="form-select" name="city" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<cities.length;i++) { %>
                   <option value="<%=cities[i]%>"><%=cities[i]%></option>
                 <% } %>
@@ -214,6 +244,7 @@
               <!-- Province -->
               <span class="input-group-text">Province: </span>
               <select class="form-select" name="province" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<provinces.length;i++) { %>
                   <option value="<%=provinces[i]%>"><%=provinces[i]%></option>
                 <% } %>
@@ -222,6 +253,7 @@
               <!-- Country -->
               <span class="input-group-text">Country: </span>
               <select class="form-select" name="country" required>
+                <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<countries.length;i++) 
                 { 
                   if (countries[i]=="Pakistan") {
@@ -249,7 +281,7 @@
                 class="form-control"
                 id="home-address"
                 placeholder="Enter Home Address"
-                name="home-address"
+                name="address"
                 required
               ></textarea>
             </div>
@@ -264,7 +296,7 @@
                 class="form-control"
                 id="current-address"
                 placeholder="Enter Current Address"
-                name="current-address"
+                name="current_address"
                 required
               ></textarea>
             </div>
@@ -286,7 +318,7 @@
             <!-- Education Completed -->
             <label class="col-sm-2 col-form-label">Education Completed: </label>
             <div class="col-sm-10">
-              <select class="form-select mb-2" name="education-completed" required>
+              <select class="form-select mb-2" name="education_completed" required>
                 <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
                   <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
@@ -297,7 +329,7 @@
                 class="form-control"
                 id="education-completed-major"
                 placeholder="Education Major e.g. Biology"
-                name="education-completed-major"
+                name="education_completed_major"
                 required
               />
             </div>
@@ -306,7 +338,7 @@
             <!-- Education Ongoing -->
             <label class="col-sm-2 col-form-label">Education Ongoing: </label>
             <div class="col-sm-10">
-              <select class="form-select mb-2" name="education-ongoing" required>
+              <select class="form-select mb-2" name="education_ongoing" required>
                 <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
                   <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
@@ -317,7 +349,7 @@
                 class="form-control"
                 id="education-ongoing-major"
                 placeholder="Education Major e.g. Biology"
-                name="education-ongoing-major"
+                name="education_ongoing_major"
                 required
               />
             </div>
@@ -327,13 +359,13 @@
             <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?</label>
             <div class="col-sm-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is-comp-sci-grad" id="is-comp-sci-grad-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is-comp-sci-grad-yes" value="1" required>
                 <label class="form-check-label" for="is-comp-sci-grad-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is-comp-sci-grad" id="is-comp-sci-grad-no" value="0">
+                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is-comp-sci-grad-no" value="0">
                 <label class="form-check-label" for="is-comp-sci-grad-no">
                   No
                 </label>
@@ -348,7 +380,7 @@
                 class="form-control col-sm-8"
                 id="digi-skills-certifications"
                 placeholder="Certifications"
-                name="digi-skills-certifications"
+                name="digi_skills_certifications"
               ></textarea>
           </fieldset>
 
@@ -374,7 +406,7 @@
                 id="monthly-income"
                 min="0"
                 placeholder="Enter Monthly Family Income"
-                name="monthly-income"
+                name="monthly_family_income"
                 required
               />
             </div>
@@ -385,13 +417,13 @@
             <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is-employed" id="is-employed-yes" value="1">
+                <input class="form-check-input" type="radio" name="is_employed" id="is-employed-yes" value="1" required>
                 <label class="form-check-label" for="is-employed-yes" required>
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is-employed" id="is-employed-no" value="0">
+                <input class="form-check-input" type="radio" name="is_employed" id="is-employed-no" value="0">
                 <label class="form-check-label" for="is-employed-no">
                   No
                 </label>
@@ -403,13 +435,13 @@
               <label for="type-of-employment" class="col-lg-4 col-form-label">Are you working part-time or full-time?</label>
               <div class="col-lg-8">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type-of-employment" id="part-time" value="Part Time">
+                  <input class="form-check-input" type="radio" name="type_of_employment" id="part-time" value="Part Time">
                   <label class="form-check-label" for="part-time">
                     Part-time
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type-of-employment" id="full-time" value="Full Time">
+                  <input class="form-check-input" type="radio" name="type_of_employment" id="full-time" value="Full Time">
                   <label class="form-check-label" for="full-time">
                     Full-time
                   </label>
@@ -424,6 +456,7 @@
                   class="form-control"
                   id="salary"
                   min="0"
+                  value="0"
                   placeholder="Enter Your Salary"
                   name="salary"
                 />
@@ -433,13 +466,13 @@
               <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
               <div class="col-lg-8">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will-leave-job" id="will-leave-job-yes" value="1">
+                  <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-yes" value="1">
                   <label class="form-check-label" for="will-leave-job-yes">
                     Yes
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will-leave-job" id="will-leave-job-no" value="0">
+                  <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-no" value="0">
                   <label class="form-check-label" for="will-leave-job-no">
                     No
                   </label>
@@ -453,13 +486,13 @@
             <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="computer-and-internet-access" id="computer-and-internet-access-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer-and-internet-access-yes" value="1" required>
                 <label class="form-check-label" for="computer-and-internet-access-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="computer-and-internet-access" id="computer-and-internet-access-no" value="0">
+                <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer-and-internet-access-no" value="0">
                 <label class="form-check-label" for="computer-and-internet-access-no">
                   No
                 </label>
@@ -471,13 +504,13 @@
             <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="internet-facility-in-area" id="internet-facility-in-area-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet-facility-in-area-yes" value="1" required>
                 <label class="form-check-label" for="internet-facility-in-area-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="internet-facility-in-area" id="internet-facility-in-area-no" value="0">
+                <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet-facility-in-area-no" value="0">
                 <label class="form-check-label" for="internet-facility-in-area-no">
                   No
                 </label>
@@ -498,19 +531,19 @@
         </div>
 
         <div id="step5" class="hidden mt-5">
-          <h3 class="mt-3">Step 4: Final Information</h3>
+          <h3 class="mt-3">Step 5: Final Information</h3>
 
           <fieldset class="row mb-4">
             <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="time-commitment" id="time-commitment-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="time_commitment" id="time-commitment-yes" value="1" required>
                 <label class="form-check-label" for="time-commitment-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="time-commitment" id="time-commitment-no" value="0">
+                <input class="form-check-input" type="radio" name="time_commitment" id="time-commitment-no" value="0">
                 <label class="form-check-label" for="time-commitment-no">
                   No
                 </label>
@@ -522,13 +555,13 @@
             <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="has-applied-before" id="has-applied-before-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="has_applied_before" id="has-applied-before-yes" value="1" required>
                 <label class="form-check-label" for="has-applied-before-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="has-applied-before" id="has-applied-before-no" value="0">
+                <input class="form-check-input" type="radio" name="has_applied_before" id="has-applied-before-no" value="0">
                 <label class="form-check-label" for="has-applied-before-no">
                   No
                 </label>
@@ -539,30 +572,30 @@
           <div class="row mb-4 gy-2">
             <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
             <div class="col-lg-8">
-              <select class="form-select mb-2" name="first-preference" required>
+              <select class="form-select mb-2" name="firstPreferenceId" required>
                 <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].title%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                 <% } %>
               </select>
             </div>
 
             <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
             <div class="col-lg-8">
-              <select class="form-select mb-2" name="second-preference" required>
+              <select class="form-select mb-2" name="secondPreferenceId" required>
                 <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].title%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                 <% } %>
               </select>
             </div>
 
             <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
             <div class="col-lg-8">
-              <select class="form-select mb-2" name="third-preference" required>
+              <select class="form-select mb-2" name="thirdPreferenceId" required>
                 <option disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].title%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                 <% } %>
               </select>
             </div>
@@ -576,7 +609,7 @@
                 class="form-control col-sm-8"
                 id="preference-reason"
                 placeholder="Reasons"
-                name="preference-reason"
+                name="preference_reason"
               ></textarea>
           </fieldset>
 
@@ -589,7 +622,7 @@
                 class="form-control col-sm-8"
                 id="how-heard-about-iec"
                 placeholder="Name of Person / Social Media / Institution"
-                name="how-heard-about-iec"
+                name="how_heard_about_iec"
               >
           </fieldset>
 
@@ -597,13 +630,13 @@
             <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="acknowledge-online" id="acknowledge-online-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-yes" value="1" required>
                 <label class="form-check-label" for="acknowledge-online-yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="acknowledge-online" id="acknowledge-online-no" value="0">
+                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-no" value="0">
                 <label class="form-check-label" for="acknowledge-online-no">
                   No
                 </label>

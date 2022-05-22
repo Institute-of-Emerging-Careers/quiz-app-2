@@ -255,16 +255,6 @@ Student.init(
         },
       },
     },
-    home_address: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "N/A",
-      validate: {
-        notEmpty: {
-          msg: "Home Address cannot be empty.",
-        },
-      },
-    },
     current_address: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -405,7 +395,7 @@ Student.init(
     modelName: "Student",
     indexes: [{ unique: true, fields: ["email"] }],
     hooks: {
-      beforeCreate: (user, options) => {
+      beforeValidate: (user, options) => {
         let age_group_cutoffs = [
           [18, "Under 18"],
           [21, "18-21"],

@@ -1,6 +1,34 @@
+function handleForm(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const data = new URLSearchParams(new FormData(e.target));
+
+  fetch($("#application-form").attr("action"), {
+    method: "POST",
+    body: data,
+  }).then((raw_response) => {
+    if (raw_response.ok) {
+      alert("Created");
+    } else if (raw_response.status == 500) alert("Something went wrong.");
+    else if (raw_response.status == 400) {
+      raw_response.json().then((response) => {
+        console.log(response);
+        $(`#${response.field}`).addClass("is-invalid").focus();
+        $(`#${response.field}-error-message`).text(response.message);
+      });
+    }
+  });
+}
+
+document
+  .getElementById("application-form")
+  .addEventListener("submit", handleForm);
+
 const nextStep = (from, to) => {
   $(`#${to}-bar`).removeClass("bg-secondary").addClass("progress-bar-striped");
   $(`#${from}`).addClass("was-validated");
+  if (to == "step5") $(`#${to}`).addClass("was-validated");
   $(`#${from}-next-button`).fadeOut(() => {
     $(`#${to}`).fadeIn();
   });
