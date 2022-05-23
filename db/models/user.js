@@ -424,10 +424,18 @@ Application.belongsTo(Course, { as: "second preference" });
 Application.belongsTo(Course, { as: "third preference" });
 
 Student.hasMany(Application);
-Application.belongsTo(Student);
+Application.belongsTo(Student, {
+  allowNull: false,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 ApplicationRound.hasMany(Application);
-Application.belongsTo(ApplicationRound);
+Application.belongsTo(ApplicationRound, {
+  allowNull: false,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = {
   User,

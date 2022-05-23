@@ -239,9 +239,9 @@ const App = () => {
                 <a
                   href={`/admin/application/view/${application_round.id}`}
                   className="text-white text-xl col-start-2 justify-self-center col-span-1 hover:text-gray-100 cursor-pointer"
-                  title="View Application Round Details"
+                  title="View Applications"
                 >
-                  <i className="fa fa-eye"></i>
+                  <i className="fas fa-list"></i>
                 </a>
                 <a
                   data-id={application_round.id}
