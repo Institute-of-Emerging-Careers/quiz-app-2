@@ -13,7 +13,8 @@ function handleForm(e) {
     if (raw_response.ok) {
       $("#step5-next-button")
         .removeClass("btn-primary")
-        .addClass("btn-success");
+        .addClass("btn-success")
+        .attr("disabled", true);
       $("#submit-button-text").html(
         "<i class='fas fa-check'></i> Application Submitted Successfully"
       );

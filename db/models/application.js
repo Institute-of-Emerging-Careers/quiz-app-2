@@ -285,9 +285,12 @@ Application.init(
         ];
         let age_group = "";
 
-        age_group_cutoffs.forEach((cutoff) => {
-          if (user.age < cutoff[0]) age_group = cutoff[1];
-        });
+        for (let i = 0; i < age_group_cutoffs.length; i++) {
+          if (user.age < age_group_cutoffs[i][0]) {
+            age_group = age_group_cutoffs[i][1];
+            break;
+          }
+        }
         if (age_group == "") age_group = "Above 30";
         user.age_group = age_group;
       },
