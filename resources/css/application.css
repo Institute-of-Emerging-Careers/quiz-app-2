@@ -5,3 +5,7 @@
 .hidden {
     display:none;
 }
+
+.hidden-imp {
+    display:none !important;
+}

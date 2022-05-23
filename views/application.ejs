@@ -109,6 +109,8 @@
                 name="lastName"
                 required
               />
+              <div id="firstName-error-message" class="invalid-feedback"></div>
+              <div id="lastName-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           <div class="mb-3 mt-3">
@@ -122,9 +124,39 @@
                 name="email"
                 required
               />
+              <div id="email-error-message" class="invalid-feedback"></div>
             </div>
           </div>
+          <!-- CNIC Number -->
           <div class="mb-3 mt-3">
+            <div class="input-group has-validation">
+              <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+              <input
+                type="text"
+                id="cnic"
+                minlength="15"
+                maxlength="15"
+                name="cnic"
+                placeholder="CNIC Number (with dashes) e.g. 35201-1234567-8"
+                class="form-control"
+                pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d"
+                required
+              />
+              <div id="cnic-error-message" class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="step1-next-button">
+            <i class="fas fa-arrow-right"></i> Next Step
+          </button>
+          <div class="spinner-grow hidden-imp" id="step-1-next-button-spinner" style="vertical-align: middle; width: 1.5rem; height: 1.5rem;" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div id="step2" class="hidden mt-5">
+          <h3 class="mt-3">Step 2: Personal Information</h3>
+          <!-- Password -->
+          <div class="mb-3 mt-3" id="password-input-group">
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-key"></i></span>
               <input
@@ -143,15 +175,9 @@
                 name="password2"
                 required
               />
+              <div id="password-error-message" class="invalid-feedback"></div>
             </div>
           </div>
-
-          <button type="button" class="btn btn-primary" id="step1-next-button">
-            Next Step
-          </button>
-        </div>
-        <div id="step2" class="hidden mt-5">
-          <h3 class="mt-3">Step 2: Personal Information</h3>
           <!-- Age & Gender -->
           <div class="mb-3 mt-3">
             <div class="input-group">
@@ -172,6 +198,8 @@
                 <option value="male">Male</option>
                 <option value="other">Other</option>
               </select>
+              <div id="age-error-message" class="invalid-feedback"></div>
+              <div id="gender-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           <!-- Phone Number -->
@@ -188,31 +216,7 @@
                 name="phone"
                 required
               />
-            </div>
-          </div>
-          <!-- CNIC Number -->
-          <div class="mb-3 mt-3">
-            <div class="input-group has-validation">
-              <span class="input-group-text">CNIC Number: </span>
-              <input
-                type="text"
-                id="cnic"
-                minlength="15"
-                maxlength="15"
-                name="cnic"
-                placeholder="e.g. 35201-1234567-8"
-                class="form-control"
-                pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d"
-                required
-              />
-              <div id="cnic-error-message" class="invalid-feedback"></div>
-              <!-- continue here by displaying the error message. See browser console upon submission of form.
-              The problem is that the response.field variable should be the name of the input field that is invalid,
-            and it is working for most, but for email, it is appearing as "students_email". Find a workaround.
-          
-          Also fix the issue of no additional financial questions appearing when you check a checkbox using your keyboard.
-                
-        -->
+              <div id="phone-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           <!-- Father's Name -->
@@ -222,11 +226,12 @@
               <input
                 type="text"
                 class="form-control"
-                id="father-name"
+                id="father_name"
                 placeholder="Enter Father's Name"
                 name="father_name"
                 required
               />
+              <div id="father_name-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           <!-- City, Province, Country -->
@@ -268,7 +273,9 @@
                 } 
                 %>
               </select>
-
+              <div id="city-error-message" class="invalid-feedback"></div>
+              <div id="province-error-message" class="invalid-feedback"></div>
+              <div id="country-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           
@@ -279,11 +286,12 @@
               <textarea
                 type="text"
                 class="form-control"
-                id="home-address"
+                id="address"
                 placeholder="Enter Home Address"
                 name="address"
                 required
               ></textarea>
+              <div id="address-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -294,11 +302,12 @@
               <textarea
                 type="text"
                 class="form-control"
-                id="current-address"
+                id="current_address"
                 placeholder="Enter Current Address"
                 name="current_address"
                 required
               ></textarea>
+              <div id="current_address-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -308,7 +317,7 @@
               id="step2-next-button"
               class="btn btn-primary"
             >
-              Next Step
+            <i class="fas fa-arrow-right"></i> Next Step
             </button>
         </div>
         <div id="step3" class="hidden mt-5">
@@ -327,11 +336,12 @@
               <input
                 type="text"
                 class="form-control"
-                id="education-completed-major"
+                id="education_completed_major"
                 placeholder="Education Major e.g. Biology"
                 name="education_completed_major"
                 required
               />
+              <div id="education_completed_major-error-message" class="invalid-feedback"></div>
             </div>
           </div>
           <div class="row mb-4">
@@ -347,11 +357,12 @@
               <input
                 type="text"
                 class="form-control"
-                id="education-ongoing-major"
+                id="education_ongoing_major"
                 placeholder="Education Major e.g. Biology"
                 name="education_ongoing_major"
                 required
               />
+              <div id="education_ongoing_major-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -359,29 +370,31 @@
             <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?</label>
             <div class="col-sm-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is-comp-sci-grad-yes" value="1" required>
-                <label class="form-check-label" for="is-comp-sci-grad-yes">
+                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad_yes" value="1" required>
+                <label class="form-check-label" for="is_comp_sci_grad_yes">
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is-comp-sci-grad-no" value="0">
-                <label class="form-check-label" for="is-comp-sci-grad-no">
+                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad_no" value="0">
+                <label class="form-check-label" for="is_comp_sci_grad_no">
                   No
                 </label>
               </div>
             </div>
+            <div id="is_comp_sci_grad-error-message" class="invalid-feedback"></div>
           </fieldset>
 
           <fieldset class="row mb-4 input-group">
-            <label for="digi-skills-certifications" class="col-sm-4 col-form-label">Do you have any digital skills certifications? If yes, please share their names and the name of the institution. If no, leave empty.</label>
+            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">Do you have any digital skills certifications? If yes, please share their names and the name of the institution. If no, leave empty.</label>
             <textarea
                 type="text"
                 class="form-control col-sm-8"
-                id="digi-skills-certifications"
+                id="digi_skills_certifications"
                 placeholder="Certifications"
                 name="digi_skills_certifications"
               ></textarea>
+              <div id="digi_skills_certifications-error-message" class="invalid-feedback"></div>
           </fieldset>
 
           <button
@@ -389,7 +402,7 @@
             id="step3-next-button"
             class="btn btn-primary"
           >
-            Next Step
+          <i class="fas fa-arrow-right"></i> Next Step
           </button>
 
         </div>
@@ -403,12 +416,13 @@
               <input
                 type="number"
                 class="form-control"
-                id="monthly-income"
+                id="monthly_income"
                 min="0"
                 placeholder="Enter Monthly Family Income"
                 name="monthly_family_income"
                 required
               />
+              <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
@@ -417,18 +431,19 @@
             <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_employed" id="is-employed-yes" value="1" required>
+                <input class="form-check-input" type="radio" name="is_employed" id="is_employed_yes" value="1" required>
                 <label class="form-check-label" for="is-employed-yes" required>
                   Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_employed" id="is-employed-no" value="0">
+                <input class="form-check-input" type="radio" name="is_employed" id="is_employed_no" value="0">
                 <label class="form-check-label" for="is-employed-no">
                   No
                 </label>
               </div>
             </div>
+            <div id="is_employed-error-message" class="invalid-feedback"></div>
           </fieldset>
           <div class="hidden" id="additional-employment-questions">
             <fieldset class="row mb-4">
@@ -447,6 +462,8 @@
                   </label>
                 </div>
               </div>
+            <div id="type_of_employment-error-message" class="invalid-feedback"></div>
+
             </fieldset>
             <fieldset class="row mb-4">
               <label class="col-lg-4 col-form-label">Your Current Salary: </label>
@@ -461,6 +478,8 @@
                   name="salary"
                 />
               </div>
+            <div id="salary-error-message" class="invalid-feedback"></div>
+
             </fieldset>
             <fieldset class="row mb-4">
               <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
@@ -478,6 +497,7 @@
                   </label>
                 </div>
               </div>
+            <div id="will_leave_job-error-message" class="invalid-feedback"></div>
             </fieldset>
           </div>
 
@@ -497,7 +517,10 @@
                   No
                 </label>
               </div>
+            <div id="computer_and_internet_access-error-message" class="invalid-feedback"></div>
+
             </div>
+
           </fieldset>
 
           <fieldset class="row mb-4">
@@ -516,6 +539,7 @@
                 </label>
               </div>
             </div>
+            <div id="internet_facility_in_area-error-message" class="invalid-feedback"></div>
           </fieldset>
 
 
@@ -525,7 +549,7 @@
               id="step4-next-button"
               class="btn btn-primary"
             >
-              Next Step
+            <i class="fas fa-arrow-right"></i> Next Step
             </button>
 
         </div>
@@ -549,6 +573,7 @@
                 </label>
               </div>
             </div>
+            <div id="time_commitment-error-message" class="invalid-feedback"></div>
           </fieldset>
 
           <fieldset class="row mb-4">
@@ -567,6 +592,7 @@
                 </label>
               </div>
             </div>
+            <div id="has_applied_before-error-message" class="invalid-feedback"></div>
           </fieldset>
 
           <div class="row mb-4 gy-2">
@@ -599,6 +625,9 @@
                 <% } %>
               </select>
             </div>
+            <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
+            <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
+            <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
           </div>
 
           <!-- Reasons for Preferences -->
@@ -611,6 +640,8 @@
                 placeholder="Reasons"
                 name="preference_reason"
               ></textarea>
+            <div id="preference_reason-error-message" class="invalid-feedback"></div>
+
           </fieldset>
 
 
@@ -624,6 +655,8 @@
                 placeholder="Name of Person / Social Media / Institution"
                 name="how_heard_about_iec"
               >
+            <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
+
           </fieldset>
 
           <fieldset class="row mb-4">
@@ -642,16 +675,17 @@
                 </label>
               </div>
             </div>
+            <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
+
           </fieldset>
-
-
 
             <button
               type="submit"
               id="step5-next-button"
               class="btn btn-primary"
             >
-              Finish & Submit
+            <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
+            Finish & Submit
             </button>
 
         </div>

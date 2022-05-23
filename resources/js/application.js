@@ -1,4 +1,5 @@
 function handleForm(e) {
+  $("#submit-spinner").removeClass("hidden-imp");
   e.preventDefault();
   e.stopPropagation();
 
@@ -8,6 +9,7 @@ function handleForm(e) {
     method: "POST",
     body: data,
   }).then((raw_response) => {
+    $("#submit-spinner").addClass("hidden-imp");
     if (raw_response.ok) {
       alert("Created");
     } else if (raw_response.status == 500) alert("Something went wrong.");
@@ -34,17 +36,74 @@ const nextStep = (from, to) => {
   });
 };
 
+const checkIfUserExists = () => {
+  $("#step-1-next-button-spinner").removeClass("hidden-imp");
+  fetch("/application/check-if-user-exists", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: document.getElementById("email").value,
+      cnic: document.getElementById("cnic").value,
+    }),
+  })
+    .then((raw_response) => {
+      $("#step-1-next-button-spinner").addClass("hidden-imp");
+      if (raw_response.ok) {
+        raw_response.json().then((response) => {
+          if (response.exists) {
+            if (response.type == "both_cnic_and_email") {
+              $("#password-input-group").hide();
+              $("#password").attr("required", false);
+              $("#password2").attr("required", false);
+              $("#email").attr("readonly", true);
+              $("#cnic").attr("readonly", true);
+
+              // resetting errors
+              $(`#cnic`).removeClass("is-invalid");
+              $(`#email`).removeClass("is-invalid");
+              nextStep("step1", "step2");
+            } else if (response.type == "email_only") {
+              $(`#cnic`).addClass("is-invalid").focus();
+              $(`#cnic-error-message`).text(
+                "The email above already exists in the database. It means you have already applied before. But you entered a different CNIC number last time. Either enter the same CNIC number as last time, or enter a different email address."
+              );
+            } else if (response.type == "cnic_only") {
+              $(`#email`).addClass("is-invalid").focus();
+              $(`#email-error-message`).text(
+                "The cnic below already exists in the database. It means you have already applied before. But you entered a different email address the last time. Please enter the same email address as before."
+              );
+            } else {
+              // resetting errors
+              $(`#cnic`).removeClass("is-invalid");
+              $(`#email`).removeClass("is-invalid");
+              nextStep("step1", "step2");
+            }
+          }
+        });
+      } else
+        alert(
+          "Something went wrong. Please check your internet connection and try again. Code 01."
+        );
+    })
+    .catch((err) => {
+      console.log(err);
+      alert(
+        "Something went wrong. Please check your internet connection and try again. Code 02."
+      );
+    });
+};
+
 $(document).ready(function () {
   // pagination
-  $("#step1-next-button").click(() => nextStep("step1", "step2"));
+  $("#step1-next-button").click(checkIfUserExists);
   $("#step2-next-button").click(() => nextStep("step2", "step3"));
   $("#step3-next-button").click(() => nextStep("step3", "step4"));
   $("#step4-next-button").click(() => nextStep("step4", "step5"));
 
   // showing additional employment questions if the user selects "yes" on "are you employed"
   if (
-    $('input:radio[name="is-employed"]').is(":checked") &&
-    $('input:radio[name="is-employed"]').val() == "1"
+    $('input:radio[name="is_employed"]').is(":checked") &&
+    $('input:radio[name="is_employed"]').val() == "1"
   ) {
     $("#additional-employment-questions").fadeIn();
     $("#salary").prop("required", true);
@@ -52,7 +111,7 @@ $(document).ready(function () {
     $("#will-leave-job-yes").prop("required", true);
   }
 
-  $('input:radio[name="is-employed"]').change(function () {
+  $('input:radio[name="is_employed"]').change(function () {
     if ($(this).is(":checked") && $(this).val() == "1") {
       $("#additional-employment-questions").fadeIn();
       $("#salary").prop("required", true);

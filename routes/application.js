@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 const { Student, Assignment } = require("../db/models/user");
 
 const checkAnyoneAlreadyAuthenticated = require("../db/check-anyone-already-authenticated");
-const { ApplicationRound } = require("../db/models/application");
+const { ApplicationRound, Application } = require("../db/models/application");
 const {
   cities,
   provinces,
@@ -64,34 +64,91 @@ router.get(
 );
 
 router.post(
+  "/check-if-user-exists",
+  checkAnyoneAlreadyAuthenticated,
+  async (req, res) => {
+    const student = [
+      await Student.findOne({
+        where: { email: req.body.email, cnic: req.body.cnic },
+        attributes: ["id"],
+      }),
+      await Student.findOne({
+        where: { cnic: req.body.cnic },
+        attributes: ["id"],
+      }),
+      await Student.findOne({
+        where: { email: req.body.email },
+        attributes: ["id"],
+      }),
+    ];
+    if (student[0] != null)
+      res.json({ exists: true, type: "both_cnic_and_email" });
+    else if (student[1] != null) res.json({ exists: true, type: "cnic_only" });
+    else if (student[2] != null) res.json({ exists: true, type: "email_only" });
+    else res.json({ exists: false });
+  }
+);
+
+router.post(
   "/submit/:application_round_id",
   checkAnyoneAlreadyAuthenticated,
   async (req, res) => {
+    const errorField = (str) => {
+      if (str == "students_email") return "email";
+      else return str;
+    };
+
+    const errorMessage = (err_field, err_type, err_msg) => {
+      if (err_type == "unique violation")
+        return `${err_field} is already taken. This means you have already applied before. Make sure you use the same pair of Email and CNIC as your last application.`;
+      else return err_msg;
+    };
+
     try {
-      // continue here. Fill all information below. Figure out what to do with InviteId. Also figure out how to send back errors to HTML form if sequelize validation fails.
+      // Each Student has many Applications. We need to ascertain whether this student is new or exists previously.
+      let student = await Student.findOne({
+        where: { email: req.body.email, cnic: req.body.cnic },
+      });
+      if (student == null) {
+        if (req.body.password != req.body.password2) {
+          res.status(400).json({
+            error: "mismatch",
+            field: "password",
+            type: "",
+            message: "Password and password confirmation don't match.",
+          });
+          return;
+        }
+        student = Student.build({
+          email: req.body.email,
+          cnic: req.body.cnic,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          gender: req.body.gender,
+          password: await bcrypt.hash(req.body.password, 10),
+        });
+        await student.validate();
+        student = await student.save();
+      }
 
       // construct student object
       let obj = {};
-      const unset_attributes = [
-        "createdAt",
-        "updatedAt",
-        "id",
-        "hasUnsubscribedFromEmails",
-      ]; //to let these be set automatically
-      for (let key in Student.rawAttributes) {
+      const unset_attributes = ["createdAt", "updatedAt", "id"]; //to let these be set automatically
+      for (let key in Application.rawAttributes) {
         obj[key] = req.body.hasOwnProperty(key) ? req.body[key] : null;
       }
       unset_attributes.forEach((attr) => {
         delete obj[attr];
       });
+      obj.StudentId = student.id;
 
       // creating student
-      let student = Student.build(obj);
+      let application = Application.build(obj);
 
       // validating student information
-      await student.validate(); //the "catch" gets this if validation fails
+      await application.validate(); //the "catch" gets this if validation fails
       console.log("Student saved");
-      student = await student.save();
+      application = await application.save();
       res.sendStatus(201);
 
       // // assign the quiz associated with the invite to this student
@@ -120,9 +177,13 @@ router.post(
         console.log(err.errors[0]);
         res.status(400).json({
           error: err.errors[0].type,
-          field: err.errors[0].path.split(".")[1],
+          field: errorField(err.errors[0].path.split(".")[1]),
           type: err.errors[0].validatorName,
-          message: err.errors[0].message,
+          message: errorMessage(
+            errorField(err.errors[0].path.split(".")[1]),
+            err.errors[0].type,
+            err.errors[0].message
+          ),
         });
       } else res.sendStatus(500);
     }
