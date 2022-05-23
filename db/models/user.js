@@ -426,6 +426,9 @@ Application.belongsTo(Course, { as: "third preference" });
 Student.hasMany(Application);
 Application.belongsTo(Student);
 
+ApplicationRound.hasMany(Application);
+Application.belongsTo(ApplicationRound);
+
 module.exports = {
   User,
   Student,

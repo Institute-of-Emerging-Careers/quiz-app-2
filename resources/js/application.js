@@ -11,10 +11,20 @@ function handleForm(e) {
   }).then((raw_response) => {
     $("#submit-spinner").addClass("hidden-imp");
     if (raw_response.ok) {
-      alert("Created");
-    } else if (raw_response.status == 500) alert("Something went wrong.");
-    else if (raw_response.status == 400) {
+      $("#step5-next-button")
+        .removeClass("btn-primary")
+        .addClass("btn-success");
+      $("#submit-button-text").html(
+        "<i class='fas fa-check'></i> Application Submitted Successfully"
+      );
+    } else if (raw_response.status == 500) {
+      alert("Something went wrong.");
+      $("#step5-next-button").removeClass("btn-primary").addClass("btn-danger");
+    } else if (raw_response.status == 400) {
       raw_response.json().then((response) => {
+        $("#step5-next-button")
+          .removeClass("btn-primary")
+          .addClass("btn-danger");
         console.log(response);
         $(`#${response.field}`).addClass("is-invalid").focus();
         $(`#${response.field}-error-message`).text(response.message);

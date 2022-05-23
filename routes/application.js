@@ -141,6 +141,7 @@ router.post(
         delete obj[attr];
       });
       obj.StudentId = student.id;
+      obj.ApplicationRoundId = req.params.application_round_id;
 
       // creating student
       let application = Application.build(obj);
