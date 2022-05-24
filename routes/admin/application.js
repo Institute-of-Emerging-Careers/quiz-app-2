@@ -6,6 +6,8 @@ const {
   ApplicationRoundCourseJunction,
 } = require("../../db/models/application");
 
+const { Student } = require("../../db/models/user");
+
 const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
 
 // middleware that is specific to this router
@@ -109,6 +111,29 @@ router.get(
         env: process.env.NODE_ENV,
         current_url: `/admin/application${req.url}`,
       });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+router.get(
+  "/all-applicants/:application_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const application_round = await ApplicationRound.findOne({
+        where: { id: req.params.application_round_id },
+      });
+      if (application_round == null) {
+        res.sendStatus(404);
+        return;
+      }
+      const applications = await application_round.getApplications({
+        include: [Student],
+      });
+
+      res.json({ applications: applications });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);

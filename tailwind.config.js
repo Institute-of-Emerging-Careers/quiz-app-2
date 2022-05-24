@@ -16,6 +16,10 @@ module.exports = {
         "6/8": "75%",
         "7/8": "87.5%",
       },
+      height: {
+        "90vh": "90vh",
+        "80vh": "80vh",
+      },
       dropShadow: {
         gradient: "0 15px 15px rgba(72,8,94,0.5)",
         little: "0 3px 3px rgba(72,8,94,0.5)",
