@@ -7,12 +7,20 @@ const {
   InterviewRound,
   InterviewerSlot,
 } = require("./models/interview");
+const {
+  Application,
+  ApplicationRound,
+  ApplicationRoundCourseJunction,
+} = require("./models/application");
 
 const initializeDatabase = async () => {
   try {
     alterandforce = false;
     // Sync models with database
     await sequelize.sync({ alter: alterandforce, force: alterandforce });
+    await ApplicationRoundCourseJunction.sync({ force: true });
+    await Application.sync({ alter: true, force: false });
+    await ApplicationRound.sync({ alter: true, force: false });
     await Interviewer.sync({ alter: false });
     await InterviewerInvite.sync({ alter: false });
     await InterviewRound.sync({ alter: false });
