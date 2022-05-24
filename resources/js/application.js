@@ -55,6 +55,7 @@ const checkIfUserExists = () => {
     body: JSON.stringify({
       email: document.getElementById("email").value,
       cnic: document.getElementById("cnic").value,
+      application_round_id: $("#application_round_id_field").val(),
     }),
   })
     .then((raw_response) => {
@@ -62,7 +63,18 @@ const checkIfUserExists = () => {
       if (raw_response.ok) {
         raw_response.json().then((response) => {
           if (response.exists) {
-            if (response.type == "both_cnic_and_email") {
+            if (response.type == "already_applied") {
+              $("#application-form input").prop("disabled", true);
+              $(`#application-form-error-message`)
+                .html(
+                  "<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."
+                )
+                .show();
+              $(`#step1-next-button`)
+                .removeClass("btn-primary")
+                .addClass("btn-danger")
+                .attr("disabled", true);
+            } else if (response.type == "both_cnic_and_email") {
               $("#password-input-group").hide();
               $("#password").attr("required", false);
               $("#password2").attr("required", false);

@@ -86,8 +86,10 @@
         </div>
       </div>
       <!-- Progress Bar Ends -->
+      <input type="hidden" value="<%=application_round_id%>" id="application_round_id_field">
 
       <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>">
+        <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
         <div id="step1" class="mt-3">
           <h3 class="mt-3">Step 1: Basic Information</h3>
           <div class="mb-3 mt-3">

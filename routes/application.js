@@ -81,10 +81,29 @@ router.post(
         attributes: ["id"],
       }),
     ];
-    if (student[0] != null)
+
+    // check if student with this email/cnic/both has already submitted an application for this cohort (ApplicationRound) before.
+    if (student[0] != null || student[1] != null || student[2] != null) {
+      const student_found = student.reduce((found, cur) => {
+        if (found != null) return found;
+        if (cur != null) return cur;
+      }, null);
+      console.log(student_found);
+      const old_application = await student_found.getApplications({
+        where: { ApplicationRoundId: req.body.application_round_id },
+      });
+      if (old_application != null) {
+        res.json({ exists: true, type: "already_applied" });
+        return;
+      }
+    }
+
+    if (student[0] != null) {
       res.json({ exists: true, type: "both_cnic_and_email" });
-    else if (student[1] != null) res.json({ exists: true, type: "cnic_only" });
-    else if (student[2] != null) res.json({ exists: true, type: "email_only" });
+    } else if (student[1] != null) {
+      res.json({ exists: true, type: "cnic_only" });
+    } else if (student[2] != null)
+      res.json({ exists: true, type: "email_only" });
     else res.json({ exists: false });
   }
 );
