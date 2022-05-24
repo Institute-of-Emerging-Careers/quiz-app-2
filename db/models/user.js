@@ -3,6 +3,21 @@ const { Quiz, Question, Option, Section } = require("./quizmodel");
 const sequelize = require("../connect");
 const { Orientation, OrientationInvite } = require("./orientation");
 
+const {
+  InterviewRound,
+  Interviewer,
+  InterviewerInvite,
+  InterviewerSlot,
+  StudentInterviewRoundInvite,
+} = require("./interview");
+
+const {
+  ApplicationRound,
+  Course,
+  ApplicationRoundCourseJunction,
+  Application,
+} = require("./application");
+
 class User extends Model {}
 
 User.init(
@@ -90,22 +105,6 @@ Student.init(
         },
       },
     },
-    phone: {
-      type: DataTypes.STRING(11),
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Phone number cannot be empty.",
-        },
-        len: {
-          msg: "Phone number must be exactly 11 digits long. For example, 03451234567. Do not use dashes or spaces.",
-        },
-        is: {
-          args: [/\d\d\d\d\d\d\d\d\d\d\d/i],
-          msg: "Phone number invalid. Please make sure it has no alphabets, symbols, dashes, or spaces.",
-        },
-      },
-    },
     cnic: {
       type: DataTypes.STRING(15),
       allowNull: false,
@@ -124,23 +123,6 @@ Student.init(
         },
       },
     },
-    age: {
-      type: DataTypes.TINYINT.UNSIGNED,
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Age cannot be empty.",
-        },
-        min: {
-          args: [5],
-          msg: "Age must be between 5 and 110",
-        },
-        max: {
-          args: [110],
-          msg: "Age must be between 5 and 110",
-        },
-      },
-    },
     gender: {
       type: DataTypes.STRING(15),
       allowNull: false,
@@ -151,32 +133,6 @@ Student.init(
         len: {
           args: [[2, 15]],
           msg: "Gender name must be between 2 and 15 characters long.",
-        },
-      },
-    },
-    city: {
-      type: DataTypes.STRING(100),
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "City cannot be empty.",
-        },
-        len: {
-          args: [[2, 100]],
-          msg: "City name must be between 2 and 100 characters long.",
-        },
-      },
-    },
-    address: {
-      type: DataTypes.STRING(300),
-      allowNull: false,
-      validate: {
-        notEmpty: {
-          msg: "Address cannot be empty.",
-        },
-        len: {
-          args: [[10, 300]],
-          msg: "Address cannot be shorter than 10 characters and longer than 300 characters.",
         },
       },
     },
@@ -432,6 +388,54 @@ Orientation.belongsTo(Quiz);
 
 Orientation.belongsToMany(Student, { through: OrientationInvite });
 Student.belongsToMany(Orientation, { through: OrientationInvite });
+
+Quiz.hasOne(InterviewRound, {
+  onUpdate: "CASCADE",
+  onDelete: "CASCADE",
+});
+InterviewRound.belongsTo(Quiz);
+
+Interviewer.belongsToMany(InterviewRound, {
+  through: InterviewerInvite,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+InterviewRound.belongsToMany(Interviewer, { through: InterviewerInvite });
+
+Student.belongsToMany(InterviewRound, {
+  through: StudentInterviewRoundInvite,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+InterviewRound.belongsToMany(Student, { through: StudentInterviewRoundInvite });
+
+InterviewerInvite.hasMany(InterviewerSlot);
+InterviewerSlot.belongsTo(InterviewerInvite);
+
+ApplicationRound.belongsToMany(Course, {
+  through: ApplicationRoundCourseJunction,
+});
+Course.belongsToMany(ApplicationRound, {
+  through: ApplicationRoundCourseJunction,
+});
+
+Application.belongsTo(Course, { as: "first preference" });
+Application.belongsTo(Course, { as: "second preference" });
+Application.belongsTo(Course, { as: "third preference" });
+
+Student.hasMany(Application);
+Application.belongsTo(Student, {
+  allowNull: false,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
+
+ApplicationRound.hasMany(Application);
+Application.belongsTo(ApplicationRound, {
+  allowNull: false,
+  onDelete: "CASCADE",
+  onUpdate: "CASCADE",
+});
 
 module.exports = {
   User,

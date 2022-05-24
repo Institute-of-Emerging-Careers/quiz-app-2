@@ -111,6 +111,8 @@ strong {
 */
 
 code,
+kbd,
+samp,
 pre {
   font-family:
 		ui-monospace,
@@ -297,7 +299,7 @@ summary {
  * Removes the default spacing and border for appropriate elements.
  */
 
-
+blockquote,
 dl,
 dd,
 h1,
@@ -488,7 +490,9 @@ textarea {
  */
 
 pre,
-code {
+code,
+kbd,
+samp {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -652,6 +656,10 @@ video {
   top: 0px;
 }
 
+.top-2 {
+  top: 0.5rem;
+}
+
 .top-6 {
   top: 1.5rem;
 }
@@ -686,6 +694,10 @@ video {
 
 .left-0 {
   left: 0px;
+}
+
+.left-2 {
+  left: 0.5rem;
 }
 
 .left-1\/4 {
@@ -825,8 +837,16 @@ video {
   margin-top: 0.5rem;
 }
 
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .mt-4 {
   margin-top: 1rem;
+}
+
+.mt-5 {
+  margin-top: 1.25rem;
 }
 
 .mt-6 {
@@ -847,10 +867,6 @@ video {
 
 .mt-24 {
   margin-top: 6rem;
-}
-
-.mt-32 {
-  margin-top: 8rem;
 }
 
 .mt-52 {
@@ -1037,6 +1053,14 @@ video {
   height: 100vh;
 }
 
+.h-90vh {
+  height: 90vh;
+}
+
+.h-80vh {
+  height: 80vh;
+}
+
 .max-h-4 {
   max-height: 1rem;
 }
@@ -1121,6 +1145,10 @@ video {
 
 .w-6\/8 {
   width: 75%;
+}
+
+.w-7\/8 {
+  width: 87.5%;
 }
 
 .min-w-max {
@@ -1284,6 +1312,10 @@ video {
 .animate-spin {
   -webkit-animation: spin 1s linear infinite;
           animation: spin 1s linear infinite;
+}
+
+.cursor-default {
+  cursor: default;
 }
 
 .cursor-pointer {
@@ -2022,6 +2054,16 @@ video {
   border-color: rgba(156, 163, 175, var(--tw-border-opacity));
 }
 
+.border-gray-500 {
+  --tw-border-opacity: 1;
+  border-color: rgba(107, 114, 128, var(--tw-border-opacity));
+}
+
+.border-gray-700 {
+  --tw-border-opacity: 1;
+  border-color: rgba(55, 65, 81, var(--tw-border-opacity));
+}
+
 .border-red-600 {
   --tw-border-opacity: 1;
   border-color: rgba(220, 38, 38, var(--tw-border-opacity));
@@ -2035,6 +2077,10 @@ video {
 .hover\:border-gray-300:hover {
   --tw-border-opacity: 1;
   border-color: rgba(209, 213, 219, var(--tw-border-opacity));
+}
+
+.bg-transparent {
+  background-color: transparent;
 }
 
 .bg-black {
@@ -2155,6 +2201,11 @@ video {
 .hover\:bg-gray-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgba(75, 85, 99, var(--tw-bg-opacity));
+}
+
+.hover\:bg-gray-700:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgba(55, 65, 81, var(--tw-bg-opacity));
 }
 
 .hover\:bg-green-500:hover {
@@ -2333,6 +2384,10 @@ video {
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.p-5 {
+  padding: 1.25rem;
 }
 
 .p-8 {
@@ -2741,6 +2796,11 @@ video {
   color: rgba(42, 96, 149, var(--tw-text-opacity));
 }
 
+.hover\:text-white:hover {
+  --tw-text-opacity: 1;
+  color: rgba(255, 255, 255, var(--tw-text-opacity));
+}
+
 .hover\:text-gray-100:hover {
   --tw-text-opacity: 1;
   color: rgba(243, 244, 246, var(--tw-text-opacity));
@@ -2764,6 +2824,11 @@ video {
 .hover\:text-blue-500:hover {
   --tw-text-opacity: 1;
   color: rgba(59, 130, 246, var(--tw-text-opacity));
+}
+
+.hover\:text-iec-blue-hover:hover {
+  --tw-text-opacity: 1;
+  color: rgba(48, 106, 165, var(--tw-text-opacity));
 }
 
 .underline {
@@ -2954,6 +3019,11 @@ video {
 
 .shadow-2xl {
   --tw-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+.shadow-inner {
+  --tw-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 

@@ -5,6 +5,7 @@ const moment = require("moment");
 //My Requirements
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
 const checkStudentAuthenticated = require("../db/check-student-authenticated");
+const checkInterviewerAuthenticated = require("../db/check-interviewer-authenticated");
 const checkAnyoneAuthenticated = require("../db/check-anyone-authenticated");
 const {
   Quiz,
@@ -109,7 +110,7 @@ router.get("/edit/:quizId", checkAdminAuthenticated, (req, res) => {
   });
 });
 
-router.get("/quiz/state/:quizId", checkAdminAuthenticated, async (req, res) => {
+router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
   /*
     Target:
     [

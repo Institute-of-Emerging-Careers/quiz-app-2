@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../templates/global.ejs') %> <%-
     include('../../templates/react-includes.ejs') %>
-    <title>Orientation - Admin Panel</title>
+    <title>View Application Round - Admin Panel</title>
     <style>
       .quiz-card {
         flex-basis: 100%;
@@ -41,10 +41,18 @@
         <div class="mt-16">
           <h1 class="text-2xl">Welcome <%= myname %></h1>
         </div>
+        <input
+          type="hidden"
+          id="application-round-id-field"
+          value="<%= application_round_id %>"
+        />
         <div class="w-full" id="app"></div>
       </section>
     </div>
 
-    <script src="/js/orientation_home.js" type="text/babel"></script>
+    <script
+      src="/js/admin/application/view_round.js"
+      type="text/babel"
+    ></script>
   </body>
 </html>

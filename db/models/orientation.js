@@ -1,9 +1,6 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../connect");
 
-const { Quiz } = require("./quizmodel");
-const { Student } = require("./user");
-
 class Orientation extends Model {}
 
 Orientation.init(

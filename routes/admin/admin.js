@@ -4,14 +4,18 @@ const passport = require("passport");
 const moment = require("moment");
 
 // requirements
-const checkAdminAuthenticated = require("../db/check-admin-authenticated");
-const checkAdminAlreadyLoggedIn = require("../db/check-admin-already-logged-in");
+const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
+const checkAdminAlreadyLoggedIn = require("../../db/check-admin-already-logged-in");
 const orientationRouter = require("./orientation");
-const { Quiz } = require("../db/models/quizmodel.js");
-const { Invite } = require("../db/models/user");
+const interviewRouter = require("./interview");
+const applicationRouter = require("./application");
+const { Quiz } = require("../../db/models/quizmodel.js");
+const { Invite } = require("../../db/models/user");
 
 // middleware that is specific to this router
+router.use("/application", applicationRouter);
 router.use("/orientation", orientationRouter);
+router.use("/interview", interviewRouter);
 
 router.use((req, res, next) => {
   next();
@@ -30,6 +34,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
       all_quizzes[i].num_questions = total_questions;
     }
     const all_invites = await Invite.findAll({ include: [Quiz] });
+    console.log(req.url);
     res.render("admin/index.ejs", {
       myname: req.user.user.firstName,
       user_type: req.user.type,
@@ -38,6 +43,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
       site_domain_name: process.env.SITE_DOMAIN_NAME,
       moment: moment,
       query: req.query,
+      current_url: `/admin${req.url}`,
     });
   } catch (err) {
     res.sendStatus(500);

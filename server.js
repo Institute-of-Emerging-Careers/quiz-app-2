@@ -12,10 +12,10 @@ const cookieParser = require("cookie-parser");
 
 // routes
 const studentRouter = require("./routes/student");
-const adminRouter = require("./routes/admin");
+const adminRouter = require("./routes/admin/admin");
 const mailRouter = require("./routes/mail");
 const quizRouter = require("./routes/quiz");
-const orientationRouter = require("./routes/orientation");
+const applicationRouter = require("./routes/application");
 
 // My requirements
 const initializeDatabase = require("./db/initialize");
@@ -82,7 +82,7 @@ app.use("/student", studentRouter);
 app.use("/admin", adminRouter);
 app.use("/mail", mailRouter);
 app.use("/quiz", quizRouter);
-app.use("/orientation", orientationRouter);
+app.use("/application", applicationRouter);
 
 // Initializing Stuff
 initializePassport(passport);

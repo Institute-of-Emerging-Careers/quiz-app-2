@@ -1,11 +1,11 @@
-const { Student } = require("./models/user");
+const { Interviewer } = require("./models/interview");
 
-const getStudentByEmail = async (inputemail) => {
+const getInterviewerById = async (id) => {
   try {
     return (
-      await Student.findAll({
+      await Interviewer.findAll({
         where: {
-          email: inputemail,
+          id: id,
         },
         limit: 1,
       })
@@ -18,4 +18,4 @@ const getStudentByEmail = async (inputemail) => {
   }
 };
 
-module.exports = getStudentByEmail;
+module.exports = getInterviewerById;

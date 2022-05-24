@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../templates/global.ejs') %> <%-
     include('../../templates/react-includes.ejs') %>
-    <title>Orientation - Admin Panel</title>
+    <title>Cohort Applications - Admin Panel</title>
     <style>
       .quiz-card {
         flex-basis: 100%;
@@ -45,6 +45,9 @@
       </section>
     </div>
 
-    <script src="/js/orientation_home.js" type="text/babel"></script>
+    <script>
+      const site_domain_name = "<%=site_domain_name%>";
+    </script>
+    <script src="/js/application_home.js" type="text/babel"></script>
   </body>
 </html>

@@ -1,12 +1,22 @@
 // This file will initialize all Models so that the models and the database are in sync
 const sequelize = require("./connect");
 const bcrypt = require("bcrypt");
+const {
+  Interviewer,
+  InterviewerInvite,
+  InterviewRound,
+  InterviewerSlot,
+} = require("./models/interview");
 
 const initializeDatabase = async () => {
   try {
     alterandforce = false;
     // Sync models with database
     await sequelize.sync({ alter: alterandforce, force: alterandforce });
+    await Interviewer.sync({ alter: false });
+    await InterviewerInvite.sync({ alter: false });
+    await InterviewRound.sync({ alter: false });
+    await InterviewerSlot.sync({ alter: false });
     console.log("Sync complete.");
 
     if (alterandforce) {

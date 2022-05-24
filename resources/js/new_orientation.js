@@ -4,6 +4,9 @@ const useState = React.useState;
 const useContext = React.useContext;
 const useRef = React.useRef;
 const useMemo = React.useMemo;
+const orientation_id_value = document.getElementById(
+  "orientation-id-field"
+).value;
 
 const ContextProvider = (props) => {
   const [orientation_id, setOrientationId] = useState(-1);
@@ -186,7 +189,7 @@ const EmailForm = () => {
           </button>
           <button
             type="button"
-            className="w-full py-3 px-6 bg-blue-900 text-white mt-4 cursor-pointer hover:bg-blue-800"
+            className="w-full py-3 px-6 bg-iec-blue text-white mt-4 cursor-pointer hover:bg-iec-blue-hover"
             id="email-button"
             onClick={sendEmails}
           >
@@ -235,13 +238,20 @@ const NameForm = () => {
           students: students,
         }),
       }
-    ).then((response) => {
-      response.json().then((parsed_response) => {
-        if (parsed_response.success) {
-          setLoading(false);
-        }
+    )
+      .then((response) => {
+        response.json().then((parsed_response) => {
+          if (parsed_response.success) {
+            setLoading(false);
+          }
+        });
+      })
+      .catch((err) => {
+        setLoading(false);
+        alert(
+          "Something went wrong. Error code 01. Check your internet connection."
+        );
       });
-    });
   };
 
   return (
@@ -259,7 +269,7 @@ const NameForm = () => {
         ></input>
         <button
           type="submit"
-          className="ml-2 bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
+          className="ml-2 bg-green-500 hover:bg-green-600 text-white px-8 py-4 active:shadow-inner cursor-pointer"
         >
           {loading ? (
             <span>
@@ -288,206 +298,20 @@ const NameForm = () => {
   );
 };
 
-const StudentsList = () => {
-  const { orientation_id_object, orientation_name_object, students_object } =
-    useContext(MyContext);
+const StudentsListWrapper = () => {
+  const { students_object } = useContext(MyContext);
 
-  let [students, setStudents] = students_object;
-
-  return (
-    <div>
-      <h2 className="text-base text-center mb-4">
-        <b>List of Students invited to this Orientation</b>
-      </h2>
-      {students.length > 0 ? (
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students
-              .filter((student) => student.added)
-              .map((student) => (
-                <tr key={student.id}>
-                  <td className="border px-4 py-2">{student.name}</td>
-                  <td className="border px-4 py-2">{student.email}</td>
-                  <td className="border px-4 py-2">
-                    {student.percentage_score}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No students added yet.</p>
-      )}
-    </div>
-  );
+  return <StudentsList students_object={students_object} title="Orientation" />;
 };
 
-const NewStudentAdder = () => {
-  const { orientation_id_object, orientation_name_object, students_object } =
-    useContext(MyContext);
-
-  const [students, setStudents] = students_object;
-  const [orientation_id, setOrientationId] = orientation_id_object;
-  const [loading, setLoading] = useState(false);
-  const [filter_min_score, setFilterMinScore] = useState(0);
-
-  const student_id_to_array_index_map = useRef({});
-  const section2 = useRef(null);
-
-  useEffect(() => {
-    const orientation_id_field = document.getElementById(
-      "orientation-id-field"
-    );
-    setLoading(true);
-    fetch(`/admin/orientation/all-students/${orientation_id_field.value}`).then(
-      (raw_response) => {
-        raw_response
-          .json()
-          .then((response) => {
-            if (response.success) {
-              for (let i = 0; i < response.data.length; i++) {
-                student_id_to_array_index_map.current[response.data[i].id] = i;
-              }
-              setStudents(response.data);
-            } else {
-              alert(
-                "Something went wrong while getting a list of candidates. Error code 01."
-              );
-            }
-          })
-          .catch((err) => {
-            alert(
-              "Something went wrong while getting a list of candidates. Error code 02."
-            );
-          })
-          .finally(() => {
-            setLoading(false);
-          });
-      }
-    );
-  }, [orientation_id]);
-
-  const setAllCheckboxes = (new_val) => {
-    setStudents((cur) => {
-      let copy = cur.slice();
-      for (let i = 0; i < copy.length; i++) {
-        if (copy[i].percentage_score >= filter_min_score) {
-          copy[i].added = new_val;
-        }
-      }
-      return copy;
-    });
-  };
-
-  const selectAll = () => {
-    setAllCheckboxes(true);
-    section2.current.scrollIntoView();
-  };
-
-  const deSelectAll = () => {
-    setAllCheckboxes(false);
-    section2.current.scrollIntoView();
-  };
-
+const NewStudentsAdderWrapper = () => {
+  const { students_object } = useContext(MyContext);
   return (
-    <div>
-      <h2 className="text-base text-center mb-2">
-        <b>List of Candidates that can be added to this Orientation</b>
-      </h2>
-
-      <div ref={section2}>
-        <div className="grid grid-cols-4 items-center">
-          <div className="col-span-2">
-            <label htmlFor="filter_min_score">Filter by Minimum Score: </label>
-            <input
-              type="number"
-              min="0"
-              max="100"
-              increment="1"
-              value={filter_min_score}
-              name="filter_min_score"
-              onChange={(e) => {
-                setFilterMinScore(e.target.value);
-              }}
-              className="ml-2 p-2 w-72 border"
-            ></input>
-            %
-          </div>
-          <a
-            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
-            onClick={selectAll}
-          >
-            <i className="fas fa-check-square"></i> Click here to select all
-            below
-          </a>
-          <a
-            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
-            onClick={deSelectAll}
-          >
-            <i className="far fa-square"></i> Click here to deselect all below
-          </a>
-        </div>
-        <br></br>
-        {loading ? (
-          <i className="fas fa-spinner animate-spin text-lg"></i>
-        ) : (
-          <div></div>
-        )}
-        <table className="w-full text-left px-2">
-          <thead>
-            <tr className="py-4">
-              <th>Selection</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Age</th>
-              <th>Gender</th>
-              <th>Score (%)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {students
-              .filter((student) => student.percentage_score >= filter_min_score)
-              .map((student) => (
-                <tr className="py-2" key={student.id}>
-                  <td className="border px-4 py-2">
-                    <input
-                      type="checkbox"
-                      id={student.id}
-                      checked={student.added}
-                      onChange={() => {
-                        setStudents((cur) => {
-                          let copy = cur.slice();
-                          copy[
-                            student_id_to_array_index_map.current[student.id]
-                          ].added =
-                            !copy[
-                              student_id_to_array_index_map.current[student.id]
-                            ].added;
-                          return copy;
-                        });
-                      }}
-                    ></input>
-                  </td>
-                  <td className="border px-4 py-2">{student.name}</td>
-                  <td className="border px-4 py-2">{student.email}</td>
-                  <td className="border px-4 py-2">{student.age}</td>
-                  <td className="border px-4 py-2">{student.gender}</td>
-                  <td className="border px-4 py-2">
-                    {student.percentage_score}
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <NewStudentAdder
+      all_students_api_endpoint_url={`/admin/orientation/all-students/${orientation_id_value}`}
+      students_object={students_object}
+      title="Orientation"
+    />
   );
 };
 
@@ -498,11 +322,11 @@ const App = () => {
         <NameForm />
       </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
-        <StudentsList />
+        <StudentsListWrapper />
       </div>
       <hr></hr>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen text-sm">
-        <NewStudentAdder />
+        <NewStudentsAdderWrapper />
       </div>
     </ContextProvider>
   );

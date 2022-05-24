@@ -6,21 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../templates/global.ejs') %>
     <%- include('../../templates/react-includes.ejs') %>
-    <title>Create New Orientation - Admin Panel</title>
+    <title>Create New Interview Round - Admin Panel</title>
   </head>
 
   <body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
     <%- include('../../templates/header.ejs') %>
-    <h1 class="text-2xl"><a href="/admin/orientation"><i class="fas fa-home"></i></a> New Orientation</h1>
-    
-    <input id="orientation-name-field" type="hidden" class="hidden" value="<%=orientation_name%>"></input>
-    <input id="orientation-id-field" type="hidden" class="hidden" value="<%=orientation_id%>"></input>
+    <input id="interview-round-name-field" type="hidden" class="hidden" value="<%=interview_round_name%>"></input>
+    <input id="interview-round-id-field" type="hidden" class="hidden" value="<%=interview_round_id%>"></input>
+  
     <section
       id="app"
     ></section>
 
     <script src="/js/react-components/NewStudentAdder.js" type="text/babel" defer></script>
     <script src="/js/react-components/StudentsList.js" type="text/babel" defer></script>
-    <script src="/js/new_orientation.js" type="text/babel" defer></script>
+    <script src="/js/new_interview.js" type="text/babel"></script>
   </body>
 </html>
