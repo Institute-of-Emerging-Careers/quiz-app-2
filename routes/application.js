@@ -88,11 +88,11 @@ router.post(
         if (found != null) return found;
         if (cur != null) return cur;
       }, null);
-      console.log(student_found);
+
       const old_application = await student_found.getApplications({
         where: { ApplicationRoundId: req.body.application_round_id },
       });
-      if (old_application != null) {
+      if (old_application.length > 0) {
         res.json({ exists: true, type: "already_applied" });
         return;
       }

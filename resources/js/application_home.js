@@ -232,6 +232,13 @@ const App = () => {
           NEW
         </button>
       </h2>
+      {show_copied_box ? (
+        <div className="text-xs absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 w-max h-max bg-white px-4 py-2 shadow-md text-gray-800">
+          Linked Copied to Clipboard!
+        </div>
+      ) : (
+        <span></span>
+      )}
       <div className="flex flex-wrap justify-start gap-y-10 gap-x-10">
         {application_rounds.length == 0 ? (
           <p>No application rounds to show.</p>
@@ -264,16 +271,6 @@ const App = () => {
                   title="Copy Link"
                 >
                   <i className="fas fa-link" data-id={application_round.id}></i>
-                  {show_copied_box ? (
-                    <div
-                      className="text-xs absolute left-2 top-2 w-max bg-white px-4 py-2 shadow-md text-gray-800"
-                      data-id={application_round.id}
-                    >
-                      Linked Copied to Clipboard!
-                    </div>
-                  ) : (
-                    <span></span>
-                  )}
                 </a>
                 <a
                   className="text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"
