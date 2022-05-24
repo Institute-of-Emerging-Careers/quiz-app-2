@@ -1,0 +1,11 @@
+.bg-white {
+    background-color:white;
+}
+
+.hidden {
+    display:none;
+}
+
+.hidden-imp {
+    display:none !important;
+}

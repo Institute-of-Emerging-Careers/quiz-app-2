@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+
+    <title>Orientation - Admin Panel</title>
+    <style>
+      .mytable td,
+      th {
+        padding: 0.5rem 1rem;
+      }
+
+      .hidden-imp {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
+    <%- include('../../templates/header-7-by-8.ejs') %>
+
+    <div class="flex items-center content-center align-middle">
+      <section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 mt-16 fixed w-2/8 md:w-1/8 top-0" id="side-menu">        
+        <div class="cursor-pointer">
+          <a class="px-4 py-2 md:py-4 border-t border-white bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessment</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin/orientation"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 2: Orientation</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin/interview"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 3: Interviews</span>
+          </span></a>
+          <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/admin/onboarding"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 4: Onboarding</span>
+          </span></a>
+        </div>
+      </section>
+      <section class="p-10 w-6/8 md:w-7/8 mx-auto mr-0" id="main-section">
+        <div
+          id="assessments-box"
+          class="bg-white w-7/8 rounded-lg m-auto mt-16"
+        >
+          <div
+            id="assessments-title-box"
+            class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg"
+          >
+            Orientation Status
+          </div>
+          <div
+            id="assessments-box-content"
+            class="px-10 py-8 overflow-x-auto grid grid-cols-5"
+          >
+            <div class="grid grid-cols-1 col-span-2">
+              <h1 class="col-span-1 text-iec-blue text-6xl">0</h1>
+              <p class="col-span-1">students invited</p>
+              <div class="grid grid-cols-2">
+                <a
+                  href="#"
+                  class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                  >Invite New Students</a
+                >
+                <a
+                  href="#"
+                  class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                  >View Invited Students</a
+                >
+              </div>
+            </div>
+            <div class="col-span-1"></div>
+            <div class="grid grid-cols-1 col-span-2">
+              <h1 class="col-span-1 text-iec-blue text-6xl">0</h1>
+              <p class="col-span-1">students attended</p>
+              <div class="grid grid-cols-2">
+                <a
+                  href="#"
+                  class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                  >Update Orientation Attendance</a
+                >
+                <a
+                  href="#"
+                  class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                  >View Orientation Attendance</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </body>
+</html>

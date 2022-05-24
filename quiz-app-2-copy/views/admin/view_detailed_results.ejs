@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../templates/global.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>View Detailed Results - Admin Panel</title>
+    <style>
+        #score-table-body > tr:nth-child(even) {
+            background-color:#f6f6f6;
+        }
+    </style>
+
+</head>
+<body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../templates/header.ejs') %>
+    <% data = data_obj.data %>
+
+    <h1 class="text-2xl"><%= data_obj.quiz_title %> - Results</h1>
+    <section class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen text-xs">
+        <% if (data.length!=0) {
+
+            %>
+        <div class="mb-2 flex justify-between items-center md:flex-row flex-col gap-y-4">
+            <select id="filter-selector" class="px-4 py-2">
+                <option value="" selected disabled hidden>Choose a filter</option>
+                <option value="all">Show all students (whether or not they have started the assignment)</option>   
+                <option value="all-started">Show all students who have started the assignment</option>
+                <option value="completed-only">Only show students who have completed the assignment</option> 
+                <option value="not-started-only">Only show students who have <b>not</b> started the assignment yet</option> 
+                <option value="not-completed-only">Only show students who have not completed the assessment yet</option>
+            </select>
+            <div class="flex items-center gap-x-2 max-w-full">
+                    <label for="minimum_percentage">Show students above percentage:</label>
+                    <input type="number" id="minimum_percentage" name="minimum_percentage" min="0" max="99" step="1" value="0" class="border pl-2 py-1 w-12">
+            </div>
+            <a href="/quiz/<%=data_obj.quiz_id%>/analysis" class="self-end text-blue-600 mb-2 mr-4"><i class="fas fa-chart-bar"></i> <span class="underline hover:no-underline">View Analysis</span></a>
+            <a href="#" onclick="download_table_as_csv('results_table');" class="self-end text-blue-600 mb-2 mr-4"><i class="fas fa-download"></i> <span class="underline hover:no-underline">Download as CSV</span></a>
+        </div>
+        <div class="max-w-full overflow-x-scroll">
+        <table class='w-full text-left mx-auto' id='results_table'>
+            <thead class="bg-iec-blue text-white w-full">
+                <tr class="w-full header_row">
+                    <th class="py-3 px-6">No.</th>
+                    <th class="py-3 px-6">Student Name</th>
+                    <th class="py-3 px-6">Student Gender</th>
+                    <th class="py-3 px-6">Student Age</th>
+                    <th class="py-3 px-6">Student Email</th>
+                    <th class="py-3 px-6">Student CNIC</th>
+                    <th class="py-3 px-6">Student Phone</th>
+                    <th class="py-3 px-6">Student City</th>
+                    <th class="py-3 px-6">Student Address</th>
+                    <% const quiz_sections = data_obj.quiz_sections
+                        quiz_sections.forEach(section=>{%>
+                            <th class="py-3 px-6"><%=section.section_title%> Student Score<br>(out of <%= section.maximum_score %>)</th>
+                            <th class="py-3 px-6">Percentage Marks in <%=section.section_title%></th>
+                            <th class="py-3 px-6"><%=section.section_title%> Time Taken<br><%= section.maximum_time %></th>
+                            <th class="py-3 px-6"><%=section.section_title%> Submission Time (KHI)</th>
+                        <%})
+                    %>
+                    <th class="py-3 px-6">Total Score<br>(out of <%=data_obj.quiz_total_score%>)</th>
+                    <th class="py-3 px-6">Percentage Total Score</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="w-full" id='score-table-body'>
+                <% 
+                let sr_no = 0;
+                data.forEach((student_row) => 
+                {
+                    sr_no++;
+                    if (student_row.sections.length > 0) {
+                %>
+                <tr class="solved <% if (student_row.completed) {%> completed_all_sections <%} %>">
+                    <td class="py-3 px-6"><%= sr_no %></td>
+                    <td class="py-3 px-6"><%=student_row.student_name%></td>
+                    <td class="py-3 px-6"><%=student_row.student_gender%></td>
+                    <td class="py-3 px-6"><%=student_row.student_age%></td>
+                    <td class="py-3 px-6"><%=student_row.student_email%></td>
+                    <td class="py-3 px-6"><%=student_row.student_cnic%></td>
+                    <td class="py-3 px-6"><%=student_row.student_phone%></td>
+                    <td class="py-3 px-6"><%=student_row.student_city%></td>
+                    <td class="py-3 px-6"><%=student_row.student_address%></td>
+                        <%student_row.sections.forEach(section=>{
+                            if (section.status == "Attempted") {
+                            %>
+                                <td class="py-3 px-6"><%=section.section_score%></td>
+                                <td class="py-3 px-6"><%=section.percentage_score%>%</td>
+                                <td class="py-3 px-6"><%=section.duration%></td>
+                                <td class="py-3 px-6 endtime"><%= section.end_time %></td>
+                            <%
+                            } else {%>
+                                <td class="py-3 px-6">Not Attempted Yet</td>
+                                <td class="py-3 px-6">0</td>
+                                <td class="py-3 px-6">N/A</td>
+                                <td class="py-3 px-6 endtime">0</td>
+                            <%}
+                        })
+                    %>
+                    <td class="py-3 px-6"><%= student_row.total_score %></td>
+                    <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
+
+                <% } else {
+                    // this section is to print those students who have not solved any sections
+                %>
+                <tr class="unsolved">
+                    <td class="py-3 px-6"><%= sr_no %></td>
+                    <td class="py-3 px-6"><%=student_row.student_name%></td>
+                    <td class="py-3 px-6"><%=student_row.student_gender%></td>
+                    <td class="py-3 px-6"><%=student_row.student_age%></td>
+                    <td class="py-3 px-6"><%=student_row.student_email%></td>
+                    <td class="py-3 px-6"><%=student_row.student_cnic%></td>
+                    <td class="py-3 px-6"><%=student_row.student_phone%></td>
+                    <td class="py-3 px-6"><%=student_row.student_city%></td>
+                    <td class="py-3 px-6"><%=student_row.student_address%></td>
+                        <%quiz_sections.forEach(section=>{
+                            %>
+                                <td class="py-3 px-6">Not Attempted Yet</td>
+                                <td class="py-3 px-6">0</td>
+                                <td class="py-3 px-6">N/A</td>
+                                <td class="py-3 px-6 endtime">0</td>
+                            <%
+                        })
+                    %>
+                    <td class="py-3 px-6"><%= student_row.total_score %></td>
+                    <td class="py-3 px-6"><span class="total_percentage"><%= student_row.percentage_total %></span>%</td>
+
+                <%
+                    }
+                %>
+                    <td class="py-3 px-6"><a class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline" href="/reset-assignment/student/<%=student_row.student_id%>/quiz/<%=quiz_id%>" target="_blank">Reset Assignment</a></td>
+                    </tr>
+                <%
+                    }) 
+                %>
+            </tbody>
+        </table>
+        </div>
+        <%} else {%>
+            <p>No results found.</p>    
+        <%} %>
+    </section>
+
+    <script src="/js/view_results.js" async defer></script>
+</body>
+</html>

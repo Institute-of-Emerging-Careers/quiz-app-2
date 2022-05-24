@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('./global.ejs') %>
+    <title>Message - IEC LCMS</title>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-green-300 to-blue-400 min-h-screen h-screen"
+  >
+    <div class="bg-white py-10 w-8/12 shadow-2xl m-auto mt-16 p-10 text-center">
+      <p class="text-lg"><%= additional_info %></p>
+      <br />
+      <p><%= error_message %></p>
+      <a
+        href="<%= action_link %>"
+        class="text-blue-600 underline hover:no-underline"
+        ><%= action_link_text %></a
+      >
+    </div>
+  </body>
+</html>

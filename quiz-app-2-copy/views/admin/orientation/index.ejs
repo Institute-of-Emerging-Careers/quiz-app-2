@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %> <%-
+    include('../../templates/react-includes.ejs') %>
+    <title>Orientation - Admin Panel</title>
+    <style>
+      .quiz-card {
+        flex-basis: 100%;
+      }
+      @media screen and (min-width: 800px) {
+        .quiz-card {
+          flex-basis: 40%;
+        }
+      }
+      @media screen and (min-width: 1100px) {
+        .quiz-card {
+          flex-basis: 21%;
+        }
+      }
+      .hidden-imp {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-gray-200">
+    <%- include('../../templates/header-7-by-8.ejs') %>
+
+    <div>
+      <section
+        class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 fixed w-2/8 md:w-1/8 mt-16"
+        id="side-menu"
+      >
+        <%- include("../../templates/admin-sidemenu.ejs") %>
+      </section>
+
+      <section class="p-10 w-6/8 md:w-7/8 float-right mr-0" id="main-section">
+        <div class="mt-16">
+          <h1 class="text-2xl">Welcome <%= myname %></h1>
+        </div>
+        <div class="w-full" id="app"></div>
+      </section>
+    </div>
+
+    <script src="/js/orientation_home.js" type="text/babel"></script>
+  </body>
+</html>

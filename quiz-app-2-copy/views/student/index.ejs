@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../templates/global.ejs') %>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.min.js"
+      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+      crossorigin="anonymous"
+    ></script>
+    <title>Home - Student Panel</title>
+    <style>
+      .mytable td,
+      th {
+        padding: 0.5rem 1rem;
+      }
+
+      .hidden-imp {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
+    <%- include('../templates/header-7-by-8.ejs') %>
+
+    <div
+      id="modal"
+      class="absolute inset-0 bg-black bg-opacity-60 hidden-imp z-20"
+    >
+      <div
+        class="absolute rounded-lg z-10 top-16 w-3/4 bg-white translate-x-2/4 shadow-2xl pb-2"
+        style="left: 12.5%"
+      >
+        <div
+          class="bg-iec-blue text-white py-3 px-3 grid grid-cols-2 content-center rounded-t-lg"
+        >
+          <h3 class="text-xl col-auto justify-self-start self-center">
+            <i class="fas fa-link text-xl text-white"></i>
+            <span id="modal-quiz-title">Quiz Details</span>
+          </h3>
+          <i
+            class="fas fa-times text-white cursor-pointer col-auto justify-self-end self-center"
+            onClick="hideModal()"
+          ></i>
+        </div>
+        <div class="p-8 overflow-x-auto">
+          <p>
+            This quiz has <span id="modal-quiz-num-sections"></span> sections.
+            You can attempt each section separately. The details about each
+            section are given in the table below:
+          </p>
+          <br />
+          <table class="w-full text-left mytable">
+            <thead class="bg-gray-200">
+              <tr>
+                <th>Section Title</th>
+                <th>Number of Questions in Section</th>
+                <th>Time Allowed for Section</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="modal-section-table-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center content-center align-middle">
+      <%- include('../templates/student-sidemenu.ejs') %>
+      <section class="p-10 w-6/8 md:w-7/8 mx-auto mr-0" id="main-section">
+        <div
+          id="assessments-box"
+          class="bg-white w-7/8 rounded-lg m-auto mt-16"
+        >
+          <div
+            id="assessments-title-box"
+            class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg"
+          >
+            My Assessments
+          </div>
+          <div id="assessments-box-content" class="px-10 py-8 overflow-x-auto">
+            <% if (query.success=="true") {%>
+            <p
+              class="bg-green-500 py-2 px-2 w-full text-white"
+              id="quiz-success"
+            >
+              Quiz Submitted Successfully
+            </p>
+            <%} %>
+            <p>The following is a list of your assessments:</p>
+            <br />
+            <table class="w-full text-left mytable">
+              <thead class="bg-gray-200">
+                <tr>
+                  <th>Assessment Title</th>
+                  <th>Number of Sections</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="assessments-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="/js/student-panel.js" defer></script>
+  </body>
+</html>
