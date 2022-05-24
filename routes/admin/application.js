@@ -80,4 +80,40 @@ router.delete(
   }
 );
 
+router.get(
+  "/view/:application_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const application_round = await ApplicationRound.findOne({
+        where: { id: req.params.application_round_id },
+      });
+      if (application_round == null) {
+        res.status(404).render("templates/error.ejs", {
+          additional_info:
+            "https://" +
+            process.env.SITE_DOMAIN_NAME +
+            "/application/view/" +
+            req.params.application_round_id,
+          error_message: "The above link is invalid.",
+          action_link: "/admin/application",
+          action_link_text: "Click here to go to the Applications home page.",
+        });
+        return;
+      }
+
+      res.render("admin/application/view_round.ejs", {
+        application_round_id: req.params.application_round_id,
+        myname: req.user.user.firstName,
+        user_type: req.user.type,
+        env: process.env.NODE_ENV,
+        current_url: `/admin/application${req.url}`,
+      });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
 module.exports = router;
