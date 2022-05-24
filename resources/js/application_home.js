@@ -107,11 +107,17 @@ const App = () => {
     })
       .then((response) => {
         if (response.ok) {
-          setCourses((cur) => [
-            ...cur,
-            { title: new_course_title, checked: false },
-          ]);
-          setNewCourseTitle("");
+          response.json().then((parsed_response) => {
+            setCourses((cur) => [
+              ...cur,
+              {
+                id: parsed_response.id,
+                title: parsed_response.title,
+                checked: false,
+              },
+            ]);
+            setNewCourseTitle("");
+          });
         }
       })
       .catch((err) => {
