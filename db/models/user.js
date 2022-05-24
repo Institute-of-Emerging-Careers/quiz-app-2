@@ -414,6 +414,7 @@ InterviewerSlot.belongsTo(InterviewerInvite);
 
 ApplicationRound.belongsToMany(Course, {
   through: ApplicationRoundCourseJunction,
+  uniqueKey: "ApplicationRoundCourseKey",
 });
 Course.belongsToMany(ApplicationRound, {
   through: ApplicationRoundCourseJunction,
