@@ -30,7 +30,11 @@ function handleForm(e) {
         $(`#${response.field}`).addClass("is-invalid").focus();
         $(`#${response.field}-error-message`).text(response.message);
       });
-    }
+    } else if (raw_response.status == 403) {
+      alert(
+        "You have already applied for this cohort before. You cannot apply again."
+      );
+    } else alert("Something unknown went wrong. Error code 07.");
   });
 }
 
