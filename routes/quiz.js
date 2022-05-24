@@ -110,7 +110,7 @@ router.get("/edit/:quizId", checkAdminAuthenticated, (req, res) => {
   });
 });
 
-router.get("/quiz/state/:quizId", checkAdminAuthenticated, async (req, res) => {
+router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
   /*
     Target:
     [
