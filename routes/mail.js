@@ -97,7 +97,7 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/test", async (req,res) => {
+router.get("/test", checkAdminAuthenticated, async (req, res) => {
   try {
     await sendHTMLMail("mail@iec.org.pk", "Node Test", {
       heading: "Abay Heading",
@@ -106,10 +106,10 @@ router.get("/test", async (req,res) => {
       button_text: "Button Text",
       button_link: "https://www.google.com",
     });
-    res.sendStatus(200)
-  } catch(err) {
-    console.log(err)
-    res.sendStatus(500)
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 
