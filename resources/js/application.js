@@ -1,3 +1,5 @@
+const list_of_fields = ["firstName", "lastName", "email", "cnic"];
+
 function handleForm(e) {
   $("#submit-spinner").removeClass("hidden-imp");
   e.preventDefault();
@@ -38,6 +40,12 @@ function handleForm(e) {
   });
 }
 
+function resetAllErrors(list_of_fields) {
+  list_of_fields.forEach((field) => {
+    $(`#${field}-error-message`).text("");
+  });
+}
+
 document
   .getElementById("application-form")
   .addEventListener("submit", handleForm);
@@ -64,6 +72,7 @@ const checkIfUserExists = () => {
   })
     .then((raw_response) => {
       $("#step-1-next-button-spinner").addClass("hidden-imp");
+      resetAllErrors(list_of_fields);
       if (raw_response.ok) {
         raw_response.json().then((response) => {
           if (response.exists) {
