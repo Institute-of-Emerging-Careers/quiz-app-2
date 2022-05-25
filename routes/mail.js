@@ -97,57 +97,20 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/test", () => {
-  // Set the region
-  AWS.config.update({ region: "us-east" });
-
-  // Create sendEmail params
-  var params = {
-    Destination: {
-      /* required */
-      CcAddresses: [],
-      ToAddresses: ["mail@iec.org.pk"],
-    },
-    Message: {
-      /* required */
-      Body: {
-        /* required */
-        Html: {
-          Charset: "UTF-8",
-          Data: "<h2>Testing Heading</h2><p>Testing paragraph paragraph.</p>",
-        },
-        Text: {
-          Charset: "UTF-8",
-          Data: "",
-        },
-      },
-      Subject: {
-        Charset: "UTF-8",
-        Data: "Test email",
-      },
-    },
-    Source: "mail@iec.org.pk" /* required */,
-    ReplyToAddresses: [
-      "mail@iec.org.pk",
-      /* more items */
-    ],
-  };
-
-  // Create the promise and SES service object
-  var sendPromise = new AWS.SES({ apiVersion: "2010-12-01" })
-    .sendEmail(params)
-    .promise();
-
-  // Handle promise's fulfilled/rejected states
-  sendPromise
-    .then(function (data) {
-      console.log(data.MessageId);
-      res.sendStatus(200);
-    })
-    .catch(function (err) {
-      console.error(err, err.stack);
-      res.sendStatus(500);
+router.get("/test", async (req,res) => {
+  try {
+    await sendHTMLMail("mail@iec.org.pk", "Node Test", {
+      heading: "Abay Heading",
+      inner_text: "lorem lorem",
+      button_announcer: "Ye le button",
+      button_text: "Button Text",
+      button_link: "https://www.google.com",
     });
+    res.sendStatus(200)
+  } catch(err) {
+    console.log(err)
+    res.sendStatus(500)
+  }
 });
 
 module.exports = router;

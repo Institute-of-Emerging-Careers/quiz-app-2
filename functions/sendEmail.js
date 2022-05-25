@@ -1,6 +1,48 @@
 const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const { Student } = require("../db/models/user");
+var AWS = require("aws-sdk");
+
+const AWSSendEmail = (html, mailOptions) => {
+  // Set the region
+  AWS.config.update({ accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID, secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY, region: process.env.AWS_SES_REGION });
+
+  // Create sendEmail params
+  var params = {
+    Destination: {
+      /* required */
+      CcAddresses: [],
+      ToAddresses: [mailOptions.to],
+    },
+    Message: {
+      /* required */
+      Body: {
+        /* required */
+        Html: {
+          Charset: "UTF-8",
+          Data: html,
+        },
+      },
+      Subject: {
+        Charset: "UTF-8",
+        Data: mailOptions.subject,
+      },
+    },
+    Source: mailOptions.from /* required */,
+    ReplyToAddresses: [
+      mailOptions.from,
+      /* more items */
+    ],
+  };
+
+  // Create the promise and SES service object
+  var promise = new AWS.SES({ apiVersion: "2010-12-01" })
+    .sendEmail(params)
+    .promise();
+
+  // Handle promise's fulfilled/rejected states
+  return promise
+}
 
 async function sendTextMail(recepient, subject, text) {
   if (process.env.NODE_ENV == "production") {
@@ -55,21 +97,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
       attributes: ["hasUnsubscribedFromEmails"],
     });
     if (student != null && (force_send || !student.hasUnsubscribedFromEmails)) {
-      var transporter = nodemailer.createTransport({
-        service: "Outlook365",
-        auth: {
-          user: "mail@iec.org.pk",
-          pass: "Jah29535",
-        },
-        tls: {
-          ciphers: "SSLv3",
-        },
-        pool: true,
-        maxConnections: 1,
-        rateDelta: 60000,
-        rateLimit: 30,
-      });
-
+      // sending email
       const html = await ejs.renderFile(
         __dirname + "/../views/templates/mail-template-1.ejs",
         ejs_obj
@@ -82,9 +110,17 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
         html: html,
       };
 
-      return transporter.sendMail(mailOptions);
+      return AWSSendEmail(html, mailOptions)
+      /*promise.then(function (data) {
+        console.log(data.MessageId);
+        res.sendStatus(200);
+      })
+      .catch(function (err) {
+        console.error(err, err.stack);
+        res.sendStatus(500);
+      });*/
     } else {
-      console.log(recepient, "email not allowed.");
+      console.log(recepient, "email does not exist in database or has unsubscribed.");
       return new Promise((resolve) => {
         resolve();
       });
