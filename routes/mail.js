@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+// Load the AWS SDK for Node.js
+var AWS = require("aws-sdk");
 
 // My requirements
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
@@ -93,6 +95,59 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
       action_link_text: "Click here to go to the IEC LCMS home page.",
     });
   }
+});
+
+router.get("/test", () => {
+  // Set the region
+  AWS.config.update({ region: "us-east" });
+
+  // Create sendEmail params
+  var params = {
+    Destination: {
+      /* required */
+      CcAddresses: [],
+      ToAddresses: ["mail@iec.org.pk"],
+    },
+    Message: {
+      /* required */
+      Body: {
+        /* required */
+        Html: {
+          Charset: "UTF-8",
+          Data: "<h2>Testing Heading</h2><p>Testing paragraph paragraph.</p>",
+        },
+        Text: {
+          Charset: "UTF-8",
+          Data: "",
+        },
+      },
+      Subject: {
+        Charset: "UTF-8",
+        Data: "Test email",
+      },
+    },
+    Source: "mail@iec.org.pk" /* required */,
+    ReplyToAddresses: [
+      "mail@iec.org.pk",
+      /* more items */
+    ],
+  };
+
+  // Create the promise and SES service object
+  var sendPromise = new AWS.SES({ apiVersion: "2010-12-01" })
+    .sendEmail(params)
+    .promise();
+
+  // Handle promise's fulfilled/rejected states
+  sendPromise
+    .then(function (data) {
+      console.log(data.MessageId);
+      res.sendStatus(200);
+    })
+    .catch(function (err) {
+      console.error(err, err.stack);
+      res.sendStatus(500);
+    });
 });
 
 module.exports = router;
