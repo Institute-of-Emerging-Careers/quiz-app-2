@@ -149,10 +149,10 @@ router.post(
         await student.validate();
         student = await student.save();
       } else {
-        const old_application = await student_found.getApplications({
-          where: { ApplicationRoundId: req.body.application_round_id },
+        const old_application = await student.getApplications({
+          where: { ApplicationRoundId: req.params.application_round_id },
         });
-        if (old_application != null) {
+        if (old_application.length > 0) {
           res.sendStatus(403);
           return;
         }

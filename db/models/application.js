@@ -269,11 +269,6 @@ Application.init(
       type: DataTypes.BOOLEAN,
       allowNull: true,
     },
-    was_emailed_about_assessment: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false,
-    },
   },
   {
     sequelize,

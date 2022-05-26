@@ -18,7 +18,7 @@ const initializeDatabase = async () => {
     alterandforce = false;
     // Sync models with database
     await sequelize.sync({ alter: alterandforce, force: alterandforce });
-    await ApplicationRoundCourseJunction.sync({ force: false });
+    await ApplicationRoundCourseJunction.sync({ alter: false, force: false });
     await Application.sync({ alter: false, force: false });
     await ApplicationRound.sync({ alter: false, force: false });
     await Interviewer.sync({ alter: false });

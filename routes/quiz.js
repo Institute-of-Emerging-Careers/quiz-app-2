@@ -1285,4 +1285,36 @@ router.get("/delete/:id", checkAdminAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const quiz = await Quiz.findOne({ where: { id: req.params.quiz_id } });
+    if (quiz == null) {
+      res.render("templates/error.ejs", {
+        additional_info: "Incorrect URL",
+        error_message:
+          "The quiz mentioned in the URL does not exist. Please return to the admin home page and try again.",
+        action_link: "/admin",
+        action_link_text: "Click here to go to admin home page.",
+      });
+      return;
+    }
+
+    res.render("admin/quiz/assign.ejs", {
+      quiz_id: req.params.quiz_id,
+      myname: req.user.user.firstName,
+      user_type: req.user.type,
+      env: process.env.NODE_ENV,
+      current_url: `/admin/application${req.url}`,
+    });
+  } catch (err) {
+    res.render("templates/error.ejs", {
+      additional_info: "Something went wrong",
+      error_message: "Please talk to the IT Team about this.",
+      action_link: "/admin",
+      action_link_text: "Click here to go to admin home page.",
+    });
+    console.log(err);
+  }
+});
+
 module.exports = router;
