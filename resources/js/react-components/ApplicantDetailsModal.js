@@ -75,7 +75,7 @@ const ApplicantDetailsModal = (props) => {
       {show_modal > -1 ? (
         <div
           id="modal"
-          className="h-screen w-full inset-0 absolute z-30 bg-black bg-opacity-60"
+          className="h-screen w-full inset-0 fixed z-30 bg-black bg-opacity-60"
         >
           <div className=" h-90vh mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2">
             <div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">

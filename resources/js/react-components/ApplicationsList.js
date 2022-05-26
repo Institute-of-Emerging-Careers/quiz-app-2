@@ -3,9 +3,8 @@ const ApplicationsList = (props) => {
   const setShowModal = props.setShowModal;
   return (
     <div>
-      <ApplicantDetailsModal></ApplicantDetailsModal>
       <h2 className="text-base text-center mb-4">
-        <b>List of Applications</b>
+        <b>List of Applications in this Round</b>
       </h2>
       {applications.length > 0 ? (
         <table className="w-full text-left text-sm">
@@ -46,7 +45,7 @@ const ApplicationsList = (props) => {
           </tbody>
         </table>
       ) : (
-        <p>No students added yet.</p>
+        <p>No students to show.</p>
       )}
     </div>
   );

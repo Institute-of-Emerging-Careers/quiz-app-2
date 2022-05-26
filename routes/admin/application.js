@@ -6,7 +6,7 @@ const {
   ApplicationRoundCourseJunction,
 } = require("../../db/models/application");
 
-const { Student } = require("../../db/models/user");
+const { Student, Assignment } = require("../../db/models/user");
 
 const checkAdminAuthenticated = require("../../db/check-admin-authenticated");
 
@@ -117,6 +117,7 @@ router.get(
     }
   }
 );
+
 router.get(
   "/all-applicants/:application_round_id",
   checkAdminAuthenticated,
@@ -130,9 +131,62 @@ router.get(
         return;
       }
       const applications = await application_round.getApplications({
-        include: [Student],
+        include: [
+          {
+            model: Student,
+            attributes: ["id", "firstName", "lastName", "cnic", "email"],
+          },
+        ],
       });
 
+      res.json({ applications: applications });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.get(
+  "/all-applicants-and-quiz-assignments",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const application_round = await ApplicationRound.findOne({
+        where: { id: req.query.application_round_id },
+      });
+      if (application_round == null) {
+        res.sendStatus(404);
+        return;
+      }
+      let applications = await application_round.getApplications({
+        include: [
+          {
+            model: Student,
+            attributes: ["id", "firstName", "lastName", "cnic", "email"],
+          },
+        ],
+      });
+
+      // set "added" property of Student to true if student has already been assigned this quiz
+      await new Promise(async (resolve) => {
+        let x = 0;
+        const n = applications.length;
+        for (let i = 0; i < n; i++) {
+          const assignment = await applications[i].Student.getAssignments({
+            where: { QuizId: req.query.quiz_id },
+          });
+          if (assignment.length > 0) {
+            applications[i].Student["added"] = true;
+          } else {
+            applications[i].Student["added"] = false;
+          }
+          x++;
+          if (x == n) resolve(applications);
+        }
+      });
+
+      console.log(applications);
       res.json({ applications: applications });
     } catch (err) {
       console.log(err);

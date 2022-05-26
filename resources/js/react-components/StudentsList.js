@@ -1,30 +1,37 @@
 const StudentsList = (props) => {
-  let [students, setStudents] = props.students_object;
+  let students = props.students;
 
   return (
     <div>
       <h2 className="text-base text-center mb-4">
-        <b>List of Students invited to this {props.title}</b>
+        <b>{props.title}</b>
       </h2>
       {students.length > 0 ? (
         <table className="w-full text-left text-sm">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Score</th>
+              {props.fields.map((field) => (
+                <th>{field.title}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {students
-              .filter((student) => student.added)
+              .filter((student) => {
+                if (student.hasOwnProperty("added") && !student.added)
+                  return false;
+                else return true;
+              })
               .map((student) => (
-                <tr key={student.id}>
-                  <td className="border px-4 py-2">{student.name}</td>
-                  <td className="border px-4 py-2">{student.email}</td>
-                  <td className="border px-4 py-2">
-                    {student.percentage_score}
-                  </td>
+                <tr key={`${student.id}-tr`}>
+                  {props.fields.map((field) => (
+                    <td
+                      className="border px-4 py-2"
+                      key={`${student.id}-${field.name}`}
+                    >
+                      {student[field.name]}
+                    </td>
+                  ))}
                 </tr>
               ))}
           </tbody>

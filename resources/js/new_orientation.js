@@ -300,8 +300,20 @@ const NameForm = () => {
 
 const StudentsListWrapper = () => {
   const { students_object } = useContext(MyContext);
+  const [students, setStudents] = students_object;
 
-  return <StudentsList students_object={students_object} title="Orientation" />;
+  return (
+    <StudentsList
+      students={students}
+      title="List of Students currently added to this Orientation"
+      fields={[
+        ,
+        { title: "Name", name: "name" },
+        { title: "Email", name: "email" },
+        { title: "Percentage Score", name: "percentage_score" },
+      ]}
+    />
+  );
 };
 
 const NewStudentsAdderWrapper = () => {

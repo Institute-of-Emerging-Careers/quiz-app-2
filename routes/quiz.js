@@ -255,7 +255,6 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
         });
       }
     }
-    console.log(stateObject);
 
     res.json({
       success: true,
@@ -699,7 +698,6 @@ router.get(
           section.Questions,
           selected_question_indexes
         );
-        console.log("selected_question_indexes:", selected_question_indexes);
 
         // to save these selected questions, we create empty answers (Question-Student mapping)
         function createEmptyAnswersForArrayOfQuestions(array_of_questions) {
@@ -1213,7 +1211,6 @@ router.get(
             "firstName",
             "lastName",
             "email",
-            "phone",
             "cnic",
             "createdAt",
           ],
@@ -1316,5 +1313,61 @@ router.get("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
     console.log(err);
   }
 });
+
+router.post("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const quiz = await Quiz.findOne({ where: { id: req.params.quiz_id } });
+    if (quiz == null) {
+      res.sendStatus(400);
+      return;
+    }
+  } catch (err) {
+    res.sendStatus(500);
+    console.log(err);
+  }
+
+  console.log(req.body.list_of_student_ids_to_be_added);
+  Promise.all(
+    req.body.list_of_student_ids_to_be_added.map((student_id) => {
+      return Assignment.findOrCreate({
+        where: { QuizId: req.params.quiz_id, StudentId: student_id },
+      });
+    })
+  )
+    .then(() => {
+      res.sendStatus(201);
+    })
+    .catch((err) => {
+      res.sendStatus(500);
+    });
+});
+
+router.get(
+  "/all-assignees/:quiz_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const quiz = await Quiz.findOne({ where: { id: req.params.quiz_id } });
+      if (quiz == null) {
+        res.sendStatus(401);
+        return;
+      }
+      let assignments = await quiz.getAssignments({
+        include: [
+          {
+            model: Student,
+            attributes: ["id", "firstName", "lastName", "email", "cnic"],
+          },
+        ],
+        raw: true,
+      });
+
+      res.status(200).json(assignments);
+    } catch (err) {
+      res.sendStatus(500);
+      console.log(err);
+    }
+  }
+);
 
 module.exports = router;

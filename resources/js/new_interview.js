@@ -311,7 +311,16 @@ const Step1 = () => {
         </button>
       </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
-        <StudentsList students_object={students_object} title="Interview" />
+        <StudentsList
+          students={students}
+          title="List of Students currently added to this Interview"
+          fields={[
+            ,
+            { title: "Name", name: "name" },
+            { title: "Email", name: "email" },
+            { title: "Percentage Score", name: "percentage_score" },
+          ]}
+        />
       </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <NewStudentAdder
