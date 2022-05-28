@@ -6,7 +6,8 @@ const {
   countries,
   education_levels,
   type_of_employment,
-} = require("../../resources/js/data_lists");
+  age_groups,
+} = require("../../db/data_lists");
 
 class ApplicationRound extends Model {}
 
@@ -64,7 +65,10 @@ Application.init(
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        isIn: [["Under 18", "18-21", "22-24", "25-26", "27-30", "Above 30"]],
+        isIn: {
+          args: [age_groups],
+          msg: "Invalid age group.",
+        },
       },
     },
     city: {

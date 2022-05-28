@@ -14,7 +14,7 @@ const {
   countries,
   education_levels,
   type_of_employment,
-} = require("../resources/js/data_lists");
+} = require("../db/data_lists");
 
 router.use((req, res, next) => {
   next();

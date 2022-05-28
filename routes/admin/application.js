@@ -143,6 +143,9 @@ router.get(
               "gender",
             ],
           },
+          "first preference",
+          "second preference",
+          "third preference",
         ],
       });
 
@@ -180,6 +183,9 @@ router.get(
               "gender",
             ],
           },
+          "first preference",
+          "second preference",
+          "third preference",
         ],
       });
 
