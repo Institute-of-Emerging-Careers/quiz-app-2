@@ -47,6 +47,7 @@ const {
   getQuestionIdsFromArrayOfAnswers,
 } = require("../functions/utilities.js");
 const allSectionsSolved = require("../functions/allSectionsSolved.js");
+const { sendHTMLMail } = require("../functions/sendEmail");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -1367,6 +1368,37 @@ router.get(
       res.sendStatus(500);
       console.log(err);
     }
+  }
+);
+
+router.post(
+  "/send-emails/:quiz_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    const email_content = req.body.email_content;
+    const emails = req.body.users.map((user) => user.email);
+    if (emails.length == 0) {
+      res.sendStatus(200);
+      return;
+    }
+    Promise.all(
+      emails.map((email) =>
+        sendHTMLMail(email, `${email_content.subject}`, {
+          heading: email_content.heading,
+          inner_text: email_content.body,
+          button_announcer: email_content.button_pre_text,
+          button_text: email_content.button_label,
+          button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
+        })
+      )
+    )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
   }
 );
 

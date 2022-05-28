@@ -1,5 +1,6 @@
 const StudentsList = (props) => {
   let students = props.students;
+  const fields = props.fields;
 
   return (
     <div>
@@ -10,7 +11,7 @@ const StudentsList = (props) => {
         <table className="w-full text-left text-sm">
           <thead>
             <tr>
-              {props.fields.map((field) => (
+              {fields.map((field) => (
                 <th>{field.title}</th>
               ))}
             </tr>
@@ -24,12 +25,14 @@ const StudentsList = (props) => {
               })
               .map((student) => (
                 <tr key={`${student.id}-tr`}>
-                  {props.fields.map((field) => (
+                  {fields.map((field) => (
                     <td
                       className="border px-4 py-2"
-                      key={`${student.id}-${field.name}`}
+                      key={`${student.id}-${field.name[0]}`}
                     >
-                      {student[field.name]}
+                      {field.name.reduce((final, cur) => {
+                        return `${final} ${student[cur]}`;
+                      }, "")}
                     </td>
                   ))}
                 </tr>

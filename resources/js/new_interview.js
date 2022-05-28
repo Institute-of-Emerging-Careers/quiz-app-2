@@ -74,181 +74,6 @@ const StepMenu = () => {
   );
 };
 
-const EmailForm = (props) => {
-  const interviewers = props.interviewers;
-  const [email_subject, setEmailSubject] = useState("IEC Interview Time Slots");
-  const [email_heading, setEmailHeading] = useState("IEC Interview Time Slots");
-  const [email_body, setEmailBody] = useState(
-    "Dear Team Member<br>We hope you are well.<br>Please let us know when you are free to conduct some interviews. You can do so below.<br>"
-  );
-  const [email_button_pre_text, setEmailButtonPreText] = useState(
-    "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview."
-  );
-  const [email_button_label, setEmailButtonLabel] = useState("Log In");
-  const [email_button_url, setEmailButtonUrl] = useState(
-    "Will be automatically set for each user"
-  );
-
-  const [loading, setLoading] = useState(false);
-
-  const sendEmails = () => {
-    setLoading(true);
-    fetch("/admin/interview/send-emails", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        interviewers: interviewers,
-        email_content: {
-          subject: email_subject,
-          heading: email_heading,
-          body: email_body,
-          button_pre_text: email_button_pre_text,
-          button_label: email_button_label,
-          button_url: email_button_url,
-        },
-      }),
-    })
-      .then((response) => {
-        setLoading(false);
-        if (response.ok) {
-          alert("Emails sent successfully.");
-        } else {
-          alert("There was an error while sending emails. Error code 01.");
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(
-          "There was a problem while sending the request to the server. Please check your internet connection. Error code 03."
-        );
-      });
-  };
-
-  return (
-    <div>
-      <h2 className="text-lg mt-4 mb-1">
-        <i className="fas fa-mail-bulk"></i> Compose Email
-      </h2>
-      <form
-        action="/mail/preview"
-        method="POST"
-        target="_blank"
-        className="flex flex-col gap-y-2"
-      >
-        <div>
-          <label>Subject: </label>
-          <input
-            type="text"
-            id="subject"
-            maxLength="100"
-            name="subject"
-            placeholder="e.g. Invite"
-            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_subject}
-            onChange={(e) => {
-              setEmailSubject(e.target.value);
-            }}
-            required
-          ></input>
-        </div>
-        <div>
-          <label>Heading: </label>
-          <input
-            type="text"
-            id="heading"
-            maxLength="100"
-            name="heading"
-            placeholder="This will be the heading inside the body of the email."
-            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_heading}
-            onChange={(e) => {
-              setEmailHeading(e.target.value);
-            }}
-          ></input>
-        </div>
-        <div>
-          <label>Body: </label>
-          <textarea
-            maxLength="5000"
-            id="body"
-            name="body"
-            placeholder="This will be the the body of the email. Limit: 5000 characters."
-            className="border w-full h-48 py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_body}
-            onChange={(e) => {
-              setEmailBody(e.target.value);
-            }}
-            required
-          ></textarea>
-        </div>
-        <div>
-          <label>Button Pre-text: </label>
-          <input
-            type="text"
-            maxLength="100"
-            id="button_announcer"
-            name="button_announcer"
-            placeholder="This text comes before a button and invites the user to click the button. You can leave it empty if you want."
-            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_button_pre_text}
-            onChange={(e) => {
-              setEmailButtonPreText(e.target.value);
-            }}
-          ></input>
-        </div>
-        <div>
-          <label>Button Label: </label>
-          <input
-            type="text"
-            maxLength="50"
-            id="button_text"
-            name="button_text"
-            placeholder="What does the button say? Limit: 50 characters"
-            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_button_label}
-            onChange={(e) => {
-              setEmailButtonLabel(e.target.value);
-            }}
-          ></input>
-        </div>
-        <div>
-          <label>Button URL: </label>
-          <input
-            type="text"
-            name="button_url"
-            id="button_url"
-            placeholder="Where does the button take the user?"
-            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={email_button_url}
-            readOnly
-          ></input>
-        </div>
-        <div className="flex">
-          <button
-            type="submit"
-            className="w-full py-3 px-6 bg-gray-700 text-white mt-4 cursor-pointer hover:bg-gray-600"
-          >
-            <i className="far fa-eye"></i> Preview Mail
-          </button>
-          <button
-            type="button"
-            className="w-full py-3 px-6 bg-iec-blue text-white mt-4 cursor-pointer hover:bg-iec-blue-hover"
-            id="email-button"
-            onClick={sendEmails}
-          >
-            {loading ? (
-              <i className="fas fa-spinner animate-spin self-center"></i>
-            ) : (
-              <i className="far fa-paper-plane"></i>
-            )}{" "}
-            Send Email(s)
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
-
 const Step1 = () => {
   const { students_object } = useContext(MyContext);
   const [students, setStudents] = students_object;
@@ -435,7 +260,20 @@ const Step2 = () => {
       <hr className="mt-4"></hr>
 
       {show_email_composer ? (
-        <EmailForm interviewers={interviewers} />
+        <EmailForm
+          users={interviewers}
+          sending_link="/admin/interview/send-emails"
+          default_values={{
+            email_subject: "IEC Interview Time Slots",
+            email_heading: "IEC Interview Time Slots",
+            email_body:
+              "Dear Team Member<br>We hope you are well.<br>Please let us know when you are free to conduct some interviews. You can do so below.<br>",
+            email_button_pre_text:
+              "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.",
+            email_button_label: "Log In",
+            email_button_url: "Will be automatically set for each user",
+          }}
+        />
       ) : (
         <div></div>
       )}

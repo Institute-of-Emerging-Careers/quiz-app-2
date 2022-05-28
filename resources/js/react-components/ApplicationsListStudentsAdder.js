@@ -8,6 +8,7 @@ const ApplicationsListStudentsAdder = (props) => {
   const [saved_success, setSavedSuccess] = useState(false);
   const assignmentButton = useRef(null);
   const setLoadAgain = props.setLoadAgain;
+  const [show_email_composer, setShowEmailComposer] = useState(false);
 
   useEffect(() => {
     student_id_to_array_index_map.current = {};
@@ -60,24 +61,83 @@ const ApplicationsListStudentsAdder = (props) => {
 
   return (
     <div>
-      <button
-        className={
-          saved_success
-            ? "px-3 py-2 float-right bg-green-500 hover:bg-green-600 text-white cursor-pointer"
-            : "px-3 py-2 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer"
-        }
-        onClick={assignQuizToSelectedStudents}
-        ref={assignmentButton}
-      >
-        {loading ? (
-          <i className="fas fa-spinner animate-spin"></i>
-        ) : !saved_success ? (
-          <i className="fas fa-save"></i>
-        ) : (
-          <i className="fas fa-check"></i>
-        )}{" "}
-        Assign Quiz to Selected Students
-      </button>
+      <div className="grid grid-cols-2 mb-4">
+        <button
+          className={
+            saved_success
+              ? "col-span-1 p-3 float-right bg-green-500 hover:bg-green-600 text-white cursor-pointer border-r border-white"
+              : applications.length > 0
+              ? "col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white"
+              : "col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white"
+          }
+          onClick={assignQuizToSelectedStudents}
+          ref={assignmentButton}
+          disabled={applications.length > 0 ? false : true}
+        >
+          {loading ? (
+            <i className="fas fa-spinner animate-spin"></i>
+          ) : !saved_success ? (
+            <i className="fas fa-save"></i>
+          ) : (
+            <i className="fas fa-check"></i>
+          )}{" "}
+          Step 1: Assign Quiz to Selected Students
+        </button>
+
+        <button
+          className={
+            applications.length > 0
+              ? "col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white"
+              : "col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white"
+          }
+          onClick={() => {
+            if (
+              applications
+                .map((application) => application.Student)
+                .filter((student) => student.added).length > 0
+            )
+              setShowEmailComposer((cur) => !cur);
+            else alert("You haven't selected any new students.");
+          }}
+          disabled={applications.length > 0 ? false : true}
+        >
+          {show_email_composer ? (
+            <i className="far fa-paper-plane"></i>
+          ) : (
+            <i className="fas fa-paper-plane"></i>
+          )}
+          {"  "}
+          Step 2: Send Emails to Selected Students
+        </button>
+      </div>
+
+      {show_email_composer ? (
+        <div className="mb-4">
+          <p>
+            Please make sure you assign this quiz to selected students first, by
+            clicking on the <i className="fas fa-save"></i> Step 1 button above.
+          </p>
+          <EmailForm
+            users={applications
+              .map((application) => application.Student)
+              .filter((student) => student.added)}
+            sending_link={`/quiz/send-emails/${props.quiz_id}`}
+            default_values={{
+              email_subject: "IEC Assessment",
+              email_heading: "IEC Assessment",
+              email_body:
+                "Dear Student<br>You are receiving this email because you applied for the next cohort of the Institute of Emerging Careers.<br>Congratulations, your application has been shortlisted.<br>The next step is for you to solve a timed assessment. You have 3 days (72 hours) to solve this assessment.",
+              email_button_pre_text:
+                "Click the following button to solve the assessment.",
+              email_button_label: "Solve Assessment",
+              email_button_url: "Will be automatically set for each user",
+            }}
+          />
+        </div>
+      ) : (
+        <i></i>
+      )}
+
       <h2 className="text-base text-center mb-4">
         <b>List of Applicants of this Round to whom you can assign the Quiz</b>
       </h2>
@@ -113,32 +173,28 @@ const ApplicationsListStudentsAdder = (props) => {
                   }
                 >
                   <td className="border px-4 py-2">
-                    {application.Student.already_added ? (
-                      <i className="fas fa-check"></i>
-                    ) : (
-                      <input
-                        type="checkbox"
-                        data-id={application.Student.id}
-                        checked={application.Student.added}
-                        onChange={(e) => {
-                          setApplications((cur) => {
-                            let copy = cur.slice();
-                            copy[
+                    <input
+                      type="checkbox"
+                      data-id={application.Student.id}
+                      checked={application.Student.added}
+                      onChange={(e) => {
+                        setApplications((cur) => {
+                          let copy = cur.slice();
+                          copy[
+                            student_id_to_array_index_map.current[
+                              e.target.dataset.id
+                            ]
+                          ].Student.added =
+                            !copy[
                               student_id_to_array_index_map.current[
                                 e.target.dataset.id
                               ]
-                            ].Student.added =
-                              !copy[
-                                student_id_to_array_index_map.current[
-                                  e.target.dataset.id
-                                ]
-                              ].Student.added;
-                            console.log(copy);
-                            return copy;
-                          });
-                        }}
-                      ></input>
-                    )}
+                            ].Student.added;
+                          console.log(copy);
+                          return copy;
+                        });
+                      }}
+                    ></input>
                   </td>
                   <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
                   <td className="border px-4 py-2">

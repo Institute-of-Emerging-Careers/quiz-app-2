@@ -124,9 +124,9 @@ const App = () => {
           title="List of Students to whom this Quiz is currently Assigned"
           fields={[
             ,
-            { title: "Name", name: "Student.firstName" },
-            { title: "Email", name: "Student.email" },
-            { title: "CNIC", name: "Student.cnic" },
+            { title: "Name", name: ["Student.firstName", "Student.lastName"] },
+            { title: "Email", name: ["Student.email"] },
+            { title: "CNIC", name: ["Student.cnic"] },
           ]}
         />
       </div>

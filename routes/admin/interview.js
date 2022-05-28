@@ -101,8 +101,9 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
   try {
     await new Promise((resolve) => {
       let i = 0;
-      const n = req.body.interviewers.length;
-      req.body.interviewers.forEach(async (interviewer) => {
+      const n = req.body.users.length;
+      if (i == n) resolve();
+      req.body.users.forEach(async (interviewer) => {
         const interviewer_password = (
           await Interviewer.findOne({
             where: { email: interviewer.email },
@@ -127,7 +128,8 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
     });
     res.sendStatus(200);
   } catch (err) {
-    res.sendStatus(501);
+    console.log(err);
+    res.sendStatus(500);
   }
 });
 

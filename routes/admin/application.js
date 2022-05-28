@@ -202,11 +202,10 @@ router.get(
           const assignments = await applications[i].Student.getAssignments({
             where: { QuizId: req.query.quiz_id },
           });
+          data[cur_index].Student.added = false;
           if (assignments.length > 0) {
-            data[cur_index].Student.added = true;
             data[cur_index].Student.already_added = true;
           } else {
-            data[cur_index].Student.added = false;
             data[cur_index].Student.already_added = false;
           }
           x++;
