@@ -198,8 +198,10 @@ router.get(
           });
           if (assignments.length > 0) {
             data[cur_index].Student.added = true;
+            data[cur_index].Student.already_added = true;
           } else {
             data[cur_index].Student.added = false;
+            data[cur_index].Student.already_added = false;
           }
           x++;
           if (x == n) resolve(data);

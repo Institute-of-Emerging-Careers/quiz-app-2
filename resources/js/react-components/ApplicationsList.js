@@ -1,6 +1,7 @@
 const ApplicationsList = (props) => {
-  const applications = props.applications;
-  const setShowModal = props.setShowModal;
+  const { applications_object, modal_object } = useContext(MyContext);
+  const [applications, setApplications] = applications_object;
+  const [show_modal, setShowModal] = modal_object;
   return (
     <div>
       <h2 className="text-base text-center mb-4">
@@ -33,8 +34,9 @@ const ApplicationsList = (props) => {
                 <td className="border px-4 py-2">
                   <a
                     className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                    onClick={() => {
-                      setShowModal(index);
+                    data-index={index}
+                    onClick={(e) => {
+                      setShowModal(e.target.dataset.index);
                     }}
                   >
                     View Details

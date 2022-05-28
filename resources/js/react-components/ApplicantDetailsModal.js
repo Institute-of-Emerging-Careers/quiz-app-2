@@ -1,7 +1,7 @@
 const ApplicantDetailsModal = (props) => {
-  const applications = props.applications;
-  const show_modal = props.show_modal;
-  const setShowModal = props.setShowModal;
+  const { applications_object, modal_object } = useContext(MyContext);
+  const [applications, setApplications] = applications_object;
+  const [show_modal, setShowModal] = modal_object;
 
   const [questions, setQuestions] = useState([
     { title: "Age Group", name: "age_group" },
@@ -65,6 +65,7 @@ const ApplicantDetailsModal = (props) => {
   ]);
 
   const formatOutput = (output) => {
+    console.log(output);
     if (output === false) return "No";
     else if (output === true) return "Yes";
     else return output;

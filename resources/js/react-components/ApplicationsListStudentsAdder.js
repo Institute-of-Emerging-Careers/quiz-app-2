@@ -1,7 +1,8 @@
 const ApplicationsListStudentsAdder = (props) => {
-  const applications = props.applications;
-  const setApplications = props.setApplications;
-  const setShowModal = props.setShowModal;
+  const { applications_object, modal_object } = useContext(MyContext);
+  const [applications, setApplications] = applications_object;
+  const [show_modal, setShowModal] = modal_object;
+
   const student_id_to_array_index_map = useRef({});
   const [loading, setLoading] = useState(false);
   const [saved_success, setSavedSuccess] = useState(false);
@@ -9,6 +10,7 @@ const ApplicationsListStudentsAdder = (props) => {
   const setLoadAgain = props.setLoadAgain;
 
   useEffect(() => {
+    student_id_to_array_index_map.current = {};
     for (let i = 0; i < applications.length; i++) {
       student_id_to_array_index_map.current[applications[i].Student.id] = i;
     }
@@ -70,19 +72,14 @@ const ApplicationsListStudentsAdder = (props) => {
       </h2>
       {applications.length == 0 ? (
         <p>No applicants in this application round.</p>
-      ) : applications.filter((app) => !app.Student.added).length == 0 ? (
-        <p>
-          All students of this Application Round have already been assigned to
-          this Quiz.
-        </p>
       ) : (
         <div>
-          <p>
-            The following is a list of applicants of this Application Round{" "}
-            <b>who have not already been added to this Quiz</b>. It is possible
-            that there may be some applicants of this round that may not show up
-            in the list below, namely because they have already been assigned to
-            this quiz, and are therefore appearing in the list above.
+          <p className="mb-3 bg-gray-200 p-2">
+            <i className="fas fa-check"></i> The gray rows are students that
+            have already been assigned to this quiz. Note that you cannot
+            unassign a quiz from a student once it is assigned. This is because
+            it is possible that the student may have already solved the quiz or
+            may be in the process of solving it.
           </p>
           <table className="w-full text-left text-sm">
             <thead>
@@ -97,11 +94,17 @@ const ApplicationsListStudentsAdder = (props) => {
               </tr>
             </thead>
             <tbody>
-              {applications
-                .filter((application) => !application.Student.added)
-                .map((application, index) => (
-                  <tr key={application.id}>
-                    <td className="border px-4 py-2">
+              {applications.map((application, index) => (
+                <tr
+                  key={application.id}
+                  className={
+                    application.Student.already_added ? "bg-gray-200" : ""
+                  }
+                >
+                  <td className="border px-4 py-2">
+                    {application.Student.already_added ? (
+                      <i className="fas fa-check"></i>
+                    ) : (
                       <input
                         type="checkbox"
                         data-id={application.Student.id}
@@ -113,40 +116,43 @@ const ApplicationsListStudentsAdder = (props) => {
                               student_id_to_array_index_map.current[
                                 e.target.dataset.id
                               ]
-                            ].added =
+                            ].Student.added =
                               !copy[
                                 student_id_to_array_index_map.current[
                                   e.target.dataset.id
                                 ]
-                              ].added;
+                              ].Student.added;
+                            console.log(copy);
                             return copy;
                           });
                         }}
                       ></input>
-                    </td>
-                    <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
-                    <td className="border px-4 py-2">
-                      {application.Student.gender}
-                    </td>
-                    <td className="border px-4 py-2">
-                      {application.Student.email}
-                    </td>
-                    <td className="border px-4 py-2">{application.phone}</td>
-                    <td className="border px-4 py-2">
-                      {application.Student.cnic}
-                    </td>
-                    <td className="border px-4 py-2">
-                      <a
-                        className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                        onClick={() => {
-                          setShowModal(index);
-                        }}
-                      >
-                        View Details
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                    )}
+                  </td>
+                  <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
+                  <td className="border px-4 py-2">
+                    {application.Student.gender}
+                  </td>
+                  <td className="border px-4 py-2">
+                    {application.Student.email}
+                  </td>
+                  <td className="border px-4 py-2">{application.phone}</td>
+                  <td className="border px-4 py-2">
+                    {application.Student.cnic}
+                  </td>
+                  <td className="border px-4 py-2">
+                    <a
+                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                      data-index={index}
+                      onClick={(e) => {
+                        setShowModal(e.target.dataset.index);
+                      }}
+                    >
+                      View Details
+                    </a>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

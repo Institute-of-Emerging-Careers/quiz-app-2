@@ -48,15 +48,8 @@ const App = () => {
   return (
     <div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
-        <ApplicantDetailsModal
-          applications={applications}
-          show_modal={show_modal}
-          setShowModal={setShowModal}
-        ></ApplicantDetailsModal>
-        <ApplicationsList
-          applications={applications}
-          setShowModal={setShowModal}
-        ></ApplicationsList>
+        <ApplicantDetailsModal></ApplicantDetailsModal>
+        <ApplicationsList></ApplicationsList>
       </div>
     </div>
   );

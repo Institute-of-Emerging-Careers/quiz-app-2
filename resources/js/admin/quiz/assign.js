@@ -150,15 +150,8 @@ const App = () => {
 
         {/* Displaying student list of selected application round */}
         <section className="mt-6">
-          <ApplicantDetailsModal
-            applications={applications}
-            show_modal={show_modal}
-            setShowModal={setShowModal}
-          ></ApplicantDetailsModal>
+          <ApplicantDetailsModal></ApplicantDetailsModal>
           <ApplicationsListStudentsAdder
-            applications={applications}
-            setApplications={setApplications}
-            setShowModal={setShowModal}
             quiz_id={document.getElementById("quiz-id-field").value}
             setLoadAgain={setLoadAgain}
           ></ApplicationsListStudentsAdder>
