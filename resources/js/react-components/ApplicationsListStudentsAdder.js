@@ -19,8 +19,17 @@ const ApplicationsListStudentsAdder = (props) => {
   const assignQuizToSelectedStudents = () => {
     setLoading(true);
     let list_of_student_ids_to_be_added = applications
-      .filter((application) => application.added)
+      .filter(
+        (application) =>
+          !application.Student.already_added && application.Student.added
+      )
       .map((application) => application.Student.id);
+
+    if (list_of_student_ids_to_be_added.length == 0) {
+      setLoading(false);
+      alert("You have not selected any new students.");
+      return;
+    }
 
     fetch(`/quiz/assign/${props.quiz_id}`, {
       method: "POST",
@@ -30,7 +39,6 @@ const ApplicationsListStudentsAdder = (props) => {
       }),
     })
       .then((response) => {
-        setLoading(false);
         if (response.ok) {
           setSavedSuccess(true);
           setTimeout(() => {
@@ -44,6 +52,9 @@ const ApplicationsListStudentsAdder = (props) => {
         alert(
           "Quiz could not be assigned to Students due to an unknown error."
         );
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

@@ -27,6 +27,7 @@ const App = () => {
   const [show_modal, setShowModal] = modal_object;
   const [assigned_students, setAssignedStudents] = useState([]);
   const [load_again, setLoadAgain] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetch("/admin/application/rounds/all")
@@ -89,8 +90,8 @@ const App = () => {
   }, [load_again]);
 
   const displayApplicationRoundStudents = (e) => {
+    setLoading(true);
     const application_round_id = e.target.value;
-    console.log(application_round_id);
 
     fetch(
       `/admin/application/all-applicants-and-quiz-assignments?application_round_id=${application_round_id}&quiz_id=${
@@ -109,6 +110,9 @@ const App = () => {
       .catch((err) => {
         console.log(err);
         alert("Something went wrong. Code 02.");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -146,6 +150,7 @@ const App = () => {
               </option>
             ))}
           </select>
+          {loading ? <i className="fas fa-spinner animate-spin"></i> : <i></i>}
         </section>
 
         {/* Displaying student list of selected application round */}
