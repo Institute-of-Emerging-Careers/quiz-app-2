@@ -104,7 +104,9 @@ router.post(
       res.json({ exists: true, type: "cnic_only" });
     } else if (student[2] != null)
       res.json({ exists: true, type: "email_only" });
-    else res.json({ exists: false });
+    else {
+      res.json({ exists: false });
+    }
   }
 );
 

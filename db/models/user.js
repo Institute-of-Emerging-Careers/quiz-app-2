@@ -423,9 +423,9 @@ Course.belongsToMany(ApplicationRound, {
   uniqueKey: "ApplicationRoundCourseJunctionKey2",
 });
 
-Application.belongsTo(Course, { as: "first preference" });
-Application.belongsTo(Course, { as: "second preference" });
-Application.belongsTo(Course, { as: "third preference" });
+Application.belongsTo(Course, { as: "first preference", allowNull: false });
+Application.belongsTo(Course, { as: "second preference", allowNull: false });
+Application.belongsTo(Course, { as: "third preference", allowNull: false });
 
 Student.hasMany(Application);
 Application.belongsTo(Student, {

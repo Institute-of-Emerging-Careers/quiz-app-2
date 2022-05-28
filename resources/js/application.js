@@ -114,6 +114,11 @@ const checkIfUserExists = () => {
               $(`#email`).removeClass("is-invalid");
               nextStep("step1", "step2");
             }
+          } else {
+            // resetting errors
+            $(`#cnic`).removeClass("is-invalid");
+            $(`#email`).removeClass("is-invalid");
+            nextStep("step1", "step2");
           }
         });
       } else

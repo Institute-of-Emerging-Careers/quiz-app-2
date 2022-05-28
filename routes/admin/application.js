@@ -134,7 +134,14 @@ router.get(
         include: [
           {
             model: Student,
-            attributes: ["id", "firstName", "lastName", "cnic", "email"],
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "cnic",
+              "email",
+              "gender",
+            ],
           },
         ],
       });
@@ -147,6 +154,7 @@ router.get(
   }
 );
 
+// the following request responds with a list of applications corresponding to a specified ApplicationRoundId. For each application/student, it also returns a boolean "added" property specifying whether or not this student has already been assigned a specified Quiz
 router.get(
   "/all-applicants-and-quiz-assignments",
   checkAdminAuthenticated,
@@ -163,31 +171,42 @@ router.get(
         include: [
           {
             model: Student,
-            attributes: ["id", "firstName", "lastName", "cnic", "email"],
+            attributes: [
+              "id",
+              "firstName",
+              "lastName",
+              "cnic",
+              "email",
+              "gender",
+            ],
           },
         ],
       });
+
+      let data = [];
 
       // set "added" property of Student to true if student has already been assigned this quiz
       await new Promise(async (resolve) => {
         let x = 0;
         const n = applications.length;
+        if (n == 0) resolve();
         for (let i = 0; i < n; i++) {
-          const assignment = await applications[i].Student.getAssignments({
+          const cur_index = data.push({}) - 1;
+          data[cur_index] = JSON.parse(JSON.stringify(applications[i]));
+          const assignments = await applications[i].Student.getAssignments({
             where: { QuizId: req.query.quiz_id },
           });
-          if (assignment.length > 0) {
-            applications[i].Student["added"] = true;
+          if (assignments.length > 0) {
+            data[cur_index].Student.added = true;
           } else {
-            applications[i].Student["added"] = false;
+            data[cur_index].Student.added = false;
           }
           x++;
-          if (x == n) resolve(applications);
+          if (x == n) resolve(data);
         }
       });
 
-      console.log(applications);
-      res.json({ applications: applications });
+      res.json({ applications: data });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);

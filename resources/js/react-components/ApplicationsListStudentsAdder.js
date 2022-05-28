@@ -59,7 +59,7 @@ const ApplicationsListStudentsAdder = (props) => {
         {loading ? (
           <i className="fas fa-spinner animate-spin"></i>
         ) : !saved_success ? (
-          <i class="fas fa-save"></i>
+          <i className="fas fa-save"></i>
         ) : (
           <i className="fas fa-check"></i>
         )}{" "}
@@ -68,70 +68,88 @@ const ApplicationsListStudentsAdder = (props) => {
       <h2 className="text-base text-center mb-4">
         <b>List of Applicants of this Round to whom you can assign the Quiz</b>
       </h2>
-      {applications.length > 0 ? (
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr>
-              <th>Select</th>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>CNIC</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications.map((application, index) => (
-              <tr key={application.id}>
-                <td className="border px-4 py-2">
-                  <input
-                    type="checkbox"
-                    data-id={application.Student.id}
-                    checked={application.Student.added}
-                    onChange={(e) => {
-                      setApplications((cur) => {
-                        let copy = cur.slice();
-                        copy[
-                          student_id_to_array_index_map.current[
-                            e.target.dataset.id
-                          ]
-                        ].added =
-                          !copy[
-                            student_id_to_array_index_map.current[
-                              e.target.dataset.id
-                            ]
-                          ].added;
-                        return copy;
-                      });
-                    }}
-                  ></input>
-                </td>
-                <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
-                <td className="border px-4 py-2">
-                  {application.Student.gender}
-                </td>
-                <td className="border px-4 py-2">
-                  {application.Student.email}
-                </td>
-                <td className="border px-4 py-2">{application.phone}</td>
-                <td className="border px-4 py-2">{application.Student.cnic}</td>
-                <td className="border px-4 py-2">
-                  <a
-                    className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                    onClick={() => {
-                      setShowModal(index);
-                    }}
-                  >
-                    View Details
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {applications.length == 0 ? (
+        <p>No applicants in this application round.</p>
+      ) : applications.filter((app) => !app.Student.added).length == 0 ? (
+        <p>
+          All students of this Application Round have already been assigned to
+          this Quiz.
+        </p>
       ) : (
-        <p>No students to show.</p>
+        <div>
+          <p>
+            The following is a list of applicants of this Application Round{" "}
+            <b>who have not already been added to this Quiz</b>. It is possible
+            that there may be some applicants of this round that may not show up
+            in the list below, namely because they have already been assigned to
+            this quiz, and are therefore appearing in the list above.
+          </p>
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr>
+                <th>Select</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>CNIC</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {applications
+                .filter((application) => !application.Student.added)
+                .map((application, index) => (
+                  <tr key={application.id}>
+                    <td className="border px-4 py-2">
+                      <input
+                        type="checkbox"
+                        data-id={application.Student.id}
+                        checked={application.Student.added}
+                        onChange={(e) => {
+                          setApplications((cur) => {
+                            let copy = cur.slice();
+                            copy[
+                              student_id_to_array_index_map.current[
+                                e.target.dataset.id
+                              ]
+                            ].added =
+                              !copy[
+                                student_id_to_array_index_map.current[
+                                  e.target.dataset.id
+                                ]
+                              ].added;
+                            return copy;
+                          });
+                        }}
+                      ></input>
+                    </td>
+                    <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
+                    <td className="border px-4 py-2">
+                      {application.Student.gender}
+                    </td>
+                    <td className="border px-4 py-2">
+                      {application.Student.email}
+                    </td>
+                    <td className="border px-4 py-2">{application.phone}</td>
+                    <td className="border px-4 py-2">
+                      {application.Student.cnic}
+                    </td>
+                    <td className="border px-4 py-2">
+                      <a
+                        className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                        onClick={() => {
+                          setShowModal(index);
+                        }}
+                      >
+                        View Details
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );
