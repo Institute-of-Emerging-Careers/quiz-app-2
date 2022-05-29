@@ -1,11 +1,14 @@
 const { Sequelize } = require("sequelize");
-console.log(process.env.DEBUG);
+const config = require("config");
 
-const sequelize = new Sequelize(process.env.MYSQL_CONNECTION_STRING, {
-  dialect: "mysql",
-  logging: process.env.NODE_ENV == "development" ? true : false,
-  timezone: process.env.TIMEZONE_OFFSET,
-});
+const sequelize = new Sequelize(
+  `${process.env.MYSQL_CONNECTION_STRING}${config.get("DB_NAME")}`,
+  {
+    dialect: "mysql",
+    logging: process.env.NODE_ENV == "development" ? console.log : false,
+    timezone: process.env.TIMEZONE_OFFSET,
+  }
+);
 
 sequelize
   .authenticate()

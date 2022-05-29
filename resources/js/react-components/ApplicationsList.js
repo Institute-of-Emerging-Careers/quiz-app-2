@@ -49,12 +49,13 @@ const ApplicationsList = (props) => {
       possible_values: education_levels,
     },
     {
-      title: "Monthly Family Income",
+      title: "Minimum Monthly Family Income",
       name: "monthly_family_income",
       filter_type: "integer_value",
       min: 0,
-      max: 4294967295,
-      increment: 500,
+      max: 1000000,
+      increment: 5000,
+      value: 0,
     },
     {
       title: "Do you have computer and internet access?",
@@ -108,8 +109,9 @@ const ApplicationsList = (props) => {
       name: "salary",
       filter_type: "integer_value",
       min: 0,
-      max: 4294967295,
-      increment: 500,
+      max: 1000000,
+      increment: 5000,
+      value: 0,
     },
     {
       title:
@@ -164,11 +166,40 @@ const ApplicationsList = (props) => {
     },
   ]);
 
+  // continue here with filters
+
   return (
     <div>
       <h2 className="text-base text-center mb-4">
         <b>List of Applications in this Round</b>
       </h2>
+      {filters.map((filter, index) =>
+        filter.filter_type == "integer_value" ? (
+          <div className="w-full grid grid-cols-10 align-middle gap-y-2">
+            <label className="col-span-2">{filter.title}:</label>
+            <input
+              type="range"
+              min={filter.min}
+              max={filter.max}
+              step={filter.increment}
+              value={filter.value}
+              data-index={index}
+              className="col-span-7 align-middle"
+              onChange={(e) => {
+                setFilters((cur) => {
+                  let copy = cur.slice();
+                  copy[e.target.dataset.index]["value"] = e.target.value;
+                  return copy;
+                });
+              }}
+            ></input>
+            <label className="pl-2 col-span-1">{filter.value}</label>
+          </div>
+        ) : (
+          <div></div>
+        )
+      )}
+
       {applications.length > 0 ? (
         <table className="w-full text-left text-sm">
           <thead>
