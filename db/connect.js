@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 const config = require("config");
+console.log(config.get("DB_NAME"));
 
 const sequelize = new Sequelize(
   `${process.env.MYSQL_CONNECTION_STRING}${config.get("DB_NAME")}`,

@@ -17,14 +17,18 @@ const initializeDatabase = async () => {
   try {
     alterandforce = false;
     // Sync models with database
-    await sequelize.sync({ alter: alterandforce, force: alterandforce });
-    await ApplicationRoundCourseJunction.sync({ alter: false, force: false });
-    await Application.sync({ alter: false, force: false });
-    await ApplicationRound.sync({ alter: false, force: false });
-    await Interviewer.sync({ alter: false });
-    await InterviewerInvite.sync({ alter: false });
-    await InterviewRound.sync({ alter: false });
-    await InterviewerSlot.sync({ alter: false });
+    await sequelize.sync({
+      alter: alterandforce,
+      force: alterandforce,
+      logging: false,
+    });
+    // await ApplicationRoundCourseJunction.sync({ alter: false, force: false });
+    // await Application.sync({ alter: false, force: false });
+    // await ApplicationRound.sync({ alter: false, force: false });
+    // await Interviewer.sync({ alter: false });
+    // await InterviewerInvite.sync({ alter: false });
+    // await InterviewRound.sync({ alter: false });
+    // await InterviewerSlot.sync({ alter: false });
     console.log("Sync complete.");
 
     if (alterandforce) {
