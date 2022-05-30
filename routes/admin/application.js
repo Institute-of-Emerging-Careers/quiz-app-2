@@ -221,4 +221,27 @@ router.get(
   }
 );
 
+router.get(
+  "/courses/:application_round_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const application_round = await ApplicationRound.findOne({
+        where: { id: req.params.application_round_id },
+      });
+      if (application_round == null) {
+        res.sendStatus(400);
+        return;
+      }
+      const courses = await application_round.getCourses({ raw: true });
+      res.json(
+        courses.map((course) => ({ title: course.title, id: course.id }))
+      );
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
 module.exports = router;

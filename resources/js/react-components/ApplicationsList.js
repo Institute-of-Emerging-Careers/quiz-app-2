@@ -4,212 +4,264 @@ const ApplicationsList = (props) => {
   const [applications, setApplications] = applications_object;
   const [show_modal, setShowModal] = modal_object;
   const [show_filters, setShowFilters] = useState(false);
+  const [courses, setCourses] = useState([]);
+  const [filters, setFilters] = useState([]);
 
-  const [filters, setFilters] = useState([
-    {
-      title: "Age Group",
-      name: "age_group",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: age_groups.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      expand_possible_values: false,
-    },
-    {
-      title: "City of Residence",
-      name: "city",
-      filter_type: "fixed_values",
-      possible_values: cities.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      discrepancy_between_value_and_text: false,
-      expand_possible_values: false,
-    },
-    {
-      title: "Province of Residence",
-      name: "province",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: provinces.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      expand_possible_values: false,
-    },
-    {
-      title: "Country of Residence",
-      name: "country",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: cities.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      expand_possible_values: false,
-    },
-    {
-      title: "Education Completed",
-      name: "education_completed",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: education_levels.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      expand_possible_values: false,
-    },
-    {
-      title: "Ongoing Education",
-      name: "education_ongoing",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: education_levels.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-      expand_possible_values: false,
-    },
-    {
-      title: "Minimum Monthly Family Income",
-      name: "monthly_family_income",
-      filter_type: "integer_value",
-      min: 0,
-      max: 1000000,
-      increment: 5000,
-      value: 0,
-    },
-    {
-      title: "Do you have computer and internet access?",
-      name: "computer_and_internet_access",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Is there reliable internet facility in your area?",
-      name: "internet_facility_in_area",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Can you spend 30 to 40 hours a week on the program?",
-      name: "time_commitment",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Are you currently employed?",
-      name: "is_employed",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Employment type",
-      name: "type_of_employment",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: false,
-      possible_values: type_of_employment.map((val) => ({
-        value: val,
-        checked: false,
-      })),
-    },
-    {
-      title: "Minimum Current salary",
-      name: "salary",
-      filter_type: "integer_value",
-      min: 0,
-      max: 1000000,
-      increment: 5000,
-      value: 0,
-    },
-    {
-      title:
-        "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-      name: "will_leave_job",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Have you applied to IEC before?",
-      name: "has_applied_before",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "First Preference",
-      name: "firstPreferenceId",
-      filter_type: "fixed_values",
-      possible_values: [],
-    },
-    {
-      title: "Second Preference",
-      name: "secondPreferenceId",
-      filter_type: "fixed_values",
-      possible_values: [],
-    },
-    {
-      title: "Third Preference",
-      name: "thirdPreferenceId",
-      filter_type: "fixed_values",
-      possible_values: [],
-    },
-    {
-      title: "Are you a graduate in computer science or any related field?",
-      name: "is_comp_sci_grad",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "The program is entirely online. Do you acknowledge that?",
-      name: "acknowledge_online",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-    {
-      title: "Applicant Emailed about Assessment",
-      name: "was_emailed_about_assessment",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [
-        { text: "Yes", value: 1, checked: false },
-        { text: "No", value: 0, checked: false },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    fetch(`/admin/application/courses/${props.application_round_id}`)
+      .then((raw_response) => {
+        if (raw_response.ok) {
+          raw_response
+            .json()
+            .then((response) => {
+              console.log(response);
+              setCourses(response);
+            })
+            .catch((err) => {
+              alert("The server sent an invalid response. Something is wrong.");
+              console.log(err);
+            });
+        } else {
+          alert(
+            "Something went wrong while getting list of course preference filters. The rest of the page will work fine."
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          "Could not load courses for filtering. Check your internet connection."
+        );
+      });
+  }, []);
+
+  useEffect(() => {
+    setFilters([
+      {
+        title: "Age Group",
+        name: "age_group",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: age_groups.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "City of Residence",
+        name: "city",
+        filter_type: "fixed_values",
+        possible_values: cities.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        discrepancy_between_value_and_text: false,
+        expand_possible_values: false,
+      },
+      {
+        title: "Province of Residence",
+        name: "province",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: provinces.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Country of Residence",
+        name: "country",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: cities.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Education Completed",
+        name: "education_completed",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: education_levels.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Ongoing Education",
+        name: "education_ongoing",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: education_levels.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Minimum Monthly Family Income",
+        name: "monthly_family_income",
+        filter_type: "integer_value",
+        min: 0,
+        max: 200000,
+        increment: 5000,
+        value: 0,
+        unit: "PKR",
+      },
+      {
+        title: "Minimum Current salary",
+        name: "salary",
+        filter_type: "integer_value",
+        min: 0,
+        max: 200000,
+        increment: 5000,
+        value: 0,
+        unit: "PKR",
+      },
+      {
+        title: "Do you have computer and internet access?",
+        name: "computer_and_internet_access",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Is there reliable internet facility in your area?",
+        name: "internet_facility_in_area",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Can you spend 30 to 40 hours a week on the program?",
+        name: "time_commitment",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Are you currently employed?",
+        name: "is_employed",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Employment type",
+        name: "type_of_employment",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: type_of_employment.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+      },
+      {
+        title:
+          "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
+        name: "will_leave_job",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Have you applied to IEC before?",
+        name: "has_applied_before",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "First Preference",
+        name: "firstPreferenceId",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: courses.map((val) => ({
+          value: val.id,
+          text: val.title,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Second Preference",
+        name: "secondPreferenceId",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: courses.map((val) => ({
+          value: val.id,
+          text: val.title,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Third Preference",
+        name: "thirdPreferenceId",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: courses.map((val) => ({
+          value: val.id,
+          text: val.title,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
+      {
+        title: "Are you a graduate in computer science or any related field?",
+        name: "is_comp_sci_grad",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "The program is entirely online. Do you acknowledge that?",
+        name: "acknowledge_online",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
+        title: "Applicant Emailed about Assessment",
+        name: "was_emailed_about_assessment",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+    ]);
+  }, [courses]);
 
   // continue here with filters
 
@@ -227,11 +279,11 @@ const ApplicationsList = (props) => {
         >
           {show_filters ? (
             <span>
-              <i class="far fa-eye-slash"></i> Hide Filters
+              <i className="far fa-eye-slash"></i> Hide Filters
             </span>
           ) : (
             <span>
-              <i class="far fa-eye"></i> Show Filters
+              <i className="far fa-eye"></i> Show Filters
             </span>
           )}
         </a>
@@ -256,39 +308,65 @@ const ApplicationsList = (props) => {
                     });
                   }}
                 ></input>
-                <label className="pl-2 col-span-1">{filter.value}</label>
+                <label className="pl-2 col-span-1">
+                  {filter.value
+                    .toString()
+                    .replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")}{" "}
+                  {/* this replace function adds commas after every 3 digits (\d\d\d) */}
+                  {filter.unit}
+                </label>
               </div>
             ) : filter.filter_type == "fixed_values" &&
               filter.discrepancy_between_value_and_text ? (
               <div className="grid grid-cols-4">
                 <label className="col-span-1">{filter.title}</label>
                 <div className="col-span-3">
-                  {filter.possible_values.map((possible_value_obj, i2) => (
-                    <div>
-                      <input
-                        type="checkbox"
-                        name={filter.name}
-                        data-filter_index={index}
-                        data-possible_value_index={i2}
-                        checked={possible_value_obj.checked}
-                        value={possible_value_obj.value}
-                        onChange={(e) => {
-                          setFilters((cur) => {
-                            let copy = cur.slice();
-                            copy[e.target.dataset.filter_index].possible_values[
-                              e.target.dataset.possible_value_index
-                            ]["checked"] =
-                              !copy[e.target.dataset.filter_index]
-                                .possible_values[
+                  {filter.expand_possible_values ? (
+                    filter.possible_values.map((possible_value_obj, i2) => (
+                      <div>
+                        <input
+                          type="checkbox"
+                          name={filter.name}
+                          data-filter_index={index}
+                          data-possible_value_index={i2}
+                          checked={possible_value_obj.checked}
+                          value={possible_value_obj.value}
+                          onChange={(e) => {
+                            setFilters((cur) => {
+                              let copy = cur.slice();
+                              copy[
+                                e.target.dataset.filter_index
+                              ].possible_values[
                                 e.target.dataset.possible_value_index
-                              ]["checked"];
-                            return copy;
-                          });
-                        }}
-                      ></input>
-                      <label>{possible_value_obj.text}</label>
-                    </div>
-                  ))}
+                              ]["checked"] =
+                                !copy[e.target.dataset.filter_index]
+                                  .possible_values[
+                                  e.target.dataset.possible_value_index
+                                ]["checked"];
+                              return copy;
+                            });
+                          }}
+                        ></input>
+                        <label>{possible_value_obj.text}</label>
+                      </div>
+                    ))
+                  ) : (
+                    <a
+                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                      data-filter_index={index}
+                      onClick={(e) => {
+                        setFilters((cur) => {
+                          let copy = [...cur];
+                          copy[
+                            e.target.dataset.filter_index
+                          ].expand_possible_values = true;
+                          return copy;
+                        });
+                      }}
+                    >
+                      Click here to show all possible value filters
+                    </a>
+                  )}
                 </div>
               </div>
             ) : filter.filter_type == "fixed_values" &&

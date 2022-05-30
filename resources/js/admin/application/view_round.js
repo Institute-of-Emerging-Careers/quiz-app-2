@@ -49,7 +49,11 @@ const App = () => {
     <div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <ApplicantDetailsModal></ApplicantDetailsModal>
-        <ApplicationsList></ApplicationsList>
+        <ApplicationsList
+          application_round_id={
+            document.getElementById("application-round-id-field").value
+          }
+        ></ApplicationsList>
       </div>
     </div>
   );
