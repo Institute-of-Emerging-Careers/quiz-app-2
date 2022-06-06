@@ -67,6 +67,8 @@ router.post(
   "/check-if-user-exists",
   checkAnyoneAlreadyAuthenticated,
   async (req, res) => {
+    console.log(req.body.email);
+    console.log(req.body.cnic);
     const student = [
       await Student.findOne({
         where: { email: req.body.email, cnic: req.body.cnic },
@@ -83,6 +85,7 @@ router.post(
     ];
 
     // check if student with this email/cnic/both has already submitted an application for this cohort (ApplicationRound) before.
+    console.log(student);
     if (student[0] != null || student[1] != null || student[2] != null) {
       const student_found = student.reduce((found, cur) => {
         if (found != null) return found;

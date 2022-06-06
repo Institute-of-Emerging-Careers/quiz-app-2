@@ -6,6 +6,8 @@ const ApplicationsList = (props) => {
   const [show_filters, setShowFilters] = useState(false);
   const [courses, setCourses] = useState([]);
   const [filters, setFilters] = useState([]);
+  const application_id_to_array_index_map =
+    props.application_id_to_array_index_map;
 
   useEffect(() => {
     fetch(`/admin/application/courses/${props.application_round_id}`)
@@ -495,7 +497,9 @@ const ApplicationsList = (props) => {
                   <td className="border px-4 py-2">
                     <a
                       className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                      data-index={index}
+                      data-index={
+                        application_id_to_array_index_map[application.id]
+                      }
                       onClick={(e) => {
                         setShowModal(e.target.dataset.index);
                       }}

@@ -23,6 +23,18 @@ const App = () => {
   const { applications_object, modal_object } = useContext(MyContext);
   const [show_modal, setShowModal] = modal_object;
   const [applications, setApplications] = applications_object;
+  const [application_id_to_array_index_map, setApplicationIdToArrayIndexMap] =
+    useState({});
+
+  useEffect(() => {
+    setApplicationIdToArrayIndexMap((cur) => {
+      let obj = {};
+      applications.forEach((application, index) => {
+        obj[application.id] = index;
+      });
+      return obj;
+    });
+  }, [applications]);
 
   useEffect(() => {
     fetch(
@@ -53,6 +65,7 @@ const App = () => {
           application_round_id={
             document.getElementById("application-round-id-field").value
           }
+          application_id_to_array_index_map={application_id_to_array_index_map}
         ></ApplicationsList>
       </div>
     </div>
