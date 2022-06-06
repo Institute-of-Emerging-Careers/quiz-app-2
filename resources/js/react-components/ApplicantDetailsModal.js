@@ -9,7 +9,7 @@ const ApplicantDetailsModal = (props) => {
     { title: "City of Residence", name: ["city"] },
     { title: "Province of Residence", name: ["province"] },
     { title: "Country of Residence", name: ["country"] },
-    { title: "Home Address", name: ["Student.address"] },
+    { title: "Home Address", name: ["address"] },
     { title: "Current Address", name: ["current_address"] },
     { title: "Education Completed", name: ["education_completed"] },
     {
