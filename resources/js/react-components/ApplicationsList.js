@@ -6,8 +6,70 @@ const ApplicationsList = (props) => {
   const [show_filters, setShowFilters] = useState(false);
   const [courses, setCourses] = useState([]);
   const [filters, setFilters] = useState([]);
+  const [downloading_as_excel, setDownloadingAsExcel] = useState(false);
   const application_id_to_array_index_map =
     props.application_id_to_array_index_map;
+
+  const [questions, setQuestions] = useState([
+    { title: "Age Group", name: ["age_group"] },
+    { title: "Father's Name", name: ["father_name"] },
+    { title: "City of Residence", name: ["city"] },
+    { title: "Province of Residence", name: ["province"] },
+    { title: "Country of Residence", name: ["country"] },
+    { title: "Home Address", name: ["address"] },
+    { title: "Current Address", name: ["current_address"] },
+    { title: "Education Completed", name: ["education_completed"] },
+    {
+      title: ["Major of Education Completed"],
+      name: ["education_completed_major"],
+    },
+    { title: "Ongoing Education", name: ["education_ongoing"] },
+    { title: "Major of Ongoing Education", name: ["education_ongoing_major"] },
+    { title: "Monthly Family Income", name: ["monthly_family_income"] },
+    {
+      title: "Do you have computer and internet access?",
+      name: ["computer_and_internet_access"],
+    },
+    {
+      title: "Is there reliable internet facility in your area?",
+      name: ["internet_facility_in_area"],
+    },
+    {
+      title: "Can you spend 30 to 40 hours a week on the program?",
+      name: ["time_commitment"],
+    },
+    { title: "Are you currently employed?", name: ["is_employed"] },
+    { title: "Employment type", name: ["type_of_employment"] },
+    { title: "Current salary", name: ["salary"] },
+    {
+      title:
+        "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
+      name: ["will_leave_job"],
+    },
+    { title: "Have you applied to IEC before?", name: ["has_applied_before"] },
+    { title: "First Preference", name: ["first preference", "title"] },
+    { title: "Second Preference", name: ["second preference", "title"] },
+    { title: "Third Preference", name: ["third preference", "title"] },
+    { title: "Reason for Preferences", name: ["preference_reason"] },
+    {
+      title: "Are you a graduate in computer science or any related field?",
+      name: ["is_comp_sci_grad"],
+    },
+    {
+      title:
+        "Do you have any digital skills certifications? If yes, please share their names and the name of the institution.",
+      name: ["digi_skills_certifications"],
+    },
+    { title: "How did you hear about IEC?", name: ["how_heard_about_iec"] },
+    {
+      title: "The program is entirely online. Do you acknowledge that?",
+      name: ["acknowledge_online"],
+    },
+    {
+      title: "Applicant Emailed about Assessment",
+      name: ["was_emailed_about_assessment"],
+    },
+  ]);
 
   useEffect(() => {
     fetch(`/admin/application/courses/${props.application_round_id}`)
@@ -265,7 +327,66 @@ const ApplicationsList = (props) => {
     ]);
   }, [courses]);
 
-  // continue here with filters
+  const formatOutput = (output) => {
+    console.log(output);
+    if (output === false) return "No";
+    else if (output === true) return "Yes";
+    else return output;
+  };
+
+  const getValue = (obj, properties_array) => {
+    // if properties_array = ["Student","address"], then this funtion returns obj.Student.address
+    return properties_array.reduce(
+      (final_value, property) =>
+        final_value == null ? null : final_value[property],
+      obj
+    );
+  };
+
+  function download_table_as_csv(table_id, separator = ",") {
+    // Select rows from table_id
+    var rows = document.querySelectorAll("table#" + table_id + " tr");
+    // Construct csv
+    var csv = [];
+
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].style.display != "none") {
+        var row = [],
+          cols = rows[i].querySelectorAll("td, th");
+        for (var j = 0; j < cols.length; j++) {
+          // Clean innertext to remove multiple spaces and jumpline (break csv)
+          var data = cols[j].innerText
+            .replace(/(\r\n|\n|\r)/gm, "")
+            .replace(/(\s\s)/gm, " ");
+          // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+          data = data.replace(/"/g, '""');
+          // Push escaped string
+          row.push('"' + data + '"');
+        }
+        csv.push(row.join(separator));
+      }
+    }
+    if (csv.length == 1) {
+      //the 1 row is the header row
+      alert("Sorry! No rows to export. Change the filters.");
+    } else {
+      var csv_string = csv.join("\n");
+      // Download it
+      var filename =
+        "export_" + table_id + "_" + new Date().toLocaleDateString() + ".csv";
+      var link = document.createElement("a");
+      link.style.display = "none";
+      link.setAttribute("target", "_blank");
+      link.setAttribute(
+        "href",
+        "data:text/csv;charset=utf-8," + encodeURIComponent(csv_string)
+      );
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
 
   return (
     <div>
@@ -432,9 +553,31 @@ const ApplicationsList = (props) => {
           <p></p>
         )}
       </div>
-
+      {!downloading_as_excel ? (
+        <a
+          // href={`/admin/application/download-excel/${
+          //   document.getElementById("application-round-id-field").value
+          // }`}
+          target="_blank"
+          className="text-white mb-2 float-right px-3 py-2 bg-iec-blue hover:bg-iec-blue-hover cursor-pointer"
+          onClick={() => {
+            setDownloadingAsExcel(true);
+            download_table_as_csv("main-table");
+            setDownloadingAsExcel(false);
+          }}
+        >
+          <i className="fas fa-download"></i> Download as Excel File
+        </a>
+      ) : (
+        <i></i>
+      )}
       {applications.length > 0 ? (
-        <table className="w-full text-left text-sm">
+        <table
+          className={`w-full text-left text-sm ${
+            downloading_as_excel ? " invisible" : ""
+          }`}
+          id="main-table"
+        >
           <thead>
             <tr>
               <th>Name</th>
@@ -442,6 +585,11 @@ const ApplicationsList = (props) => {
               <th>Email</th>
               <th>Phone</th>
               <th>CNIC</th>
+              {questions.map((question) => (
+                <th className={downloading_as_excel ? "" : "hidden"}>
+                  {question.title}
+                </th>
+              ))}
               <th>Action</th>
             </tr>
           </thead>
@@ -494,6 +642,11 @@ const ApplicationsList = (props) => {
                   <td className="border px-4 py-2">
                     {application.Student.cnic}
                   </td>
+                  {questions.map((question) => (
+                    <td className={downloading_as_excel ? "" : "hidden"}>
+                      {formatOutput(getValue(application, question.name))}
+                    </td>
+                  ))}
                   <td className="border px-4 py-2">
                     <a
                       className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
