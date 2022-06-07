@@ -343,50 +343,18 @@ const ApplicationsList = (props) => {
     );
   };
 
-  function download_table_as_csv(table_id, separator = ",") {
-    // Select rows from table_id
-    var rows = document.querySelectorAll("table#" + table_id + " tr");
-    // Construct csv
-    var csv = [];
-
-    for (var i = 0; i < rows.length; i++) {
-      if (rows[i].style.display != "none") {
-        var row = [],
-          cols = rows[i].querySelectorAll("td, th");
-        for (var j = 0; j < cols.length; j++) {
-          // Clean innertext to remove multiple spaces and jumpline (break csv)
-          var data = cols[j].innerText
-            .replace(/(\r\n|\n|\r)/gm, "")
-            .replace(/(\s\s)/gm, " ");
-          // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
-          data = data.replace(/"/g, '""');
-          // Push escaped string
-          row.push('"' + data + '"');
-        }
-        csv.push(row.join(separator));
-      }
-    }
-    if (csv.length == 1) {
-      //the 1 row is the header row
-      alert("Sorry! No rows to export. Change the filters.");
-    } else {
-      var csv_string = csv.join("\n");
-      // Download it
-      var filename =
-        "export_" + table_id + "_" + new Date().toLocaleDateString() + ".csv";
-      var link = document.createElement("a");
-      link.style.display = "none";
-      link.setAttribute("target", "_blank");
-      link.setAttribute(
-        "href",
-        "data:text/csv;charset=utf-8," + encodeURIComponent(csv_string)
-      );
-      link.setAttribute("download", filename);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-  }
+  const setAllCheckBoxes = (filter_index, checked) => {
+    setFilters((cur) => {
+      let copy = cur.slice();
+      copy[filter_index].possible_values = copy[
+        filter_index
+      ].possible_values.map((possible_value_obj) => {
+        possible_value_obj.checked = checked;
+        return possible_value_obj;
+      });
+      return copy;
+    });
+  };
 
   return (
     <div>
@@ -445,34 +413,39 @@ const ApplicationsList = (props) => {
                 <label className="col-span-1">{filter.title}</label>
                 <div className="col-span-3">
                   {filter.expand_possible_values ? (
-                    filter.possible_values.map((possible_value_obj, i2) => (
-                      <div>
-                        <input
-                          type="checkbox"
-                          name={filter.name}
-                          data-filter_index={index}
-                          data-possible_value_index={i2}
-                          checked={possible_value_obj.checked}
-                          value={possible_value_obj.value}
-                          onChange={(e) => {
-                            setFilters((cur) => {
-                              let copy = cur.slice();
-                              copy[
-                                e.target.dataset.filter_index
-                              ].possible_values[
-                                e.target.dataset.possible_value_index
-                              ]["checked"] =
-                                !copy[e.target.dataset.filter_index]
-                                  .possible_values[
+                    <div>
+                      <a className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer">
+                        Check All
+                      </a>
+                      {filter.possible_values.map((possible_value_obj, i2) => (
+                        <div>
+                          <input
+                            type="checkbox"
+                            name={filter.name}
+                            data-filter_index={index}
+                            data-possible_value_index={i2}
+                            checked={possible_value_obj.checked}
+                            value={possible_value_obj.value}
+                            onChange={(e) => {
+                              setFilters((cur) => {
+                                let copy = cur.slice();
+                                copy[
+                                  e.target.dataset.filter_index
+                                ].possible_values[
                                   e.target.dataset.possible_value_index
-                                ]["checked"];
-                              return copy;
-                            });
-                          }}
-                        ></input>
-                        <label>{possible_value_obj.text}</label>
-                      </div>
-                    ))
+                                ]["checked"] =
+                                  !copy[e.target.dataset.filter_index]
+                                    .possible_values[
+                                    e.target.dataset.possible_value_index
+                                  ]["checked"];
+                                return copy;
+                              });
+                            }}
+                          ></input>
+                          <label>{possible_value_obj.text}</label>
+                        </div>
+                      ))}
+                    </div>
                   ) : (
                     <a
                       className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
@@ -514,34 +487,62 @@ const ApplicationsList = (props) => {
                       Click here to show all possible value filters
                     </a>
                   ) : (
-                    filter.possible_values.map((possible_value_obj, i2) => (
-                      <div>
-                        <input
-                          type="checkbox"
-                          name={filter.name}
+                    <div>
+                      <div className="flex gap-x-2">
+                        <a
+                          className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer"
                           data-filter_index={index}
-                          data-possible_value_index={i2}
-                          checked={possible_value_obj.checked}
-                          value={possible_value_obj.value}
-                          onChange={(e) => {
-                            setFilters((cur) => {
-                              let copy = cur.slice();
-                              copy[
-                                e.target.dataset.filter_index
-                              ].possible_values[
-                                e.target.dataset.possible_value_index
-                              ]["checked"] =
-                                !copy[e.target.dataset.filter_index]
-                                  .possible_values[
-                                  e.target.dataset.possible_value_index
-                                ]["checked"];
-                              return copy;
-                            });
+                          onClick={(e) => {
+                            setAllCheckBoxes(
+                              e.target.dataset.filter_index,
+                              true
+                            );
                           }}
-                        ></input>
-                        <label>{possible_value_obj.value}</label>
+                        >
+                          {"Check All"}
+                        </a>
+                        <a
+                          className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer"
+                          data-filter_index={index}
+                          onClick={(e) => {
+                            setAllCheckBoxes(
+                              e.target.dataset.filter_index,
+                              false
+                            );
+                          }}
+                        >
+                          {"Uncheck All"}
+                        </a>
                       </div>
-                    ))
+                      {filter.possible_values.map((possible_value_obj, i2) => (
+                        <div>
+                          <input
+                            type="checkbox"
+                            name={filter.name}
+                            data-filter_index={index}
+                            data-possible_value_index={i2}
+                            checked={possible_value_obj.checked}
+                            value={possible_value_obj.value}
+                            onChange={(e) => {
+                              setFilters((cur) => {
+                                let copy = cur.slice();
+                                copy[
+                                  e.target.dataset.filter_index
+                                ].possible_values[
+                                  e.target.dataset.possible_value_index
+                                ]["checked"] =
+                                  !copy[e.target.dataset.filter_index]
+                                    .possible_values[
+                                    e.target.dataset.possible_value_index
+                                  ]["checked"];
+                                return copy;
+                              });
+                            }}
+                          ></input>
+                          <label>{possible_value_obj.value}</label>
+                        </div>
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
