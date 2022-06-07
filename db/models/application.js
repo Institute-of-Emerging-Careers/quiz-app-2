@@ -111,17 +111,6 @@ Application.init(
         },
       },
     },
-    city: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "N/A",
-      validate: {
-        isIn: {
-          args: [cities],
-          msg: "Invalid city. Please select one from the provided list, or pick 'Other'.",
-        },
-      },
-    },
     province: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -159,6 +148,9 @@ Application.init(
       allowNull: false,
       defaultValue: "N/A",
       validate: {
+        notEmpty: {
+          msg: "Education Completed cannot be empty. Please select an option.",
+        },
         isIn: {
           args: [education_levels],
           msg: "Invalid Education Completed Level",
@@ -180,6 +172,9 @@ Application.init(
       allowNull: false,
       defaultValue: "N/A",
       validate: {
+        notEmpty: {
+          msg: "Ongoing Education cannot be empty. Please select an option.",
+        },
         isIn: {
           args: [education_levels],
           msg: "Invalid Education Ongoing Level",
@@ -201,6 +196,9 @@ Application.init(
       allowNull: false,
       defaultValue: "0",
       validate: {
+        notEmpty: {
+          msg: "Monthly Family Income cannot be empty. Please enter a non-negative value.",
+        },
         min: {
           args: [[0]],
           msg: "Invalid monthly family income. Must be a positive number.",
@@ -251,7 +249,12 @@ Application.init(
     },
     has_applied_before: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Please tell us if you have applied to IEC before by selecting one of the options.",
+        },
+      },
     },
     preference_reason: {
       type: DataTypes.TEXT,
@@ -259,7 +262,12 @@ Application.init(
     },
     is_comp_sci_grad: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Please tell us if you are a computer science graduate or not.",
+        },
+      },
     },
     digi_skills_certifications: {
       type: DataTypes.TEXT,
@@ -271,12 +279,43 @@ Application.init(
     },
     acknowledge_online: {
       type: DataTypes.BOOLEAN,
-      allowNull: true,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          msg: "Please acknowledge that the program is online.",
+        },
+      },
     },
   },
   {
     sequelize,
     modelName: "Application",
+    validate: {
+      firstPreferenceId() {
+        if (
+          this.firstPreferenceId == null ||
+          this.firstPreferenceId == undefined
+        ) {
+          throw Error("First Preference cannot be empty. Select an option.");
+        }
+      },
+      secondPreferenceId() {
+        if (
+          this.secondPreferenceId == null ||
+          this.secondPreferenceId == undefined
+        ) {
+          throw Error("Second Preference cannot be empty. Select an option.");
+        }
+      },
+      thirdPreferenceId() {
+        if (
+          this.thirdPreferenceId == null ||
+          this.thirdPreferenceId == undefined
+        ) {
+          throw Error("Third Preference cannot be empty. Select an option.");
+        }
+      },
+    },
     hooks: {
       beforeValidate: (user, options) => {
         let age_group_cutoffs = [

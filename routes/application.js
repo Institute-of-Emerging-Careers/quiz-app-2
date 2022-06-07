@@ -162,6 +162,7 @@ router.post(
           return;
         }
       }
+      console.log("firstPreferenceId", req.body.firstPreferenceId);
 
       // construct student object
       let obj = {};
@@ -183,41 +184,26 @@ router.post(
       console.log("Student saved");
       application = await application.save();
       res.sendStatus(201);
-
-      // // assign the quiz associated with the invite to this student
-      // await Assignment.create({
-      //   StudentId: student.id,
-      //   QuizId: invite.QuizId,
-      // });
-
-      // // send automated Welcome email to student
-      // try {
-      //   await sendHTMLMail(email, `Welcome to IEC LCMS`, {
-      //     heading: "Welcome to the IEC LCMS",
-      //     inner_text:
-      //       "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
-      //     button_announcer:
-      //       "Click on the button below to solve the Assessment",
-      //     button_text: "Solve Assessment",
-      //     button_link: "https://apply.iec.org.pk/student/login",
-      //   });
-      // } catch (err) {
-      //   console.log("Welcome email sending failed.");
-      // }
     } catch (err) {
-      console.log(err);
       if (err.errors) {
         console.log(err.errors[0]);
-        res.status(400).json({
+        const error_path_array = err.errors[0].path.split(".");
+        let error_obj = {
           error: err.errors[0].type,
-          field: errorField(err.errors[0].path.split(".")[1]),
+          field: errorField(
+            error_path_array.length == 1
+              ? error_path_array[0]
+              : error_path_array[1]
+          ),
           type: err.errors[0].validatorName,
           message: errorMessage(
             errorField(err.errors[0].path.split(".")[1]),
             err.errors[0].type,
             err.errors[0].message
           ),
-        });
+        };
+
+        res.status(400).json(error_obj);
       } else res.sendStatus(500);
     }
   }

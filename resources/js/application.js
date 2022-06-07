@@ -1,4 +1,34 @@
-const list_of_fields = ["firstName", "lastName", "email", "cnic"];
+const list_of_fields = [
+  "firstName",
+  "lastName",
+  "email",
+  "cnic",
+  "phone",
+  "age",
+  "city",
+  "province",
+  "country",
+  "address",
+  "father_name",
+  "current_address",
+  "education_completed",
+  "education_completed_major",
+  "education_ongoing",
+  "education_ongoing_major",
+  "monthly_family_income",
+  "computer_and_internet_access",
+  "internet_facility_in_area",
+  "time_commitment",
+  "is_employed",
+  "type_of_employment",
+  "salary",
+  "will_leave_job",
+  "has_applied_before",
+  "preference_reason",
+  "is_comp_sci_grad",
+  "how_heard_about_iec",
+  "acknowledge_online",
+];
 
 function handleForm(e) {
   $("#submit-spinner").removeClass("hidden-imp");
