@@ -90,78 +90,83 @@ const nextStep = (from, to) => {
 };
 
 const checkIfUserExists = () => {
-  $("#step-1-next-button-spinner").removeClass("hidden-imp");
-  fetch("/application/check-if-user-exists", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      email: document.getElementById("email").value,
-      cnic: document.getElementById("cnic").value,
-      application_round_id: $("#application_round_id_field").val(),
-    }),
-  })
-    .then((raw_response) => {
-      $("#step-1-next-button-spinner").addClass("hidden-imp");
-      resetAllErrors(list_of_fields);
-      if (raw_response.ok) {
-        raw_response.json().then((response) => {
-          if (response.exists) {
-            if (response.type == "already_applied") {
-              $("#application-form input").prop("disabled", true);
-              $(`#application-form-error-message`)
-                .html(
-                  "<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."
-                )
-                .show();
-              $(`#step1-next-button`)
-                .removeClass("btn-primary")
-                .addClass("btn-danger")
-                .attr("disabled", true);
-            } else if (response.type == "both_cnic_and_email") {
-              $("#password-input-group").hide();
-              $("#password").attr("required", false);
-              $("#password2").attr("required", false);
-              $("#email").attr("readonly", true);
-              $("#cnic").attr("readonly", true);
+  if ($("#email").val() != "" && $("#cnic").val() != "") {
+    $("#step-1-next-button-spinner").removeClass("hidden-imp");
+    fetch("/application/check-if-user-exists", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: document.getElementById("email").value,
+        cnic: document.getElementById("cnic").value,
+        application_round_id: $("#application_round_id_field").val(),
+      }),
+    })
+      .then((raw_response) => {
+        $("#step-1-next-button-spinner").addClass("hidden-imp");
+        resetAllErrors(list_of_fields);
+        if (raw_response.ok) {
+          raw_response.json().then((response) => {
+            if (response.exists) {
+              if (response.type == "already_applied") {
+                $("#application-form input").prop("disabled", true);
+                $(`#application-form-error-message`)
+                  .html(
+                    "<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."
+                  )
+                  .show();
+                $(`#step1-next-button`)
+                  .removeClass("btn-primary")
+                  .addClass("btn-danger")
+                  .attr("disabled", true);
+              } else if (response.type == "both_cnic_and_email") {
+                $("#password-input-group").hide();
+                $("#password").attr("required", false);
+                $("#password2").attr("required", false);
+                $("#email").attr("readonly", true);
+                $("#cnic").attr("readonly", true);
 
-              // resetting errors
-              $(`#cnic`).removeClass("is-invalid");
-              $(`#email`).removeClass("is-invalid");
-              nextStep("step1", "step2");
-            } else if (response.type == "email_only") {
-              $(`#cnic`).addClass("is-invalid").focus();
-              $(`#cnic-error-message`).text(
-                "The email above already exists in the database. It means you have already applied before. But you entered a different CNIC number last time. Either enter the same CNIC number as last time, or enter a different email address."
-              );
-            } else if (response.type == "cnic_only") {
-              $(`#email`).addClass("is-invalid").focus();
-              $(`#email-error-message`).text(
-                "The cnic below already exists in the database. It means you have already applied before. But you entered a different email address the last time. Please enter the same email address as before."
-              );
+                // resetting errors
+                $(`#cnic`).removeClass("is-invalid");
+                $(`#email`).removeClass("is-invalid");
+                nextStep("step1", "step2");
+              } else if (response.type == "email_only") {
+                $(`#cnic`).addClass("is-invalid").focus();
+                $(`#cnic-error-message`).text(
+                  "The email above already exists in the database. It means you have already applied before. But you entered a different CNIC number last time. Either enter the same CNIC number as last time, or enter a different email address."
+                );
+              } else if (response.type == "cnic_only") {
+                $(`#email`).addClass("is-invalid").focus();
+                $(`#email-error-message`).text(
+                  "The cnic below already exists in the database. It means you have already applied before. But you entered a different email address the last time. Please enter the same email address as before."
+                );
+              } else {
+                // resetting errors
+                $(`#cnic`).removeClass("is-invalid");
+                $(`#email`).removeClass("is-invalid");
+                nextStep("step1", "step2");
+              }
             } else {
               // resetting errors
               $(`#cnic`).removeClass("is-invalid");
               $(`#email`).removeClass("is-invalid");
               nextStep("step1", "step2");
             }
-          } else {
-            // resetting errors
-            $(`#cnic`).removeClass("is-invalid");
-            $(`#email`).removeClass("is-invalid");
-            nextStep("step1", "step2");
-          }
-        });
-      } else
+          });
+        } else
+          alert(
+            "Something went wrong. Please check your internet connection and try again. Code 01."
+          );
+      })
+      .catch((err) => {
+        console.log(err);
         alert(
-          "Something went wrong. Please check your internet connection and try again. Code 01."
+          "Something went wrong. Please check your internet connection and try again. Code 02."
         );
-    })
-    .catch((err) => {
-      console.log(err);
-      alert(
-        "Something went wrong. Please check your internet connection and try again. Code 02."
-      );
-    });
+      });
+  } else {
+    $("#step1").addClass("was-validated");
+    $("#email-error-message").text("Please enter email and cnic.");
+  }
 };
 
 $(document).ready(function () {
