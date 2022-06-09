@@ -90,7 +90,14 @@ const nextStep = (from, to) => {
 };
 
 const checkIfUserExists = () => {
-  if ($("#email").val() != "" && $("#cnic").val() != "") {
+  resetAllErrors(list_of_fields);
+  if ($("#email").val() == "") {
+    $("#step1").addClass("was-validated");
+    $("#email-error-message").text("Please enter email.");
+  } else if ($("#cnic").val() == "") {
+    $("#step1").addClass("was-validated");
+    $("#cnic-error-message").text("Please enter cnic.");
+  } else {
     $("#step-1-next-button-spinner").removeClass("hidden-imp");
     fetch("/application/check-if-user-exists", {
       method: "POST",
@@ -163,9 +170,6 @@ const checkIfUserExists = () => {
           "Something went wrong. Please check your internet connection and try again. Code 02."
         );
       });
-  } else {
-    $("#step1").addClass("was-validated");
-    $("#email-error-message").text("Please enter email and cnic.");
   }
 };
 
