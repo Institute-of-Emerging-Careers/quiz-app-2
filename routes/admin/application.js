@@ -4,6 +4,7 @@ const {
   ApplicationRound,
   Course,
   ApplicationRoundCourseJunction,
+  Application,
 } = require("../../db/models/application");
 
 const { Student, Assignment } = require("../../db/models/user");
@@ -26,8 +27,12 @@ router.get("/", checkAdminAuthenticated, (req, res) => {
 });
 
 router.get("/rounds/all", checkAdminAuthenticated, async (req, res) => {
+  const application_rounds = await ApplicationRound.findAll({
+    include: [{ model: Application, attributes: ["id"] }],
+  });
+
   res.json({
-    application_rounds: await ApplicationRound.findAll(),
+    application_rounds: application_rounds,
     courses: await Course.findAll({ attributes: ["id", "title"] }),
   });
 });

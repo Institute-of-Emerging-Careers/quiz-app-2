@@ -7,6 +7,8 @@ const ApplicationsList = (props) => {
   const [courses, setCourses] = useState([]);
   const [filters, setFilters] = useState([]);
   const [downloading_as_excel, setDownloadingAsExcel] = useState(false);
+  const [filtered_applications, setFilteredApplications] = useState([]);
+  const [num_rows, setNumRows] = useState(0);
   const application_id_to_array_index_map =
     props.application_id_to_array_index_map;
 
@@ -78,7 +80,6 @@ const ApplicationsList = (props) => {
           raw_response
             .json()
             .then((response) => {
-              console.log(response);
               setCourses(response);
             })
             .catch((err) => {
@@ -327,8 +328,51 @@ const ApplicationsList = (props) => {
     ]);
   }, [courses]);
 
+  useEffect(() => {
+    setFilteredApplications(applications);
+  }, [applications]);
+
+  useEffect(() => {
+    setFilteredApplications(
+      applications.filter((application) => {
+        let show_this_application = true;
+        for (let i = 0; i < filters.length; i++) {
+          const filter = filters[i];
+          if (
+            filter.filter_type == "integer_value" &&
+            application[filter.name] < filter.value
+          ) {
+            show_this_application = false;
+            break;
+          } else if (
+            filter.filter_type == "fixed_values" &&
+            filter.possible_values.length > 0 &&
+            filter.possible_values.reduce((prev, cur) => {
+              if (prev) return prev;
+              if (cur.checked) return true;
+              else return false;
+            }, false) &&
+            filter.possible_values.reduce((prev, cur) => {
+              if (prev) return prev;
+              else if (cur.checked && cur.value == application[filter.name])
+                return true;
+              else return false;
+            }, false) == false
+          ) {
+            show_this_application = false;
+            break;
+          }
+        }
+        return show_this_application;
+      })
+    );
+  }, [filters]);
+
+  useEffect(() => {
+    setNumRows(filtered_applications.length);
+  }, [filtered_applications]);
+
   const formatOutput = (output) => {
-    console.log(output);
     if (output === false) return "No";
     else if (output === true) return "Yes";
     else return output;
@@ -554,11 +598,10 @@ const ApplicationsList = (props) => {
           <p></p>
         )}
       </div>
+      <hr></hr>
+      <br></br>
       {!downloading_as_excel ? (
         <a
-          // href={`/admin/application/download-excel/${
-          //   document.getElementById("application-round-id-field").value
-          // }`}
           target="_blank"
           className="text-white mb-2 float-right px-3 py-2 bg-iec-blue hover:bg-iec-blue-hover cursor-pointer"
           onClick={() => {
@@ -573,98 +616,69 @@ const ApplicationsList = (props) => {
         <i></i>
       )}
       {applications.length > 0 ? (
-        <table
-          className={`w-full text-left text-sm ${
-            downloading_as_excel ? " invisible" : ""
-          }`}
-          id="main-table"
-        >
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Gender</th>
-              <th>Email</th>
-              <th>Phone</th>
-              <th>CNIC</th>
-              {questions.map((question) => (
-                <th className={downloading_as_excel ? "" : "hidden"}>
-                  {question.title}
-                </th>
-              ))}
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {applications
-              .filter((application) => {
-                let show_this_application = true;
-                for (let i = 0; i < filters.length; i++) {
-                  const filter = filters[i];
-                  if (
-                    filter.filter_type == "integer_value" &&
-                    application[filter.name] < filter.value
-                  ) {
-                    show_this_application = false;
-                    break;
-                  } else if (
-                    filter.filter_type == "fixed_values" &&
-                    filter.possible_values.length > 0 &&
-                    filter.possible_values.reduce((prev, cur) => {
-                      if (prev) return prev;
-                      if (cur.checked) return true;
-                      else return false;
-                    }, false) &&
-                    filter.possible_values.reduce((prev, cur) => {
-                      if (prev) return prev;
-                      else if (
-                        cur.checked &&
-                        cur.value == application[filter.name]
-                      )
-                        return true;
-                      else return false;
-                    }, false) == false
-                  ) {
-                    show_this_application = false;
-                    break;
-                  }
-                }
-                return show_this_application;
-              })
-              .map((application, index) => (
-                <tr key={application.id}>
-                  <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
-                  <td className="border px-4 py-2">
-                    {application.Student.gender}
-                  </td>
-                  <td className="border px-4 py-2">
-                    {application.Student.email}
-                  </td>
-                  <td className="border px-4 py-2">{application.phone}</td>
-                  <td className="border px-4 py-2">
-                    {application.Student.cnic}
-                  </td>
-                  {questions.map((question) => (
-                    <td className={downloading_as_excel ? "" : "hidden"}>
-                      {formatOutput(getValue(application, question.name))}
+        <div>
+          <p>Total Number of Applications: {applications.length}</p>
+          <p>Filtered Number of Applications: {num_rows}</p>
+          <table
+            className={`w-full text-left text-sm ${
+              downloading_as_excel ? " invisible" : ""
+            }`}
+            id="main-table"
+          >
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>CNIC</th>
+                {questions.map((question) => (
+                  <th className={downloading_as_excel ? "" : "hidden"}>
+                    {question.title}
+                  </th>
+                ))}
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered_applications.map((application, index) => {
+                return (
+                  <tr key={application.id}>
+                    <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
+                    <td className="border px-4 py-2">
+                      {application.Student.gender}
                     </td>
-                  ))}
-                  <td className="border px-4 py-2">
-                    <a
-                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                      data-index={
-                        application_id_to_array_index_map[application.id]
-                      }
-                      onClick={(e) => {
-                        setShowModal(e.target.dataset.index);
-                      }}
-                    >
-                      View Details
-                    </a>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
+                    <td className="border px-4 py-2">
+                      {application.Student.email}
+                    </td>
+                    <td className="border px-4 py-2">{application.phone}</td>
+                    <td className="border px-4 py-2">
+                      {application.Student.cnic}
+                    </td>
+                    {questions.map((question) => (
+                      <td className={downloading_as_excel ? "" : "hidden"}>
+                        {formatOutput(getValue(application, question.name))}
+                      </td>
+                    ))}
+                    <td className="border px-4 py-2">
+                      <a
+                        className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                        data-index={
+                          application_id_to_array_index_map[application.id]
+                        }
+                        onClick={(e) => {
+                          setShowModal(e.target.dataset.index);
+                        }}
+                      >
+                        View Details
+                      </a>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>No students to show.</p>
       )}

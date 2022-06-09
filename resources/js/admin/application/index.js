@@ -299,7 +299,9 @@ const App = () => {
                 {application_round.title}
               </h3>
               <div className="col-start-1 col-span-6">
-                <p className="pl-4 pt-0">0 applied</p>
+                <p className="pl-4 pt-0">
+                  {application_round.Applications.length} applied
+                </p>
               </div>
             </div>
           ))
