@@ -173,6 +173,7 @@ const provinces = [
 const countries = ["Pakistan"];
 
 const education_levels = [
+  "None",
   "Grade 8",
   "Matric/O Levels",
   "Inter/A Levels",
