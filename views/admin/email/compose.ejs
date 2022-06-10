@@ -59,9 +59,9 @@
         <i className="fas fa-spinner animate-spin hidden" id="load_previous_email_spinner"></i>
         <br><span class="text-gray-500">Note: Previous recepients' email addresses are not loaded. Only email content is loaded.</span><br><br>
       <form id="mail-form" action="/mail/preview" method="POST" target="_blank" class="flex flex-col gap-y-4">
-        <div id='recepient_field'>
+        <div>
             <label>Recepient Email: </label>
-            <input type="email" maxlength="200" name="recepient" placeholder="e.g. rohanhussain1@yahoo.com" class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
+            <input id='recepient_field' type="email" maxlength="200" name="recepient" placeholder="e.g. rohanhussain1@yahoo.com" class="border w-full py-3 px-4 mt-1 hover:shadow-sm">
         </div>
         <div>
             <label>Subject: </label>

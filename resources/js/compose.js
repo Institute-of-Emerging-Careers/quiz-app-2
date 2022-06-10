@@ -86,12 +86,14 @@ function sendEmails() {
   //   window.localStorage.setItem("button_url", email_button_url.value);
 
   if (!recepient_field.disabled) {
+    console.log("hey")
     // this means that no excel sheet was uploaded for email addresses
     email_addresses = [];
     email_addresses.push(recepient_field.value);
   }
 
   if (email_addresses.length > 0) {
+    console.log(email_addresses)
     fetch("/mail/send/batch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -110,7 +112,7 @@ function sendEmails() {
       .then((response) => {
         document.getElementById("loading-spinner").classList.add("hidden");
         if (response.status == 200) {
-          alert("Emails sent successfully");
+          alert("Emails have been queued successfully. They will gradually be sent at a rate of 14 emails per second. You can close this page.");
         } else {
           alert("There was an error sending emails. Contact IT.");
           console.log(response);
