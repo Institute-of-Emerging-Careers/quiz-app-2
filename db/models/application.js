@@ -416,7 +416,7 @@ Application.init(
           return queueMail(student.email, `IEC Application Receipt`, {
             heading: `Application Received`,
             inner_text: `Dear ${student.firstName}
-            <br><br>
+            
             We have received your application for the Digital Skills Training Program by Institute of Emerging Careers (IEC).  Your application (CNIC ${student.cnic}) is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment in a week. Please stay tuned! 
 
             Acquisition Process? 
