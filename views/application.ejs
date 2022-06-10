@@ -91,7 +91,7 @@
       <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>">
         <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
         <div id="step1" class="mt-3">
-          <h3 class="mt-3">Step 1: Basic Information</h3>
+          <h3 class="mt-3">Step 1: Basic Information *</h3>
           <div class="mb-3 mt-3">
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-user"></i></span>
@@ -184,7 +184,7 @@
           <!-- Age & Gender -->
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Age: </span>
+              <span class="input-group-text">Age*: </span>
               <input
                 type="number"
                 class="form-control"
@@ -195,7 +195,7 @@
                 name="age"
                 required
               />
-              <span class="input-group-text">Gender: </span>
+              <span class="input-group-text">Gender*: </span>
               <select class="form-select" name="gender" required>
                 <option value="female">Female</option>
                 <option value="male">Male</option>
@@ -208,7 +208,7 @@
           <!-- Phone Number -->
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Phone Number: </span>
+              <span class="input-group-text">Phone Number*: </span>
               <input
                 type="tel"
                 class="form-control"
@@ -225,7 +225,7 @@
           <!-- Father's Name -->
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Father's Name: </span>
+              <span class="input-group-text">Father's Name*: </span>
               <input
                 type="text"
                 class="form-control"
@@ -241,7 +241,7 @@
           <div class="mb-3 mt-3">
             <div class="input-group">
               <!-- City -->
-              <span class="input-group-text">City of Residence: </span>
+              <span class="input-group-text">City of Residence*: </span>
               <select class="form-select" name="city" id="city" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<cities.length;i++) { %>
@@ -250,7 +250,7 @@
               </select>
 
               <!-- Province -->
-              <span class="input-group-text">Province: </span>
+              <span class="input-group-text">Province*: </span>
               <select class="form-select" name="province" id="province" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<provinces.length;i++) { %>
@@ -259,7 +259,7 @@
               </select>
 
               <!-- Country -->
-              <span class="input-group-text">Country: </span>
+              <span class="input-group-text">Country*: </span>
               <select class="form-select" name="country" id="country" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<countries.length;i++) 
@@ -285,7 +285,7 @@
           <!-- Home Address -->
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Home Address: </span>
+              <span class="input-group-text">Home Address*: </span>
               <textarea
                 type="text"
                 class="form-control"
@@ -301,7 +301,7 @@
           <!-- Current Address -->
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Current Address: </span>
+              <span class="input-group-text">Current Address*: </span>
               <textarea
                 type="text"
                 class="form-control"
@@ -328,7 +328,7 @@
           
           <div class="row mb-4">
             <!-- Education Completed -->
-            <label class="col-sm-2 col-form-label">Education Completed: </label>
+            <label class="col-sm-2 col-form-label">Education Completed*: </label>
             <div class="col-sm-10">
               <select class="form-select mb-2" name="education_completed" id="education_completed" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -350,7 +350,7 @@
           </div>
           <div class="row mb-4">
             <!-- Education Ongoing -->
-            <label class="col-sm-2 col-form-label">Education Ongoing: </label>
+            <label class="col-sm-2 col-form-label">Education Ongoing*: </label>
             <div class="col-sm-10">
               <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -372,7 +372,7 @@
           </div>
 
           <fieldset class="row mb-4">
-            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?</label>
+            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?*</label>
             <div class="col-sm-8">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad" value="1" required>
@@ -416,7 +416,7 @@
 
           <!-- Monthly Income -->
           <div class="row mb-4">
-            <label class="col-lg-4 col-form-label">Monthly Family Income: </label>
+            <label class="col-lg-4 col-form-label">Monthly Family Income*: </label>
             <div class="col-lg-8">
               <input
                 type="number"
@@ -433,7 +433,7 @@
 
           <!-- Employment -->
           <fieldset class="row mb-4">
-            <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?</label>
+            <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?*</label>
             <div class="col-lg-8">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="is_employed" id="is_employed" value="1" required>
@@ -508,7 +508,7 @@
 
           
           <fieldset class="row mb-4">
-            <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?</label>
+            <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?*</label>
             <div class="col-lg-8">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access" value="1" required>
@@ -529,7 +529,7 @@
           </fieldset>
 
           <fieldset class="row mb-4">
-            <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?</label>
+            <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?*</label>
             <div class="col-lg-8">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet_facility_in_area" value="1" required>
@@ -564,7 +564,7 @@
             <h3 class="mt-3">Step 5: Final Information</h3>
 
             <fieldset class="row mb-4">
-              <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?</label>
+              <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?*</label>
               <div class="col-lg-8">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment" value="1" required>
@@ -583,7 +583,7 @@
             </fieldset>
 
             <fieldset class="row mb-4">
-              <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?</label>
+              <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?*</label>
               <div class="col-lg-8">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before" value="1" required>
@@ -602,7 +602,7 @@
             </fieldset>
 
             <div class="row mb-4 gy-2">
-              <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
+              <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course*:</label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
                   <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -613,7 +613,7 @@
                 <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
-              <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
+              <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
                   <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -624,7 +624,7 @@
                 <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
-              <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
+              <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
                   <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -638,7 +638,7 @@
 
             <!-- Reasons for Preferences -->
             <fieldset class="row mb-4 input-group">
-              <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.</label>
+              <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.*</label>
               <textarea
                   type="text"
                   class="form-control col-sm-8"
@@ -653,7 +653,7 @@
 
             <!-- How did you hear -->
             <fieldset class="row mb-4 input-group">
-              <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC? (Name of the Institution/Website/Person OR Social Media)</label>
+              <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC?*</label>
               <select class="form-select" name="how_heard_about_iec" id="how_heard_about_iec" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<sources_of_information.length;i++) 
@@ -670,7 +670,7 @@
 
             <!--Will work full time?-->
             <fieldset class="row mb-4">
-              <label for="will_work_full_time" class="col-lg-4 col-form-label">Will you be available for a full time job after completion of the course?</label>
+              <label for="will_work_full_time" class="col-lg-4 col-form-label">Will you be available for a full time job after completion of the course?*</label>
               <div class="col-lg-8">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time" value="1" required>
@@ -690,7 +690,7 @@
             </fieldset>
 
             <fieldset class="row mb-4">
-              <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
+              <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?*</label>
               <div class="col-lg-8">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1" required>
