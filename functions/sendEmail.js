@@ -95,6 +95,8 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
     console.log(
       "Dummy email sent to: ",
       recepient,
+      "Subject: ",
+      subject,
       "Link: ",
       ejs_obj.button_link
     );

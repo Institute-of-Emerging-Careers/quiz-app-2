@@ -388,12 +388,18 @@ Application.init(
           } catch (err) {
             console.log(err);
           }
-        } else user.rejection_email_sent = false;
+        } else {
+          user.rejection_email_sent = false;
+          return new Promise((resolve) => {
+            resolve();
+          });
+        }
       },
 
-      afterSave: (user, options) => {
+      afterSave: async (user, options) => {
         if (!user.rejection_email_sent) {
           // send application saved confirmation email
+          const student = await user.getStudent({ attributes: ["email"] });
           return queueMail(student.email, `IEC Application Receipt`, {
             heading: `Application Received`,
             inner_text: `Dear Student
@@ -407,6 +413,10 @@ Application.init(
             button_announcer: "You can log into your student panel here:",
             button_text: "Student Panel",
             button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
+          });
+        } else {
+          return new Promise((resolve) => {
+            resolve();
           });
         }
       },

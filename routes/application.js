@@ -203,7 +203,10 @@ router.post(
         };
 
         res.status(400).json(error_obj);
-      } else res.sendStatus(500);
+      } else {
+        res.sendStatus(500);
+        console.log(err);
+      }
     }
   }
 );
