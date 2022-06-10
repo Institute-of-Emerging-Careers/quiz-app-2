@@ -134,9 +134,18 @@ const checkIfUserExists = () => {
                   .addClass("btn-danger")
                   .attr("disabled", true);
               } else if (response.type == "both_cnic_and_email") {
-                $("#password-input-group").hide();
-                $("#password").attr("required", false);
-                $("#password2").attr("required", false);
+                $("#password-input-group :input").prop("disabled", true);
+                $("#password-success-message").text(
+                  "You already have an account at IEC so you don't have to set a new password. Your old password will still work fine."
+                );
+                $("#password")
+                  .attr("required", false)
+                  .val("...")
+                  .addClass("is-valid");
+                $("#password2")
+                  .attr("required", false)
+                  .val("...")
+                  .addClass("is-valid");
                 $("#email").attr("readonly", true);
                 $("#cnic").attr("readonly", true);
 
@@ -189,6 +198,7 @@ $(document).ready(function () {
   $("#step4-next-button").click(() => nextStep("step4", "step5"));
 
   // showing additional employment questions if the user selects "yes" on "are you employed"
+  $("#is_employed_no").prop("checked", false);
   if (
     $('input:radio[name="is_employed"]').is(":checked") &&
     $('input:radio[name="is_employed"]').val() == "1"
@@ -197,6 +207,9 @@ $(document).ready(function () {
     $("#salary").prop("required", true);
     $("#part-time").prop("required", true);
     $("#will-leave-job-yes").prop("required", true);
+  } else {
+    $("#additional-employment-questions").fadeOut();
+    $("#additional-employment-questions :input").prop("required", false);
   }
 
   $('input:radio[name="is_employed"]').change(function () {

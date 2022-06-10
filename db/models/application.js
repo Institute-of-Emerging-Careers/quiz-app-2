@@ -369,7 +369,8 @@ Application.init(
         if (reject !== false) {
           try {
             const student = await user.getStudent({ attributes: ["email"] });
-            await queueMail(student.email, `IEC Application Update`, {
+            user.rejection_email_sent = true;
+            return queueMail(student.email, `IEC Application Update`, {
               heading: `Application Not Accepted`,
               inner_text: `Dear Student
                 <br><br>
@@ -384,10 +385,29 @@ Application.init(
               button_text: "Visit",
               button_link: "https://iec.org.pk",
             });
-            user.rejection_email_sent = true;
           } catch (err) {
             console.log(err);
           }
+        } else user.rejection_email_sent = false;
+      },
+
+      afterSave: (user, options) => {
+        if (!user.rejection_email_sent) {
+          // send application saved confirmation email
+          return queueMail(student.email, `IEC Application Receipt`, {
+            heading: `Application Received`,
+            inner_text: `Dear Student
+              <br><br>
+              This email is to inform you that we have received your application with CNIC number "${user.cnic}". Stay tuned for further emails from us.
+              <br>
+              Thank you for showing your interest in becoming part of the program.
+              <br>
+              Sincerely, 
+              IEC Admissions Team`,
+            button_announcer: "You can log into your student panel here:",
+            button_text: "Student Panel",
+            button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
+          });
         }
       },
     },

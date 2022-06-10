@@ -158,6 +158,7 @@
         <div id="step2" class="hidden mt-5">
           <h3 class="mt-3">Step 2: Personal Information</h3>
           <!-- Password -->
+          <div id="password-success-message" class="text-success"></div>
           <div class="mb-3 mt-3" id="password-input-group">
             <div class="input-group">
               <span class="input-group-text"><i class="fas fa-key"></i></span>
@@ -177,8 +178,8 @@
                 name="password2"
                 required
               />
-              <div id="password-error-message" class="invalid-feedback"></div>
             </div>
+            <div id="password-error-message" class="invalid-feedback"></div>
           </div>
           <!-- Age & Gender -->
           <div class="mb-3 mt-3">
@@ -242,7 +243,7 @@
               <!-- City -->
               <span class="input-group-text">City of Residence: </span>
               <select class="form-select" name="city" id="city" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<cities.length;i++) { %>
                   <option value="<%=cities[i]%>"><%=cities[i]%></option>
                 <% } %>
@@ -251,7 +252,7 @@
               <!-- Province -->
               <span class="input-group-text">Province: </span>
               <select class="form-select" name="province" id="province" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<provinces.length;i++) { %>
                   <option value="<%=provinces[i]%>"><%=provinces[i]%></option>
                 <% } %>
@@ -260,7 +261,7 @@
               <!-- Country -->
               <span class="input-group-text">Country: </span>
               <select class="form-select" name="country" id="country" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<countries.length;i++) 
                 { 
                   if (countries[i]=="Pakistan") {
@@ -330,7 +331,7 @@
             <label class="col-sm-2 col-form-label">Education Completed: </label>
             <div class="col-sm-10">
               <select class="form-select mb-2" name="education_completed" id="education_completed" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
                   <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
                 <% } %>
@@ -352,7 +353,7 @@
             <label class="col-sm-2 col-form-label">Education Ongoing: </label>
             <div class="col-sm-10">
               <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
                   <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
                 <% } %>
@@ -604,7 +605,7 @@
               <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
-                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                   <% for (let i=0;i<courses.length;i++) { %>
                     <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                   <% } %>
@@ -615,7 +616,7 @@
               <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
-                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                   <% for (let i=0;i<courses.length;i++) { %>
                     <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                   <% } %>
@@ -626,7 +627,7 @@
               <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
-                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                   <% for (let i=0;i<courses.length;i++) { %>
                     <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
                   <% } %>
@@ -704,7 +705,7 @@
               <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
             </fieldset>
           </div>
-          <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. You can go to the <a href="/student/login">Student Panel</a> and log in.</p>
+          <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out for a confirmation email from us. Be sure to remember your email and password for future use.</p>
 
             <button
               type="submit"
