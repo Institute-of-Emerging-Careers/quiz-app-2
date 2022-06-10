@@ -185,6 +185,8 @@ const education_levels = [
 
 const sources_of_information = [
   "Social Media",
+  "IEC Student",
+  "IEC Team Member",
   "Word of Mouth",
   "Email",
   "SMS",
