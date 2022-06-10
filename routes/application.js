@@ -87,7 +87,6 @@ router.post(
     ];
 
     // check if student with this email/cnic/both has already submitted an application for this cohort (ApplicationRound) before.
-    console.log(student);
     if (student[0] != null || student[1] != null || student[2] != null) {
       const student_found = student.reduce((found, cur) => {
         if (found != null) return found;
