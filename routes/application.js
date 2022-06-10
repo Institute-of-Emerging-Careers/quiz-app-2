@@ -162,7 +162,6 @@ router.post(
           return;
         }
       }
-      console.log("firstPreferenceId", req.body.firstPreferenceId);
 
       // construct student object
       let obj = {};

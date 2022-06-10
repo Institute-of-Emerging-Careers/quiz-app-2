@@ -56,7 +56,10 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
       where: { email: recepient },
       attributes: ["hasUnsubscribedFromEmails"],
     });
-    if (student != null && (force_send || !student.hasUnsubscribedFromEmails)) {
+    if (
+      (student != null && (force_send || !student.hasUnsubscribedFromEmails)) ||
+      student == null
+    ) {
       // sending email
       const html = await ejs.renderFile(
         __dirname + "/../views/templates/mail-template-1.ejs",
