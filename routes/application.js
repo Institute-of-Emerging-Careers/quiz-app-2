@@ -14,6 +14,7 @@ const {
   countries,
   education_levels,
   type_of_employment,
+  sources_of_information,
 } = require("../db/data_lists");
 
 router.use((req, res, next) => {
@@ -39,13 +40,14 @@ router.get(
           education_levels: education_levels,
           type_of_employment: type_of_employment,
           courses: courses,
+          sources_of_information: sources_of_information,
           application_round_id: req.params.application_round_id,
         });
       } else {
         res.render("templates/error.ejs", {
           additional_info: "",
           error_message:
-            "This link is invalid or something went wrong. Error code 01.",
+            "This link is invalid or something went wrong at the server. Error code 01.",
           action_link: "/",
           action_link_text: "Click here to go to home page.",
         });

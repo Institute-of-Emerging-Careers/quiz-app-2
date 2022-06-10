@@ -183,6 +183,14 @@ const education_levels = [
   "PhD",
 ];
 
+const sources_of_information = [
+  "Social Media",
+  "Word of Mouth",
+  "Email",
+  "SMS",
+  "Other",
+];
+
 const type_of_employment = ["Part Time", "Full Time", "Not Employed"];
 
 const age_groups = ["Under 18", "18-21", "22-24", "25-26", "27-30", "Above 30"];

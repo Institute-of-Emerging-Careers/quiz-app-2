@@ -654,13 +654,16 @@
             <!-- How did you hear -->
             <fieldset class="row mb-4 input-group">
               <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC? (Name of the Institution/Website/Person OR Social Media)</label>
-              <input
-                  type="text"
-                  class="form-control col-sm-8"
-                  id="how-heard-about-iec"
-                  placeholder="Name of Person / Social Media / Institution"
-                  name="how_heard_about_iec"
-                >
+              <select class="form-select" name="how_heard_about_iec" id="how_heard_about_iec" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<sources_of_information.length;i++) 
+                { 
+                %>
+                  <option value="<%=sources_of_information[i]%>"><%=sources_of_information[i]%></option>
+                <% 
+                } 
+                %>
+              </select>
               <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
 
             </fieldset>

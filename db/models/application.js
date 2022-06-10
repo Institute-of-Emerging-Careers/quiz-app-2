@@ -7,6 +7,7 @@ const {
   education_levels,
   type_of_employment,
   age_groups,
+  sources_of_information,
 } = require("../../db/data_lists");
 const { queueMail } = require("../../bull");
 
@@ -278,6 +279,12 @@ Application.init(
     how_heard_about_iec: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        isIn: {
+          args: [sources_of_information],
+          msg: "Please tell us how you heard about IEC.",
+        },
+      },
     },
     will_work_full_time: {
       type: DataTypes.BOOLEAN,
