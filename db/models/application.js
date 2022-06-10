@@ -409,14 +409,28 @@ Application.init(
           const student = await user.getStudent({ attributes: ["email"] });
           return queueMail(student.email, `IEC Application Receipt`, {
             heading: `Application Received`,
-            inner_text: `Dear Student
-              <br><br>
-              This email is to inform you that we have received your application with CNIC number "${user.cnic}". Stay tuned for further emails from us.
-              <br>
-              Thank you for showing your interest in becoming part of the program.
-              <br>
-              Sincerely, 
-              IEC Admissions Team`,
+            inner_text: `Dear ${student.firstName}
+            <br><br>
+            We have received your application for the Digital Skills Training Program by Institute of Emerging Careers (IEC).  Your application (CNIC ${student.cnic}) is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment in a week. Please stay tuned! 
+
+            Acquisition Process? 
+            Online Registration
+            Online Assessment 
+            Online Orientation
+            One-on-One Interviews
+            Zero Week
+            Probation Week 
+            Course Begins
+            
+            We know this is a long process but we assure you that if you give your best, you can easily get through it. You will get rewarded for all the effort you put in!
+            
+             Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> or Whatsapp: 03338800947.
+             
+            Best Regards, 
+            Director Admissions 
+            Institute of Emerging Careers 
+            http://www.iec.org.pk 
+            Facebook | Instagram | LinkedIn | Twitter`,
             button_announcer: "You can log into your student panel here:",
             button_text: "Student Panel",
             button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,

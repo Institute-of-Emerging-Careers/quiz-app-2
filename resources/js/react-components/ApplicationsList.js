@@ -327,8 +327,8 @@ const ApplicationsList = (props) => {
         ],
       },
       {
-        title: "Applicant Emailed about Assessment",
-        name: "was_emailed_about_assessment",
+        title: "Applicant automatically rejected and rejection email sent",
+        name: "rejection_email_sent",
         filter_type: "fixed_values",
         discrepancy_between_value_and_text: true,
         possible_values: [
