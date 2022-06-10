@@ -410,7 +410,9 @@ Application.init(
       afterSave: async (user, options) => {
         if (!user.rejection_email_sent) {
           // send application saved confirmation email
-          const student = await user.getStudent({ attributes: ["email"] });
+          const student = await user.getStudent({
+            attributes: ["email", "firstName", "cnic"],
+          });
           return queueMail(student.email, `IEC Application Receipt`, {
             heading: `Application Received`,
             inner_text: `Dear ${student.firstName}
