@@ -559,149 +559,152 @@
         </div>
 
         <div id="step5" class="hidden mt-5">
-          <h3 class="mt-3">Step 5: Final Information</h3>
+          <div id="step5-fields">
+            <h3 class="mt-3">Step 5: Final Information</h3>
 
-          <fieldset class="row mb-4">
-            <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?</label>
-            <div class="col-lg-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment" value="1" required>
-                <label class="form-check-label" for="time_commitment">
-                  Yes
-                </label>
+            <fieldset class="row mb-4">
+              <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment" value="1" required>
+                  <label class="form-check-label" for="time_commitment">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment_no" value="0">
+                  <label class="form-check-label" for="time_commitment_no">
+                    No
+                  </label>
+                </div>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment_no" value="0">
-                <label class="form-check-label" for="time_commitment_no">
-                  No
-                </label>
+              <div id="time_commitment-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+            <fieldset class="row mb-4">
+              <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before" value="1" required>
+                  <label class="form-check-label" for="has_applied_before">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before_no" value="0">
+                  <label class="form-check-label" for="has_applied_before_no">
+                    No
+                  </label>
+                </div>
+              </div>
+              <div id="has_applied_before-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+            <div class="row mb-4 gy-2">
+              <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
+                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<courses.length;i++) { %>
+                    <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <% } %>
+                </select>
+                <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
+              </div>
+
+              <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
+                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<courses.length;i++) { %>
+                    <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <% } %>
+                </select>
+                <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
+              </div>
+
+              <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
+                  <option disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<courses.length;i++) { %>
+                    <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
+                  <% } %>
+                </select>
+                <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
             </div>
-            <div id="time_commitment-error-message" class="invalid-feedback"></div>
-          </fieldset>
 
-          <fieldset class="row mb-4">
-            <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?</label>
-            <div class="col-lg-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before" value="1" required>
-                <label class="form-check-label" for="has_applied_before">
-                  Yes
-                </label>
+            <!-- Reasons for Preferences -->
+            <fieldset class="row mb-4 input-group">
+              <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.</label>
+              <textarea
+                  type="text"
+                  class="form-control col-sm-8"
+                  id="preference-reason"
+                  placeholder="Reasons"
+                  name="preference_reason"
+                  required
+                ></textarea>
+              <div id="preference_reason-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+
+            <!-- How did you hear -->
+            <fieldset class="row mb-4 input-group">
+              <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC? (Name of the Institution/Website/Person OR Social Media)</label>
+              <input
+                  type="text"
+                  class="form-control col-sm-8"
+                  id="how-heard-about-iec"
+                  placeholder="Name of Person / Social Media / Institution"
+                  name="how_heard_about_iec"
+                >
+              <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
+
+            </fieldset>
+
+            <!--Will work full time?-->
+            <fieldset class="row mb-4">
+              <label for="will_work_full_time" class="col-lg-4 col-form-label">Will you be available for a full time job after completion of the course?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time" value="1" required>
+                  <label class="form-check-label" for="will_work_full_time">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time-no" value="0">
+                  <label class="form-check-label" for="will_work_full_time-no">
+                    No
+                  </label>
+                </div>
               </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before_no" value="0">
-                <label class="form-check-label" for="has_applied_before_no">
-                  No
-                </label>
+              <div id="will_work_full_time-error-message" class="invalid-feedback"></div>
+
+            </fieldset>
+
+            <fieldset class="row mb-4">
+              <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1" required>
+                  <label class="form-check-label" for="acknowledge_online">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-no" value="0">
+                  <label class="form-check-label" for="acknowledge-online-no">
+                    No
+                  </label>
+                </div>
               </div>
-            </div>
-            <div id="has_applied_before-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <div class="row mb-4 gy-2">
-            <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course: </label>
-            <div class="col-lg-8">
-              <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                <% } %>
-              </select>
-              <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
-            </div>
-
-            <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course: </label>
-            <div class="col-lg-8">
-              <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                <% } %>
-              </select>
-              <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
-            </div>
-
-            <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course: </label>
-            <div class="col-lg-8">
-              <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
-                <option disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<courses.length;i++) { %>
-                  <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                <% } %>
-              </select>
-              <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
-            </div>
+              <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
+            </fieldset>
           </div>
-
-          <!-- Reasons for Preferences -->
-          <fieldset class="row mb-4 input-group">
-            <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.</label>
-            <textarea
-                type="text"
-                class="form-control col-sm-8"
-                id="preference-reason"
-                placeholder="Reasons"
-                name="preference_reason"
-                required
-              ></textarea>
-            <div id="preference_reason-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-
-          <!-- How did you hear -->
-          <fieldset class="row mb-4 input-group">
-            <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC? (Name of the Institution/Website/Person OR Social Media)</label>
-            <input
-                type="text"
-                class="form-control col-sm-8"
-                id="how-heard-about-iec"
-                placeholder="Name of Person / Social Media / Institution"
-                name="how_heard_about_iec"
-              >
-            <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
-
-          </fieldset>
-
-          <!--Will work full time?-->
-          <fieldset class="row mb-4">
-            <label for="will_work_full_time" class="col-lg-4 col-form-label">After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?</label>
-            <div class="col-lg-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time" value="1" required>
-                <label class="form-check-label" for="will_work_full_time">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time-no" value="0">
-                <label class="form-check-label" for="will_work_full_time-no">
-                  No
-                </label>
-              </div>
-            </div>
-            <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
-
-          </fieldset>
-
-          <fieldset class="row mb-4">
-            <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
-            <div class="col-lg-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1" required>
-                <label class="form-check-label" for="acknowledge_online">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-no" value="0">
-                <label class="form-check-label" for="acknowledge-online-no">
-                  No
-                </label>
-              </div>
-            </div>
-            <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
-          </fieldset>
+          <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. You can go to the <a href="/student/login">Student Panel</a> and log in.</p>
 
             <button
               type="submit"

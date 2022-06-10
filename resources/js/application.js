@@ -27,6 +27,7 @@ const list_of_fields = [
   "preference_reason",
   "is_comp_sci_grad",
   "how_heard_about_iec",
+  "will_work_full_time",
   "acknowledge_online",
 ];
 
@@ -43,6 +44,12 @@ function handleForm(e) {
   }).then((raw_response) => {
     $("#submit-spinner").addClass("hidden-imp");
     if (raw_response.ok) {
+      $("#step1").fadeOut();
+      $("#step2").fadeOut();
+      $("#step3").fadeOut();
+      $("#step4").fadeOut();
+      $("#step5-fields").fadeOut();
+      $("#after_save_message").removeClass("hidden");
       $("#step5-next-button")
         .removeClass("btn-primary")
         .removeClass("btn-danger")

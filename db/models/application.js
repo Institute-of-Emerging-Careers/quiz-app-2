@@ -25,48 +25,7 @@ ApplicationRound.init(
   }
 );
 
-class Application extends Model {
-  async conditionallyReject() {
-    let reject = false;
-    if (this.age < 18 || this.age > 30) {
-      reject = "Age of applicant must be between 18 and 30 years.";
-    } else if (this.time_commitment == false) {
-      reject =
-        "Applicant must commit 30-40 hours of time per week to the program.";
-    } else if (this.will_work_full_time) {
-      reject =
-        "Applicant must be willing to work on a full time job after graduating from the program.";
-    }
-
-    if (reject !== false) {
-      try {
-        const student = await this.getStudent({ attributes: ["email"] });
-        await queueMail(student.email, `IEC Application Update`, {
-          heading: `Application Not Accepted`,
-          inner_text: `Dear Student
-          <br><br>
-          This email is to inform you that we are unable to accept your application at the moment for the following reason:
-          <br>
-          <b>Reason:</b> ${reject}
-          Thank you for showing your interest in becoming part of the program. 
-          <br>
-          Sincerely, 
-          IEC Admissions Team`,
-          button_announcer: "Visit out website to learn more about us",
-          button_text: "Visit",
-          button_link: "https://iec.org.pk",
-        });
-        this.rejection_email_sent = true;
-        return this.save();
-      } catch (err) {
-        console.log(err);
-        return new Promise((resolve, reject) => {
-          reject(err);
-        });
-      }
-    }
-  }
-}
+class Application extends Model {}
 
 Application.init(
   {
@@ -394,6 +353,42 @@ Application.init(
         }
         if (age_group == "") age_group = "Above 30";
         user.age_group = age_group;
+      },
+      beforeSave: async (user, options) => {
+        let reject = false;
+        if (user.age < 18 || user.age > 30) {
+          reject = "Age of applicant must be between 18 and 30 years.";
+        } else if (user.time_commitment == false) {
+          reject =
+            "Applicant must commit 30-40 hours of time per week to the program.";
+        } else if (user.will_work_full_time == false) {
+          reject =
+            "Applicant must be willing to work on a full time job after graduating from the program.";
+        }
+
+        if (reject !== false) {
+          try {
+            const student = await user.getStudent({ attributes: ["email"] });
+            await queueMail(student.email, `IEC Application Update`, {
+              heading: `Application Not Accepted`,
+              inner_text: `Dear Student
+                <br><br>
+                This email is to inform you that we are unable to accept your application at the moment for the following reason:
+                <br>
+                <b>Reason:</b> ${reject}
+                Thank you for showing your interest in becoming part of the program. 
+                <br>
+                Sincerely, 
+                IEC Admissions Team`,
+              button_announcer: "Visit out website to learn more about us",
+              button_text: "Visit",
+              button_link: "https://iec.org.pk",
+            });
+            user.rejection_email_sent = true;
+          } catch (err) {
+            console.log(err);
+          }
+        }
       },
     },
   }

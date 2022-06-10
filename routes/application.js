@@ -183,9 +183,6 @@ router.post(
       await application.validate(); //the "catch" gets this if validation fails
       application = await application.save();
       res.sendStatus(201);
-
-      // Now we check if this student can be automatically rejected based on criteria such as age
-      await application.conditionallyReject();
     } catch (err) {
       if (err.errors) {
         console.log(err.errors[0]);
