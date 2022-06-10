@@ -47,7 +47,7 @@ const {
   getQuestionIdsFromArrayOfAnswers,
 } = require("../functions/utilities.js");
 const allSectionsSolved = require("../functions/allSectionsSolved.js");
-const { sendHTMLMail } = require("../functions/sendEmail");
+const { queueMail } = require("../bull");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -1383,7 +1383,7 @@ router.post(
     }
     Promise.all(
       emails.map((email) =>
-        sendHTMLMail(email, `${email_content.subject}`, {
+        queueMail(email, `${email_content.subject}`, {
           heading: email_content.heading,
           inner_text: email_content.body,
           button_announcer: email_content.button_pre_text,

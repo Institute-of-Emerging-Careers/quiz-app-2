@@ -31,7 +31,7 @@ const {
 } = require("./db/models/user");
 const csvToState = require("./functions/csvToState");
 
-const { sendHTMLMail } = require("./functions/sendEmail");
+const { queueMail } = require("./bull");
 const flatten2DArray = require("./functions/flatten2DArray");
 const sendFileInResponse = require("./functions/sendFileInResponse");
 const stateToCSV = require("./functions/stateToCSV.js");
@@ -119,7 +119,7 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
 
 app.get("/test", async (req, res) => {
   try {
-    await sendHTMLMail("22100063@lums.edu.pk", `Assessment Completed`, {
+    await queueMail("22100063@lums.edu.pk", `Assessment Completed`, {
       heading: `All Sections Completed`,
       inner_text: `Dear Student
         <br>

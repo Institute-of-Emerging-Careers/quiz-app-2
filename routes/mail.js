@@ -7,7 +7,7 @@ var AWS = require("aws-sdk");
 const checkAdminAuthenticated = require("../db/check-admin-authenticated");
 const checkStudentAuthenticated = require("../db/check-student-authenticated");
 const { Email } = require("../db/models/user");
-const { sendHTMLMail } = require("../functions/sendEmail");
+const { queueMail } = require("../bull");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -48,7 +48,7 @@ router.post("/send/batch", checkAdminAuthenticated, async (req, res) => {
       let target_num_emails = req.body.email_addresses.length;
       req.body.email_addresses.forEach(async (email) => {
         try {
-          await sendHTMLMail(email, req.body.email_content.subject, {
+          await queueMail(email, req.body.email_content.subject, {
             heading: req.body.email_content.heading,
             inner_text: req.body.email_content.inner_text,
             button_announcer: req.body.email_content.button_announcer,
@@ -99,7 +99,7 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
 
 router.get("/test", checkAdminAuthenticated, async (req, res) => {
   try {
-    await sendHTMLMail("mail@iec.org.pk", "Node Test", {
+    await queueMail("mail@iec.org.pk", "Node Test", {
       heading: "Abay Heading",
       inner_text: "lorem lorem",
       button_announcer: "Ye le button",

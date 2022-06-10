@@ -18,7 +18,7 @@ const {
 
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus");
 
-const { sendHTMLMail } = require("../functions/sendEmail");
+const { queueMail } = require("../bull");
 
 // starting cron-jobs
 const {
@@ -104,7 +104,7 @@ router.post("/signup", async (req, res) => {
 
       // send automated Welcome email to student
       try {
-        await sendHTMLMail(email, `Welcome to IEC LCMS`, {
+        await queueMail(email, `Welcome to IEC LCMS`, {
           heading: "Welcome to the IEC LCMS",
           inner_text:
             "We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
@@ -237,7 +237,7 @@ router.post(
         process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
 
       try {
-        await sendHTMLMail(
+        await queueMail(
           student.email,
           `Reset Password`,
           {

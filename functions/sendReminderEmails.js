@@ -9,9 +9,9 @@ const {
   PasswordResetLink,
 } = require("../db/models/user");
 const allSectionsSolved = require("./allSectionsSolved");
-const { sendTextMail, sendHTMLMail } = require("./sendEmail");
 const { msToTime } = require("./millisecondsToMinutesAndSeconds");
 const roundToTwoDecimalPlaces = require("./roundToTwoDecimalPlaces");
+const { queueMail } = require("../bull");
 
 async function sendReminderEmails() {
   const quizzes = await Quiz.findAll({
@@ -64,7 +64,7 @@ async function sendReminderEmails() {
                 //if remaining time more than 0 days and less than 3 days then send email, because we don't want to be sending reminder emails to students whose 72 hours have already passed
 
                 // send reminder mail
-                await sendHTMLMail(
+                await queueMail(
                   assignment.Student.email,
                   `Reminder | IEC Assessment Deadline`,
                   {

@@ -14,7 +14,7 @@ const {
   StudentInterviewRoundInvite,
 } = require("../../db/models/interview");
 const { DateTime } = require("luxon");
-const { sendHTMLMail } = require("../../functions/sendEmail");
+const { queueMail } = require("../../bull");
 const passport = require("passport");
 const { Quiz, Section } = require("../../db/models/quizmodel");
 const { Score, Assignment, Student, Attempt } = require("../../db/models/user");
@@ -115,7 +115,7 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
         }/admin/interview/login/${
           interviewer.email
         }?password=${encodeURIComponent(interviewer_password)}`;
-        await sendHTMLMail(interviewer.email, `${email_content.subject}`, {
+        await queueMail(interviewer.email, `${email_content.subject}`, {
           heading: email_content.heading,
           inner_text: email_content.body,
           button_announcer: email_content.button_pre_text,

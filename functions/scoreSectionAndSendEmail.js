@@ -4,7 +4,7 @@ const allSectionsSolved = require("./allSectionsSolved");
 const calculateScore = require("./calculateScore");
 const updateScore = require("./updateScore");
 const { setSectionStatusToComplete } = require("./setSectionStatusToComplete");
-const { sendHTMLMail } = require("./sendEmail");
+const { queueMail } = require("../bull");
 
 function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
   return new Promise(async (resolve, reject) => {
@@ -19,14 +19,16 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
       if (assignment === null) {
         assignment = await Assignment.findOne({
           where: { StudentId: student_id, QuizId: quizId },
-        })
+        });
       }
       if (assignment !== null) {
         // checking if an attempt exists, because if not then this means we're scoring this assignment due to it being past deadline
         let score;
-        const attempt = await Attempt.findOne({where:{AssignmentId: assignment.id, SectionId: section_id}})
+        const attempt = await Attempt.findOne({
+          where: { AssignmentId: assignment.id, SectionId: section_id },
+        });
         if (attempt == null) {
-          score=0
+          score = 0;
         } else {
           score = await calculateScore(section_id, student_id);
         }
@@ -39,10 +41,10 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
             attributes: ["email"],
           })
         ).email;
-  
+
         // check if student has solved all sections
         if (await allSectionsSolved(quizId, assignment)) {
-          await sendHTMLMail(email, `Assessment Completed`, {
+          await queueMail(email, `Assessment Completed`, {
             heading: `All Sections Completed`,
             inner_text: `Dear Student
                 <br><br>
@@ -58,7 +60,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
           });
           console.log("Scoring mail sent");
         } else {
-          await sendHTMLMail(email, `Section Solved`, {
+          await queueMail(email, `Section Solved`, {
             heading: `Section "${section.title}" Solved`,
             inner_text: `Dear Student
                 <br><br>

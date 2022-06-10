@@ -5,7 +5,11 @@ var AWS = require("aws-sdk");
 
 const AWSSendEmail = (html, mailOptions) => {
   // Set the region
-  AWS.config.update({ accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID, secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY, region: process.env.AWS_SES_REGION });
+  AWS.config.update({
+    accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
+    region: process.env.AWS_SES_REGION,
+  });
 
   // Create sendEmail params
   var params = {
@@ -41,52 +45,8 @@ const AWSSendEmail = (html, mailOptions) => {
     .promise();
 
   // Handle promise's fulfilled/rejected states
-  return promise
-}
-
-async function sendTextMail(recepient, subject, text) {
-  if (process.env.NODE_ENV == "production") {
-    // checking if this student has unsubscribed from emails, if so, we won't send email
-    const student = await Student.findOne({
-      where: { email: recepient },
-      attributes: ["hasUnsubscribedFromEmails"],
-    });
-
-    if (student == null || !student.hasUnsubscribedFromEmails) {
-      var transporter = nodemailer.createTransport({
-        service: "Outlook365",
-        auth: {
-          user: "mail@iec.org.pk",
-          pass: "Jah29535",
-        },
-        tls: {
-          ciphers: "SSLv3",
-        },
-        pool: true,
-        maxConnections: 1,
-        rateDelta: 60000,
-        rateLimit: 30,
-      });
-
-      var mailOptions = {
-        from: "IEC Assessments <mail@iec.org.pk>",
-        to: recepient,
-        subject: subject,
-        text: text,
-      };
-
-      return transporter.sendMail(mailOptions);
-    } else {
-      return new Promise((resolve) => {
-        resolve();
-      });
-    }
-  } else {
-    return new Promise((resolve) => {
-      resolve();
-    });
-  }
-}
+  return promise;
+};
 
 async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
   // if force send, then we send email regardless of student's email receiving preference (e.g. forgot password email)
@@ -110,7 +70,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
         html: html,
       };
 
-      return AWSSendEmail(html, mailOptions)
+      return AWSSendEmail(html, mailOptions);
       /*promise.then(function (data) {
         console.log(data.MessageId);
         res.sendStatus(200);
@@ -120,7 +80,10 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
         res.sendStatus(500);
       });*/
     } else {
-      console.log(recepient, "email does not exist in database or has unsubscribed.");
+      console.log(
+        recepient,
+        "email does not exist in database or has unsubscribed."
+      );
       return new Promise((resolve) => {
         resolve();
       });
@@ -138,4 +101,4 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
   }
 }
 
-module.exports = { sendTextMail, sendHTMLMail };
+module.exports = { sendHTMLMail };

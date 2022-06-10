@@ -13,7 +13,7 @@ const getTotalMarksOfSection = require("../../functions/getTotalMarksOfSection")
 const allSectionsSolved = require("../../functions/allSectionsSolved");
 const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces");
 const getQuizTotalScore = require("../../functions/getQuizTotalScore");
-const { sendHTMLMail } = require("../../functions/sendEmail");
+const { queueMail } = require("../../bull");
 
 //this file deals with /admin/orientation/...
 
@@ -243,7 +243,7 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
         let i = 0;
         const n = students.length;
         students.forEach(async (student) => {
-          await sendHTMLMail(student.email, `${email_content.subject}`, {
+          await queueMail(student.email, `${email_content.subject}`, {
             heading: email_content.heading,
             inner_text: email_content.body,
             button_announcer: email_content.button_pre_text,

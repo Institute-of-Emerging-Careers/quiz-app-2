@@ -5,6 +5,7 @@ let sequelize = require("../db/connect");
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../server_config");
+
 let should = chai.should();
 let expect = chai.expect;
 
