@@ -191,6 +191,21 @@ const checkIfUserExists = () => {
 };
 
 $(document).ready(function () {
+  // store console logs for error reporting
+  console.stdlog = console.log.bind(console);
+  console.logs = [];
+  console.log = function () {
+    let last_index = console.logs.push(Array.from(arguments)) - 1;
+    console.logs[last_index] = JSON.stringify(console.logs[last_index]);
+    $("#support_email").prop(
+      "href",
+      `mailto:mail@iec.org.pk?body=${encodeURIComponent(
+        "Console Data (do not change): " + console.logs.toString()
+      )}`
+    );
+    console.stdlog.apply(console, arguments);
+  };
+
   // pagination
   $("#step1-next-button").click(checkIfUserExists);
   $("#step2-next-button").click(() => nextStep("step2", "step3"));
