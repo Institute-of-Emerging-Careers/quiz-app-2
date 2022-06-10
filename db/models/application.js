@@ -77,6 +77,10 @@ Application.init(
       type: DataTypes.STRING(100),
       allowNull: false,
       validate: {
+        isIn: {
+          args: [cities],
+          msg: "Invalid city. Please select one from the provided list.",
+        },
         notEmpty: {
           msg: "City cannot be empty.",
         },

@@ -1,4 +1,3 @@
-const nodemailer = require("nodemailer");
 const ejs = require("ejs");
 const { Student } = require("../db/models/user");
 var AWS = require("aws-sdk");
