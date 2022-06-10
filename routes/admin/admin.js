@@ -11,6 +11,7 @@ const interviewRouter = require("./interview");
 const applicationRouter = require("./application");
 const { Quiz } = require("../../db/models/quizmodel.js");
 const { Invite } = require("../../db/models/user");
+const { email_bull_queue } = require("../../bull");
 
 // middleware that is specific to this router
 router.use("/application", applicationRouter);
@@ -62,5 +63,18 @@ router.post(
     failureFlash: true,
   })
 );
+
+router.get("/retry-failed-emails", checkAdminAuthenticated, (req, res) => {
+  email_bull_queue.getFailed().then((failed_jobs) => {
+    Promise.all(failed_jobs.map((failed_job) => failed_job.retry()))
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        res.sendStatus(500);
+        console.log(err);
+      });
+  });
+});
 
 module.exports = router;
