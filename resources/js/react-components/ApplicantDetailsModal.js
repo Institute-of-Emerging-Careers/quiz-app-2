@@ -64,8 +64,8 @@ const ApplicantDetailsModal = (props) => {
       name: ["acknowledge_online"],
     },
     {
-      title: "Applicant Emailed about Assessment",
-      name: ["was_emailed_about_assessment"],
+      title: "Application automatically rejected and Rejection Email sent",
+      name: ["rejection_email_sent"],
     },
   ]);
 
