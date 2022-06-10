@@ -45,6 +45,7 @@ function handleForm(e) {
     if (raw_response.ok) {
       $("#step5-next-button")
         .removeClass("btn-primary")
+        .removeClass("btn-danger")
         .addClass("btn-success")
         .attr("disabled", true);
       $("#submit-button-text").html(

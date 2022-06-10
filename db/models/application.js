@@ -8,6 +8,7 @@ const {
   type_of_employment,
   age_groups,
 } = require("../../db/data_lists");
+const { queueMail } = require("../../bull");
 
 class ApplicationRound extends Model {}
 
@@ -24,7 +25,48 @@ ApplicationRound.init(
   }
 );
 
-class Application extends Model {}
+class Application extends Model {
+  async conditionallyReject() {
+    let reject = false;
+    if (this.age < 18 || this.age > 30) {
+      reject = "Age of applicant must be between 18 and 30 years.";
+    } else if (this.time_commitment == false) {
+      reject =
+        "Applicant must commit 30-40 hours of time per week to the program.";
+    } else if (this.will_work_full_time) {
+      reject =
+        "Applicant must be willing to work on a full time job after graduating from the program.";
+    }
+
+    if (reject !== false) {
+      try {
+        const student = await this.getStudent({ attributes: ["email"] });
+        await queueMail(student.email, `IEC Application Update`, {
+          heading: `Application Not Accepted`,
+          inner_text: `Dear Student
+          <br><br>
+          This email is to inform you that we are unable to accept your application at the moment for the following reason:
+          <br>
+          <b>Reason:</b> ${reject}
+          Thank you for showing your interest in becoming part of the program. 
+          <br>
+          Sincerely, 
+          IEC Admissions Team`,
+          button_announcer: "Visit out website to learn more about us",
+          button_text: "Visit",
+          button_link: "https://iec.org.pk",
+        });
+        this.rejection_email_sent = true;
+        return this.save();
+      } catch (err) {
+        console.log(err);
+        return new Promise((resolve, reject) => {
+          reject(err);
+        });
+      }
+    }
+  }
+}
 
 Application.init(
   {
@@ -258,7 +300,8 @@ Application.init(
     },
     preference_reason: {
       type: DataTypes.TEXT,
-      allowNull: true,
+      defaultValue: "",
+      allowNull: false,
     },
     is_comp_sci_grad: {
       type: DataTypes.BOOLEAN,
@@ -277,6 +320,16 @@ Application.init(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    will_work_full_time: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+      validate: {
+        notEmpty: {
+          msg: "Please tell us if you will work full time, if granted a job opportunity, or not.",
+        },
+      },
+    },
     acknowledge_online: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
@@ -285,6 +338,11 @@ Application.init(
           msg: "Please acknowledge that the program is online.",
         },
       },
+    },
+    rejection_email_sent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
   },
   {

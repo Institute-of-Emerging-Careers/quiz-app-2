@@ -306,6 +306,17 @@ const ApplicationsList = (props) => {
         ],
       },
       {
+        title:
+          "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
+        name: "will_work_full_time",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },
+      {
         title: "The program is entirely online. Do you acknowledge that?",
         name: "acknowledge_online",
         filter_type: "fixed_values",

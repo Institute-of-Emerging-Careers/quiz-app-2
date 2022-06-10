@@ -174,15 +174,18 @@ router.post(
       });
       obj.StudentId = student.id;
       obj.ApplicationRoundId = req.params.application_round_id;
+      obj.rejection_email_sent = false;
 
-      // creating student
+      // creating application
       let application = Application.build(obj);
 
-      // validating student information
+      // validating application information
       await application.validate(); //the "catch" gets this if validation fails
-      console.log("Student saved");
       application = await application.save();
       res.sendStatus(201);
+
+      // Now we check if this student can be automatically rejected based on criteria such as age
+      await application.conditionallyReject();
     } catch (err) {
       if (err.errors) {
         console.log(err.errors[0]);

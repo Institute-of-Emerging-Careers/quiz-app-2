@@ -55,6 +55,11 @@ const ApplicantDetailsModal = (props) => {
     },
     { title: "How did you hear about IEC?", name: ["how_heard_about_iec"] },
     {
+      title:
+        "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
+      name: ["will_work_full_time"],
+    },
+    {
       title: "The program is entirely online. Do you acknowledge that?",
       name: ["acknowledge_online"],
     },

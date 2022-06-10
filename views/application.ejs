@@ -643,9 +643,9 @@
                 id="preference-reason"
                 placeholder="Reasons"
                 name="preference_reason"
+                required
               ></textarea>
             <div id="preference_reason-error-message" class="invalid-feedback"></div>
-
           </fieldset>
 
 
@@ -663,12 +663,33 @@
 
           </fieldset>
 
+          <!--Will work full time?-->
+          <fieldset class="row mb-4">
+            <label for="will_work_full_time" class="col-lg-4 col-form-label">After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time" value="1" required>
+                <label class="form-check-label" for="will_work_full_time">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time-no" value="0">
+                <label class="form-check-label" for="will_work_full_time-no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
           <fieldset class="row mb-4">
             <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-yes" value="1" required>
-                <label class="form-check-label" for="acknowledge-online-yes">
+                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1" required>
+                <label class="form-check-label" for="acknowledge_online">
                   Yes
                 </label>
               </div>
@@ -680,7 +701,6 @@
               </div>
             </div>
             <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
-
           </fieldset>
 
             <button
