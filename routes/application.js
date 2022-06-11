@@ -69,8 +69,23 @@ router.post(
   "/check-if-user-exists",
   checkAnyoneAlreadyAuthenticated,
   async (req, res) => {
-    console.log(req.body.email);
-    console.log(req.body.cnic);
+    if (
+      !req.body.hasOwnProperty("application_round_id") ||
+      !req.body.hasOwnProperty("email") ||
+      !req.body.hasOwnProperty("cnic")
+    ) {
+      res.sendStatus(400);
+      return;
+    }
+
+    const application_round = await ApplicationRound.findOne({
+      where: { id: req.body.application_round_id },
+    });
+    if (application_round == null) {
+      res.sendStatus(400);
+      return;
+    }
+
     const student = [
       await Student.findOne({
         where: { email: req.body.email, cnic: req.body.cnic },
