@@ -384,7 +384,7 @@ Application.init(
             user.rejection_email_sent = true;
             return queueMail(student.email, `IEC Application Update`, {
               heading: `Application Not Accepted`,
-              inner_text: `Dear ${firstName}, 
+              inner_text: `Dear ${student.firstName}, 
  
               Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).  
                
