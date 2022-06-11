@@ -135,17 +135,9 @@ const checkIfUserExists = () => {
                   .attr("disabled", true);
               } else if (response.type == "both_cnic_and_email") {
                 $("#password-input-group :input").prop("disabled", true);
-                $("#password-success-message").text(
-                  "You already have an account at IEC so you don't have to set a new password. Your old password will still work fine."
-                );
-                $("#password")
-                  .attr("required", false)
-                  .val("...")
-                  .addClass("is-valid");
-                $("#password2")
-                  .attr("required", false)
-                  .val("...")
-                  .addClass("is-valid");
+                $("#password").attr("required", false);
+                $("#password2").attr("required", false);
+                $("#password-input-group").hide();
                 $("#email").attr("readonly", true);
                 $("#cnic").attr("readonly", true);
 
@@ -161,7 +153,7 @@ const checkIfUserExists = () => {
               } else if (response.type == "cnic_only") {
                 $(`#email`).addClass("is-invalid").focus();
                 $(`#email-error-message`).text(
-                  "The cnic below already exists in the database. It means you have already applied before. But you entered a different email address the last time. Please enter the same email address as before."
+                  `We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. Please use the same email address and cnic pair. The email address you used last time looked something like this: ${response.email}.`
                 );
               } else {
                 // resetting errors

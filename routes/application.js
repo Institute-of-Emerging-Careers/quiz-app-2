@@ -93,11 +93,11 @@ router.post(
       }),
       await Student.findOne({
         where: { cnic: req.body.cnic },
-        attributes: ["id"],
+        attributes: ["id", "email"],
       }),
       await Student.findOne({
         where: { email: req.body.email },
-        attributes: ["id"],
+        attributes: ["id", "cnic"],
       }),
     ];
 
@@ -120,7 +120,14 @@ router.post(
     if (student[0] != null) {
       res.json({ exists: true, type: "both_cnic_and_email" });
     } else if (student[1] != null) {
-      res.json({ exists: true, type: "cnic_only" });
+      res.json({
+        exists: true,
+        type: "cnic_only",
+        email: student[1].email.replace(
+          /(\w{3})[\w.-]+@([\w.]+\w)/,
+          "$1***@$2"
+        ),
+      });
     } else if (student[2] != null)
       res.json({ exists: true, type: "email_only" });
     else {
