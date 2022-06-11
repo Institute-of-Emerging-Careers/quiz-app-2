@@ -78,21 +78,28 @@ const App = () => {
     application_round_id,
     application_round_index
   ) => {
-    setDeletingApplicationRound(true);
-    fetch(`/admin/application/rounds/delete/${application_round_id}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        setDeletingApplicationRound(false);
-        if (response.ok) {
-          setUpdateData((cur) => cur + 1);
-        } else
-          alert("Could not delete application round due to an error. Code 01.");
+    const confirmation = prompt(
+      "Are you sure you wish to delete this application round? All applications will be deleted. Type 'yes' if you do."
+    );
+    if (confirmation == "yes") {
+      setDeletingApplicationRound(true);
+      fetch(`/admin/application/rounds/delete/${application_round_id}`, {
+        method: "DELETE",
       })
-      .catch((err) => {
-        console.log(err);
-        alert("Could not delete application round due to an error. Code 02.");
-      });
+        .then((response) => {
+          setDeletingApplicationRound(false);
+          if (response.ok) {
+            setUpdateData((cur) => cur + 1);
+          } else
+            alert(
+              "Could not delete application round due to an error. Code 01."
+            );
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Could not delete application round due to an error. Code 02.");
+        });
+    }
   };
 
   const addNewCourse = () => {

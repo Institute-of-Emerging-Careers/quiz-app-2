@@ -409,6 +409,10 @@ Application.init(
             });
           } catch (err) {
             console.log(err);
+            user.rejection_email_sent = false;
+            return new Promise((resolve, reject) => {
+              reject(err);
+            });
           }
         } else {
           user.rejection_email_sent = false;
