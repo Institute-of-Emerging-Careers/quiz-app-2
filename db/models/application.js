@@ -367,31 +367,34 @@ Application.init(
       },
       beforeSave: async (user, options) => {
         let reject = false;
-        if (user.age < 18 || user.age > 30) {
-          reject = "Age of applicant must be between 18 and 30 years.";
-        } else if (user.time_commitment == false) {
-          reject =
-            "Applicant must commit 30-40 hours of time per week to the program.";
-        } else if (user.will_work_full_time == false) {
-          reject =
-            "Applicant must be willing to work on a full time job after graduating from the program.";
-        }
+        if (user.age < 18 || user.age > 30 || user.time_commitment == false || user.will_work_full_time == false) {
+          reject = true;
 
-        if (reject !== false) {
+        if (reject ===true) {
           try {
-            const student = await user.getStudent({ attributes: ["email"] });
+            const student = await user.getStudent({ attributes: ["email", "firstName"] });
             user.rejection_email_sent = true;
             return queueMail(student.email, `IEC Application Update`, {
               heading: `Application Not Accepted`,
-              inner_text: `Dear Student
-                <br><br>
-                This email is to inform you that we are unable to accept your application at the moment for the following reason:
-                <br>
-                <b>Reason:</b> ${reject}
-                Thank you for showing your interest in becoming part of the program. 
-                <br>
-                Sincerely, 
-                IEC Admissions Team`,
+              inner_text: `Dear ${firstName}, 
+ 
+              Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).  
+               
+              We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
+              <ul>
+              <li>Are in the age bracket 18-30</li>
+              <li>Can commit 30-40 hours per week</li>
+              <li>Is available for a Full-Time Job after completing the course</li>
+              </ul>
+                
+              Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.   
+               
+              We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947 
+               
+              Best Regards, 
+              Director Admissions 
+              Institute of Emerging Careers 
+              http://www.iec.org.pk`,
               button_announcer: "Visit out website to learn more about us",
               button_text: "Visit",
               button_link: "https://iec.org.pk",
