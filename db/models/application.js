@@ -430,14 +430,16 @@ Application.init(
             
             We have received your application for the Digital Skills Training Program by Institute of Emerging Careers (IEC).  Your application (CNIC ${student.cnic}) is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment in a week. Please stay tuned! 
 
-            Acquisition Process? 
-            Online Registration
-            Online Assessment 
-            Online Orientation
-            One-on-One Interviews
-            Zero Week
-            Probation Week 
-            Course Begins
+            Acquisition Process:
+            <ul>
+            <li>Online Registration</li>
+            <li>Online Assessment</li>
+            <li>Online Orientation</li>
+            <li>One-on-One Interviews</li>
+            <li>Zero Week</li>
+            <li>Probation Week</li>
+            <li>Course Begins</li>
+            </ul>
             
             We know this is a long process but we assure you that if you give your best, you can easily get through it. You will get rewarded for all the effort you put in!
             
