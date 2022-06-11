@@ -654,7 +654,12 @@ const ApplicationsList = (props) => {
             <tbody>
               {filtered_applications.map((application, index) => {
                 return (
-                  <tr key={application.id}>
+                  <tr
+                    key={application.id}
+                    className={
+                      application.rejection_email_sent ? "bg-red-300" : ""
+                    }
+                  >
                     <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
                     <td className="border px-4 py-2">
                       {application.Student.gender}
