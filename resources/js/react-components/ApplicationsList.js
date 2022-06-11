@@ -413,7 +413,8 @@ const ApplicationsList = (props) => {
     });
   };
 
-  const deleteApplication = (application_id) => {
+  const deleteApplication = (array_index) => {
+    const application_id = filtered_applications[array_index].id;
     fetch(`/admin/application/delete/${application_id}`).then((res) => {
       if (res.ok) {
         setReloadApplications((cur) => !cur);
