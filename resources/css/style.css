@@ -2120,6 +2120,11 @@ video {
   background-color: rgba(55, 65, 81, var(--tw-bg-opacity));
 }
 
+.bg-red-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(252, 165, 165, var(--tw-bg-opacity));
+}
+
 .bg-red-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(239, 68, 68, var(--tw-bg-opacity));
@@ -2382,8 +2387,8 @@ video {
   padding: 0.75rem;
 }
 
-.p-5 {
-  padding: 1.25rem;
+.p-4 {
+  padding: 1rem;
 }
 
 .p-8 {
