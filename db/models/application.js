@@ -367,12 +367,20 @@ Application.init(
       },
       beforeSave: async (user, options) => {
         let reject = false;
-        if (user.age < 18 || user.age > 30 || user.time_commitment == false || user.will_work_full_time == false) {
+        if (
+          user.age < 18 ||
+          user.age > 30 ||
+          user.time_commitment == false ||
+          user.will_work_full_time == false
+        ) {
           reject = true;
+        }
 
-        if (reject ===true) {
+        if (reject === true) {
           try {
-            const student = await user.getStudent({ attributes: ["email", "firstName"] });
+            const student = await user.getStudent({
+              attributes: ["email", "firstName"],
+            });
             user.rejection_email_sent = true;
             return queueMail(student.email, `IEC Application Update`, {
               heading: `Application Not Accepted`,
