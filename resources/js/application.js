@@ -147,8 +147,8 @@ const checkIfUserExists = () => {
                 nextStep("step1", "step2");
               } else if (response.type == "email_only") {
                 $(`#cnic`).addClass("is-invalid").focus();
-                $(`#cnic-error-message`).text(
-                  "The email above already exists in the database. It means you have already applied before. But you entered a different CNIC number last time. Either enter the same CNIC number as last time, or enter a different email address."
+                $(`#cnic-error-message`).html(
+                  `The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br>Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank">click here to change your CNIC number</a> if you remember your password from last time.`
                 );
               } else if (response.type == "cnic_only") {
                 $(`#email`).addClass("is-invalid").focus();

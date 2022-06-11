@@ -234,4 +234,27 @@ router.post(
   }
 );
 
+router.get("/change-cnic", (req, res) => {
+  res.render("application/change_cnic.ejs");
+});
+
+router.post("/change-cnic", async (req, res) => {
+  const student = await Student.findOne({
+    where: { email: req.body.email },
+  });
+  if (student != null) {
+    try {
+      if (await bcrypt.compare(req.body.password, student.password)) {
+        student.cnic = req.body.cnic;
+        await student.validate();
+        await student.save();
+        res.sendStatus(200);
+      } else res.sendStatus(400);
+    } catch (err) {
+      res.sendStatus(400);
+      console.log(err);
+    }
+  } else res.sendStatus(400);
+});
+
 module.exports = router;
