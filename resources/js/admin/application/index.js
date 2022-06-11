@@ -52,20 +52,18 @@ const App = () => {
     if (new_round_title == "")
       alert("Please give the Application Round a title.");
     else if (
-      courses.reduce((all_false, cur) => {
-        if (!all_false) return false;
-        if (cur.checked) return false;
-        else return true;
-      }, true)
+      courses.reduce((num_false, cur) => {
+        num_false += cur.checked;
+      }, 0) < 3
     )
-      alert("Please select at least 1 course.");
+      alert("Please select at least 3 courses.");
     else {
       fetch("/admin/application/rounds/new", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: new_round_title,
-          courses: courses,
+          courses: courses.filter((cur) => cur.checked),
         }),
       }).then((response) => {
         if (response.ok) {
