@@ -77,4 +77,10 @@ router.get("/retry-failed-emails", checkAdminAuthenticated, (req, res) => {
   });
 });
 
+router.get("/view-failed-emails", checkAdminAuthenticated, (req, res) => {
+  email_bull_queue.getFailed().then((failed_jobs) => {
+    res.json(failed_jobs);
+  });
+});
+
 module.exports = router;
