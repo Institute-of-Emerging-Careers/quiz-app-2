@@ -367,12 +367,7 @@ Application.init(
       },
       beforeSave: async (user, options) => {
         let reject = false;
-        if (
-          user.age < 18 ||
-          user.age > 30 ||
-          user.time_commitment == false ||
-          user.will_work_full_time == false
-        ) {
+        if (user.age < 18 || user.age > 30 || user.time_commitment == false) {
           reject = true;
         }
 
@@ -392,7 +387,6 @@ Application.init(
               <ul>
               <li>Are in the age bracket 18-30</li>
               <li>Can commit 30-40 hours per week</li>
-              <li>Is available for a Full-Time Job after completing the course</li>
               </ul>
                 
               Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.   
