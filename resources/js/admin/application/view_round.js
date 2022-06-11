@@ -5,6 +5,7 @@ const useContext = React.useContext;
 
 const ContextProvider = (props) => {
   const [applications, setApplications] = useState([]);
+  const [reload_applications, setReloadApplications] = useState(false);
   const [show_modal, setShowModal] = useState(-1); //value is set to the array index of the application whose details are to be shown by the modal
 
   return (
@@ -12,6 +13,7 @@ const ContextProvider = (props) => {
       value={{
         applications_object: [applications, setApplications],
         modal_object: [show_modal, setShowModal],
+        reload_object: [reload_applications, setReloadApplications],
       }}
     >
       {props.children}
@@ -20,8 +22,10 @@ const ContextProvider = (props) => {
 };
 
 const App = () => {
-  const { applications_object, modal_object } = useContext(MyContext);
+  const { applications_object, modal_object, reload_object } =
+    useContext(MyContext);
   const [show_modal, setShowModal] = modal_object;
+  const [reload_applications, setReloadApplications] = reload_object;
   const [applications, setApplications] = applications_object;
   const [application_id_to_array_index_map, setApplicationIdToArrayIndexMap] =
     useState({});
@@ -55,7 +59,7 @@ const App = () => {
         console.log(err);
         alert("Something went wrong. Code 02.");
       });
-  }, []);
+  }, [reload_applications]);
 
   return (
     <div>

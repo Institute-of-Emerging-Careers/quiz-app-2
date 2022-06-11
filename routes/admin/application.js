@@ -249,4 +249,15 @@ router.get(
   }
 );
 
+router.get("/delete/:application_id", checkAdminAuthenticated, (req, res) => {
+  Application.destroy({ where: { id: req.params.application_id } })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
+
 module.exports = router;

@@ -1,6 +1,8 @@
 // this file requires data_lists.js
 const ApplicationsList = (props) => {
-  const { applications_object, modal_object } = useContext(MyContext);
+  const { applications_object, modal_object, reload_object } =
+    useContext(MyContext);
+  const [reload_applications, setReloadApplications] = reload_object;
   const [applications, setApplications] = applications_object;
   const [show_modal, setShowModal] = modal_object;
   const [show_filters, setShowFilters] = useState(false);
@@ -411,6 +413,16 @@ const ApplicationsList = (props) => {
     });
   };
 
+  const deleteApplication = (application_id) => {
+    fetch(`/admin/application/delete/${application_id}`).then((res) => {
+      if (res.ok) {
+        setReloadApplications((cur) => !cur);
+      } else {
+        alert("Application delete failed due to unknown reason.");
+      }
+    });
+  };
+
   return (
     <div>
       <h2 className="text-base text-center mb-4">
@@ -687,6 +699,18 @@ const ApplicationsList = (props) => {
                         }}
                       >
                         View Details
+                      </a>{" "}
+                      {" | "}
+                      <a
+                        className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                        data-index={
+                          application_id_to_array_index_map[application.id]
+                        }
+                        onClick={(e) => {
+                          deleteApplication(e.target.dataset.index);
+                        }}
+                      >
+                        Delete Application
                       </a>
                     </td>
                   </tr>
