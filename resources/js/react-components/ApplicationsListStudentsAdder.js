@@ -88,7 +88,7 @@ const ApplicationsListStudentsAdder = (props) => {
           }
           onClick={assignQuizToSelectedStudents}
           ref={assignmentButton}
-          disabled={applications.length > 0 ? false : true}
+          disabled={filtered_applications.length > 0 ? false : true}
         >
           {loading ? (
             <i className="fas fa-spinner animate-spin"></i>
@@ -108,7 +108,7 @@ const ApplicationsListStudentsAdder = (props) => {
           }
           onClick={() => {
             if (
-              applications
+              filtered_applications
                 .map((application) => application.Student)
                 .filter((student) => student.added).length > 0
             )
