@@ -120,103 +120,103 @@ const gender_chart = new Chart(document.getElementById("gender_chart"), {
 });
 
 // age distribution chart
-const age_distribution_string = document.getElementById(
-  "age_distribution_string"
-).value;
-let age_distribution_raw_data = age_distribution_string.split(",");
-age_distribution_raw_data.pop(); //remove last empty element due to excess ,
+// const age_distribution_string = document.getElementById(
+//   "age_distribution_string"
+// ).value;
+// let age_distribution_raw_data = age_distribution_string.split(",");
+// age_distribution_raw_data.pop(); //remove last empty element due to excess ,
 
-let age_distribution_labels = [];
-let age_distribution_data = [];
-for (let i = 0; i < age_distribution_raw_data.length; i += 2) {
-  age_distribution_labels.push(age_distribution_raw_data[i]);
-  age_distribution_data.push(age_distribution_raw_data[i + 1]);
-}
-console.log(age_distribution_labels);
-console.log(age_distribution_data);
+// let age_distribution_labels = [];
+// let age_distribution_data = [];
+// for (let i = 0; i < age_distribution_raw_data.length; i += 2) {
+//   age_distribution_labels.push(age_distribution_raw_data[i]);
+//   age_distribution_data.push(age_distribution_raw_data[i + 1]);
+// }
+// console.log(age_distribution_labels);
+// console.log(age_distribution_data);
 
-const age_chart = new Chart(document.getElementById("age_chart"), {
-  type: "bar",
-  data: {
-    labels: age_distribution_labels,
-    datasets: [
-      {
-        label: "Number of Students",
-        backgroundColor: "#2A6095",
-        borderColor: "rgb(255, 99, 132)",
-        data: age_distribution_data,
-      },
-    ],
-  },
-  options: {
-    plugins: {
-      title: {
-        display: true,
-        text: "Age Distribution of Students who Signed Up",
-      },
-      subtitle: {
-        display: true,
-        text: "The ages that are not displayed on the x-axis have 0 students.",
-      },
-    },
-    scales: {
-      x: {
-        title: { display: true, text: "Age" },
-      },
-      y: {
-        title: { display: true, text: "Number of Students" },
-      },
-    },
-  },
-});
+// const age_chart = new Chart(document.getElementById("age_chart"), {
+//   type: "bar",
+//   data: {
+//     labels: age_distribution_labels,
+//     datasets: [
+//       {
+//         label: "Number of Students",
+//         backgroundColor: "#2A6095",
+//         borderColor: "rgb(255, 99, 132)",
+//         data: age_distribution_data,
+//       },
+//     ],
+//   },
+//   options: {
+//     plugins: {
+//       title: {
+//         display: true,
+//         text: "Age Distribution of Students who Signed Up",
+//       },
+//       subtitle: {
+//         display: true,
+//         text: "The ages that are not displayed on the x-axis have 0 students.",
+//       },
+//     },
+//     scales: {
+//       x: {
+//         title: { display: true, text: "Age" },
+//       },
+//       y: {
+//         title: { display: true, text: "Number of Students" },
+//       },
+//     },
+//   },
+// });
 
-// city distribution chart
-const city_distribution_string = document.getElementById(
-  "city_distribution_string"
-).value;
-let city_distribution_raw_data = city_distribution_string.split(",");
-city_distribution_raw_data.pop(); //remove last empty element due to excess ,
+// // city distribution chart
+// const city_distribution_string = document.getElementById(
+//   "city_distribution_string"
+// ).value;
+// let city_distribution_raw_data = city_distribution_string.split(",");
+// city_distribution_raw_data.pop(); //remove last empty element due to excess ,
 
-let city_distribution_labels = [];
-let city_distribution_data = [];
-for (let i = 0; i < city_distribution_raw_data.length; i += 2) {
-  city_distribution_labels.push(city_distribution_raw_data[i]);
-  city_distribution_data.push(city_distribution_raw_data[i + 1]);
-}
-console.log(city_distribution_labels);
-console.log(city_distribution_data);
+// let city_distribution_labels = [];
+// let city_distribution_data = [];
+// for (let i = 0; i < city_distribution_raw_data.length; i += 2) {
+//   city_distribution_labels.push(city_distribution_raw_data[i]);
+//   city_distribution_data.push(city_distribution_raw_data[i + 1]);
+// }
+// console.log(city_distribution_labels);
+// console.log(city_distribution_data);
 
-const city_chart = new Chart(document.getElementById("city_chart"), {
-  type: "bar",
-  data: {
-    labels: city_distribution_labels,
-    datasets: [
-      {
-        label: "Number of Students",
-        backgroundColor: "#2A6095",
-        borderColor: "rgb(255, 99, 132)",
-        data: city_distribution_data,
-      },
-    ],
-  },
-  options: {
-    plugins: {
-      title: {
-        display: true,
-        text: "City Distribution of Students who Signed Up",
-      },
-      subtitle: {
-        display: true,
-        text: "The cities that are not displayed on the x-axis have 0 students.",
-      },
-    },
-    scales: {
-      x: {
-        title: { display: true, text: "city" },
-      },
-      y: {
-        title: { display: true, text: "Number of Students" },
-      },
-    },
-  },
-});
+// const city_chart = new Chart(document.getElementById("city_chart"), {
+//   type: "bar",
+//   data: {
+//     labels: city_distribution_labels,
+//     datasets: [
+//       {
+//         label: "Number of Students",
+//         backgroundColor: "#2A6095",
+//         borderColor: "rgb(255, 99, 132)",
+//         data: city_distribution_data,
+//       },
+//     ],
+//   },
+//   options: {
+//     plugins: {
+//       title: {
+//         display: true,
+//         text: "City Distribution of Students who Signed Up",
+//       },
+//       subtitle: {
+//         display: true,
+//         text: "The cities that are not displayed on the x-axis have 0 students.",
+//       },
+//     },
+//     scales: {
+//       x: {
+//         title: { display: true, text: "city" },
+//       },
+//       y: {
+//         title: { display: true, text: "Number of Students" },
+//       },
+//     },
+//   },
+// });

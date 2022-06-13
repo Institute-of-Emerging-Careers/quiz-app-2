@@ -263,8 +263,6 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
       gender_male: 0,
       gender_female: 0,
       gender_other: 0,
-      age_distribution: {},
-      city_distribution: {},
     };
 
     await new Promise((resolve) => {
@@ -294,19 +292,6 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
         else if (assignment.Student.gender.toLowerCase() == "other")
           analysis.gender_other++;
 
-        if (analysis.age_distribution.hasOwnProperty(assignment.Student.age))
-          analysis.age_distribution[assignment.Student.age]++;
-        else analysis.age_distribution[assignment.Student.age] = 1;
-
-        if (
-          analysis.city_distribution.hasOwnProperty(
-            assignment.Student.city.toLowerCase()
-          )
-        ) {
-          analysis.city_distribution[assignment.Student.city.toLowerCase()]++;
-        } else {
-          analysis.city_distribution[assignment.Student.city.toLowerCase()] = 1;
-        }
         if (assignment.Attempts.length > 0) {
           quiz_sections.forEach((section) => {
             let found = false;

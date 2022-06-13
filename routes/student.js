@@ -163,6 +163,7 @@ router.get("/login", checkStudentAlreadyLoggedIn, async (req, res) => {
   });
 });
 
+// render the forgot password page
 router.get(
   "/forgot-password",
   checkStudentAlreadyLoggedIn,
@@ -174,6 +175,7 @@ router.get(
   }
 );
 
+// set a new password
 router.post("/change-password", async (req, res) => {
   if (req.body.password1 == req.body.password2) {
     try {
@@ -216,10 +218,12 @@ router.post("/change-password", async (req, res) => {
   }
 });
 
+// send password reset link in email
 router.post(
   "/reset-password",
   checkStudentAlreadyLoggedIn,
   async (req, res) => {
+    console.log(req.body.email, " ", req.body.cnic);
     const student = await Student.findOne({
       where: {
         email: req.body.email,
@@ -235,6 +239,7 @@ router.post(
 
       const reset_link =
         process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key;
+      console.log(reset_link);
 
       try {
         await queueMail(
@@ -257,7 +262,6 @@ router.post(
           },
           true
         );
-        console.log("Password reset email sent");
         res.render("templates/error.ejs", {
           additional_info: "Check Your Inbox",
           error_message:
