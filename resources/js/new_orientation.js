@@ -307,10 +307,9 @@ const StudentsListWrapper = () => {
       students={students}
       title="List of Students currently added to this Orientation"
       fields={[
-        ,
-        { title: "Name", name: "name" },
-        { title: "Email", name: "email" },
-        { title: "Percentage Score", name: "percentage_score" },
+        { title: "Name", name: ["name"] },
+        { title: "Email", name: ["email"] },
+        { title: "Percentage Score", name: ["percentage_score"] },
       ]}
     />
   );

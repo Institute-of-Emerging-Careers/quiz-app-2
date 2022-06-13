@@ -24,7 +24,7 @@ router.use((req, res, next) => {
 
 router.get("/", checkAdminAuthenticated, async (req, res) => {
   try {
-    const all_quizzes = await Quiz.findAll();
+    const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] });
     for (let i = 0; i < all_quizzes.length; i++) {
       all_quizzes[i].num_sections = await all_quizzes[i].countSections();
       const all_sections = await all_quizzes[i].getSections();
@@ -47,6 +47,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
       current_url: `/admin${req.url}`,
     });
   } catch (err) {
+    console.log(err);
     res.sendStatus(500);
   }
 });

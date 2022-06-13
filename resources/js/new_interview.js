@@ -141,9 +141,9 @@ const Step1 = () => {
           title="List of Students currently added to this Interview"
           fields={[
             ,
-            { title: "Name", name: "name" },
-            { title: "Email", name: "email" },
-            { title: "Percentage Score", name: "percentage_score" },
+            { title: "Name", name: ["name"] },
+            { title: "Email", name: ["email"] },
+            { title: "Percentage Score", name: ["percentage_score"] },
           ]}
         />
       </div>
