@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%- include('../../templates/global.ejs') %>
     <title>Compose Email - IEC Admin Panel</title>
+    <!-- jQuery -->
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.js"
+      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- socket.io -->
+    <script
+      src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+      integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+      crossorigin="anonymous"
+    ></script>
 
 </head>
 <body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
@@ -35,6 +48,7 @@
         button_link: "https://iec.org.pk"
       } -->
 
+
       <form method="POST" encType="multipart/form-data" action="/upload/email/csv" id="csv_form">
         <label for="csv-upload" class="inline-block px-4 py-4 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white">
             <i class="fas fa-file-upload"></i> Upload CSV File of Recepient Email Addresses
@@ -42,22 +56,30 @@
         </label>
       </form>
 
-      <p id="recepients_list"></p>
+        <div class="px-6 text-center">
+            <p id="message" class="text-green"></p>
+            <p id="emails_left" class="text-3xl"></p>
+            <p id="list_of_emails_heading" class="hidden">List of Emails: </p>
+            <ul id="recepients_list" class=" list-disc"></ul>
+        </div>
 
       <br>
-      <label>Load Previously Sent Email: </label>
-      <% if (emails.length>0) {
-        %>
-        <select id="prev_email_selector" class="py-3 px-2">
-            <option value="" selected disabled hidden>Select</option>
-            <% for (let i=0; i<emails.length; i++) {
+      <div id="previous_email_loader_div">
+        <label>Load Previously Sent Email: </label>
+        <% if (emails.length>0) {
             %>
-                <option value="<%=emails[i].id%>">Subject: "<%= emails[i].subject %>" | Sent: <%= emails[i].createdAt %></option> 
-            <%} %>
-        </select>
-        <%} else {%> <%="No Emails Found"%> <%}%>
-        <i className="fas fa-spinner animate-spin hidden" id="load_previous_email_spinner"></i>
-        <br><span class="text-gray-500">Note: Previous recepients' email addresses are not loaded. Only email content is loaded.</span><br><br>
+            <select id="prev_email_selector" class="py-3 px-2">
+                <option value="" selected disabled hidden>Select</option>
+                <% for (let i=0; i<emails.length; i++) {
+                %>
+                    <option value="<%=emails[i].id%>">Subject: "<%= emails[i].subject %>" | Sent: <%= emails[i].createdAt %></option> 
+                <%} %>
+            </select>
+            <%} else {%> <%="No Emails Found"%> <%}%>
+            <i className="fas fa-spinner animate-spin hidden" id="load_previous_email_spinner"></i>
+            <br><span class="text-gray-500">Note: Previous recepients' email addresses are not loaded. Only email content is loaded.</span>
+        </div>
+        <br><br>
       <form id="mail-form" action="/mail/preview" method="POST" target="_blank" class="flex flex-col gap-y-4">
         <div>
             <label>Recepient Email: </label>

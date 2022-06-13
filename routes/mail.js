@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+
+const { io, httpServer } = require("../server");
+
 // Load the AWS SDK for Node.js
 var AWS = require("aws-sdk");
 
@@ -98,19 +101,7 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
 });
 
 router.get("/test", checkAdminAuthenticated, async (req, res) => {
-  try {
-    await queueMail("mail@iec.org.pk", "Node Test", {
-      heading: "Abay Heading",
-      inner_text: "lorem lorem",
-      button_announcer: "Ye le button",
-      button_text: "Button Text",
-      button_link: "https://www.google.com",
-    });
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
+  res.render("admin/email/test.ejs");
 });
 
 module.exports = router;

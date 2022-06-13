@@ -7,6 +7,7 @@ const recepients_list = document.getElementById("recepients_list");
 const recepient_field = document.getElementById("recepient_field");
 const email_button = document.getElementById("email-button");
 let email_addresses = [];
+let number_of_emails_left = 0;
 
 // email form fields
 const email_subject = document.getElementById("subject");
@@ -54,8 +55,17 @@ function uploadCSV(e) {
             array_of_emails = array_of_emails.filter((email) =>
               stringIsEmail(email)
             );
-            const email_string = arrayToCommaDeliminatedString(array_of_emails);
-            recepients_list.innerText = "Recepients: " + email_string;
+            $("#list_of_emails_heading").fadeIn();
+            array_of_emails.forEach((email) => {
+              $("#recepients_list").append(
+                `<li data-email="${email}">${email}</li>`
+              );
+            });
+            number_of_emails_left = array_of_emails.length;
+            $("#emails_left").text(
+              "Emails Remaining to be Sent: ",
+              number_of_emails_left
+            );
             recepient_field.classList.add("hidden");
             recepient_field.disabled = true;
             email_addresses = array_of_emails;
@@ -77,23 +87,36 @@ function uploadCSV(e) {
 function sendEmails() {
   document.getElementById("loading-spinner").classList.remove("hidden");
 
-  // save this email's subject and content to browser local storage for future use
-  //   window.localStorage.setItem("subject", email_subject.value);
-  //   window.localStorage.setItem("heading", email_heading.value);
-  //   window.localStorage.setItem("inner_text", email_body.value);
-  //   window.localStorage.setItem("button_announcer", email_button_announcer.value);
-  //   window.localStorage.setItem("button_text", email_button_label.value);
-  //   window.localStorage.setItem("button_url", email_button_url.value);
-
   if (!recepient_field.disabled) {
-    console.log("hey")
     // this means that no excel sheet was uploaded for email addresses
     email_addresses = [];
     email_addresses.push(recepient_field.value);
   }
 
   if (email_addresses.length > 0) {
-    console.log(email_addresses)
+    const socket = io();
+    socket.connect();
+
+    socket.on("connect", () => {
+      console.log("Socket connected");
+
+      socket.on("email-sent", (email_address) => {
+        $('#recepients_list li:contains("' + email_address + '")').css(
+          "color",
+          "green"
+        );
+        for (let i = 0; i < email_addresses.length; i++) {
+          if (email_addresses[i] == email_address) {
+            number_of_emails_left--;
+            $("#emails_left").text(
+              `Emails Remaining to be Sent: ${number_of_emails_left}`
+            );
+            email_addresses.splice(i, 1);
+            break;
+          }
+        }
+      });
+    });
     fetch("/mail/send/batch", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -111,8 +134,13 @@ function sendEmails() {
     })
       .then((response) => {
         document.getElementById("loading-spinner").classList.add("hidden");
+        $("#mail-form").fadeOut();
+        $("#csv-form").fadeOut();
+        $("#previous_email_loader_div").fadeOut();
         if (response.status == 200) {
-          alert("Emails have been queued successfully. They will gradually be sent at a rate of 14 emails per second. You can close this page.");
+          $("#message").text(
+            "Emails have been queued successfully and are being sent at the rate of 14 emails a second. If your email is sent to a recepient, you will see that recepient's email address turn green in the list below:"
+          );
         } else {
           alert("There was an error sending emails. Contact IT.");
           console.log(response);
