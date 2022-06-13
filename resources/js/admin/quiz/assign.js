@@ -138,10 +138,11 @@ const App = () => {
           </h2>
           <label>Select an Application Round: </label>
           <select
+            value={""}
             onChange={displayApplicationRoundStudents}
             className="py-2 px-3"
           >
-            <option selected disabled hidden>
+            <option value="" disabled hidden>
               Select an option
             </option>
             {application_rounds.map((round) => (

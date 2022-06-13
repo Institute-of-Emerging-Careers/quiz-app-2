@@ -1,7 +1,9 @@
 const ApplicationsListStudentsAdder = (props) => {
   const { applications_object, modal_object } = useContext(MyContext);
   const [applications, setApplications] = applications_object;
+  const [filtered_applications, setFilteredApplications] = useState([]);
   const [show_modal, setShowModal] = modal_object;
+  const [filter, setFilter] = useState("all");
 
   const student_id_to_array_index_map = useRef({});
   const [loading, setLoading] = useState(false);
@@ -15,11 +17,25 @@ const ApplicationsListStudentsAdder = (props) => {
     for (let i = 0; i < applications.length; i++) {
       student_id_to_array_index_map.current[applications[i].Student.id] = i;
     }
+
+    setFilteredApplications(applications);
   }, [applications]);
+
+  useEffect(() => {
+    setFilteredApplications(
+      applications.filter((application) =>
+        filter == "all"
+          ? true
+          : filter == "not-rejected"
+          ? !application.rejection_email_sent
+          : application.rejection_email_sent
+      )
+    );
+  }, [filter]);
 
   const assignQuizToSelectedStudents = () => {
     setLoading(true);
-    let list_of_student_ids_to_be_added = applications
+    let list_of_student_ids_to_be_added = filtered_applications
       .filter(
         (application) =>
           !application.Student.already_added && application.Student.added
@@ -145,17 +161,54 @@ const ApplicationsListStudentsAdder = (props) => {
         <p>No applicants in this application round.</p>
       ) : (
         <div>
-          <p className="mb-3 bg-gray-200 p-2">
-            <i className="fas fa-check"></i> The gray rows are students that
-            have already been assigned to this quiz. Note that you cannot
-            unassign a quiz from a student once it is assigned. This is because
-            it is possible that the student may have already solved the quiz or
-            may be in the process of solving it.
+          <p className="mb-3 p-2">
+            <span className="bg-gray-200">
+              The gray rows are students that have already been assigned to this
+              quiz.
+            </span>{" "}
+            <span className="bg-red-300">
+              The red rows are the applicants who were rejected due to the
+              auto-rejection criteria such as age.
+            </span>{" "}
+            <span className="bg-yellow-300">
+              The yellow rows are students who were rejected due to
+              auto-rejection but also assigned this quiz for some reason.
+            </span>
           </p>
+          <label>Filter: </label>
+          <select
+            value={filter}
+            onChange={(e) => {
+              setFilter(e.target.value);
+            }}
+            className="py-2 px-3"
+          >
+            <option value="all">Show all applicants</option>
+            <option value="not-rejected">Show all except those rejected</option>
+            <option value="rejected-only">Show all rejected applicants</option>
+          </select>
           <table className="w-full text-left text-sm">
             <thead>
               <tr>
-                <th>Select</th>
+                <th>
+                  <input
+                    type="checkbox"
+                    onChange={(e) => {
+                      setFilteredApplications((cur) =>
+                        cur.map((app) => {
+                          app.Student.added = e.target.checked;
+                          return app;
+                        })
+                      );
+                    }}
+                  ></input>{" "}
+                  {filtered_applications.reduce((final, app) => {
+                    if (final == false) return final;
+                    if (!app.Student.added) return false;
+                  }, true) == false
+                    ? "Select All"
+                    : "Unselect All"}
+                </th>
                 <th>Name</th>
                 <th>Gender</th>
                 <th>Email</th>
@@ -165,32 +218,31 @@ const ApplicationsListStudentsAdder = (props) => {
               </tr>
             </thead>
             <tbody>
-              {applications.map((application, index) => (
+              {filtered_applications.map((application, index) => (
                 <tr
                   key={application.id}
                   className={
-                    application.Student.already_added ? "bg-gray-200" : ""
+                    application.Student.already_added &&
+                    application.rejection_email_sent
+                      ? "bg-yellow-300"
+                      : application.Student.already_added
+                      ? "bg-gray-200"
+                      : application.rejection_email_sent
+                      ? " bg-red-300"
+                      : ""
                   }
                 >
-                  <td className="border px-4 py-2">
+                  <td className={"border px-4 py-2"}>
                     <input
                       type="checkbox"
                       data-id={application.Student.id}
+                      data-index={index}
                       checked={application.Student.added}
                       onChange={(e) => {
-                        setApplications((cur) => {
+                        setFilteredApplications((cur) => {
                           let copy = cur.slice();
-                          copy[
-                            student_id_to_array_index_map.current[
-                              e.target.dataset.id
-                            ]
-                          ].Student.added =
-                            !copy[
-                              student_id_to_array_index_map.current[
-                                e.target.dataset.id
-                              ]
-                            ].Student.added;
-                          console.log(copy);
+                          copy[e.target.dataset.index].Student.added =
+                            !copy[e.target.dataset.index].Student.added;
                           return copy;
                         });
                       }}
@@ -210,9 +262,13 @@ const ApplicationsListStudentsAdder = (props) => {
                   <td className="border px-4 py-2">
                     <a
                       className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
-                      data-index={index}
+                      data-id={application.Student.id}
                       onClick={(e) => {
-                        setShowModal(e.target.dataset.index);
+                        setShowModal(
+                          student_id_to_array_index_map.current[
+                            e.target.dataset.id
+                          ]
+                        );
                       }}
                     >
                       View Details

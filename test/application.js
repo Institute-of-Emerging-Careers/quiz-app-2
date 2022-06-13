@@ -228,6 +228,7 @@ describe("Application Check If User Exists Tests", () => {
             .end((err, res) => {
               res.should.have.status(200);
               expect(res.body).to.eql({
+                email: "tes***@test.com",
                 exists: true,
                 type: "cnic_only",
               });
