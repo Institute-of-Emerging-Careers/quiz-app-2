@@ -48,8 +48,8 @@ const {
   score_past_deadline_attempts,
 } = require("./functions/cron-ping");
 
-assessment_reminder_mailer_task.start();
-score_past_deadline_attempts.start();
+// assessment_reminder_mailer_task.start();
+// score_past_deadline_attempts.start();
 
 // dotenv
 require("dotenv").config();
