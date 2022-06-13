@@ -1,7 +1,9 @@
 const server = require("./server_config");
 const initializeDatabase = require("./db/initialize");
 const { createClient } = require("redis");
-const { email_bull_queue, queueMail } = require("./bull");
+const { email_bull_queue } = require("./bull");
+const { Server } = require("socket.io");
+const { createServer } = require("http");
 const { sendHTMLMail } = require("./functions/sendEmail");
 
 email_bull_queue.process(function (job, done) {
@@ -30,5 +32,18 @@ client
   .then(() => {})
   .catch((err) => console.log(err));
 
+// setup socket.io for batch mailer
+const httpServer = createServer(server);
+
+const io = new Server(httpServer, {});
+
+io.on("connection", (socket) => {
+  console.log("socket id: ", socket.id);
+  email_bull_queue.on("completed", (obj) => {
+    io.emit("email-sent", obj.data.recepient);
+  });
+});
+
 // Server starts
-server.listen(process.env.PORT);
+httpServer.listen(process.env.PORT);
+module.exports = { io, httpServer };
