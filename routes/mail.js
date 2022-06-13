@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
 
-const { io, httpServer } = require("../server");
-
 // Load the AWS SDK for Node.js
 var AWS = require("aws-sdk");
 
