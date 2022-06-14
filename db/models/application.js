@@ -347,7 +347,7 @@ Application.init(
     hooks: {
       beforeValidate: (user, options) => {
         let age_group_cutoffs = [
-          [18, "Under 18"],
+          [17, "Under 18"],
           [21, "18-21"],
           [24, "22-24"],
           [26, "25-26"],
@@ -357,7 +357,7 @@ Application.init(
         let age_group = "";
 
         for (let i = 0; i < age_group_cutoffs.length; i++) {
-          if (user.age < age_group_cutoffs[i][0]) {
+          if (user.age <= age_group_cutoffs[i][0]) {
             age_group = age_group_cutoffs[i][1];
             break;
           }
