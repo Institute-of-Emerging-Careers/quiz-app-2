@@ -1,25 +1,32 @@
 const { Answer, Student } = require("../db/models/user.js");
 const { Question, Section, Passage } = require("../db/models/quizmodel.js");
-const {Sequelize} = require("sequelize");
-const { getQuestionIdsFromArrayOfAnswers, getQuestionObjectsFromArrayOfQuestionIds } = require("./utilities.js");
+const { Sequelize } = require("sequelize");
+const {
+  getQuestionIdsFromArrayOfAnswers,
+  getQuestionObjectsFromArrayOfQuestionIds,
+} = require("./utilities.js");
 const getQuestionsOfStudent = require("./getQuestionsOfStudent.js");
 
 function calculateScore(sectionId, studentId) {
   return new Promise(async (main_resolve, main_reject) => {
-
-    const section = await Section.findOne({where:{id: sectionId}})
+    const section = await Section.findOne({ where: { id: sectionId } });
     let score = 0.0;
-    let questions = await Question.findAll({ where: { SectionId: sectionId }, attributes: ["id", "marks", "type"] });
+    let questions = await Question.findAll({
+      where: { SectionId: sectionId },
+      attributes: ["id", "marks", "type"],
+    });
     if (section.poolCount == questions.length) {
       let count_questions = 0;
       questions.forEach(async (question) => {
-        console.log("type:",question.type)
         if (question.type == "MCQ-S") {
-          console.log("oye1")
-          const student_answer = await Answer.findOne({ where: { QuestionId: question.id, StudentId: studentId }, order: [["id", "desc"]] });
-          console.log("answer:",student_answer)
+          const student_answer = await Answer.findOne({
+            where: { QuestionId: question.id, StudentId: studentId },
+            order: [["id", "desc"]],
+          });
           if (student_answer != null) {
-            const student_answer_option = await student_answer.getOption({ attributes: ["correct"] });
+            const student_answer_option = await student_answer.getOption({
+              attributes: ["correct"],
+            });
             if (student_answer_option.correct) {
               score += question.marks;
             }
@@ -29,11 +36,11 @@ function calculateScore(sectionId, studentId) {
             main_resolve(score);
           }
         } else if (question.type == "MCQ-M") {
-          console.log("oye2")
           let all_correct = true;
-          const student_answers = await Answer.findAll({ where: { QuestionId: question.id, StudentId: studentId } });
+          const student_answers = await Answer.findAll({
+            where: { QuestionId: question.id, StudentId: studentId },
+          });
 
-          console.log(student_answers);
           if (student_answers == null || student_answers.length == 0) {
             count_questions++;
             if (count_questions == questions.length) {
@@ -44,7 +51,9 @@ function calculateScore(sectionId, studentId) {
             new Promise(async (resolve, reject) => {
               student_answers.every(async (answer) => {
                 try {
-                  const key = await answer.getOption({ attributes: ["correct"] });
+                  const key = await answer.getOption({
+                    attributes: ["correct"],
+                  });
                   if (!key.correct) {
                     all_correct = false;
                   }
@@ -74,15 +83,23 @@ function calculateScore(sectionId, studentId) {
         }
       });
     } else {
-      questions = await getQuestionsOfStudent(sectionId, studentId)
+      questions = await getQuestionsOfStudent(sectionId, studentId);
       let count_questions = 0;
-      if (questions.length>0) {
+      if (questions.length > 0) {
         questions.forEach(async (question) => {
           if (question.type == "MCQ-S") {
-            const student_answer = await Answer.findOne({ where: { QuestionId: question.id, StudentId: studentId }, order: [["id", "desc"]] });
+            const student_answer = await Answer.findOne({
+              where: { QuestionId: question.id, StudentId: studentId },
+              order: [["id", "desc"]],
+            });
             if (student_answer != null) {
-              const student_answer_option = await student_answer.getOption({ attributes: ["correct"] });
-              if (student_answer_option!=null && student_answer_option.correct) {
+              const student_answer_option = await student_answer.getOption({
+                attributes: ["correct"],
+              });
+              if (
+                student_answer_option != null &&
+                student_answer_option.correct
+              ) {
                 score += question.marks;
               }
             }
@@ -92,9 +109,10 @@ function calculateScore(sectionId, studentId) {
             }
           } else if (question.type == "MCQ-M") {
             let all_correct = true;
-            const student_answers = await Answer.findAll({ where: { QuestionId: question.id, StudentId: studentId } });
-  
-  
+            const student_answers = await Answer.findAll({
+              where: { QuestionId: question.id, StudentId: studentId },
+            });
+
             if (student_answers == null || student_answers.length == 0) {
               count_questions++;
               if (count_questions == questions.length) {
@@ -105,7 +123,9 @@ function calculateScore(sectionId, studentId) {
               new Promise(async (resolve, reject) => {
                 student_answers.every(async (answer) => {
                   try {
-                    const key = await answer.getOption({ attributes: ["correct"] });
+                    const key = await answer.getOption({
+                      attributes: ["correct"],
+                    });
                     if (!key.correct) {
                       all_correct = false;
                     }
@@ -133,9 +153,9 @@ function calculateScore(sectionId, studentId) {
                 });
             }
           }
-        })
+        });
       } else {
-        main_resolve(0)
+        main_resolve(0);
       }
     }
   });
