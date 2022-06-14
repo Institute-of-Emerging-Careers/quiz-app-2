@@ -47,9 +47,18 @@ const {
   assessment_reminder_mailer_task,
   score_past_deadline_attempts,
 } = require("./functions/cron-ping");
+const {
+  scoreAttemptsWhoseTimerHasEnded,
+} = require("./functions/scoreAttemptsWhoseTimerHasEnded.js");
 
-// assessment_reminder_mailer_task.start();
-// score_past_deadline_attempts.start();
+assessment_reminder_mailer_task.start();
+score_past_deadline_attempts.start();
+
+scoreAttemptsWhoseTimerHasEnded()
+  .then(() => {})
+  .catch((err) => {
+    console.log(err);
+  });
 
 // dotenv
 require("dotenv").config();

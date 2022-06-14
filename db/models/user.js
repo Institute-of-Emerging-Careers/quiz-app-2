@@ -358,7 +358,7 @@ Assignment.hasMany(Attempt, {
   },
 });
 
-Attempt.belongsTo(Assignment);
+Attempt.belongsTo(Assignment, { foreignKey: { allowNull: false } });
 
 // Attempt and Section relationship
 Section.hasMany(Attempt, {

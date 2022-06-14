@@ -8,7 +8,9 @@ const {
   PasswordResetLink,
 } = require("../db/models/user");
 const scoreAssignmentsWhoseDeadlineHasPassed = require("./scoreAssignmentsWhoseDeadlineHasPassed");
-const scoreAttemptsWhoseTimerHasEnded = require("./scoreAttemptsWhoseTimerHasEnded");
+const {
+  scoreAttemptsWhoseTimerHasEnded,
+} = require("./scoreAttemptsWhoseTimerHasEnded");
 const sendReminderEmails = require("./sendReminderEmails");
 
 const assessment_reminder_mailer_task = cron.schedule(

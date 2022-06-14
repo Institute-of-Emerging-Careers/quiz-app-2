@@ -6,7 +6,12 @@ const updateScore = require("./updateScore");
 const { setSectionStatusToComplete } = require("./setSectionStatusToComplete");
 const { queueMail } = require("../bull");
 
-function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
+function scoreSection(
+  section_id,
+  student_id,
+  assignment = null,
+  send_email = false
+) {
   return new Promise(async (resolve, reject) => {
     try {
       const section = await Section.findOne({
@@ -43,7 +48,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
         ).email;
 
         // check if student has solved all sections
-        if (await allSectionsSolved(quizId, assignment)) {
+        if (send_email && (await allSectionsSolved(quizId, assignment))) {
           await queueMail(email, `Assessment Completed`, {
             heading: `All Sections Completed`,
             inner_text: `Dear Student
@@ -59,7 +64,7 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
             button_link: "https://iec.org.pk",
           });
           console.log("Scoring mail sent");
-        } else {
+        } else if (send_email) {
           await queueMail(email, `Section Solved`, {
             heading: `Section "${section.title}" Solved`,
             inner_text: `Dear Student
@@ -77,6 +82,8 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
           console.log("Scoring mail sent");
         }
         resolve();
+      } else {
+        reject();
       }
     } catch (err) {
       reject(err);
@@ -84,4 +91,4 @@ function scoreSectionAndSendEmail(section_id, student_id, assignment = null) {
   });
 }
 
-module.exports = scoreSectionAndSendEmail;
+module.exports = scoreSection;

@@ -28,7 +28,7 @@ const deleteQuiz = require("../functions/deleteQuiz");
 const saveQuizProgress = require("../functions/saveQuizProgress");
 const setSectionStatusToInProgress = require("../functions/setSectionStatusToInProgress");
 const retrieveStatus = require("../functions/retrieveStatus");
-const scoreSectionAndSendEmail = require("../functions/scoreSectionAndSendEmail");
+const scoreSection = require("../functions/scoreSectionAndSendEmail");
 const {
   getQuizResults,
   getQuizResultsWithAnalysis,
@@ -434,14 +434,13 @@ router.get(
       req.params.quizId,
       [Quiz]
     );
-    // checking if 72 hours have gone by since the student was assigned this assessment, because that's the deadline
+    // checking if 30 days have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
     const deadline_from_signup = 30; //days
 
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
-      //>72h
-      await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
+      await scoreSection(req.params.sectionId, req.user.user.id, null, true);
 
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
@@ -475,9 +474,11 @@ router.get(
           // attempt exists for this section by this student, so we check if there is time remaining
           if (attempt.endTime != 0 && attempt.endTime - Date.now() <= 100) {
             // this means that the section is timed and the time for this section is already over
-            await scoreSectionAndSendEmail(
+            await scoreSection(
               req.params.sectionId,
-              req.user.user.id
+              req.user.user.id,
+              null,
+              true
             );
             res.render("templates/error.ejs", {
               additional_info: "Time Limit Over :(",
@@ -1116,7 +1117,7 @@ router.get(
   checkStudentAuthenticated,
   async (req, res) => {
     // answers are already saved in Database, so we create a Score object and send student completion email
-    await scoreSectionAndSendEmail(req.params.sectionId, req.user.user.id);
+    await scoreSection(req.params.sectionId, req.user.user.id, null, true);
     const section = await Section.findOne({
       where: { id: req.params.sectionId },
       attributes: ["id"],

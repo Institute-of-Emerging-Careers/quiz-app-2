@@ -33,17 +33,14 @@ async function scoreAssignmentsWhoseDeadlineHasPassed() {
               startTime: Date.now(),
               endTime: Date.now(),
               duration: 0,
+              statusText: "Completed",
             });
             await assignment.Quiz.update({ allow_edit: false });
           }
           const score = await attempt.getScore();
           if (score == null)
             promises.push(
-              scoreSectionAndSendEmail(
-                section.id,
-                assignment.StudentId,
-                assignment
-              )
+              scoreSection(section.id, assignment.StudentId, assignment)
             );
         });
       }
