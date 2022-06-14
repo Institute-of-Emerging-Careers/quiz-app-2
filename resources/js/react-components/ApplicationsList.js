@@ -482,8 +482,26 @@ const ApplicationsList = (props) => {
                 <div className="col-span-3">
                   {filter.expand_possible_values ? (
                     <div>
-                      <a className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer">
+                      <a
+                        className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer"
+                        data-filter_index={index}
+                        onClick={(e) => {
+                          setAllCheckBoxes(e.target.dataset.filter_index, true);
+                        }}
+                      >
                         Check All
+                      </a>{" "}
+                      <a
+                        className="text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer"
+                        data-filter_index={index}
+                        onClick={(e) => {
+                          setAllCheckBoxes(
+                            e.target.dataset.filter_index,
+                            false
+                          );
+                        }}
+                      >
+                        Uncheck All
                       </a>
                       {filter.possible_values.map((possible_value_obj, i2) => (
                         <div>
