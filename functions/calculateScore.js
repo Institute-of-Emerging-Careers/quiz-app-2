@@ -95,7 +95,7 @@ function calculateScore(sectionId, studentId) {
                 student_answer_option != null &&
                 student_answer_option.correct
               ) {
-                score += question.marks;
+                score += 1;
               }
             }
             count_questions++;
@@ -135,7 +135,7 @@ function calculateScore(sectionId, studentId) {
               })
                 .then((correct) => {
                   if (correct) {
-                    score += question.marks;
+                    score += 1;
                   }
                   count_questions++;
                   if (count_questions == questions.length) {

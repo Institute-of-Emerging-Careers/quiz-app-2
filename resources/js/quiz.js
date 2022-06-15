@@ -1135,6 +1135,19 @@ const Section = (props) => {
         obj.mcqs = copy;
         return obj;
       });
+    } else if (!autoPoolCount) {
+      setState((cur) => {
+        let obj = { ...cur };
+        let copy = obj.mcqs.slice();
+        copy[props.sectionIndex].questions = copy[
+          props.sectionIndex
+        ].questions.map((question) => {
+          question.marks = 1;
+          return question;
+        });
+        obj.mcqs = copy;
+        return obj;
+      });
     }
   }, [autoPoolCount]);
 
@@ -1368,7 +1381,6 @@ const SectionHeader = (props) => {
             name="autoPoolCount"
             checked={autoPoolCount}
             onChange={(e) => {
-              console.log("changing autoPoolCount");
               setAutoPoolCount(e.target.checked);
             }}
           ></input>

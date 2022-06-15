@@ -141,7 +141,7 @@ async function removeEverythingInQuiz(the_quiz, t) {
     })
     .then(() => {
       return deleteAllSectionsInQuiz(data, num_sections, t);
-    })
+    });
 }
 
 const saveExistingQuiz = async (req, res) => {
@@ -180,22 +180,40 @@ const saveExistingQuiz = async (req, res) => {
             })
             .catch(async (err) => {
               await t.rollback();
-              console.log("Error 03", err);
-              res.send({
-                message: "Code 02 Error. Please contact the tech team.",
-                status: false,
-                quizId: the_quiz.id,
-              });
+              console.log("Error 01", err);
+              if (err.code == "ER_ROW_IS_REFERENCED_2") {
+                res.send({
+                  message:
+                    "Error: A student has already solved this quiz and it has been graded. You cannot change the quiz now without deleting that student's attempt.",
+                  status: false,
+                  quizId: the_quiz.id,
+                });
+              } else {
+                res.send({
+                  message: "Code 01 Error. Please contact the tech team.",
+                  status: false,
+                  quizId: the_quiz.id,
+                });
+              }
             });
         })
         .catch(async (err) => {
           await t.rollback();
-          console.log("Code 01", err);
-          res.send({
-            message: "Code 01 Error. Please contact the tech team.",
-            status: false,
-            quizId: the_quiz.id,
-          });
+          console.log("Error 02", err.original.code);
+          if (err.original.code == "ER_ROW_IS_REFERENCED_2") {
+            res.send({
+              message:
+                "Error: A student has already solved this quiz and it has been graded. You cannot change the quiz now without deleting that student's attempt.",
+              status: false,
+              quizId: the_quiz.id,
+            });
+          } else {
+            res.send({
+              message: "Code 02 Error. Please contact the tech team.",
+              status: false,
+              quizId: the_quiz.id,
+            });
+          }
         });
     } else {
       saveEverythingInQuiz(the_quiz, req, t)
