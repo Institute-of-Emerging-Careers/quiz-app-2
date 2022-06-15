@@ -90,92 +90,94 @@ const getQuizResults = (quiz_id) => {
       ],
     });
 
-    await new Promise((small_resolve) => {
-      let i = 0;
-      const n = assignments.length;
-      assignments.forEach(async (assignment) => {
-        // Note: we also show scores of students who have NOT YET attempted this quiz
-        let data_prev_index = data.push({
-          student_id: assignment.Student.id,
-          student_name:
-            assignment.Student.firstName + " " + assignment.Student.lastName,
-          student_cnic: assignment.Student.cnic,
-          student_email: assignment.Student.email,
-          student_gender: assignment.Student.gender.toLowerCase(),
-          sections: [],
-          completed: false, //this tells if the student has completed all sections or not
-          total_score: 0,
-          maximum_total_score: 0,
-          percentage_total: 0,
-        });
-        data_prev_index--;
-
-        // insert empty placeholder section objects according to number of sections
-        for (let j = 0; j < quiz_sections.length; j++) {
-          data[data_prev_index].sections.push({
-            status: "Not Attempted yet",
-            section_score: 0,
-            percentage_score: 0,
-            start_time: 0,
-            end_time: 0,
-            duration: 0,
+    if (assignments.length > 0) {
+      await new Promise((small_resolve) => {
+        let i = 0;
+        const n = assignments.length;
+        assignments.forEach(async (assignment) => {
+          // Note: we also show scores of students who have NOT YET attempted this quiz
+          let data_prev_index = data.push({
+            student_id: assignment.Student.id,
+            student_name:
+              assignment.Student.firstName + " " + assignment.Student.lastName,
+            student_cnic: assignment.Student.cnic,
+            student_email: assignment.Student.email,
+            student_gender: assignment.Student.gender.toLowerCase(),
+            sections: [],
+            completed: false, //this tells if the student has completed all sections or not
+            total_score: 0,
+            maximum_total_score: 0,
+            percentage_total: 0,
           });
-        }
+          data_prev_index--;
 
-        if (assignment.Attempts.length > 0) {
-          assignment.Attempts.forEach((attempt) => {
-            if (
-              quiz_sections[
-                section_id_to_array_index_mapping[attempt.SectionId]
-              ] != undefined
-            ) {
-              const percentage_score = roundToTwoDecimalPlaces(
-                ((attempt.Score == null ? 0 : attempt.Score.score) /
-                  quiz_sections[
-                    section_id_to_array_index_mapping[attempt.SectionId]
-                  ].maximum_score) *
-                  100
-              );
-
-              const section_score =
-                attempt.Score == null ? 0 : attempt.Score.score;
-
-              data[data_prev_index].sections[
-                section_id_to_array_index_mapping[attempt.SectionId]
-              ] = {
-                status: "Attempted",
-                section_id: attempt.SectionId,
-                section_score: section_score,
-                percentage_score: percentage_score,
-                start_time: attempt.startTime,
-                end_time: DateTime.fromMillis(attempt.endTime).toFormat(
-                  "hh:mm a dd LLL yyyy"
-                ),
-                duration: Duration.fromMillis(attempt.duration).toFormat(
-                  "mm 'minutes' ss 'seconds'"
-                ),
-              };
-              data[data_prev_index].total_score += section_score;
-            }
-          });
-          data[data_prev_index].percentage_total = roundToTwoDecimalPlaces(
-            (data[data_prev_index].total_score / quiz_total_score) * 100
-          );
-
-          const all_sections_solved = await allSectionsSolved(
-            quiz_id,
-            assignment
-          );
-          if (all_sections_solved) {
-            data[data_prev_index].completed = true;
+          // insert empty placeholder section objects according to number of sections
+          for (let j = 0; j < quiz_sections.length; j++) {
+            data[data_prev_index].sections.push({
+              status: "Not Attempted yet",
+              section_score: 0,
+              percentage_score: 0,
+              start_time: 0,
+              end_time: 0,
+              duration: 0,
+            });
           }
-        }
-        i++;
-        if (i == n) {
-          small_resolve();
-        }
+
+          if (assignment.Attempts.length > 0) {
+            assignment.Attempts.forEach((attempt) => {
+              if (
+                quiz_sections[
+                  section_id_to_array_index_mapping[attempt.SectionId]
+                ] != undefined
+              ) {
+                const percentage_score = roundToTwoDecimalPlaces(
+                  ((attempt.Score == null ? 0 : attempt.Score.score) /
+                    quiz_sections[
+                      section_id_to_array_index_mapping[attempt.SectionId]
+                    ].maximum_score) *
+                    100
+                );
+
+                const section_score =
+                  attempt.Score == null ? 0 : attempt.Score.score;
+
+                data[data_prev_index].sections[
+                  section_id_to_array_index_mapping[attempt.SectionId]
+                ] = {
+                  status: "Attempted",
+                  section_id: attempt.SectionId,
+                  section_score: section_score,
+                  percentage_score: percentage_score,
+                  start_time: attempt.startTime,
+                  end_time: DateTime.fromMillis(attempt.endTime).toFormat(
+                    "hh:mm a dd LLL yyyy"
+                  ),
+                  duration: Duration.fromMillis(attempt.duration).toFormat(
+                    "mm 'minutes' ss 'seconds'"
+                  ),
+                };
+                data[data_prev_index].total_score += section_score;
+              }
+            });
+            data[data_prev_index].percentage_total = roundToTwoDecimalPlaces(
+              (data[data_prev_index].total_score / quiz_total_score) * 100
+            );
+
+            const all_sections_solved = await allSectionsSolved(
+              quiz_id,
+              assignment
+            );
+            if (all_sections_solved) {
+              data[data_prev_index].completed = true;
+            }
+          }
+          i++;
+          if (i == n) {
+            small_resolve();
+          }
+        });
       });
-    });
+    }
 
     let final_response = {
       quiz_title: quiz.title,
@@ -280,7 +282,6 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
         });
         cur_index--;
 
-        console.log(assignment.Student.gender);
         if (assignment.Student.gender.toLowerCase() == "male")
           analysis.gender_male++;
         else if (assignment.Student.gender.toLowerCase() == "female")
