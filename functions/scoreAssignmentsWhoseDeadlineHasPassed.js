@@ -40,7 +40,7 @@ async function scoreAssignmentsWhoseDeadlineHasPassed() {
           const score = await attempt.getScore();
           if (score == null)
             promises.push(
-              scoreSection(section.id, assignment.StudentId, assignment)
+              scoreSection(section.id, assignment.StudentId, assignment, false)
             );
         });
       }

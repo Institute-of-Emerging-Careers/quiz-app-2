@@ -1,10 +1,5 @@
-const { Answer, Student } = require("../db/models/user.js");
-const { Question, Section, Passage } = require("../db/models/quizmodel.js");
-const { Sequelize } = require("sequelize");
-const {
-  getQuestionIdsFromArrayOfAnswers,
-  getQuestionObjectsFromArrayOfQuestionIds,
-} = require("./utilities.js");
+const { Answer } = require("../db/models/user.js");
+const { Question, Section } = require("../db/models/quizmodel.js");
 const getQuestionsOfStudent = require("./getQuestionsOfStudent.js");
 
 function calculateScore(sectionId, studentId) {
