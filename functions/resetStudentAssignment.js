@@ -35,26 +35,30 @@ async function deleteAllAnswers(student_id, quiz_id, t) {
     attributes: ["id"],
   });
 
-  return new Promise((main_resolve) => {
+  return new Promise((main_resolve, main_reject) => {
     let num_sections_done = 0;
     const total_sections = quiz.Sections.length;
-    quiz.Sections.forEach(async (section) => {
-      await new Promise((resolve) => {
-        let num_questions_done = 0;
-        const total_questions = section.Questions.length;
-        section.Questions.forEach(async (question) => {
-          await Answer.destroy({
-            where: { QuestionId: question.id, StudentId: student_id },
-            transaction: t,
+    try {
+      quiz.Sections.forEach(async (section) => {
+        await new Promise((resolve) => {
+          let num_questions_done = 0;
+          const total_questions = section.Questions.length;
+          section.Questions.forEach(async (question) => {
+            await Answer.destroy({
+              where: { QuestionId: question.id, StudentId: student_id },
+              transaction: t,
+            });
+            num_questions_done++;
+            if (num_questions_done == total_questions) resolve();
           });
-          num_questions_done++;
-          if (num_questions_done == total_questions) resolve();
         });
-      });
 
-      num_sections_done++;
-      if (num_sections_done == total_sections) main_resolve();
-    });
+        num_sections_done++;
+        if (num_sections_done == total_sections) main_resolve();
+      });
+    } catch (err) {
+      main_reject(err);
+    }
   });
 }
 
@@ -62,7 +66,13 @@ async function resetStudentAssignment(student_id, quiz_id, t) {
   // delete Answers
   // delete Attempt. This will automatically delete all Scores.
 
-  await deleteAllAnswers(student_id, quiz_id, t);
+  try {
+    await deleteAllAnswers(student_id, quiz_id, t);
+  } catch (err) {
+    return new Promise((resolve, reject) => {
+      reject(err);
+    });
+  }
 
   return deleteAllAttempts(student_id, quiz_id, t);
 }
