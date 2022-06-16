@@ -12,6 +12,7 @@ const {
   ApplicationRound,
   ApplicationRoundCourseJunction,
 } = require("./models/application");
+const { Assignment } = require("./models/user");
 
 const initializeDatabase = async () => {
   try {
@@ -22,7 +23,7 @@ const initializeDatabase = async () => {
       force: alterandforce,
       logging: false,
     });
-    // await ApplicationRoundCourseJunction.sync({ alter: false, force: false });
+    // await Assignment.sync({ alter: true, force: false });
     // await Application.sync({ alter: false, force: false });
     // await ApplicationRound.sync({ alter: false, force: false });
     // await Interviewer.sync({ alter: false });
@@ -139,9 +140,6 @@ const initializeDatabase = async () => {
       const studentUser = await sequelize.models.Student.create({
         firstName: "Rohan",
         lastName: "Hussain",
-        age: 20,
-        city: "Lahore",
-        address: "Street",
         gender: "Male",
         email: "rohanhussain1@yahoo.com",
         password: hashedPwd,

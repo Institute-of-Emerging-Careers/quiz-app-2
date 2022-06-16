@@ -47,8 +47,13 @@ function scoreSection(
           })
         ).email;
 
+        const all_sections_solved = await allSectionsSolved(quizId, assignment);
+
+        if (all_sections_solved) {
+          await assignment.update({ completed: true });
+        }
         // check if student has solved all sections
-        if (send_email && (await allSectionsSolved(quizId, assignment))) {
+        if (send_email && all_sections_solved) {
           await queueMail(email, `Assessment Completed`, {
             heading: `All Sections Completed`,
             inner_text: `Dear Student

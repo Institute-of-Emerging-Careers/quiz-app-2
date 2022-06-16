@@ -29,15 +29,15 @@ async function scoreAttemptsWhoseTimerHasEnded() {
       ],
       attributes: ["endTime", "AssignmentId"],
     });
+
+    return Promise.all(
+      filterTimerEndedAttempts(attempts).map((attempt) =>
+        scoreSection(attempt.Section.id, attempt.Assignment.StudentId)
+      )
+    );
   } catch (err) {
     console.log(err);
   }
-
-  return Promise.all(
-    filterTimerEndedAttempts(attempts).map((attempt) =>
-      scoreSection(attempt.Section.id, attempt.Assignment.StudentId)
-    )
-  );
 }
 
 module.exports = { scoreAttemptsWhoseTimerHasEnded, filterTimerEndedAttempts };

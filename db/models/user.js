@@ -179,6 +179,11 @@ Assignment.init(
       allowNull: false,
       defaultValue: 0,
     },
+    completed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0,
+    },
   },
   {
     sequelize,

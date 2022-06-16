@@ -51,8 +51,10 @@ const {
   scoreAttemptsWhoseTimerHasEnded,
 } = require("./functions/scoreAttemptsWhoseTimerHasEnded.js");
 
-assessment_reminder_mailer_task.start();
-score_past_deadline_attempts.start();
+if (process.env.NODE_ENV != "test") {
+  assessment_reminder_mailer_task.start();
+  score_past_deadline_attempts.start();
+}
 
 scoreAttemptsWhoseTimerHasEnded()
   .then(() => {})
