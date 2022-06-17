@@ -209,7 +209,7 @@ router.post(
       res.sendStatus(201);
     } catch (err) {
       if (err.errors) {
-        console.log(err.errors[0]);
+        console.log("application validation error: ", err.errors[0]);
         const error_path_array = err.errors[0].path.split(".");
         let error_obj = {
           error: err.errors[0].type,

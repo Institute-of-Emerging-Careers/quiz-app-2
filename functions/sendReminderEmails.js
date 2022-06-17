@@ -94,12 +94,12 @@ async function sendReminderEmails() {
   }
 }
 
-sendReminderEmails()
-  .then(() => {
-    console.log("done");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// sendReminderEmails()
+//   .then(() => {
+//     console.log("done");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 module.exports = sendReminderEmails;

@@ -9,9 +9,10 @@ const {
   filterTimerEndedAttempts,
   scoreAttemptsWhoseTimerHasEnded,
 } = require("../functions/scoreAttemptsWhoseTimerHasEnded");
-const { Attempt, Assignment, Student } = require("../db/models/user");
+const { Attempt, Assignment, Student, Score } = require("../db/models/user");
 const { Quiz, Section } = require("../db/models/quizmodel");
 const scoreAssignmentsWhoseDeadlineHasPassed = require("../functions/scoreAssignmentsWhoseDeadlineHasPassed");
+const { Op } = require("sequelize");
 
 let should = chai.should();
 let expect = chai.expect;
@@ -188,42 +189,51 @@ describe("Cron Jobs - Score Past Deadline Assignments", () => {
 
   it("it should score an assignment that has passed deadline", async () => {
     // create an assignment with a createdAt date that is more than 30 days old (30 days being the deadline)
-    const quiz = await Quiz.findOne({ where: {} });
-    const student = await Student.findOne({ where: {} });
+    let assignment;
+    try {
+      const quiz = await Quiz.findOne({ where: {} });
+      const student = await Student.findOne({ where: {} });
 
-    const assignment_id = (
-      await Assignment.create({
+      assignment = await Assignment.create({
         QuizId: quiz.id,
         StudentId: student.id,
         createdAt: "2021-06-15 18:06:06",
-      })
-    ).id;
+        completed: false,
+      });
 
-    await scoreAssignmentsWhoseDeadlineHasPassed();
+      await scoreAssignmentsWhoseDeadlineHasPassed();
 
-    const assignment = await Assignment.findOne({
-      where: { id: assignment_id },
-    });
+      assignment = await Assignment.findOne({
+        where: { id: assignment.id },
+      });
+    } catch (err) {
+      console.log(err);
+    }
     expect(assignment.completed).to.eql(true);
   });
 
   it("it should not score an assignment that has not passed the deadline", async () => {
-    const quiz = await Quiz.findOne({ where: {} });
-    const student = await Student.findOne({ where: {} });
+    let assignment;
+    try {
+      const quiz = await Quiz.findOne({ where: {} });
+      const student = await Student.findOne({ where: {} });
 
-    const assignment_id = (
-      await Assignment.create({
-        QuizId: quiz.id,
-        StudentId: student.id,
-        createdAt: new Date() - 1000,
-      })
-    ).id;
+      const assignment_id = (
+        await Assignment.create({
+          QuizId: quiz.id,
+          StudentId: student.id,
+          createdAt: new Date() - 1000,
+        })
+      ).id;
 
-    await scoreAssignmentsWhoseDeadlineHasPassed();
+      await scoreAssignmentsWhoseDeadlineHasPassed();
 
-    const assignment = await Assignment.findOne({
-      where: { id: assignment_id },
-    });
+      assignment = await Assignment.findOne({
+        where: { id: assignment_id },
+      });
+    } catch (err) {
+      console.log(err);
+    }
     expect(assignment.completed).to.eql(false);
   });
 });
