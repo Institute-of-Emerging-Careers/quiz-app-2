@@ -198,6 +198,7 @@ router.post(
       obj.StudentId = student.id;
       obj.ApplicationRoundId = req.params.application_round_id;
       obj.rejection_email_sent = false;
+      obj.assessment_email_sent = false;
 
       // creating application
       let application = Application.build(obj);
