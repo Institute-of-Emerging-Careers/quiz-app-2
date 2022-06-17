@@ -23,7 +23,7 @@ const initializeDatabase = async () => {
       force: alterandforce,
       logging: false,
     });
-    // await Assignment.sync({ alter: true, force: false });
+    // await Application.sync({ alter: true, force: false });
     // await Application.sync({ alter: false, force: false });
     // await ApplicationRound.sync({ alter: false, force: false });
     // await Interviewer.sync({ alter: false });
@@ -161,6 +161,5 @@ const initializeDatabase = async () => {
     console.log(err);
   }
 };
-
 
 module.exports = initializeDatabase;

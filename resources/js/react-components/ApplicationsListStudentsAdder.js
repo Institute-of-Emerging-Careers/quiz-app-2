@@ -4,7 +4,6 @@ const ApplicationsListStudentsAdder = (props) => {
   const [filtered_applications, setFilteredApplications] = useState([]);
   const [show_modal, setShowModal] = modal_object;
   const [filter, setFilter] = useState("all");
-
   const student_id_to_array_index_map = useRef({});
   const [loading, setLoading] = useState(false);
   const [saved_success, setSavedSuccess] = useState(false);
@@ -138,6 +137,9 @@ const ApplicationsListStudentsAdder = (props) => {
               .map((application) => application.Student)
               .filter((student) => student.added)}
             sending_link={`/quiz/send-emails/${props.quiz_id}`}
+            applications={applications.filter(
+              (application) => application.Student.added
+            )}
             default_values={{
               email_subject: "IEC Assessment",
               email_heading: "IEC Assessment",
@@ -162,6 +164,10 @@ const ApplicationsListStudentsAdder = (props) => {
       ) : (
         <div>
           <p className="mb-3 p-2">
+            <span className="bg-green-400">
+              The green rows are students to whom you have already sent the
+              assessment email.
+            </span>{" "}
             <span className="bg-gray-200">
               The gray rows are students that have already been assigned to this
               quiz.
@@ -222,8 +228,10 @@ const ApplicationsListStudentsAdder = (props) => {
                 <tr
                   key={application.id}
                   className={
-                    application.Student.already_added &&
-                    application.rejection_email_sent
+                    application.assessment_email_sent
+                      ? "bg-green-400"
+                      : application.Student.already_added &&
+                        application.rejection_email_sent
                       ? "bg-yellow-300"
                       : application.Student.already_added
                       ? "bg-gray-200"

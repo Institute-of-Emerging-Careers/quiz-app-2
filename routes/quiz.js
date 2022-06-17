@@ -48,6 +48,8 @@ const {
 } = require("../functions/utilities.js");
 const allSectionsSolved = require("../functions/allSectionsSolved.js");
 const { queueMail } = require("../bull");
+const { Application } = require("../db/models/application");
+const { Op } = require("sequelize");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -1377,22 +1379,42 @@ router.post(
   checkAdminAuthenticated,
   async (req, res) => {
     const email_content = req.body.email_content;
-    const emails = req.body.users.map((user) => user.email);
+    let emails =
+      req.body.hasOwnProperty("applications") && req.body.applications
+        ? req.body.users.map((application) => {
+            return {
+              email_address: application.Student.email,
+              application_id: application.id,
+            };
+          })
+        : req.body.users.map((user) => {
+            return { email_address: user.email, application_id: null };
+          });
+
+    const application_ids = emails.map((email_obj) => email_obj.application_id);
+
     if (emails.length == 0) {
       res.sendStatus(200);
       return;
     }
-    Promise.all(
-      emails.map((email) =>
-        queueMail(email, `${email_content.subject}`, {
-          heading: email_content.heading,
-          inner_text: email_content.body,
-          button_announcer: email_content.button_pre_text,
-          button_text: email_content.button_label,
-          button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
-        })
+
+    let promises = emails.map((email_obj) =>
+      queueMail(email_obj.email_address, `${email_content.subject}`, {
+        heading: email_content.heading,
+        inner_text: email_content.body,
+        button_announcer: email_content.button_pre_text,
+        button_text: email_content.button_label,
+        button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
+      })
+    );
+    promises.push(
+      Application.update(
+        { assessment_email_sent: true },
+        { where: { id: { [Op.in]: application_ids } } }
       )
-    )
+    );
+
+    Promise.all(promises)
       .then(() => {
         res.sendStatus(200);
       })

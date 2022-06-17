@@ -314,6 +314,11 @@ Application.init(
       allowNull: false,
       defaultValue: false,
     },
+    assessment_email_sent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
   },
   {
     sequelize,

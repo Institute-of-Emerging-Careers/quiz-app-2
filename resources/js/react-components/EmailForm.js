@@ -5,6 +5,8 @@ const EmailForm = (props) => {
   const [email_subject, setEmailSubject] = useState(
     default_values.email_subject
   );
+  let applications = null;
+  if (props.hasOwnProperty("applications")) applications = props.applications;
   const [email_heading, setEmailHeading] = useState(
     default_values.email_heading
   );
@@ -27,7 +29,8 @@ const EmailForm = (props) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        users: users,
+        users: applications == null ? users : applications,
+        applications: applications != null,
         email_content: {
           subject: email_subject,
           heading: email_heading,
