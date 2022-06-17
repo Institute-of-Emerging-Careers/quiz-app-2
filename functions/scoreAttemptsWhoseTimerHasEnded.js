@@ -40,4 +40,12 @@ async function scoreAttemptsWhoseTimerHasEnded() {
   }
 }
 
+scoreAttemptsWhoseTimerHasEnded()
+  .then(() => {
+    console.log("done");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 module.exports = { scoreAttemptsWhoseTimerHasEnded, filterTimerEndedAttempts };

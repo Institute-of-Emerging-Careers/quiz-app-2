@@ -84,4 +84,12 @@ async function scoreAssignmentsWhoseDeadlineHasPassed() {
   return Promise.all(promises);
 }
 
+// scoreAssignmentsWhoseDeadlineHasPassed()
+//   .then(() => {
+//     console.log("done");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
 module.exports = scoreAssignmentsWhoseDeadlineHasPassed;
