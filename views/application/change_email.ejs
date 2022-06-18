@@ -46,14 +46,14 @@
   >
     <div class="container bg-white rounded-3 w-md-75 p-4 p-md-5 mt-3">
       <h1>
-        <img src="/img/iec_logo_only.png" height="50px" /> Change CNIC Number
+        <img src="/img/iec_logo_only.png" height="50px" /> Change Email Address
       </h1>
       <!-- Progress Bar Starts -->
 
       <form
         id="credentials-form"
         method="POST"
-        action="/application/change-cnic"
+        action="/application/change-email"
       >
         <div class="mb-3 mt-3">
           <div class="input-group">
@@ -64,7 +64,7 @@
               type="email"
               class="form-control"
               id="email"
-              placeholder="Enter email"
+              placeholder="Choose a new email"
               name="email"
               required
             />
@@ -78,7 +78,6 @@
             <option value="male">Male</option>
             <option value="other">Other</option>
           </select>
-          <div id="age-error-message" class="invalid-feedback"></div>
           <div id="gender-error-message" class="invalid-feedback"></div>
         </div>
         <div class="mb-3 mt-3" id="password-input-group">
@@ -117,7 +116,7 @@
         </div>
         <input
           type="submit"
-          value="Change CNIC Number"
+          value="Change Email Address"
           class="btn btn-primary"
           id="submit-button"
         />
@@ -131,6 +130,6 @@
       >
     </p>
 
-    <script src="/js/change_cnic.js"></script>
+    <script src="/js/change_email.js"></script>
   </body>
 </html>

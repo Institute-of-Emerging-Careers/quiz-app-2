@@ -152,8 +152,8 @@ const checkIfUserExists = () => {
                 );
               } else if (response.type == "cnic_only") {
                 $(`#email`).addClass("is-invalid").focus();
-                $(`#email-error-message`).text(
-                  `We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. Please use the same email address and cnic pair. The email address you used last time looked something like this: ${response.email}.`
+                $(`#email-error-message`).html(
+                  `We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ${response.email}.<br>If that email address was correct, then please use that same email address and cnic pair.<br>If you entered a wrong email address the last time, then <a href="/application/change-email">click here to change your email address</a>.`
                 );
               } else {
                 // resetting errors

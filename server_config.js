@@ -56,11 +56,11 @@ if (process.env.NODE_ENV != "test") {
   score_past_deadline_attempts.start();
 }
 
-scoreAttemptsWhoseTimerHasEnded()
-  .then(() => {})
-  .catch((err) => {
-    console.log(err);
-  });
+// scoreAttemptsWhoseTimerHasEnded()
+//   .then(() => {})
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 // dotenv
 require("dotenv").config();

@@ -88,7 +88,6 @@ async function scoreAssignmentsWhoseDeadlineHasPassed() {
                 },
               }
             );
-            console.log("done1");
             resolve();
           }
         });

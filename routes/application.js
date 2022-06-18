@@ -239,6 +239,10 @@ router.get("/change-cnic", (req, res) => {
   res.render("application/change_cnic.ejs");
 });
 
+router.get("/change-email", (req, res) => {
+  res.render("application/change_email.ejs");
+});
+
 router.post("/change-cnic", async (req, res) => {
   const student = await Student.findOne({
     where: { email: req.body.email },
@@ -247,6 +251,7 @@ router.post("/change-cnic", async (req, res) => {
     try {
       if (await bcrypt.compare(req.body.password, student.password)) {
         student.cnic = req.body.cnic;
+        student.gender = req.body.gender;
         await student.validate();
         await student.save();
         res.sendStatus(200);
@@ -255,7 +260,27 @@ router.post("/change-cnic", async (req, res) => {
       res.sendStatus(400);
       console.log(err);
     }
-  } else res.sendStatus(400);
+  } else res.sendStatus(401);
+});
+
+router.post("/change-email", async (req, res) => {
+  const student = await Student.findOne({
+    where: { cnic: req.body.cnic },
+  });
+  if (student != null) {
+    try {
+      if (await bcrypt.compare(req.body.password, student.password)) {
+        student.email = req.body.email;
+        student.gender = req.body.gender;
+        await student.validate();
+        await student.save();
+        res.sendStatus(200);
+      } else res.sendStatus(400);
+    } catch (err) {
+      res.sendStatus(400);
+      console.log(err);
+    }
+  } else res.sendStatus(401);
 });
 
 module.exports = router;
