@@ -71,6 +71,21 @@ const EmailForm = (props) => {
         className="flex flex-col gap-y-2"
       >
         <div>
+          <label>Recepients: </label>
+          <input
+            type="text"
+            id="recepients"
+            maxLength="100"
+            name="recepients"
+            className="border bg-gray-200 w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={
+              applications == null
+                ? `${users[0]}, and ${users.length - 1} others`
+                : `${applications[0].Student.email}, and ${
+                    applications.length - 1
+                  } others`
+            }
+          ></input>
           <label>Subject: </label>
           <input
             type="text"
