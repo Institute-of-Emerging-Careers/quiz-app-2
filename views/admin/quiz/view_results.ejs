@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %> <%-
+    include('../../templates/react-includes.ejs') %>
+
+    <title>View Results - Admin Panel</title>
+    <style>
+      #score-table-body > tr:nth-child(even) {
+        background-color: #f6f6f6;
+      }
+    </style>
+  </head>
+  <body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../../templates/header.ejs') %>
+
+    <h1 class="text-2xl">Quiz Results</h1>
+    <input type="hidden" id="quiz-id-field" value="<%=quiz_id%>" />
+    <section
+      class="p-8 bg-white rounded-md w-full mx-auto mt-8 min-h-screen text-xs"
+      id="app"
+    ></section>
+
+    <script
+      src="/js/admin/quiz/view_results.js"
+      type="text/jsx"
+      async
+      defer
+    ></script>
+  </body>
+</html>

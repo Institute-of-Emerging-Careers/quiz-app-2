@@ -1138,17 +1138,24 @@ router.get(
 );
 
 router.get("/:quizId/results", checkAdminAuthenticated, async (req, res) => {
-  const final_response = await getQuizResults(req.params.quizId);
-
-  res.render("admin/view_detailed_results.ejs", {
+  res.render("admin/quiz/view_results.ejs", {
     user_type: req.user.type,
     user_id: req.user.user.id,
     quiz_id: req.params.quizId,
     myname: req.user.user.firstName,
-    data_obj: final_response,
-    moment: moment,
-    millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
+    env: process.env.NODE_ENV,
   });
+});
+
+router.get("/:quizId/results-data", checkAdminAuthenticated, (req, res) => {
+  getQuizResults(req.params.quizId)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
 });
 
 router.get("/:quiz_id/analysis", checkAdminAuthenticated, async (req, res) => {

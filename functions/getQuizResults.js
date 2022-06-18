@@ -105,6 +105,7 @@ const getQuizResults = (quiz_id) => {
             student_gender: assignment.Student.gender.toLowerCase(),
             sections: [],
             completed: false, //this tells if the student has completed all sections or not
+            started: false, //this tells if the student has started a section or not
             total_score: 0,
             maximum_total_score: 0,
             percentage_total: 0,
@@ -122,7 +123,7 @@ const getQuizResults = (quiz_id) => {
               duration: 0,
             });
           }
-
+          let started = false;
           if (assignment.Attempts.length > 0) {
             assignment.Attempts.forEach((attempt) => {
               if (
@@ -130,6 +131,7 @@ const getQuizResults = (quiz_id) => {
                   section_id_to_array_index_mapping[attempt.SectionId]
                 ] != undefined
               ) {
+                started = true;
                 const percentage_score = roundToTwoDecimalPlaces(
                   ((attempt.Score == null ? 0 : attempt.Score.score) /
                     quiz_sections[
@@ -159,6 +161,7 @@ const getQuizResults = (quiz_id) => {
                 data[data_prev_index].total_score += section_score;
               }
             });
+            data[data_prev_index].started = started;
             data[data_prev_index].percentage_total = roundToTwoDecimalPlaces(
               (data[data_prev_index].total_score / quiz_total_score) * 100
             );
@@ -276,6 +279,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
           student_email: assignment.Student.email,
           sections: [],
           completed: false, //this tells if the student has completed all sections or not
+          started: false, //this tells if the student has started a section or not
           total_score: 0,
           maximum_total_score: 0,
           percentage_total: 0,
@@ -288,7 +292,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
           analysis.gender_female++;
         else if (assignment.Student.gender.toLowerCase() == "other")
           analysis.gender_other++;
-
+        let started = false;
         if (assignment.Attempts.length > 0) {
           quiz_sections.forEach((section) => {
             let found = false;
@@ -300,6 +304,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
               // we push "Not Attempted Yet" to the data array. The resulting array has sections in the same order as the quiz_sections
               // array
               if (section.section_id == attempt.SectionId) {
+                started = true;
                 const section_score =
                   attempt.Score == null ? 0 : attempt.Score.score;
                 const percentage_score = roundToTwoDecimalPlaces(
@@ -340,6 +345,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
             assignment
           );
 
+          data[cur_index].started = started;
           if (all_sections_solved) {
             // this student has completed the assessment
             analysis.num_students_who_completed++;
