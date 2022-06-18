@@ -204,6 +204,7 @@ const StudentsList = () => {
               </span>
             </a>
           </div>
+          <p>Number of Students in table below: {filtered_students.length}</p>
           <table
             className="w-full text-left mx-auto overflow-auto"
             id="results_table"
