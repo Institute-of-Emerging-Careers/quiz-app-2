@@ -20,8 +20,15 @@ let expect = chai.expect;
 chai.use(chaiHttp);
 
 describe("Cron Jobs - Score Timed Out Attempts", () => {
-  beforeEach(() => {
+  before(() => {
     return sequelize.sync({ force: true });
+  });
+
+  beforeEach(async () => {
+    await Attempt.destroy({ where: {} });
+    await Quiz.destroy({ where: {} });
+    await Student.destroy({ where: {} });
+    await Section.destroy({ where: {} });
   });
   /*
    * Test the /GET route

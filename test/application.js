@@ -360,4 +360,61 @@ describe("Applications", () => {
       }
     );
   });
+
+  describe("changing password and cnic", () => {
+    it("it should change cnic correctly", async () => {
+      await Student.create({
+        firstName: "Test",
+        lastName: "Test",
+        email: "test@test.com",
+        cnic: "00000-0000000-0",
+        gender: "male",
+        password: await bcrypt.hash("test_password", 10),
+      });
+
+      chai
+        .request(server)
+        .post("/application/change-cnic")
+        .send({
+          email: "test@test.com",
+          gender: "male",
+          password: "test_password",
+          cnic: "11111-1111111-1",
+        })
+        .end(async (err, res) => {
+          const student = await Student.findOne({
+            where: { email: "test@test.com" },
+          });
+          const arr_to_test = [res.status, student.cnic];
+          expect(arr_to_test).to.eql([200, "11111-1111111-1"]);
+        });
+    });
+    it("it should change email correctly", async () => {
+      await Student.create({
+        firstName: "Test",
+        lastName: "Test",
+        email: "test@test.com",
+        cnic: "00000-0000000-0",
+        gender: "male",
+        password: await bcrypt.hash("test_password", 10),
+      });
+
+      chai
+        .request(server)
+        .post("/application/change-email")
+        .send({
+          email: "changed@changed.com",
+          gender: "male",
+          password: "test_password",
+          cnic: "00000-0000000-0",
+        })
+        .end(async (err, res) => {
+          const student = await Student.findOne({
+            where: { cnic: "00000-0000000-0" },
+          });
+          const arr_to_test = [res.status, student.email];
+          expect(arr_to_test).to.eql([200, "changed@changed.com"]);
+        });
+    });
+  });
 });
