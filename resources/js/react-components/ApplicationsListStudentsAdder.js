@@ -3,13 +3,94 @@ const ApplicationsListStudentsAdder = (props) => {
   const [applications, setApplications] = applications_object;
   const [filtered_applications, setFilteredApplications] = useState([]);
   const [show_modal, setShowModal] = modal_object;
-  const [filter, setFilter] = useState("all");
+  const [filters, setFilters] = useState([
+    {
+      type: "Filter by whether or not this quiz is assigned to this student",
+      selected: 0,
+      modes: [
+        {
+          text: "No filter",
+          field: ["Student", "already_added"],
+          expected_field_values: [false, true],
+        },
+        {
+          text: "Show only those who were assigned this quiz",
+          selected: false,
+          field: ["Student", "already_added"],
+          expected_field_values: [true],
+        },
+        {
+          text: "Show only not those who were not assigned this quiz",
+          selected: false,
+          field: ["Student", "already_added"],
+          expected_field_values: [false],
+        },
+      ],
+    },
+    {
+      type: "Filter by whether or not this student's application was auto-rejected",
+      selected: 0,
+      modes: [
+        {
+          text: "No filter",
+          selected: true,
+          field: ["rejection_email_sent"],
+          expected_field_values: [false, true],
+        },
+        {
+          text: "Show only those who were auto rejected",
+          selected: false,
+          field: ["rejection_email_sent"],
+          expected_field_values: [true],
+        },
+        {
+          text: "Show only not those who were not auto rejected",
+          selected: false,
+          field: ["rejection_email_sent"],
+          expected_field_values: [false],
+        },
+      ],
+    },
+    {
+      type: "Filter by whether or not this student was emailed about the assessment",
+      selected: 0,
+      modes: [
+        {
+          text: "No filter",
+          selected: true,
+          field: ["assessment_email_sent"],
+          expected_field_values: [false, true],
+        },
+        {
+          text: "Show only those who were emailed about assessment",
+          selected: false,
+          field: ["assessment_email_sent"],
+          expected_field_values: [true],
+        },
+        {
+          text: "Show only not those who were not emailed about assessment",
+          selected: false,
+          field: ["assessment_email_sent"],
+          expected_field_values: [false],
+        },
+      ],
+    },
+  ]);
   const student_id_to_array_index_map = useRef({});
   const [loading, setLoading] = useState(false);
   const [saved_success, setSavedSuccess] = useState(false);
   const assignmentButton = useRef(null);
   const setLoadAgain = props.setLoadAgain;
   const [show_email_composer, setShowEmailComposer] = useState(false);
+
+  const getValue = (obj, properties_array) => {
+    // if properties_array = ["Student","address"], then this funtion returns obj.Student.address
+    return properties_array.reduce(
+      (final_value, property) =>
+        final_value == null ? null : final_value[property],
+      obj
+    );
+  };
 
   useEffect(() => {
     student_id_to_array_index_map.current = {};
@@ -22,15 +103,22 @@ const ApplicationsListStudentsAdder = (props) => {
 
   useEffect(() => {
     setFilteredApplications(
-      applications.filter((application) =>
-        filter == "all"
-          ? true
-          : filter == "not-rejected"
-          ? !application.rejection_email_sent
-          : application.rejection_email_sent
-      )
+      applications.filter((application) => {
+        let show = true;
+        for (let i = 0; i < filters.length; i++) {
+          if (
+            filters[i].selected != 0 &&
+            filters[i].modes[filters[i].selected].expected_field_values.indexOf(
+              getValue(application, filters[i].modes[filters[i].selected].field)
+            ) == -1
+          ) {
+            show = false;
+          }
+        }
+        return show;
+      })
     );
-  }, [filter]);
+  }, [filters]);
 
   const assignQuizToSelectedStudents = () => {
     setLoading(true);
@@ -181,8 +269,36 @@ const ApplicationsListStudentsAdder = (props) => {
               auto-rejection but also assigned this quiz for some reason.
             </span>
           </p>
-          <label>Filter: </label>
-          <select
+          <label>Filters: </label>
+          <div className="flex gap-x-2">
+            {filters.map((filter, filter_index) => (
+              <div>
+                <label>{filter.type}</label>
+                <select
+                  value={filters[filter_index].selected}
+                  data-filter_index={filter_index}
+                  onChange={(e) => {
+                    setFilters((cur) => {
+                      let copy = cur.slice();
+                      copy[e.target.dataset.filter_index].selected = parseInt(
+                        e.target.value
+                      );
+                      console.log(copy);
+                      return copy;
+                    });
+                  }}
+                  className="p-2"
+                >
+                  {filter.modes.map((filter_mode, filter_mode_index) => [
+                    <option value={filter_mode_index}>
+                      {filter_mode.text}
+                    </option>,
+                  ])}
+                </select>
+              </div>
+            ))}
+          </div>
+          {/* <select
             value={filter}
             onChange={(e) => {
               setFilter(e.target.value);
@@ -190,9 +306,30 @@ const ApplicationsListStudentsAdder = (props) => {
             className="py-2 px-3"
           >
             <option value="all">Show all applicants</option>
-            <option value="not-rejected">Show all except those rejected</option>
-            <option value="rejected-only">Show all rejected applicants</option>
-          </select>
+            <option value="assigned-only">
+              Show only those who were assigned the quiz
+            </option>
+            <option value="not-assigned">
+              Show those who were <b>not</b> assigned the quiz
+            </option>
+            <option value="not-rejected">Show those not rejected</option>
+            <option value="rejected-only">Show those rejected</option>
+            <option value="emailed-only">
+              Show those emailed about assessment
+            </option>
+            <option value="not-emailed">
+              Show those not emailed about assessment
+            </option>
+            <option value="not-rejected-not-emailed">
+              Show those not rejected and not emailed about assessment
+            </option>
+            <option value="not-rejected-and-emailed">
+              Show those not rejected and emailed about assessment
+            </option>
+            <option value="not-rejected-and-assigned-and-emailed">
+              Show those not rejected, assigned quiz, and emailed about assessment
+            </option>
+          </select> */}
           <table className="w-full text-left text-sm">
             <thead>
               <tr>
