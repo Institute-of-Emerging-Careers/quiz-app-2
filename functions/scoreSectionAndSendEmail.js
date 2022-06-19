@@ -47,45 +47,45 @@ function scoreSection(
           })
         ).email;
 
-        const all_sections_solved = await allSectionsSolved(quizId, assignment);
+        // const all_sections_solved = await allSectionsSolved(quizId, assignment);
 
-        if (all_sections_solved) {
-          await assignment.update({ completed: true });
-        }
-        // check if student has solved all sections
-        if (send_email && all_sections_solved) {
-          await queueMail(email, `Assessment Completed`, {
-            heading: `All Sections Completed`,
-            inner_text: `Dear Student
-                <br><br>
-                This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
-                <br><br>
-                Thank you for showing your interest in becoming part of the program. 
-                <br><br>
-                Sincerely, 
-                IEC Admissions Team`,
-            button_announcer: "Visit out website to learn more about us",
-            button_text: "Visit",
-            button_link: "https://iec.org.pk",
-          });
-          console.log("Scoring mail sent");
-        } else if (send_email) {
-          await queueMail(email, `Section Solved`, {
-            heading: `Section "${section.title}" Solved`,
-            inner_text: `Dear Student
-                <br><br>
-                This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
-                <br><br>
-                Thank you for showing your interest in becoming part of the program. 
-                <br><br>
-                Sincerely, 
-                IEC Admissions Team`,
-            button_announcer: "Solve the remaining sections on the portal:",
-            button_text: "Student Portal",
-            button_link: "https://apply.iec.org.pk/student/login",
-          });
-          console.log("Scoring mail sent");
-        }
+        // if (all_sections_solved) {
+        //   await assignment.update({ completed: true });
+        // }
+        // // check if student has solved all sections
+        // if (send_email && all_sections_solved) {
+        //   await queueMail(email, `Assessment Completed`, {
+        //     heading: `All Sections Completed`,
+        //     inner_text: `Dear Student
+        //         <br><br>
+        //         This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
+        //         <br><br>
+        //         Thank you for showing your interest in becoming part of the program. 
+        //         <br><br>
+        //         Sincerely, 
+        //         IEC Admissions Team`,
+        //     button_announcer: "Visit out website to learn more about us",
+        //     button_text: "Visit",
+        //     button_link: "https://iec.org.pk",
+        //   });
+        //   console.log("Scoring mail sent");
+        // } else if (send_email) {
+        //   await queueMail(email, `Section Solved`, {
+        //     heading: `Section "${section.title}" Solved`,
+        //     inner_text: `Dear Student
+        //         <br><br>
+        //         This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
+        //         <br><br>
+        //         Thank you for showing your interest in becoming part of the program. 
+        //         <br><br>
+        //         Sincerely, 
+        //         IEC Admissions Team`,
+        //     button_announcer: "Solve the remaining sections on the portal:",
+        //     button_text: "Student Portal",
+        //     button_link: "https://apply.iec.org.pk/student/login",
+        //   });
+        //   console.log("Scoring mail sent");
+        // }
         resolve();
       } else {
         reject();

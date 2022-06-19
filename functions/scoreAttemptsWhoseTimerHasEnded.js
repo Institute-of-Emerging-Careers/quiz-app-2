@@ -8,6 +8,7 @@ function filterTimerEndedAttempts(attempts) {
 }
 
 async function scoreAttemptsWhoseTimerHasEnded() {
+  console.log("scoreAttemptsWhoseTimerHasEnded")
   let attempts;
   try {
     attempts = await Attempt.findAll({

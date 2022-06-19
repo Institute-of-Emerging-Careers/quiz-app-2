@@ -43,14 +43,14 @@ const resetStudentAssignment = require("./functions/resetStudentAssignment.js");
 const { file_upload, csv_upload } = require("./multer-config");
 
 // starting cron-jobs
-const {
-  assessment_reminder_mailer_task,
-  score_past_deadline_attempts,
-} = require("./functions/cron-ping");
-
 if (process.env.NODE_ENV != "test") {
-  assessment_reminder_mailer_task.start();
-  score_past_deadline_attempts.start();
+  const {
+    assessment_reminder_mailer_task,
+    score_past_deadline_attempts,
+  } = require("./functions/cron-ping");
+
+  assessment_reminder_mailer_task.stop();
+  score_past_deadline_attempts.stop();
 }
 
 // dotenv

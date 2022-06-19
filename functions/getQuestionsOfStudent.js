@@ -14,7 +14,6 @@ async function getQuestionsOfStudent(sectionId, studentId) {
     if (answers.length==0) {return new Promise(resolve=>{resolve([])})}
     let selected_question_ids = []
     selected_question_ids = getQuestionIdsFromArrayOfAnswers(answers)
-    console.log(selected_question_ids)
     return getQuestionObjectsFromArrayOfQuestionIds(selected_question_ids)
 }
 
