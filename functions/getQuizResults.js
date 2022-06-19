@@ -55,7 +55,7 @@ const getQuizResults = (quiz_id) => {
     let quiz_sections = [];
     let section_id_to_array_index_mapping = {};
     let quiz_total_score = 0;
-    await new Promise((resolve) => {
+    await new Promise((minor_resolve) => {
       let count = 0;
       quiz.Sections.forEach(async (section, index) => {
         // get the maximum achievable (total) score of a section
@@ -77,7 +77,7 @@ const getQuizResults = (quiz_id) => {
         last_section_index--;
         section_id_to_array_index_mapping[section.id] = last_section_index;
         count++;
-        if (count == quiz.Sections.length) resolve();
+        if (count == quiz.Sections.length) minor_resolve();
       });
     });
 

@@ -24,7 +24,8 @@ email_bull_queue.process(function (job, done) {
 
 initializeDatabase();
 
-// Redis
+// Redis configuration
+
 const client = createClient();
 client.on("error", (err) => console.log("Redis Client Error", err));
 client

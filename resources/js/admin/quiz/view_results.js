@@ -33,6 +33,7 @@ const StudentsList = () => {
     useState(false);
   const [filter, setFilter] = useState("all");
   const [filtered_students, setFilteredStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(`/quiz/${quiz_id}/results-data`)
@@ -44,6 +45,7 @@ const StudentsList = () => {
               setStudents(obj.data);
               setSections(obj.quiz_sections);
               setQuizTotalScore(obj.quiz_total_score);
+              setLoading(false);
             })
             .catch((err) => {
               console.log(err);
@@ -133,8 +135,10 @@ const StudentsList = () => {
 
   return (
     <div>
-      {students.length == 0 ? (
+      {loading ? (
         <i class="fas fa-spinner animate-spin text-3xl"></i>
+      ) : filtered_students.length == 0 ? (
+        <p>No students to show.</p>
       ) : (
         <div>
           <div className="mb-2 text-md" id="filters">
