@@ -1,6 +1,6 @@
 <section class="md:h-screen bg-iec-blue text-white text-xs text-center md:text-left md:text-base ml-0 static md:fixed w-full md:w-1/8 mt-16 flex flex-col" id="side-menu">
     <a class="cursor-pointer bg-gray-300 py-2 text-iec-blue w-full rounded-sm md:hidden" onClick="document.querySelector('#menu-items').classList.toggle('hidden');document.querySelector('#menu-items').classList.toggle('flex');"><i class="fas fa-angle-down"></i> Toggle Menu</a>
-    <div class="flex-col hidden" id="menu-items">
+    <div class="flex-col sm:hidden md:flex" id="menu-items">
     <% let phases = [{name: "Applications", link: "/admin/application/"},{name: "Quizzes", link: "/admin/"},{name: "Orientation", link: "/admin/orientation/"},{name: "Interviews", link: "/admin/interview/"},{name: "Onboarding", link: "/admin/onboarding/"}, {name: "Email Sender", link: "/mail/compose"}] 
     
     
