@@ -49,8 +49,8 @@ if (process.env.NODE_ENV != "test") {
     score_past_deadline_attempts,
   } = require("./functions/cron-ping");
 
-  assessment_reminder_mailer_task.stop();
-  score_past_deadline_attempts.stop();
+  assessment_reminder_mailer_task.start();
+  score_past_deadline_attempts.start();
 }
 
 // dotenv
