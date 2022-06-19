@@ -425,7 +425,7 @@ const ApplicationsList = (props) => {
   };
 
   return (
-    <div>
+    <div className="overflow-auto">
       <h2 className="text-base text-center mb-4">
         <b>List of Applications in this Round</b>
       </h2>

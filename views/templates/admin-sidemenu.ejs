@@ -1,17 +1,22 @@
-<div class="cursor-pointer">
-  <% let phases = [{name: "Applications", link: "/admin/application/"},{name: "Quizzes", link: "/admin/"},{name: "Orientation", link: "/admin/orientation/"},{name: "Interviews", link: "/admin/interview/"},{name: "Onboarding", link: "/admin/onboarding/"}, {name: "Email Sender", link: "/mail/compose"}] 
-  
-  phases.forEach(phase=>{
-    if (phase.link!=current_url) {
+<section class="md:h-screen bg-iec-blue text-white text-xs text-center md:text-left md:text-base ml-0 static md:fixed w-full md:w-1/8 mt-16 flex flex-col" id="side-menu">
+    <a class="cursor-pointer bg-gray-300 py-2 text-iec-blue w-full rounded-sm md:hidden" onClick="document.querySelector('#menu-items').classList.toggle('hidden');document.querySelector('#menu-items').classList.toggle('flex');"><i class="fas fa-angle-down"></i> Toggle Menu</a>
+    <div class="flex-col hidden" id="menu-items">
+    <% let phases = [{name: "Applications", link: "/admin/application/"},{name: "Quizzes", link: "/admin/"},{name: "Orientation", link: "/admin/orientation/"},{name: "Interviews", link: "/admin/interview/"},{name: "Onboarding", link: "/admin/onboarding/"}, {name: "Email Sender", link: "/mail/compose"}] 
+    
+    
+    phases.forEach(phase=>{
+      if (phase.link!=current_url) {
+      %>
+      <a class="cursor-pointer px-4 py-2 md:py-4 bg-iec-blue w-full hover:bg-iec-blue-hover items-center" href="<%=phase.link%>"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5"><%=phase.name%></span>
+    </span></a>
+    <%} else {%>
+      <a class="cursor-pointer px-4 py-2 md:py-4 bg-gray-200 text-gray-900 items-center" href="<%=phase.link%>"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5"><%=phase.name%></span>
+    </span></a>
+
+    <%}
+
+  })
     %>
-    <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="<%=phase.link%>"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5"><%=phase.name%></span>
-  </span></a>
-  <%} else {%>
-    <a class="px-4 py-2 md:py-4 bg-gray-200 text-gray-900 grid grid-cols-6 items-center" href="<%=phase.link%>"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5"><%=phase.name%></span>
-  </span></a>
+    </div>
+</section>
 
-  <%}
-
-})
-  %>
-</div>

@@ -1069,10 +1069,6 @@ video {
   width: 0.25rem;
 }
 
-.w-12 {
-  width: 3rem;
-}
-
 .w-16 {
   width: 4rem;
 }
@@ -3242,6 +3238,10 @@ video {
     display: block;
   }
 
+  .md\:flex {
+    display: flex;
+  }
+
   .md\:hidden {
     display: none;
   }
@@ -3282,10 +3282,6 @@ video {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .md\:flex-row {
-    flex-direction: row;
-  }
-
   .md\:justify-self-start {
     justify-self: start;
   }
@@ -3296,6 +3292,10 @@ video {
 
   .md\:bg-no-repeat {
     background-repeat: no-repeat;
+  }
+
+  .md\:p-10 {
+    padding: 2.5rem;
   }
 
   .md\:px-32 {

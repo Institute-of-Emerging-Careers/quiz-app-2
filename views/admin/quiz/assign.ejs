@@ -12,15 +12,10 @@
     <%- include('../../templates/header-7-by-8.ejs') %>
 
     <div>
-      <section
-        class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 fixed w-2/8 md:w-1/8 mt-16"
-        id="side-menu"
-      >
-        <%- include("../../templates/admin-sidemenu.ejs") %>
-      </section>
+      <%- include("../../templates/admin-sidemenu.ejs") %>
 
-      <section class="p-10 w-6/8 md:w-7/8 float-right mr-0" id="main-section">
-        <div class="mt-16">
+      <section class="p-10 w-full md:w-7/8 float-right mr-0" id="main-section">
+        <div class="md:mt-16">
           <h1 class="text-2xl">Welcome <%= myname %></h1>
         </div>
         <input type="hidden" id="quiz-id-field" value="<%= quiz_id %>" />

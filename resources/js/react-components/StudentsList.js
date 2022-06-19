@@ -3,7 +3,7 @@ const StudentsList = (props) => {
   const fields = props.fields;
 
   return (
-    <div>
+    <div className="overflow-auto">
       <h2 className="text-base text-center mb-4">
         <b>{props.title}</b>
       </h2>
