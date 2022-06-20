@@ -404,11 +404,19 @@ describe("testing scripts", () => {
     const test_reference_obj = {
       old_assignment_completed_status: true,
       final_assignment_completed_status: false,
+      attempt1_exists: null,
+      attempt2_exists: null,
+      answers_exist: [null, null, null],
+      scores_exist: [null, null],
     };
 
     let test_obj = {
       old_assignment_completed_status: null,
       final_assignment_completed_status: null,
+      attempt1_exists: 1,
+      attempt2_exists: 1,
+      answers_exist: [1, 1, 1],
+      scores_exist: [1, 1],
     };
 
     const quiz = await Quiz.create({ title: "Test Quiz" });
@@ -506,11 +514,11 @@ describe("testing scripts", () => {
       QuizId: quiz.id,
     });
 
-    const attempt1 = await assignment.createAttempt({
+    let attempt1 = await assignment.createAttempt({
       SectionId: section.id,
       statusText: "Completed",
     });
-    const attempt2 = await assignment.createAttempt({
+    let attempt2 = await assignment.createAttempt({
       SectionId: section2.id,
       statusText: "Completed",
     });
@@ -531,6 +539,10 @@ describe("testing scripts", () => {
     await scoreSection(section.id, student.id, assignment, false);
     await scoreSection(section2.id, student.id, assignment, false);
 
+    const scores = (await Score.findAll({ where: {} })).map(
+      (score) => score.id
+    );
+
     assignment = await Assignment.findOne({ where: { id: assignment.id } });
     test_obj.old_assignment_completed_status = assignment.completed;
 
@@ -538,6 +550,25 @@ describe("testing scripts", () => {
 
     assignment = await Assignment.findOne({ where: { id: assignment.id } });
     test_obj.final_assignment_completed_status = assignment.completed;
+
+    attempt1 = await Attempt.findOne({ where: { id: attempt1.id } });
+    attempt2 = await Attempt.findOne({ where: { id: attempt2.id } });
+    test_obj.attempt1_exists = attempt1;
+    test_obj.attempt2_exists = attempt2;
+
+    test_obj.answers_exist = [
+      await Answer.findOne({ where: { id: answer1.id } }),
+      await Answer.findOne({ where: { id: answer2.id } }),
+      await Answer.findOne({ where: { id: answer3.id } }),
+    ];
+
+    test_obj.scores_exist = [
+      ...scores.map(async (score_id) =>
+        Score.findOne({ where: { id: score_id } })
+      ),
+    ];
+
+    test_obj.scores_exist = await Promise.all(test_obj.scores_exist);
 
     expect(test_obj).to.eql(test_reference_obj);
   });
