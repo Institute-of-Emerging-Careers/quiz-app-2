@@ -69,15 +69,21 @@
     </div>
     <%- include('../templates/student-sidemenu.ejs') %>
     <div class="flex items-center content-center align-middle">
-      <section class="p-2 w-full md:w-7/8 mx-auto mr-0" id="main-section">
+      <section
+        class="py-2 px-1 w-full md:w-7/8 mx-auto mr-0 md:mt-16"
+        id="main-section"
+      >
         <div id="assessments-box" class="bg-white w-7/8 rounded-lg m-auto">
           <div
             id="assessments-title-box"
-            class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg"
+            class="bg-iec-blue text-white text-lg md:text-xl font-light px-4 py-3 rounded-t-lg"
           >
             My Assessments
           </div>
-          <div id="assessments-box-content" class="px-10 py-8 overflow-x-auto">
+          <div
+            id="assessments-box-content"
+            class="px-2 md:px-10 py-8 overflow-x-auto md:text-base text-xs"
+          >
             <% if (query.success=="true") {%>
             <p
               class="bg-green-500 py-2 px-2 w-full text-white"

@@ -2405,6 +2405,11 @@ video {
   padding: 2.5rem;
 }
 
+.px-1 {
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+}
+
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -3246,10 +3251,6 @@ video {
     display: block;
   }
 
-  .md\:flex {
-    display: flex;
-  }
-
   .md\:hidden {
     display: none;
   }
@@ -3310,6 +3311,11 @@ video {
     padding: 2.5rem;
   }
 
+  .md\:px-10 {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+
   .md\:px-32 {
     padding-left: 8rem;
     padding-right: 8rem;
@@ -3332,6 +3338,16 @@ video {
   .md\:text-base {
     font-size: 1rem;
     line-height: 1.5rem;
+  }
+
+  .md\:text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+
+  .md\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
   }
 }
 
