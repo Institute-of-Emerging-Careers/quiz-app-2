@@ -6,7 +6,7 @@ const scoreSection = require("./scoreSectionAndSendEmail");
 const allSectionsSolved = require("./allSectionsSolved");
 
 async function scoreAssignmentsWhoseDeadlineHasPassed() {
-  console.log("scoreAssignmentsWhoseDeadlineHasPassed")
+  console.log("scoreAssignmentsWhoseDeadlineHasPassed");
   try {
     return new Promise(async (resolve) => {
       const assignments = await Assignment.findAll({
