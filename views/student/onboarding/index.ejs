@@ -18,15 +18,11 @@
     </style>
   </head>
   <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
-    <%- include('../../templates/header-7-by-8.ejs') %>
-
+    <%- include('../../templates/header-7-by-8.ejs') %> <%-
+    include('../../templates/student-sidemenu.ejs') %>
     <div class="flex items-center content-center align-middle">
-      <%- include('../../templates/student-sidemenu.ejs') %>
-      <section class="p-10 w-6/8 md:w-7/8 mx-auto mr-0" id="main-section">
-        <div
-          id="assessments-box"
-          class="bg-white w-7/8 rounded-lg m-auto mt-16"
-        >
+      <section class="p-2 w-full md:w-7/8 mx-auto mr-0" id="main-section">
+        <div id="assessments-box" class="bg-white w-7/8 rounded-lg m-auto">
           <div
             id="assessments-title-box"
             class="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg"
