@@ -35,6 +35,7 @@ const StudentsList = () => {
   const [min_score, setMinScore] = useState(0);
   const [filtered_students, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reload_results, setReloadResults] = useState(false);
 
   useEffect(() => {
     fetch(`/quiz/${quiz_id}/results-data`)
@@ -60,7 +61,7 @@ const StudentsList = () => {
         console.log(err);
         alert("Something went wrong. Contact IT Team.");
       });
-  }, []);
+  }, [reload_results]);
 
   useEffect(() => {
     setFilteredStudents(students);
@@ -134,6 +135,28 @@ const StudentsList = () => {
       link.click();
       document.body.removeChild(link);
     }
+  }
+
+  function resetOneSection(student_id, quiz_id) {
+    let prompt_text =
+      "Which of the following sections do you want to delete?\n";
+    prompt_text += sections.reduce((final, cur, index) => {
+      return `${final}Press ${index} to delete "${cur.section_title}"\n`;
+    }, "");
+    const choice = prompt(prompt_text);
+    fetch(
+      `/quiz/reset-section-attempt/${student_id}/${sections[choice].section_id}`
+    )
+      .then((res) => {
+        if (res.ok) {
+          alert("Section reset");
+          setReloadResults((cur) => !cur);
+        } else alert("Error. Could not reset section.");
+      })
+      .catch((err) => {
+        alert("Error. Could not reset section.");
+        console.log(err);
+      });
   }
 
   return (
@@ -307,6 +330,21 @@ const StudentsList = () => {
                       target="_blank"
                     >
                       Reset Assignment
+                    </a>
+                    {" | "}
+                    <a
+                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                      data-student_id={student.student_id}
+                      data-quiz_id={quiz_id}
+                      onClick={(e) => {
+                        resetOneSection(
+                          e.target.dataset.student_id,
+                          e.target.dataset.quiz_id
+                        );
+                      }}
+                      target="_blank"
+                    >
+                      Reset One Section
                     </a>
                   </td>
                 </tr>

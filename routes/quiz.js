@@ -20,6 +20,7 @@ const {
   Assignment,
   Answer,
   Attempt,
+  Score,
 } = require("../db/models/user");
 const { saveNewQuiz } = require("../functions/saveNewQuiz.js");
 const { saveExistingQuiz } = require("../functions/saveExistingQuiz.js");
@@ -1122,6 +1123,50 @@ router.post(
       } else res.json({ success: false });
     } catch (err) {
       res.json({ success: false });
+      console.log(err);
+    }
+  }
+);
+
+router.get(
+  "/reset-section-attempt/:student_id/:section_id",
+  async (req, res) => {
+    try {
+      const section = await Section.findOne({
+        where: { id: req.params.section_id },
+        include: [Quiz, Question],
+      });
+      const assignment = await Assignment.findOne({
+        where: { StudentId: req.params.student_id, QuizId: section.Quiz.id },
+      });
+
+      const attempt = await Attempt.findOne({
+        where: {
+          AssignmentId: assignment.id,
+          SectionId: req.params.section_id,
+        },
+        include: [Score],
+      });
+
+      if (attempt != null) {
+        if (attempt.hasOwnProperty("Score")) await attempt.Score.destroy();
+        await attempt.destroy();
+      }
+      if (assignment.completed) await assignment.update({ completed: false });
+      await Promise.all(
+        section.Questions.map((question) =>
+          Answer.destroy({
+            where: {
+              QuestionId: question.id,
+              StudentId: req.params.student_id,
+            },
+          })
+        )
+      );
+
+      res.sendStatus(200);
+    } catch (err) {
+      res.sendStatus(500);
       console.log(err);
     }
   }

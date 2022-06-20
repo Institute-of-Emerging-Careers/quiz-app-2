@@ -572,4 +572,147 @@ describe("testing scripts", () => {
 
     expect(test_obj).to.eql(test_reference_obj);
   });
+
+  it("testing resetting one section attempt - it should delete all answers, and scores", async () => {
+    const quiz = await Quiz.create({ title: "Test Quiz" });
+    const student = await Student.create({
+      firstName: "Test",
+      lastName: "test",
+      email: "test@test.com",
+      password: "xxx",
+      cnic: "35201-3520462-3",
+      gender: "male",
+      hasUnsubscribedFromEmails: false,
+    });
+    // Create two sections
+    const section = await sequelize.models.Section.create({
+      sectionOrder: 0,
+      title: "Section 1",
+      poolCount: 2,
+      time: 5,
+      QuizId: quiz.id,
+    });
+    const section2 = await sequelize.models.Section.create({
+      sectionOrder: 1,
+      title: "Section 2",
+      poolCount: 1,
+      time: 0,
+      QuizId: quiz.id,
+    });
+
+    // Create two questions for Section 1
+    const q1 = await sequelize.models.Question.create({
+      questionOrder: 0,
+      statement: "This is the first question.",
+      type: "MCQ-S",
+      marks: 1.0,
+      SectionId: section.id,
+    });
+    const q2 = await sequelize.models.Question.create({
+      questionOrder: 1,
+      statement: "This is the second question.",
+      type: "MCQ-M",
+      marks: 2.5,
+      SectionId: section.id,
+    });
+
+    // Create a question for Section 2
+    const q3 = await sequelize.models.Question.create({
+      questionOrder: 0,
+      statement: "This is the first question.",
+      type: "MCQ-S",
+      marks: 1.25,
+      SectionId: section2.id,
+    });
+
+    // Create four options (two per question of section 1 and section 2)
+    const opt1 = await sequelize.models.Option.create({
+      optionOrder: 0,
+      statement: "option 1",
+      correct: true,
+      QuestionId: q1.id,
+    });
+    const opt2 = await sequelize.models.Option.create({
+      optionOrder: 1,
+      statement: "option 2",
+      correct: false,
+      QuestionId: q1.id,
+    });
+    const opt3 = await sequelize.models.Option.create({
+      optionOrder: 0,
+      statement: "multiple select option 1",
+      correct: true,
+      QuestionId: q2.id,
+    });
+    const opt4 = await sequelize.models.Option.create({
+      optionOrder: 1,
+      statement: "multiple select option 2",
+      correct: true,
+      QuestionId: q2.id,
+    });
+
+    // Create two options for q3 of section 2
+    const opt5 = await sequelize.models.Option.create({
+      optionOrder: 0,
+      statement: "this is an option",
+      correct: true,
+      QuestionId: q3.id,
+    });
+    const opt6 = await sequelize.models.Option.create({
+      optionOrder: 1,
+      statement: "this is another option",
+      correct: false,
+      QuestionId: q3.id,
+    });
+    let assignment = await Assignment.create({
+      StudentId: student.id,
+      QuizId: quiz.id,
+    });
+
+    const answer1 = await q1.createAnswer({
+      StudentId: student.id,
+      OptionId: opt1.id,
+    });
+    const answer2 = await q2.createAnswer({
+      StudentId: student.id,
+      OptionId: opt3.id,
+    });
+    const answer3 = await q3.createAnswer({
+      StudentId: student.id,
+      OptionId: opt5.id,
+    });
+
+    let attempt1 = await assignment.createAttempt({
+      SectionId: section.id,
+      statusText: "Completed",
+    });
+    let attempt2 = await assignment.createAttempt({
+      SectionId: section2.id,
+      statusText: "Completed",
+    });
+
+    await scoreSection(section.id, student.id, assignment, false);
+    await scoreSection(section2.id, student.id, assignment, false);
+
+    const attempt1_id = attempt1.id;
+    chai
+      .request(server)
+      .get(`/quiz/reset-section-attempt/${student.id}/${section.id}`)
+      .end(async (err, res) => {
+        assignment = await Assignment.findOne({ where: { id: assignment.id } });
+        attempt1 = await Attempt.findOne({ where: { id: attempt1.id } });
+        attempt2 = await Attempt.findOne({ where: { id: attempt2.id } });
+        const score = await Score.findOne({
+          where: { AttemptId: attempt1_id },
+        });
+        let test_obj = [
+          res.ok,
+          assignment.completed,
+          attempt1,
+          attempt2.statusText,
+          score,
+        ];
+        expect(test_obj).to.eql([true, false, null, "Completed", null]);
+      });
+  });
 });
