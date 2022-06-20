@@ -39,6 +39,13 @@ function scoreSection(
         }
         await updateScore(section_id, assignment.id, score);
         await setSectionStatusToComplete(assignment.id, section_id);
+
+        const all_sections_solved = await allSectionsSolved(quizId, assignment);
+
+        if (all_sections_solved) {
+          await assignment.update({ completed: true });
+        }
+
         // sending completion email to student
         // const email = (
         //   await Student.findOne({

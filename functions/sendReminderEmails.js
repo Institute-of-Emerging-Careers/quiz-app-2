@@ -11,6 +11,7 @@ const {
 const allSectionsSolved = require("./allSectionsSolved");
 const { queueMail } = require("../bull");
 const sequelize = require("sequelize");
+const { Op } = require("sequelize");
 async function sendReminderEmails() {
   const quizzes = await Quiz.findAll({
     where: {
@@ -25,10 +26,15 @@ async function sendReminderEmails() {
             attributes: ["email"],
           },
         ],
-        where: sequelize.literal(
-          "TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (12*60*60)"
-          //i.e. if it has been more than 12 hours since last reminder email
-        ),
+        where: {
+          [Op.and]: [
+            sequelize.literal(
+              "TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (12*60*60)"
+            ),
+            { completed: false },
+          ],
+        },
+        //i.e. if it has been more than 12 hours since last reminder email
       },
     ],
   });
