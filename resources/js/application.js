@@ -69,6 +69,7 @@ function handleForm(e) {
         console.log(response);
         $(`#${response.field}`).addClass("is-invalid").focus();
         $(`#${response.field}-error-message`).text(response.message);
+        $("#application-form").addClass("was-validated");
       });
     } else if (raw_response.status == 403) {
       alert(
