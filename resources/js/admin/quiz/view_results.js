@@ -32,6 +32,7 @@ const StudentsList = () => {
   const [show_student_personal_details, setShowStudentPersonalDetails] =
     useState(false);
   const [filter, setFilter] = useState("all");
+  const [min_score, setMinScore] = useState(0);
   const [filtered_students, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -68,7 +69,9 @@ const StudentsList = () => {
   useEffect(() => {
     setFilteredStudents(
       students.filter((student) =>
-        filter == "all"
+        student.percentage_total < min_score
+          ? false
+          : filter == "all"
           ? true
           : filter == "completed-only" && student.completed
           ? true
@@ -85,7 +88,7 @@ const StudentsList = () => {
           : false
       )
     );
-  }, [filter]);
+  }, [filter, min_score]);
 
   function download_table_as_csv(table_id, separator = ",") {
     // Select rows from table_id
@@ -168,6 +171,19 @@ const StudentsList = () => {
                 assessment
               </option>
             </select>
+
+            <label className="ml-2">Minimum Percentage Score Filter: </label>
+            <input
+              type="number"
+              value={min_score}
+              min="0"
+              max="100"
+              step="1"
+              onChange={(e) => {
+                setMinScore(e.target.value);
+              }}
+              className="bg-gray-100 px-4 py-2"
+            ></input>
           </div>
           <div className="mb-2 text-md flex w-full justify-between">
             <div>
