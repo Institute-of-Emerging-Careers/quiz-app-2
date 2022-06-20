@@ -7,7 +7,6 @@ async function allSectionsSolved(quizId, assignment) {
       resolve(true);
     });
   } else {
-    console.log("traversing sections");
     const sections = await Section.findAll({ where: { QuizId: quizId } });
     let all_solved = true;
     let count_sections = 0;

@@ -278,7 +278,7 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
           student_cnic: assignment.Student.cnic,
           student_email: assignment.Student.email,
           sections: [],
-          completed: false, //this tells if the student has completed all sections or not
+          completed: assignment.completed, //this tells if the student has completed all sections or not
           started: false, //this tells if the student has started a section or not
           total_score: 0,
           maximum_total_score: 0,
@@ -346,20 +346,19 @@ const getQuizResultsWithAnalysis = (quiz_id) => {
           );
 
           data[cur_index].started = started;
+          const cur_student_percentage = data[cur_index].percentage_total;
           if (all_sections_solved) {
             // this student has completed the assessment
             analysis.num_students_who_completed++;
+            const percentage_range_index =
+              (cur_student_percentage - (cur_student_percentage % 10)) / 10;
+            analysis.percentage_ranges[
+              percentage_range_index == 0 ? 0 : percentage_range_index - 1
+            ]++;
             data[cur_index].completed = true;
           } else {
             analysis.num_students_who_started_but_did_not_complete++;
           }
-          const cur_student_percentage = data[cur_index].percentage_total;
-
-          const percentage_range_index =
-            (cur_student_percentage - (cur_student_percentage % 10)) / 10;
-          analysis.percentage_ranges[
-            percentage_range_index == 0 ? 0 : percentage_range_index - 1
-          ]++;
         }
         i++;
         if (i == n) resolve();

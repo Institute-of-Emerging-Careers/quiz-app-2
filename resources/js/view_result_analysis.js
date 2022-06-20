@@ -33,7 +33,7 @@ const percentage_ranges_chart = new Chart(
       plugins: {
         title: {
           display: true,
-          text: "Percentage Scores",
+          text: "Percentage Scores of Students who Completed all Sections",
         },
       },
       scales: {
