@@ -60,7 +60,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
       student == null
     ) {
       // sending email
-      console.log("Sending email to ",recepient)
+      console.log("Sending email to ", recepient, "about '", subject, "'");
       const html = await ejs.renderFile(
         __dirname + "/../views/templates/mail-template-1.ejs",
         ejs_obj
