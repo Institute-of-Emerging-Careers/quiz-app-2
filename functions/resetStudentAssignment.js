@@ -6,6 +6,8 @@ async function deleteAllAttempts(student_id, quiz_id, t) {
     where: { QuizId: quiz_id, StudentId: student_id },
     attributes: ["id"],
   });
+
+  await assignment.update({ completed: false });
   // find all sections' attempts
   const attempts = await Attempt.findAll({
     where: { AssignmentId: assignment.id },

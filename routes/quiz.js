@@ -50,6 +50,7 @@ const allSectionsSolved = require("../functions/allSectionsSolved.js");
 const { queueMail } = require("../bull");
 const { Application } = require("../db/models/application");
 const { Op } = require("sequelize");
+const emailStudentOnSectionCompletion = require("../functions/emailStudentOnSectionCompletion");
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
@@ -434,7 +435,7 @@ router.get(
     const assignment = await getAssignment(
       req.user.user.id,
       req.params.quizId,
-      [Quiz]
+      [Quiz, Student]
     );
     // checking if 30 days have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date();
@@ -443,11 +444,17 @@ router.get(
 
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
       await scoreSection(req.params.sectionId, req.user.user.id, null, true);
+      await emailStudentOnSectionCompletion(
+        req.params.sectionId,
+        assignment.Student.email,
+        req.params.quizId,
+        assignment
+      );
 
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
         error_message:
-          "You had 72 hours to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
+          "You had 30 days to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
         action_link: "/student",
         action_link_text: "Click here to go to student home page.",
       });
@@ -481,6 +488,12 @@ router.get(
               req.user.user.id,
               null,
               true
+            );
+            await emailStudentOnSectionCompletion(
+              req.params.sectionId,
+              assignment.Student.email,
+              req.params.quizId,
+              assignment
             );
             res.render("templates/error.ejs", {
               additional_info: "Time Limit Over :(",

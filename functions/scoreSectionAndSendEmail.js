@@ -40,12 +40,12 @@ function scoreSection(
         await updateScore(section_id, assignment.id, score);
         await setSectionStatusToComplete(assignment.id, section_id);
         // sending completion email to student
-        const email = (
-          await Student.findOne({
-            where: { id: student_id },
-            attributes: ["email"],
-          })
-        ).email;
+        // const email = (
+        //   await Student.findOne({
+        //     where: { id: student_id },
+        //     attributes: ["email"],
+        //   })
+        // ).email;
 
         // const all_sections_solved = await allSectionsSolved(quizId, assignment);
 
@@ -60,9 +60,9 @@ function scoreSection(
         //         <br><br>
         //         This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
         //         <br><br>
-        //         Thank you for showing your interest in becoming part of the program. 
+        //         Thank you for showing your interest in becoming part of the program.
         //         <br><br>
-        //         Sincerely, 
+        //         Sincerely,
         //         IEC Admissions Team`,
         //     button_announcer: "Visit out website to learn more about us",
         //     button_text: "Visit",
@@ -76,9 +76,9 @@ function scoreSection(
         //         <br><br>
         //         This email confirms that you have successfully solved Section "${section.title}" of the IEC Assessment. Please solve the remaining sections as well.
         //         <br><br>
-        //         Thank you for showing your interest in becoming part of the program. 
+        //         Thank you for showing your interest in becoming part of the program.
         //         <br><br>
-        //         Sincerely, 
+        //         Sincerely,
         //         IEC Admissions Team`,
         //     button_announcer: "Solve the remaining sections on the portal:",
         //     button_text: "Student Portal",
