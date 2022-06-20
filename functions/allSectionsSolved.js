@@ -3,7 +3,6 @@ const { Section } = require("../db/models/quizmodel");
 
 async function allSectionsSolved(quizId, assignment) {
   if (assignment.completed) {
-    console.log("assignment.completed = true");
     return new Promise((resolve) => {
       resolve(true);
     });
@@ -19,7 +18,6 @@ async function allSectionsSolved(quizId, assignment) {
         });
         if (attempt == null || attempt.statusText != "Completed") {
           all_solved = false;
-          console.log("found an empty section: ", attempt);
         }
         count_sections++;
         if (count_sections == sections.length) resolve(all_solved);
