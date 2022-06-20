@@ -25,6 +25,7 @@ const {
   assessment_reminder_mailer_task,
   score_past_deadline_attempts,
 } = require("../functions/cron-ping");
+const moment = require("moment");
 
 assessment_reminder_mailer_task.start();
 score_past_deadline_attempts.start();
@@ -292,6 +293,7 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
         StudentId: req.user.user.id,
       },
       include: { model: Quiz, required: true, include: { model: Section } },
+      order: [["id", "desc"]],
     });
 
     let count = 0;
@@ -303,6 +305,7 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
             quiz_id: assignments[i].Quiz.id,
             num_sections: num_sections,
             quiz_title: assignments[i].Quiz.title,
+            createdAt: moment(assignments[i].createdAt).format("Do MMMM, YYYY"),
           });
           const cur_index = result.length - 1;
 

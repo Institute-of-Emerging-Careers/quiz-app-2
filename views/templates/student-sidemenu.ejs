@@ -1,12 +1,13 @@
-<section class="h-screen bg-iec-blue text-white text-xs md:text-base ml-0 mt-16 fixed w-2/8 md:w-1/8 top-0" id="side-menu">        
-    <div class="cursor-pointer">
-      <a class="px-4 py-2 md:py-4 border-t border-white bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessment</span>
+<section class="md:h-screen bg-iec-blue text-white text-xs text-center md:text-left md:text-base ml-0 static md:fixed w-full md:w-1/8 mt-16 flex flex-col" id="side-menu">        
+    <a class="cursor-pointer bg-gray-300 py-2 text-iec-blue w-full rounded-sm md:hidden" onClick="document.querySelector('#menu-items').classList.toggle('hidden');document.querySelector('#menu-items').classList.toggle('flex');"><i class="fas fa-angle-down"></i> Toggle Menu</a>
+    <div class="flex-col hidden sm:flex" id="menu-items">
+      <a class="cursor-pointer px-4 py-2 md:py-4 border-t border-white bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student"><i class="far fa-file-alt col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 1: Assessment</span>
       </span></a>
-      <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/orientation"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 2: Orientation</span>
+      <a class="cursor-pointer px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/orientation"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 2: Orientation</span>
       </span></a>
-      <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/interview"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 3: Interviews</span>
+      <a class="cursor-pointer px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/interview"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 3: Interviews</span>
       </span></a>
-      <a class="px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/onboarding"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 4: Onboarding</span>
+      <a class="cursor-pointer px-4 py-2 md:py-4  bg-iec-blue w-full hover:bg-iec-blue-hover grid grid-cols-6 items-center" href="/student/onboarding"><i class="far fa-envelope col-span-2 md:col-span-1"></i> <span class="col-span-4 md:col-span-5">Phase 4: Onboarding</span>
       </span></a>
-    </div>
+      </div>
   </section>

@@ -111,7 +111,6 @@ $(document).ready(function () {
   $.get(
     "/student/assignments",
     function (data) {
-      console.log(data);
       data.forEach((item) => {
         let [status, action] = item.status;
         let statusColor = assignStatusColor(status);
@@ -124,6 +123,8 @@ $(document).ready(function () {
             statusColor +
             "'>" +
             status +
+            "</td><td>" +
+            item.createdAt +
             "</td><td><a onClick='details(this)' data-quiz_title='" +
             item.quiz_title +
             "' data-num_sections='" +
