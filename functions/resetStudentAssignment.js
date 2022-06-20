@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const { Section, Quiz, Question } = require("../db/models/quizmodel");
 const { Attempt, Assignment, Answer } = require("../db/models/user");
 
@@ -42,17 +43,15 @@ async function deleteAllAnswers(student_id, quiz_id, t) {
     const total_sections = quiz.Sections.length;
     try {
       quiz.Sections.forEach(async (section) => {
-        await new Promise((resolve) => {
-          let num_questions_done = 0;
-          const total_questions = section.Questions.length;
-          section.Questions.forEach(async (question) => {
-            await Answer.destroy({
-              where: { QuestionId: question.id, StudentId: student_id },
-              transaction: t,
-            });
-            num_questions_done++;
-            if (num_questions_done == total_questions) resolve();
-          });
+        const questions_array = section.Questions.map(
+          (question) => question.id
+        );
+        await Answer.destroy({
+          where: {
+            QuestionId: { [Op.in]: questions_array },
+            StudentId: student_id,
+          },
+          transaction: t,
         });
 
         num_sections_done++;

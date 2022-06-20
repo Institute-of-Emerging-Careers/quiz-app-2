@@ -139,7 +139,7 @@ const StudentsList = () => {
   return (
     <div>
       {loading ? (
-        <i class="fas fa-spinner animate-spin text-3xl"></i>
+        <i className="fas fa-spinner animate-spin text-3xl"></i>
       ) : filtered_students.length == 0 ? (
         <p>No students to show.</p>
       ) : (
@@ -240,7 +240,7 @@ const StudentsList = () => {
                     ]
                   : []}
                 {sections.map((section) => [
-                  <th className="py-3 px-6">
+                  <th className="py-3 px-6" key={section.id}>
                     {section.section_title} Student Score
                     <br />
                     (out of {section.maximum_score})
