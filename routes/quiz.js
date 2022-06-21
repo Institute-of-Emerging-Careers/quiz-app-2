@@ -1149,7 +1149,7 @@ router.get(
       });
 
       if (attempt != null) {
-        if (attempt.hasOwnProperty("Score")) await attempt.Score.destroy();
+        if (attempt.Score != null) await attempt.Score.destroy();
         await attempt.destroy();
       }
       if (assignment.completed) await assignment.update({ completed: false });
