@@ -298,38 +298,7 @@ const ApplicationsListStudentsAdder = (props) => {
               </div>
             ))}
           </div>
-          {/* <select
-            value={filter}
-            onChange={(e) => {
-              setFilter(e.target.value);
-            }}
-            className="py-2 px-3"
-          >
-            <option value="all">Show all applicants</option>
-            <option value="assigned-only">
-              Show only those who were assigned the quiz
-            </option>
-            <option value="not-assigned">
-              Show those who were <b>not</b> assigned the quiz
-            </option>
-            <option value="not-rejected">Show those not rejected</option>
-            <option value="rejected-only">Show those rejected</option>
-            <option value="emailed-only">
-              Show those emailed about assessment
-            </option>
-            <option value="not-emailed">
-              Show those not emailed about assessment
-            </option>
-            <option value="not-rejected-not-emailed">
-              Show those not rejected and not emailed about assessment
-            </option>
-            <option value="not-rejected-and-emailed">
-              Show those not rejected and emailed about assessment
-            </option>
-            <option value="not-rejected-and-assigned-and-emailed">
-              Show those not rejected, assigned quiz, and emailed about assessment
-            </option>
-          </select> */}
+          <p>{filtered_applications.length} rows</p>
           <table className="w-full text-left text-sm">
             <thead>
               <tr>
