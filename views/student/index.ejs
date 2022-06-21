@@ -36,13 +36,12 @@
       class="absolute inset-0 bg-black bg-opacity-60 hidden-imp z-20"
     >
       <div
-        class="absolute rounded-lg z-10 top-16 w-3/4 bg-white translate-x-2/4 shadow-2xl pb-2"
-        style="left: 12.5%"
+        class="absolute rounded-lg z-10 top-16 w-full md:w-3/4 bg-white translate-x-2/4 shadow-2xl pb-2 md:left-25/2"
       >
         <div
-          class="bg-iec-blue text-white py-3 px-3 grid grid-cols-2 content-center rounded-t-lg"
+          class="bg-iec-blue text-white py-3 px-3 grid grid-cols-4 content-center rounded-t-lg"
         >
-          <h3 class="text-xl col-auto justify-self-start self-center">
+          <h3 class="text-xl col-span-3 justify-self-start self-center">
             <i class="fas fa-link text-xl text-white"></i>
             <span id="modal-quiz-title">Quiz Details</span>
           </h3>
@@ -51,7 +50,7 @@
             onClick="hideModal()"
           ></i>
         </div>
-        <div class="p-8 overflow-x-auto">
+        <div class="p-4 md:p-8 text-xs md:text-base overflow-x-auto">
           <p>
             This quiz has <span id="modal-quiz-num-sections"></span> sections.
             You can attempt each section separately. The details about each

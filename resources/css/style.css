@@ -1098,10 +1098,6 @@ video {
   width: 50%;
 }
 
-.w-3\/4 {
-  width: 75%;
-}
-
 .w-4\/5 {
   width: 80%;
 }
@@ -3236,6 +3232,10 @@ video {
     left: 75%;
   }
 
+  .md\:left-25\/2 {
+    left: 12.5%;
+  }
+
   .md\:col-span-1 {
     grid-column: span 1 / span 1;
   }
@@ -3278,6 +3278,10 @@ video {
 
   .md\:w-52 {
     width: 13rem;
+  }
+
+  .md\:w-3\/4 {
+    width: 75%;
   }
 
   .md\:w-8\/12 {
