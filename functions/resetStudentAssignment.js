@@ -69,6 +69,10 @@ async function resetStudentAssignment(student_id, quiz_id, t) {
 
   try {
     await deleteAllAnswers(student_id, quiz_id, t);
+    await Assignment.update(
+      { completed: false },
+      { where: { StudentId: student_id, QuizId: quiz_id }, transaction: t }
+    );
   } catch (err) {
     return new Promise((resolve, reject) => {
       reject(err);
