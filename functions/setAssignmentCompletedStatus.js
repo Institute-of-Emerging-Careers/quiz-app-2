@@ -34,7 +34,8 @@ async function setAssignmentCompletedStatus(quiz_id) {
             assignment.Attempts.length == quiz.Sections.length &&
             assignment.Attempts.reduce((final, cur) => {
               if (!final) return false;
-              if (cur.statusText != "Completed") return false;
+              else if (cur.statusText != "Completed") return false;
+              else return true;
             }, true)
           ) {
             return assignment.update({ completed: true });
