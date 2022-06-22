@@ -38,8 +38,10 @@ const StudentsList = () => {
   const [reload_results, setReloadResults] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     fetch(`/quiz/${quiz_id}/results-data`)
       .then((raw_data) => {
+        setLoading(false);
         if (raw_data.ok) {
           raw_data
             .json()
@@ -137,6 +139,22 @@ const StudentsList = () => {
     }
   }
 
+  function resetStudentAssignment(e) {
+    let x = prompt(`Are you sure? Enter "yes" or "no".`);
+    if (x == "yes") {
+      fetch(
+        `/reset-assignment/student/${e.target.dataset.student_id}/quiz/${quiz_id}`
+      ).then((res) => {
+        if (res.ok) {
+          alert("Successfully reset assignment. Reloading page now.");
+          setReloadResults((cur) => !cur);
+        } else {
+          alert("Error. Could not reset assignment. Reloading page now.");
+        }
+      });
+    }
+  }
+
   function resetOneSection(student_id, quiz_id) {
     let prompt_text =
       "Which of the following sections do you want to delete?\n";
@@ -151,7 +169,7 @@ const StudentsList = () => {
         if (res.ok) {
           alert("Section reset");
           setReloadResults((cur) => !cur);
-        } else alert("Error. Could not reset section.");
+        } else alert("Error. Could not reset section. Reloading page now.");
       })
       .catch((err) => {
         alert("Error. Could not reset section.");
@@ -325,8 +343,9 @@ const StudentsList = () => {
                   <td className="py-3 px-6">{student.percentage_total}</td>
                   <td>
                     <a
-                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-                      href={`/reset-assignment/student/${student.student_id}/quiz/${quiz_id}`}
+                      className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                      data-student_id={student.student_id}
+                      onClick={resetStudentAssignment}
                       target="_blank"
                     >
                       Reset Assignment

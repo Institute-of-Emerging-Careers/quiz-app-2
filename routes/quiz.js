@@ -69,42 +69,33 @@ router.get(
     let data = [];
 
     // We're going to return the names and number_of_attempts of all quizzes.
-
-    Quiz.findAll({ attributes: ["id", "title"], order: [["id", "desc"]] }).then(
-      async (all_quizzes) => {
-        await new Promise(async (resolve, reject) => {
-          let num_sections = 0;
-          await new Promise((minorResolve, minorReject) => {
-            let i = 0;
-            const n = all_quizzes.length;
-            all_quizzes.forEach(async (quiz) => {
-              const num_sections_in_this_quiz = await quiz.countSections();
-              num_sections += num_sections_in_this_quiz;
-              i++;
-              if (i == n) minorResolve();
-            });
-          });
-
-          let i = 0;
-          all_quizzes.forEach(async (quiz) => {
-            let cur_index =
-              data.push({ id: quiz.id, title: quiz.title, num_attempts: 0 }) -
-              1;
-            const sections = await quiz.getSections();
-            sections.forEach(async (section) => {
-              const num_attempts = await section.countAttempts();
-              data[cur_index].num_attempts += num_attempts;
-              i++;
-              if (i == num_sections) {
-                resolve();
-              }
-            });
-          });
+    Quiz.findAll({
+      attributes: ["id", "title"],
+      order: [["id", "desc"]],
+    })
+      .then((quizzes) => {
+        let promises = quizzes.map((quiz) => {
+          return quiz.countAssignments();
         });
-
-        res.json(data);
-      }
-    );
+        Promise.all(promises)
+          .then((num_assignments_array) => {
+            res.json(
+              quizzes.map((quiz, i) => {
+                let copy = JSON.parse(JSON.stringify(quiz));
+                copy["num_assignments"] = num_assignments_array[i];
+                return copy;
+              })
+            );
+          })
+          .catch((err) => {
+            res.sendStatus(500);
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
   }
 );
 

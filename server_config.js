@@ -246,22 +246,11 @@ app.get(
         t
       );
       t.commit();
-      res.render("templates/error.ejs", {
-        additional_info: "Assignment Reset Successfully",
-        error_message:
-          "Successfully reset the student's assignment status. Please ask the student to login using the already set email and password. The student will see a fresh assignment ready to be solved.",
-        action_link: "/admin",
-        action_link_text: "Return to Admin Panel",
-      });
+      res.sendStatus(200);
     } catch (err) {
       t.rollback();
-      res.render("templates/error.ejs", {
-        additional_info: "Assignment Reset Failed :(",
-        error_message:
-          "Could not reset the student's assignment status. Please Contact the IT Team.",
-        action_link: "/admin",
-        action_link_text: "Return to Admin Panel",
-      });
+      res.sendStatus(500);
+      console.log(err);
     }
   }
 );

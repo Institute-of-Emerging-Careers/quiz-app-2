@@ -62,7 +62,9 @@ const EmailForm = () => {
           .json()
           .then((response) => {
             if (response.success) {
-              alert("Emails sent successfully.");
+              alert(
+                "Emails queued successfully and will be sent at the rate of 14 emails per second."
+              );
             } else {
               alert("There was an error while sending emails. Error code 01.");
             }
