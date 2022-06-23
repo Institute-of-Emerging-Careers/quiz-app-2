@@ -737,7 +737,7 @@ const StudentsList = () => {
         <p>No students to show.</p>
       ) : (
         <div>
-          <div className="mb-2 text-md grid grid-cols-8 w-full justify-between justify-items-center items-center text-xs">
+          <div className="mb-2 text-md grid gap-y-2 grid-cols-2 md:grid-cols-8 w-full justify-between justify-items-center items-center text-xs">
             <div className="col-span-2 justify-self-center">
               <input
                 type="checkbox"
