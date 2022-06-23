@@ -326,6 +326,19 @@ Quiz.hasMany(Assignment, {
 });
 Assignment.belongsTo(Quiz);
 
+Application.hasMany(Assignment, {
+  onDelete: "RESTRICT",
+  onUpate: "CASCADE",
+  foreignKey: {
+    allowNull: true,
+  },
+});
+Assignment.belongsTo(Application, {
+  foreignKey: {
+    allowNull: true,
+  },
+});
+
 // Student, Question, Option and Answer relationship
 Question.hasMany(Answer, {
   onDelete: "RESTRICT",
