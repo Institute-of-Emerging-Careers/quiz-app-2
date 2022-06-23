@@ -42,6 +42,7 @@ const StudentsList = () => {
 
   const application_fields = [
     "phone",
+    "gender",
     "age",
     "city",
     "province",
@@ -73,6 +74,17 @@ const StudentsList = () => {
 
   useEffect(() => {
     setFilters([
+      {
+        title: "Gender",
+        name: "gender",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: false,
+        possible_values: genders.map((val) => ({
+          value: val,
+          checked: false,
+        })),
+        expand_possible_values: false,
+      },
       {
         title: "Age Group",
         name: "age_group",

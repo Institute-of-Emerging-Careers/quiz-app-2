@@ -196,3 +196,5 @@ const sources_of_information = [
 const type_of_employment = ["Part Time", "Full Time", "Not Employed"];
 
 const age_groups = ["Under 18", "18-21", "22-24", "25-26", "27-30", "Above 30"];
+
+const genders = ["male", "female", "other"];

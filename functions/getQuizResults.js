@@ -136,7 +136,7 @@ const getQuizResults = (quiz_id) => {
               assignment.Student.firstName + " " + assignment.Student.lastName,
             student_cnic: assignment.Student.cnic,
             student_email: assignment.Student.email,
-            student_gender: assignment.Student.gender.toLowerCase(),
+            gender: assignment.Student.gender.toLowerCase(),
             sections: [],
             completed: false, //this tells if the student has completed all sections or not
             started: false, //this tells if the student has started a section or not
