@@ -39,6 +39,7 @@ const StudentsList = () => {
   const [reload_results, setReloadResults] = useState(false);
   const [num_rows_shown, setNumRowsShown] = useState(10);
   const [show_filters, setShowFilters] = useState(false);
+  const [show_section_details, setShowSectionDetails] = useState(false);
 
   const application_fields = [
     "phone",
@@ -736,8 +737,8 @@ const StudentsList = () => {
         <p>No students to show.</p>
       ) : (
         <div>
-          <div className="mb-2 text-md flex w-full justify-between items-center text-xs">
-            <div>
+          <div className="mb-2 text-md grid grid-cols-8 w-full justify-between justify-items-center items-center text-xs">
+            <div className="col-span-2 justify-self-center">
               <input
                 type="checkbox"
                 checked={show_student_personal_details}
@@ -746,10 +747,23 @@ const StudentsList = () => {
                 }}
               ></input>{" "}
               <label>
-                Show Student's Personal Details (gender, email, cnic)
+                Show Student's Personal Details (email, cnic, gender)
               </label>
             </div>
-            <div>
+            <div className="col-span-2 justify-self-center">
+              <input
+                type="checkbox"
+                checked={show_section_details}
+                onChange={(e) => {
+                  setShowSectionDetails(e.target.checked);
+                }}
+              ></input>{" "}
+              <label>
+                Show each section's details (time of submission, exact marks,
+                duration)
+              </label>
+            </div>
+            <div className="col-span-2 justify-self-center">
               <label>How many rows to display in table below:</label>{" "}
               <input
                 type="number"
@@ -770,7 +784,7 @@ const StudentsList = () => {
             </div>
             <a
               href={`/quiz/${quiz_id}/analysis`}
-              className="self-end text-blue-600 mb-2 mr-4"
+              className="self-end text-blue-600 mb-2 mr-4 col-span-1"
               target="_blank"
             >
               <i className="fas fa-chart-bar"></i>{" "}
@@ -786,7 +800,7 @@ const StudentsList = () => {
                   download_table_as_csv("results_table");
                 }, 500);
               }}
-              className="self-end text-blue-600 mb-2 mr-4"
+              className="self-end text-blue-600 mb-2 mr-4 col-span-1"
             >
               <i className="fas fa-download"></i>{" "}
               <span className="underline hover:no-underline">
@@ -819,37 +833,49 @@ const StudentsList = () => {
             <thead className="bg-iec-blue text-white w-full">
               <tr className="w-full header_row">
                 <th className="py-3 px-6">Student Name</th>
+                <th className="py-3 px-6">Student Email</th>
                 {show_student_personal_details
                   ? [
                       <th className="py-3 px-6">Student Gender</th>,
-                      <th className="py-3 px-6">Student Email</th>,
                       <th className="py-3 px-6">Student CNIC</th>,
                       ...application_fields.map((field) => (
                         <th className="py-3 px-6">{field}</th>
                       )),
                     ]
                   : []}
-                {sections.map((section) => [
-                  <th className="py-3 px-6" key={section.id}>
-                    {section.section_title} Student Score
-                    <br />
-                    (out of {section.maximum_score})
-                  </th>,
-                  <th className="py-3 px-6">
-                    Percentage Marks in {section.section_title}
-                  </th>,
-                  <th className="py-3 px-6">
-                    {section.section_title} Time Taken
-                    <br />
-                    {section.maximum_time}
-                  </th>,
-                  <th className="py-3 px-6">
-                    {section.section_title} Submission Time (KHI)
-                  </th>,
-                ])}
-                <th className="py-3 px-6">
-                  Student Total Score (out of {quiz_total_score})
-                </th>
+                {sections.map((section) =>
+                  show_section_details
+                    ? [
+                        <th className="py-3 px-6">
+                          Percentage Marks in {section.section_title}
+                        </th>,
+                        <th className="py-3 px-6" key={section.id}>
+                          {section.section_title} Student Score
+                          <br />
+                          (out of {section.maximum_score})
+                        </th>,
+                        <th className="py-3 px-6">
+                          {section.section_title} Time Taken
+                          <br />
+                          {section.maximum_time}
+                        </th>,
+                        <th className="py-3 px-6">
+                          {section.section_title} Submission Time (KHI)
+                        </th>,
+                      ]
+                    : [
+                        <th className="py-3 px-6">
+                          Percentage Marks in {section.section_title}
+                        </th>,
+                      ]
+                )}
+                {show_section_details
+                  ? [
+                      <th className="py-3 px-6">
+                        Student Total Score (out of {quiz_total_score})
+                      </th>,
+                    ]
+                  : []}
                 <th className="py-3 px-6">Percentage Total Score</th>
                 <th>Action</th>
               </tr>
@@ -861,10 +887,10 @@ const StudentsList = () => {
                   className={student.completed ? "bg-green-100" : ""}
                 >
                   <td className="py-3 px-6">{student.student_name}</td>
+                  <td className="py-3 px-6">{student.student_email}</td>
                   {show_student_personal_details
                     ? [
                         <td className="py-3 px-6">{student.student_gender}</td>,
-                        <td className="py-3 px-6">{student.student_email}</td>,
                         <td className="py-3 px-6">{student.student_cnic}</td>,
                         ...application_fields.map((field) =>
                           student.hasOwnProperty(field) ? (
@@ -883,25 +909,36 @@ const StudentsList = () => {
                     : []}
 
                   {student.sections.map((section) =>
-                    section.status == "Attempted"
-                      ? [
-                          <td className="py-3 px-6">
-                            {section.section_score}
-                          </td>,
+                    show_section_details ? (
+                      section.status == "Attempted" ? (
+                        [
                           <td className="py-3 px-6">
                             {section.percentage_score}
+                          </td>,
+                          <td className="py-3 px-6">
+                            {section.section_score}
                           </td>,
                           <td className="py-3 px-6">{section.duration}</td>,
                           <td className="py-3 px-6">{section.end_time}</td>,
                         ]
-                      : [
-                          <td className="py-3 px-6">Not Attempted Yet</td>,
-                          <td className="py-3 px-6">0</td>,
+                      ) : (
+                        [
+                          <td className="py-3 px-6">Not Attempted</td>,
+                          <td className="py-3 px-6">Not Attempted</td>,
                           <td className="py-3 px-6">N/A</td>,
                           <td className="py-3 px-6 endtime">0</td>,
                         ]
+                      )
+                    ) : section.status != "Attempted" ? (
+                      <td className="py-3 px-6">{section.percentage_score}</td>
+                    ) : (
+                      <td className="py-3 px-6">Not Attempted</td>
+                    )
                   )}
-                  <td className="py-3 px-6">{student.total_score}</td>
+
+                  {show_section_details
+                    ? [<td className="py-3 px-6">{student.total_score}</td>]
+                    : []}
                   <td className="py-3 px-6">{student.percentage_total}</td>
                   <td>
                     <a
