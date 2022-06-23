@@ -127,7 +127,7 @@ const ApplicationsListStudentsAdder = (props) => {
         (application) =>
           !application.Student.already_added && application.Student.added
       )
-      .map((application) => application.Student.id);
+      .map((application) => [application.Student.id, application.id]);
 
     if (list_of_student_ids_to_be_added.length == 0) {
       setLoading(false);

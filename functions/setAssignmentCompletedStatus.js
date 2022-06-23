@@ -46,12 +46,12 @@ async function setAssignmentCompletedStatus(quiz_id) {
   );
 }
 
-setAssignmentCompletedStatus(36)
-  .then(() => {
-    console.log("done");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// setAssignmentCompletedStatus(36)
+//   .then(() => {
+//     console.log("done");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 module.exports = setAssignmentCompletedStatus;

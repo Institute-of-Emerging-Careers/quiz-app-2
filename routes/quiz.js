@@ -1386,11 +1386,17 @@ router.post("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
     console.log(err);
   }
 
-  console.log(req.body.list_of_student_ids_to_be_added);
+  // req.body.list_of_student_ids_to_be_added is a 2D array. Each element array is [student_id, application_id].
+  // One student may have many applications. So while creating an assignment, we must know which application is relevant here.
   Promise.all(
-    req.body.list_of_student_ids_to_be_added.map((student_id) => {
+    req.body.list_of_student_ids_to_be_added.map((elem_arr) => {
+      const [student_id, application_id] = elem_arr;
       return Assignment.findOrCreate({
-        where: { QuizId: req.params.quiz_id, StudentId: student_id },
+        where: {
+          QuizId: req.params.quiz_id,
+          StudentId: student_id,
+          ApplicationId: application_id,
+        },
       });
     })
   )
