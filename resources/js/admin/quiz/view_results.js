@@ -929,7 +929,7 @@ const StudentsList = () => {
                           <td className="py-3 px-6 endtime">0</td>,
                         ]
                       )
-                    ) : section.status != "Attempted" ? (
+                    ) : section.status == "Attempted" ? (
                       <td className="py-3 px-6">{section.percentage_score}</td>
                     ) : (
                       <td className="py-3 px-6">Not Attempted</td>
