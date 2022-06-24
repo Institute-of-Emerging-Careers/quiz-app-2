@@ -407,6 +407,11 @@ Orientation.belongsTo(Quiz);
 Orientation.belongsToMany(Student, { through: OrientationInvite });
 Student.belongsToMany(Orientation, { through: OrientationInvite });
 
+Application.hasMany(OrientationInvite);
+OrientationInvite.belongsTo(Application, {
+  foreignKey: { allowNull: true },
+});
+
 Quiz.hasOne(InterviewRound, {
   onUpdate: "CASCADE",
   onDelete: "CASCADE",

@@ -13,6 +13,7 @@ const {
   ApplicationRoundCourseJunction,
 } = require("./models/application");
 const { Assignment } = require("./models/user");
+const { OrientationInvite } = require("./models/orientation");
 
 const initializeDatabase = async () => {
   try {
@@ -24,7 +25,7 @@ const initializeDatabase = async () => {
       logging: process.env.NODE_ENV == "test" ? true : false,
     });
     // await Application.sync({ alter: true, force: false });
-    // await Assignment.sync({ alter: true, force: false });
+    // await OrientationInvite.sync({ alter: true, force: false });
     // await ApplicationRound.sync({ alter: false, force: false });
     // await Interviewer.sync({ alter: false });
     // await InterviewerInvite.sync({ alter: false });

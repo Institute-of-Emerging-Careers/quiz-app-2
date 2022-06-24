@@ -19,7 +19,24 @@ Orientation.init(
 // OrientationInvite is the Junction model for the Many-to-Many relationship of "Orientation" and "Student" models.
 
 class OrientationInvite extends Model {}
-OrientationInvite.init({}, { sequelize, modelName: "OrientationInvite" });
+OrientationInvite.init(
+  {
+    email_sent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
+    },
+  },
+  {
+    sequelize,
+    modelName: "OrientationInvite",
+    hooks: {
+      beforeCreate(user) {
+        if (user.email_sent == null) user.email_sent = false;
+      },
+    },
+  }
+);
 
 module.exports = { Orientation, OrientationInvite };
 

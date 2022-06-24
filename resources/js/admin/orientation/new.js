@@ -30,6 +30,7 @@ const ContextProvider = (props) => {
 const EmailForm = () => {
   const { orientation_id_object, orientation_name_object, students_object } =
     useContext(MyContext);
+  const [orientation_id, setOrientationId] = orientation_id_object;
 
   const [students, setStudents] = students_object;
   const [email_subject, setEmailSubject] = useState("");
@@ -46,7 +47,10 @@ const EmailForm = () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        students: students,
+        students: students.filter(
+          (student) => !student.email_sent && student.added
+        ),
+        orientation_id: orientation_id,
         email_content: {
           subject: email_subject,
           heading: email_heading,
@@ -92,6 +96,23 @@ const EmailForm = () => {
         className="flex flex-col gap-y-2"
         ref={form_ref}
       >
+        <div>
+          <label>Recipients: </label>
+          <input
+            type="text"
+            id="recipients"
+            name="recipients"
+            className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
+            value={`Sending to ${students[0].email}, and ${
+              students.filter((student) => !student.email_sent && student.added)
+                .length - 1
+            } others`}
+            onChange={(e) => {
+              setEmailSubject(e.target.value);
+            }}
+            disabled={true}
+          ></input>
+        </div>
         <div>
           <label>Subject: </label>
           <input
@@ -215,10 +236,22 @@ const NameForm = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setOrientationId(
-      parseInt(document.getElementById("orientation-id-field").value)
-    );
-    setOrientationName(document.getElementById("orientation-name-field").value);
+    if (
+      window.location.href.split("/")[
+        window.location.href.split("/").length - 2
+      ] == "new"
+    ) {
+      window.location = `/admin/orientation/edit/${
+        document.getElementById("orientation-id-field").value
+      }`;
+    } else {
+      setOrientationId(
+        parseInt(document.getElementById("orientation-id-field").value)
+      );
+      setOrientationName(
+        document.getElementById("orientation-name-field").value
+      );
+    }
   }, []);
 
   const saveData = (e) => {
@@ -293,7 +326,8 @@ const NameForm = () => {
             setShowEmailForm((cur) => !cur);
           }}
         >
-          <i className="fas fa-mail-bulk"></i> Send Emails to Invited Students
+          <i className="fas fa-mail-bulk"></i> Send Emails to Not-Emailed
+          Students
         </button>
       )}
     </div>
@@ -308,6 +342,10 @@ const StudentsListWrapper = () => {
     <StudentsList
       students={students}
       title="List of Students currently added to this Orientation"
+      field_to_show_green_if_true={{
+        field: "email_sent",
+        text: "orientation email was sent",
+      }}
       fields={[
         { title: "Name", name: ["name"] },
         { title: "Email", name: ["email"] },

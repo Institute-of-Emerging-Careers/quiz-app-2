@@ -2,9 +2,44 @@ const NewStudentAdder = (props) => {
   const [students, setStudents] = props.students_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
+  const [orientation_status_filter, setOrientationStatusFilter] =
+    useState("all");
+
+  const [filtered_students, setFilteredStudents] = useState([]);
 
   const student_id_to_array_index_map = useRef({});
   const section2 = useRef(null);
+
+  const addSelectedCandidatesToOrientationList = () => {
+    filtered_students
+      .filter((student) => student.added)
+      .forEach((student) => {
+        setStudents((cur_students_array) => {
+          let copy = cur_students_array.slice();
+          copy[student_id_to_array_index_map.current[student.id]].added = true;
+          return copy;
+        });
+      });
+  };
+
+  useEffect(() => {
+    setFilteredStudents(students.filter((student) => !student.added));
+  }, [students]);
+
+  useEffect(() => {
+    setFilteredStudents(
+      students.filter(
+        (student) =>
+          student.percentage_score >= filter_min_score &&
+          ((student.added &&
+            (orientation_status_filter == "all" ||
+              orientation_status_filter == "added")) ||
+            (!student.added &&
+              (orientation_status_filter == "all" ||
+                orientation_status_filter == "not-added")))
+      )
+    );
+  }, [filter_min_score, orientation_status_filter]);
 
   useEffect(() => {
     setLoading(true);
@@ -35,12 +70,10 @@ const NewStudentAdder = (props) => {
   }, []);
 
   const setAllCheckboxes = (new_val) => {
-    setStudents((cur) => {
+    setFilteredStudents((cur) => {
       let copy = cur.slice();
       for (let i = 0; i < copy.length; i++) {
-        if (copy[i].percentage_score >= filter_min_score) {
-          copy[i].added = new_val;
-        }
+        copy[i].added = new_val;
       }
       return copy;
     });
@@ -62,6 +95,12 @@ const NewStudentAdder = (props) => {
         <b>List of Candidates that can be added to this {props.title}</b>
       </h2>
 
+      <button
+        onClick={addSelectedCandidatesToOrientationList}
+        className="py-2 px-4 bg-iec-blue hover:bg-iec-blue-hover text-white"
+      >
+        Add Selected Candidates to Orientation List
+      </button>
       <div ref={section2}>
         <div className="grid grid-cols-4 items-center">
           <div className="col-span-2">
@@ -80,15 +119,31 @@ const NewStudentAdder = (props) => {
             ></input>
             %
           </div>
+          <div className="col-span-2">
+            <label htmlFor="filter_min_score">
+              Filter by Orientation Status:{" "}
+            </label>
+            <select
+              value={orientation_status_filter}
+              onChange={(e) => {
+                setOrientationStatusFilter(e.target.value);
+              }}
+              className="px-3 py-2"
+            >
+              <option value="all">Show all</option>
+              <option value="added">Already added to orientation</option>
+              <option value="not-added">Not added to orientation</option>
+            </select>
+          </div>
           <a
-            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+            className="col-span-2 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={selectAll}
           >
             <i className="fas fa-check-square"></i> Click here to select all
             below
           </a>
           <a
-            className="col-span-1 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
+            className="col-span-2 cursor-pointer text-iec-blue underline hover:text-iec-blue-hover hover:no-underline"
             onClick={deSelectAll}
           >
             <i className="far fa-square"></i> Click here to deselect all below
@@ -112,38 +167,30 @@ const NewStudentAdder = (props) => {
             </tr>
           </thead>
           <tbody>
-            {students
-              .filter((student) => student.percentage_score >= filter_min_score)
-              .map((student) => (
-                <tr className="py-2" key={student.id}>
-                  <td className="border px-4 py-2">
-                    <input
-                      type="checkbox"
-                      id={student.id}
-                      checked={student.added}
-                      onChange={() => {
-                        setStudents((cur) => {
-                          let copy = cur.slice();
-                          copy[
-                            student_id_to_array_index_map.current[student.id]
-                          ].added =
-                            !copy[
-                              student_id_to_array_index_map.current[student.id]
-                            ].added;
-                          return copy;
-                        });
-                      }}
-                    ></input>
-                  </td>
-                  <td className="border px-4 py-2">{student.name}</td>
-                  <td className="border px-4 py-2">{student.email}</td>
-                  <td className="border px-4 py-2">{student.age}</td>
-                  <td className="border px-4 py-2">{student.gender}</td>
-                  <td className="border px-4 py-2">
-                    {student.percentage_score}
-                  </td>
-                </tr>
-              ))}
+            {filtered_students.map((student, filtered_student_index) => (
+              <tr className="py-2" key={student.id}>
+                <td className="border px-4 py-2">
+                  <input
+                    type="checkbox"
+                    id={student.id}
+                    checked={student.added}
+                    onChange={(e) => {
+                      setFilteredStudents((cur) => {
+                        let copy = cur.slice();
+                        copy[filtered_student_index].added =
+                          !copy[filtered_student_index].added;
+                        return copy;
+                      });
+                    }}
+                  ></input>
+                </td>
+                <td className="border px-4 py-2">{student.name}</td>
+                <td className="border px-4 py-2">{student.email}</td>
+                <td className="border px-4 py-2">{student.age}</td>
+                <td className="border px-4 py-2">{student.gender}</td>
+                <td className="border px-4 py-2">{student.percentage_score}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

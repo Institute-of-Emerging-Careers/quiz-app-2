@@ -14,6 +14,7 @@ const allSectionsSolved = require("../../functions/allSectionsSolved");
 const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces");
 const getQuizTotalScore = require("../../functions/getQuizTotalScore");
 const { queueMail } = require("../../bull");
+const sequelize = require("sequelize");
 
 //this file deals with /admin/orientation/...
 
@@ -80,8 +81,6 @@ router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
   });
 });
 
-router.get("/create-new/:quiz_id", checkAdminAuthenticated, (req, res) => {});
-
 router.get(
   "/edit/:orientation_id",
   checkAdminAuthenticated,
@@ -115,6 +114,7 @@ router.post(
     try {
       const orientation = await Orientation.findOne({
         where: { id: req.params.orientation_id },
+        include: [Quiz],
       });
       await orientation.update({ title: req.body.orientation_name });
 
@@ -141,9 +141,16 @@ router.post(
             student.added == true &&
             !students_already_invited.has(student.id)
           ) {
+            const application_id = (
+              await Assignment.findOne({
+                where: { QuizId: orientation.Quiz.id, StudentId: student.id },
+                attributes: ["ApplicationId"],
+              })
+            ).ApplicationId;
             await OrientationInvite.create({
               StudentId: student.id,
               OrientationId: req.params.orientation_id,
+              ApplicationId: application_id,
             });
           }
           i++;
@@ -164,70 +171,112 @@ router.get(
   "/all-students/:orientation_id",
   checkAdminAuthenticated,
   async (req, res) => {
-    const orientation = await Orientation.findOne({
-      where: { id: req.params.orientation_id },
-      attributes: ["id", "QuizId"],
-      include: [{ model: Quiz, include: [Section] }],
-    });
-
-    if (orientation != null && orientation.QuizId != null) {
-      // finding total score of quiz
-      let quiz_total_score = await getQuizTotalScore(orientation.Quiz);
-
-      let data = []; //list of students who have solved this quiz and their data
-
-      let assignments = await Assignment.findAll({
-        where: { QuizId: orientation.QuizId },
+    try {
+      const orientation = await Orientation.findOne({
+        where: { id: req.params.orientation_id },
+        attributes: ["id", "QuizId"],
         include: [
           {
-            model: Student,
-            include: [Orientation],
-          },
-          {
-            model: Attempt,
-            include: [{ model: Section, order: ["id"] }, Score],
+            model: Quiz,
+            include: [
+              Section,
+              {
+                model: Assignment,
+                include: [
+                  {
+                    model: Student,
+                    include: [Orientation],
+                  },
+                  { model: Attempt, include: [Score] },
+                ],
+                where: { completed: true },
+              },
+            ],
           },
         ],
       });
 
-      if (assignments != null && assignments.length > 0) {
-        assignments.forEach((assignment) => {
-          // checking if this orientation exists in the
+      if (orientation != null && orientation.QuizId != null) {
+        // finding total score of quiz
+        let quiz_total_score = await getQuizTotalScore(orientation.Quiz);
 
-          const cur_index =
-            data.push({
-              added: assignment.Student.Orientations.length > 0,
-              id: assignment.Student.id,
-              name:
-                assignment.Student.firstName +
-                " " +
-                assignment.Student.lastName,
-              email: assignment.Student.email,
-              age: assignment.Student.age,
-              gender: assignment.Student.gender,
-              total_score_achieved: 0,
-              percentage_score: 0,
-            }) - 1;
-
-          let remove_student = false; //we remove student from data if student turns out to have an unsolved section (no attempt)
-          assignment.Attempts.forEach((attempt) => {
-            if (attempt == null || attempt.Score == null) {
-              remove_student = true;
-            } else {
-              data[cur_index].total_score_achieved += attempt.Score.score;
+        let data = []; //list of students who have solved this quiz and their data
+        /*
+          [
+            {
+              id:...,
+              name:...,
+              email:...,
+              added:...,
+              age:...,
+              gender:...,
+              total_score_achieved:...,
+              percentage_score:...,
             }
-          });
+          ]
+        */
 
-          data[cur_index].percentage_score = roundToTwoDecimalPlaces(
-            (data[cur_index].total_score_achieved / quiz_total_score) * 100
-          );
-          if (remove_student) data.pop();
-        });
+        let assignments = orientation.Quiz.Assignments;
+
+        if (assignments != null && assignments.length > 0) {
+          await new Promise((resolve) => {
+            let i = 0;
+            const n = assignments.length;
+
+            assignments.forEach(async (assignment) => {
+              const total_score_achieved = assignment.Attempts.reduce(
+                (final, cur) => (final += cur.Score.score),
+                0
+              );
+              const orientation_invite = await OrientationInvite.findOne({
+                where: {
+                  OrientationId: req.params.orientation_id,
+                  StudentId: assignment.Student.id,
+                },
+              });
+              data.push({
+                added:
+                  assignment.Student.hasOwnProperty("Orientations") &&
+                  assignment.Student.Orientations.length > 0 &&
+                  assignment.Student.Orientations.reduce(
+                    (hasThisOrientationId, cur) =>
+                      hasThisOrientationId
+                        ? true
+                        : cur.id == req.params.orientation_id
+                        ? true
+                        : false,
+                    false
+                  ),
+                email_sent:
+                  orientation_invite == null
+                    ? false
+                    : orientation_invite.email_sent,
+                id: assignment.Student.id,
+                name:
+                  assignment.Student.firstName +
+                  " " +
+                  assignment.Student.lastName,
+                email: assignment.Student.email,
+                age: assignment.Student.age,
+                gender: assignment.Student.gender,
+                total_score_achieved: total_score_achieved,
+                percentage_score: roundToTwoDecimalPlaces(
+                  (total_score_achieved / quiz_total_score) * 100
+                ),
+              });
+              i++;
+              if (i == n) resolve();
+            });
+          });
+        }
+        res.json({ success: true, data: data });
+      } else {
+        console.log("Error: QuizId: or orientation:", orientation, "is NULL");
+        res.json({ success: false });
       }
-      res.json({ success: true, data: data });
-    } else {
-      console.log("Error: QuizId: or orientation:", orientation, "is NULL");
-      res.json({ success: false });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
     }
   }
 );
@@ -236,28 +285,37 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
   if (req.body.students != null && req.body.students.length > 0) {
     const email_content = req.body.email_content;
 
-    let students = req.body.students.filter((student) => student.added);
+    // let students = req.body.students.filter((student) => student.added);
+    // this will be done before sending the request now to save network bandwidth
 
-    try {
-      await new Promise((resolve) => {
-        let i = 0;
-        const n = students.length;
-        students.forEach(async (student) => {
-          await queueMail(student.email, `${email_content.subject}`, {
-            heading: email_content.heading,
-            inner_text: email_content.body,
-            button_announcer: email_content.button_pre_text,
-            button_text: email_content.button_label,
-            button_link: email_content.button_url,
-          });
-          i++;
-          if (i == n) resolve();
-        });
+    let students = req.body.students;
+    let promises = students.map((student) => [
+      OrientationInvite.update(
+        { email_sent: true },
+        {
+          where: {
+            StudentId: student.id,
+            OrientationId: req.body.orientation_id,
+          },
+        }
+      ),
+      queueMail(student.email, `${email_content.subject}`, {
+        heading: email_content.heading,
+        inner_text: email_content.body,
+        button_announcer: email_content.button_pre_text,
+        button_text: email_content.button_label,
+        button_link: email_content.button_url,
+      }),
+    ]);
+
+    promises = promises.reduce((final, cur) => [...final, ...cur], []);
+    Promise.all(promises)
+      .then(() => {
+        res.json({ success: true });
+      })
+      .catch((err) => {
+        res.json({ success: false });
       });
-      res.json({ success: true });
-    } catch (err) {
-      res.json({ success: false });
-    }
   }
 });
 
