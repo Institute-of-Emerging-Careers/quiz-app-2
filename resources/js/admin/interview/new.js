@@ -8,6 +8,11 @@ const interview_round_id = document.getElementById(
   "interview-round-id-field"
 ).value;
 
+let url = window.location.href.split("/");
+if (url[url.length - 2] == "new") {
+  window.location = "/admin/interview/edit/" + interview_round_id;
+}
+
 const ContextProvider = (props) => {
   const [steps, setSteps] = useState([
     { title: "Step 1: Add Interviewees (Students)", active: true },
@@ -80,6 +85,7 @@ const Step1 = () => {
   const [loading, setLoading] = useState(false);
 
   const saveData = () => {
+    setLoading(true);
     fetch("/admin/interview/interviewees/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -126,7 +132,7 @@ const Step1 = () => {
         >
           {loading ? (
             <span>
-              <i className="fas fa-spinner animate-spin text-lg"></i> Saving
+              <i className="fas fa-spinner animate-spin text-lg"></i> Saving...
             </span>
           ) : (
             <span>
@@ -138,7 +144,7 @@ const Step1 = () => {
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <StudentsList
           students={students}
-          title="List of Students currently added to this Interview"
+          title="Interview"
           fields={[
             ,
             { title: "Name", name: ["name"] },
@@ -197,8 +203,6 @@ const Step2 = () => {
         alert("Something went wrong. Check your internet connection.");
       });
   };
-
-  useEffect(saveData, [interviewers]);
 
   return (
     <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
@@ -358,10 +362,11 @@ const Main = () => {
   const [interviewRoundTitle, setInterviewRoundTitle] = useState(
     document.getElementById("interview-round-name-field").value
   );
+  const [loading_name, setLoadingName] = useState(false);
 
   const updateInterviewRoundTitle = (e) => {
     e.preventDefault();
-    console.log(interviewRoundTitle);
+    setLoadingName(true);
     fetch(
       `/admin/interview/update-round-title/${
         document.getElementById("interview-round-id-field").value
@@ -386,11 +391,17 @@ const Main = () => {
         alert(
           "Something went worng. Make sure you have a working internet connection or contact IT. Error code 02."
         );
+      })
+      .finally(() => {
+        setLoadingName(false);
       });
   };
 
   return (
     <div>
+      <a href="/admin/interview">
+        <i className="fas fa-home"></i>
+      </a>
       {editInterviewRoundTitle ? (
         <form onSubmit={updateInterviewRoundTitle}>
           <input
@@ -403,7 +414,11 @@ const Main = () => {
             }}
             className="px-4 py-2 min-w-max"
           ></input>
-          <input type="submit" className="hidden"></input>
+          <input
+            type="submit"
+            className="p-2 bg-green-400 text-white cursor-pointer"
+            value={loading_name ? "Saving..." : "Save"}
+          ></input>
         </form>
       ) : (
         <h1 className="text-2xl">

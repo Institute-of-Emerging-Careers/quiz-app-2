@@ -341,7 +341,7 @@ const StudentsListWrapper = () => {
   return (
     <StudentsList
       students={students}
-      title="List of Students currently added to this Orientation"
+      title="Orientation"
       field_to_show_green_if_true={{
         field: "email_sent",
         text: "orientation email was sent",

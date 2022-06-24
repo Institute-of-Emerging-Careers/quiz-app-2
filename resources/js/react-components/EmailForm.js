@@ -71,7 +71,7 @@ const EmailForm = (props) => {
         className="flex flex-col gap-y-2"
       >
         <div>
-          <label>Recepients: </label>
+          <label>Recipients: </label>
           <input
             type="text"
             id="recepients"
@@ -80,7 +80,7 @@ const EmailForm = (props) => {
             className="border bg-gray-200 w-full py-3 px-4 mt-1 hover:shadow-sm"
             value={
               applications == null
-                ? `${users[0]}, and ${users.length - 1} others`
+                ? `${users[0].email}, and ${users.length - 1} others`
                 : `${applications[0].Student.email}, and ${
                     applications.length - 1
                   } others`

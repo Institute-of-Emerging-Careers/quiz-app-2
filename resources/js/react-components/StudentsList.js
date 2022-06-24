@@ -10,7 +10,7 @@ const StudentsList = (props) => {
   return (
     <div className="overflow-auto">
       <h2 className="text-base text-center mb-4">
-        <b>{props.title}</b>
+        <b>List of Students already added to this {props.title}</b>
       </h2>
       {field_to_show_green_if_true == null ? (
         <p></p>

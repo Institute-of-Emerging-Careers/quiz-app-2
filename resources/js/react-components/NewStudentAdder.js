@@ -99,7 +99,8 @@ const NewStudentAdder = (props) => {
         onClick={addSelectedCandidatesToOrientationList}
         className="py-2 px-4 bg-iec-blue hover:bg-iec-blue-hover text-white"
       >
-        Add Selected Candidates to Orientation List
+        <i className="fas fa-arrow-up"></i> Add Selected Candidates to{" "}
+        {props.title} List
       </button>
       <div ref={section2}>
         <div className="grid grid-cols-4 items-center">
@@ -121,7 +122,7 @@ const NewStudentAdder = (props) => {
           </div>
           <div className="col-span-2">
             <label htmlFor="filter_min_score">
-              Filter by Orientation Status:{" "}
+              Filter by {props.title} Status:{" "}
             </label>
             <select
               value={orientation_status_filter}
@@ -131,8 +132,12 @@ const NewStudentAdder = (props) => {
               className="px-3 py-2"
             >
               <option value="all">Show all</option>
-              <option value="added">Already added to orientation</option>
-              <option value="not-added">Not added to orientation</option>
+              <option value="added">
+                Already added to {props.title.toLowerCase()}
+              </option>
+              <option value="not-added">
+                Not added to {props.title.toLowerCase()}
+              </option>
             </select>
           </div>
           <a

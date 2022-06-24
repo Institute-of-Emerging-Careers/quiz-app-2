@@ -11,8 +11,13 @@ const checkAuthenticated = (req, res, next) => {
     else if (req.user.hasOwnProperty("user") && req.user.user == null) {
       req.logout();
       res.redirect("/");
-    } else res.redirect("/");
+      console.log("type c");
+    } else {
+      console.log("type a redirect");
+      res.redirect("/");
+    }
   } else {
+    console.log("type b redirect");
     res.redirect("/");
   }
 };

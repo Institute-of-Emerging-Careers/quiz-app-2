@@ -9,6 +9,7 @@ const App = () => {
   const [interview_rounds, setInterviewRounds] = useState([]);
   const [all_assessments, setAllAssessments] = useState([]);
   const [show_modal, setShowModal] = useState(false);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     fetch("/admin/interview/all")
@@ -39,10 +40,24 @@ const App = () => {
         setAllAssessments(parsed_response);
       });
     });
-  }, []);
+  }, [reload]);
 
   const createNewInterview = (e) => {
     window.location = `/admin/interview/new/${e.target.value}`;
+  };
+
+  const deleteInterviewRound = (interview_round_id) => {
+    fetch(`/admin/interview/round/delete/${interview_round_id}`)
+      .then((res) => {
+        if (res.ok) setReload((cur) => !cur);
+        else alert("Error on server while deleting interview round.");
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          "Error deleting interview round. Check your internet connection."
+        );
+      });
   };
 
   return (
@@ -84,7 +99,7 @@ const App = () => {
                   value={assessment.id}
                   key={assessment.id}
                 >
-                  {assessment.title} | {assessment.num_attempts} Attempts{" "}
+                  {assessment.title} | {assessment.num_assignments} Assignments{" "}
                 </option>
               ))}
             </select>
@@ -119,6 +134,9 @@ const App = () => {
               <a
                 className="text-white text-xl col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
                 title="Delete Interview Round"
+                onClick={() => {
+                  deleteInterviewRound(interview_round.id);
+                }}
               >
                 <i className="fas fa-trash "></i>
               </a>

@@ -141,7 +141,9 @@ router.post(
       const interview_round = await InterviewRound.findOne({
         where: { id: req.params.interview_round_id },
       });
+
       const interviewers = await interview_round.getInterviewers();
+      console.log(interviewers);
 
       // we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
 
@@ -149,11 +151,13 @@ router.post(
       interviewers.forEach((interviewer_object) => {
         db_interviewers_map.set(interviewer_object.email, interviewer_object);
       });
+      console.log(db_interviewers_map);
 
       let new_interviewers_map = new Map();
       req.body.interviewers.forEach((interviewer) => {
         new_interviewers_map.set(interviewer.email, true);
       });
+      console.log(new_interviewers_map);
 
       await new Promise((resolve) => {
         let i = 0;
@@ -162,6 +166,7 @@ router.post(
         else {
           req.body.interviewers.forEach(async (interviewer) => {
             if (!db_interviewers_map.has(interviewer.email)) {
+              console.log("oye hoy");
               const new_interviewer = (
                 await Interviewer.findOrCreate({
                   where: { email: interviewer.email },
@@ -194,7 +199,6 @@ router.post(
         else {
           for (const interviewer of db_interviewers_map) {
             if (!new_interviewers_map.has(interviewer[1].email)) {
-              await interviewer[1].destroy();
               await InterviewerInvite.destroy({
                 where: {
                   InterviewerId: interviewer[1].id,
@@ -215,6 +219,17 @@ router.post(
     }
   }
 );
+
+router.get("/round/delete/:interview_round_id", (req, res) => {
+  InterviewRound.destroy({ where: { id: req.params.interview_round_id } })
+    .then(() => {
+      res.sendStatus(200);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(500);
+    });
+});
 
 router.get("/login/:email", async (req, res) => {
   if (req.query.hasOwnProperty("password")) {
@@ -290,10 +305,19 @@ router.post(
     await interviewer_invite.deleteSlots(); //custom class instance method I declared in models/interview.js
     let promises = [];
     req.body.time_slots.forEach((time_slot) => {
-      promises.push(interviewer_invite.createInterviewerSlot(time_slot));
+      console.log(interviewer_invite.id);
+      promises.push(
+        InterviewerSlot.create({
+          start: time_slot.start,
+          end: time_slot.end,
+          duration: time_slot.duration,
+          InterviewerInviteId: interviewer_invite.id,
+        })
+      );
     });
     Promise.all(promises)
-      .then(() => {
+      .then((arr) => {
+        console.log(arr);
         res.sendStatus(200);
       })
       .catch((err) => {
@@ -385,7 +409,18 @@ router.get(
           // checking if this orientation exists in the
           const cur_index =
             data.push({
-              added: assignment.Student.InterviewRounds.length > 0,
+              added:
+                assignment.Student.hasOwnProperty("InterviewRounds") &&
+                assignment.Student.InterviewRounds.length > 0 &&
+                assignment.Student.InterviewRounds.reduce(
+                  (hasThisInterviewRoundId, cur) =>
+                    hasThisInterviewRoundId
+                      ? true
+                      : cur.id == req.params.interview_round_id
+                      ? true
+                      : false,
+                  false
+                ),
               id: assignment.Student.id,
               name:
                 assignment.Student.firstName +
@@ -441,16 +476,48 @@ router.get(
   "/interviewers/all/:interview_round_id",
   checkAdminAuthenticated,
   async (req, res) => {
-    const interview_round = await InterviewRound.findOne({
-      where: { id: req.params.interview_round_id },
-    });
-
-    if (interview_round == null) res.sendStatus(404);
-    else {
-      const interviewers = await interview_round.getInterviewers({
-        attributes: ["name", "email"],
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
       });
-      res.status(200).json(interviewers);
+
+      if (interview_round == null) res.sendStatus(404);
+      else {
+        let interviewers = await interview_round.getInterviewers({
+          attributes: ["id", "name", "email"],
+        });
+        const interviewer_invites = await Promise.all(
+          interviewers.map((interviewer) =>
+            InterviewerInvite.findOne({
+              where: {
+                InterviewRoundId: req.params.interview_round_id,
+                InterviewerId: interviewer.id,
+              },
+            })
+          )
+        );
+
+        const interviewer_slots = await Promise.all(
+          interviewer_invites.map((interviewer_invite) =>
+            InterviewerSlot.count({
+              where: { InterviewerInviteId: interviewer_invite.id },
+            })
+          )
+        );
+
+        let data = interviewers.map((interviewer, i) => {
+          return {
+            name: interviewer.name,
+            email: interviewer.email,
+            time_declared: interviewer_slots[i] > 0,
+          };
+        });
+
+        res.status(200).json(data);
+      }
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
     }
   }
 );
