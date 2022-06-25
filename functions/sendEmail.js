@@ -49,7 +49,7 @@ const AWSSendEmail = (html, mailOptions) => {
 
 async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
   // if force send, then we send email regardless of student's email receiving preference (e.g. forgot password email)
-  if (process.env.NODE_ENV == "production") {
+  if (process.env.NODE_ENV == "production" && recepient != undefined) {
     // checking if this student has unsubscribed from emails, and if so, we won't send him/her an email
     const student = await Student.findOne({
       where: { email: recepient },
