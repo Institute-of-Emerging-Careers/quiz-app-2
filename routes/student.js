@@ -193,6 +193,7 @@ router.post("/change-password", async (req, res) => {
         await password_reset_link.Student.update({
           password: await bcrypt.hash(password, 10),
         });
+        console.log("password updated for ", password_reset_link.Student.email);
 
         await password_reset_link.destroy();
 

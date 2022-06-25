@@ -80,10 +80,14 @@ const EmailForm = (props) => {
             className="border bg-gray-200 w-full py-3 px-4 mt-1 hover:shadow-sm"
             value={
               applications == null
-                ? `${users[0].email}, and ${users.length - 1} others`
-                : `${applications[0].Student.email}, and ${
+                ? users.length > 0
+                  ? `${users[0].email}, and ${users.length - 1} others`
+                  : "No recipients"
+                : applications.length > 0
+                ? `${applications[0].Student.email}, and ${
                     applications.length - 1
                   } others`
+                : "No recipients"
             }
           ></input>
           <label>Subject: </label>

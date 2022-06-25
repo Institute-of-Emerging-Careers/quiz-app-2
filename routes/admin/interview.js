@@ -112,9 +112,9 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
         ).password;
         const interviewer_login_link = `${
           process.env.SITE_DOMAIN_NAME
-        }/admin/interview/login/${
+        }/admin/interview/login?email=${
           interviewer.email
-        }?password=${encodeURIComponent(interviewer_password)}`;
+        }&password=${encodeURIComponent(interviewer_password)}`;
         await queueMail(interviewer.email, `${email_content.subject}`, {
           heading: email_content.heading,
           inner_text: email_content.body,
@@ -231,15 +231,16 @@ router.get("/round/delete/:interview_round_id", (req, res) => {
     });
 });
 
-router.get("/login/:email", async (req, res) => {
-  if (req.query.hasOwnProperty("password")) {
-    res.render("interviewer/login/index.ejs", {
-      email: req.params.email,
-      password: req.query.password,
-    });
-  } else {
-    res.sendStatus(400);
-  }
+router.get("/login", async (req, res) => {
+  let password = "",
+    email = "";
+  if (req.query.hasOwnProperty("password")) password = req.query.password;
+  if (req.query.hasOwnProperty("email")) email = req.query.email;
+
+  res.render("interviewer/login/index.ejs", {
+    email: email,
+    password: password,
+  });
 });
 
 router.post(
@@ -391,7 +392,7 @@ router.get(
       let data = []; //list of students who have solved this quiz and their data
 
       let assignments = await Assignment.findAll({
-        where: { QuizId: interview_round.QuizId },
+        where: { QuizId: interview_round.QuizId, completed: true },
         include: [
           {
             model: Student,

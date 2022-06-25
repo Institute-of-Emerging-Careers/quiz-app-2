@@ -2,7 +2,10 @@
 const checkAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     if (req.user.type == "admin") return next();
-    else res.redirect("/admin/login");
+    else {
+      req.logout();
+      res.redirect("/admin/login");
+    }
   } else {
     res.redirect("/admin/login");
   }

@@ -2,10 +2,13 @@
 const checkAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     if (req.user.type == "student") return next();
-    else res.redirect("/student/login");
+    else {
+      req.logout();
+      res.redirect("/student/login");
+    }
   } else {
     if (req.url != "/student")
-    res.redirect(`/student/login?url=${encodeURIComponent(req.url)}`);
+      res.redirect(`/student/login?url=${encodeURIComponent(req.url)}`);
     else res.redirect(`/student/login`);
   }
 };

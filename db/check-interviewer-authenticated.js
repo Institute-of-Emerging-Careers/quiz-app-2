@@ -8,7 +8,10 @@ const checkAuthenticated = (req, res, next) => {
       req.user.user.hasOwnProperty("name")
     )
       return next();
-    else if (req.user.hasOwnProperty("user") && req.user.user == null) {
+    else if (req.user.type != "interviewer") {
+      req.logout();
+      res.redirect("/admin/interview/login");
+    } else if (req.user.hasOwnProperty("user") && req.user.user == null) {
       req.logout();
       res.redirect("/");
       console.log("type c");
