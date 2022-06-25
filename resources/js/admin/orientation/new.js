@@ -39,8 +39,15 @@ const EmailForm = () => {
   const [email_button_pre_text, setEmailButtonPreText] = useState("");
   const [email_button_label, setEmailButtonLabel] = useState("");
   const [email_button_url, setEmailButtonUrl] = useState("");
+  const [recipients, setRecipients] = useState([]);
 
   const form_ref = useRef();
+
+  useEffect(() => {
+    setRecipients(
+      students.filter((student) => !student.email_sent && student.added)
+    );
+  }, [students]);
 
   const sendEmails = () => {
     fetch("/admin/orientation/send-emails", {
@@ -103,16 +110,13 @@ const EmailForm = () => {
             id="recipients"
             name="recipients"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={() => {
-              const recipients = students.filter(
-                (student) => !student.email_sent && student.added
-              );
-              if (recipients.length > 0)
-                return `Sending to ${recipients[0].email}, and ${
-                  recipients.length - 1
-                } others`;
-              else return "No recipients";
-            }}
+            value={
+              recipients.length > 0
+                ? `Sending to ${recipients[0].email}, and ${
+                    recipients.length - 1
+                  } others`
+                : "No recipients"
+            }
             onChange={(e) => {
               setEmailSubject(e.target.value);
             }}
