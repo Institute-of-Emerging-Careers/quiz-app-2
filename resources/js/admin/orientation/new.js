@@ -103,10 +103,16 @@ const EmailForm = () => {
             id="recipients"
             name="recipients"
             className="border w-full py-3 px-4 mt-1 hover:shadow-sm"
-            value={`Sending to ${students[0].email}, and ${
-              students.filter((student) => !student.email_sent && student.added)
-                .length - 1
-            } others`}
+            value={() => {
+              const recipients = students.filter(
+                (student) => !student.email_sent && student.added
+              );
+              if (recipients.length > 0)
+                return `Sending to ${recipients[0].email}, and ${
+                  recipients.length - 1
+                } others`;
+              else return "No recipients";
+            }}
             onChange={(e) => {
               setEmailSubject(e.target.value);
             }}
