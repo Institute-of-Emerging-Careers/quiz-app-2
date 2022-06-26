@@ -37,6 +37,24 @@ router.get("/rounds/all", checkAdminAuthenticated, async (req, res) => {
   });
 });
 
+router.get(
+  "/round/change-open-state/:application_round_id/:new_val",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    ApplicationRound.update(
+      { open: req.params.new_val },
+      { where: { id: req.params.application_round_id } }
+    )
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch((err) => {
+        console.log(err);
+        res.sendStatus(500);
+      });
+  }
+);
+
 router.post("/course/new", checkAdminAuthenticated, async (req, res) => {
   try {
     const course = await Course.create(req.body);

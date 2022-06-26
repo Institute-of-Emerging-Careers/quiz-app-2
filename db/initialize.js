@@ -26,7 +26,7 @@ const initializeDatabase = async () => {
     });
     // await Application.sync({ alter: true, force: false });
     // await OrientationInvite.sync({ alter: true, force: false });
-    // await ApplicationRound.sync({ alter: false, force: false });
+    // await ApplicationRound.sync({ alter: true, force: false });
     // await Interviewer.sync({ alter: false });
     // await InterviewerInvite.sync({ alter: false });
     // await InterviewRound.sync({ alter: false });

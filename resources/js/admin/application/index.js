@@ -131,6 +131,18 @@ const App = () => {
       });
   };
 
+  const changeApplicationOpenState = (application_round_id, new_val) => {
+    fetch(
+      `/admin/application/round/change-open-state/${application_round_id}/${new_val}`
+    ).then((res) => {
+      if (res.ok) {
+        setUpdateData((cur) => cur + 1);
+      } else {
+        alert("Could not change state of application round.");
+      }
+    });
+  };
+
   return (
     <div>
       {/* Modal starts */}
@@ -253,10 +265,10 @@ const App = () => {
               className="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card"
               key={index}
             >
-              <div className="grid grid-cols-5 col-span-6 h-16 bg-iec-blue justify-center content-center">
+              <div className="grid grid-cols-6 col-span-6 h-16 bg-iec-blue justify-center content-center">
                 <a
                   href={`/admin/application/view/${application_round.id}`}
-                  className="text-white text-xl col-start-2 justify-self-center col-span-1 hover:text-gray-100 cursor-pointer"
+                  className="text-white text-xl col-start-2 col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"
                   title="View Applications"
                 >
                   <i className="fas fa-list"></i>
@@ -276,6 +288,26 @@ const App = () => {
                   title="Copy Link"
                 >
                   <i className="fas fa-link" data-id={application_round.id}></i>
+                </a>
+                <a
+                  className="text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"
+                  title={
+                    application_round.open
+                      ? "Close Applications"
+                      : "Open Applications"
+                  }
+                  onClick={() => {
+                    changeApplicationOpenState(
+                      application_round.id,
+                      !application_round.open
+                    );
+                  }}
+                >
+                  {application_round.open ? (
+                    <i class="fas fa-door-open"></i>
+                  ) : (
+                    <i class="fas fa-door-closed"></i>
+                  )}
                 </a>
                 <a
                   className="text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"

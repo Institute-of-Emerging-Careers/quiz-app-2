@@ -29,28 +29,38 @@ router.get(
       const application_round = await ApplicationRound.findOne({
         where: { id: req.params.application_round_id },
       });
-      if (application_round != null) {
-        const courses = await application_round.getCourses({
-          attributes: ["id", "title"],
-        });
-        res.render("application.ejs", {
-          cities: cities,
-          provinces: provinces,
-          countries: countries,
-          education_levels: education_levels,
-          type_of_employment: type_of_employment,
-          courses: courses,
-          sources_of_information: sources_of_information,
-          application_round_id: req.params.application_round_id,
+      if (!application_round.open) {
+        res.render("templates/error.ejs", {
+          additional_info: "Applications Closed",
+          error_message:
+            "Applications have closed for this cohort. Keep an eye on our website for future cohort updates.",
+          action_link: "https://iec.org.pk",
+          action_link_text: "Click here to go to the IEC Website",
         });
       } else {
-        res.render("templates/error.ejs", {
-          additional_info: "",
-          error_message:
-            "This link is invalid or something went wrong at the server. Error code 01.",
-          action_link: "/",
-          action_link_text: "Click here to go to home page.",
-        });
+        if (application_round != null) {
+          const courses = await application_round.getCourses({
+            attributes: ["id", "title"],
+          });
+          res.render("application.ejs", {
+            cities: cities,
+            provinces: provinces,
+            countries: countries,
+            education_levels: education_levels,
+            type_of_employment: type_of_employment,
+            courses: courses,
+            sources_of_information: sources_of_information,
+            application_round_id: req.params.application_round_id,
+          });
+        } else {
+          res.render("templates/error.ejs", {
+            additional_info: "",
+            error_message:
+              "This link is invalid or something went wrong at the server. Error code 01.",
+            action_link: "/",
+            action_link_text: "Click here to go to home page.",
+          });
+        }
       }
     } catch (err) {
       console.log(err);

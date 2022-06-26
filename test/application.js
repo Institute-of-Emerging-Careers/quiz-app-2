@@ -96,6 +96,7 @@ describe("Applications", () => {
   it("it should say exists: false for new applicant", (done) => {
     ApplicationRound.create({
       title: "Test Round",
+      open: true,
     }).then((application_round) => {
       chai
         .request(server)
@@ -127,6 +128,7 @@ describe("Applications", () => {
 
         const application_round = await ApplicationRound.create({
           title: "Test Round",
+          open: true,
         });
 
         chai
@@ -166,6 +168,7 @@ describe("Applications", () => {
 
         const application_round = await ApplicationRound.create({
           title: "Test Round",
+          open: true,
         });
 
         chai
@@ -205,6 +208,7 @@ describe("Applications", () => {
 
         const application_round = await ApplicationRound.create({
           title: "Test Round",
+          open: true,
         });
 
         chai
@@ -235,6 +239,7 @@ describe("Applications", () => {
     return new Promise(async (resolve, reject) => {
       const application_round = await ApplicationRound.create({
         title: "Test Round",
+        open: true,
       });
       const courses = await Promise.all([
         Course.create({ title: "Test Course 1" }),
@@ -303,7 +308,7 @@ describe("Applications", () => {
   });
 
   it("it should return 201 on correct application", (done) => {
-    ApplicationRound.create({ title: "Test Round" }).then(
+    ApplicationRound.create({ title: "Test Round", open: true }).then(
       (application_round) => {
         Promise.all([
           Course.create({ title: "Test Course 1" }),

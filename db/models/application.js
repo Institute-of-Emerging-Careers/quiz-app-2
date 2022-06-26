@@ -19,6 +19,11 @@ ApplicationRound.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    open: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
     sequelize,
