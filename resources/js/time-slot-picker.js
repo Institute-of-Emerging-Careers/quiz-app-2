@@ -26,6 +26,11 @@ const App = () => {
       })
       .substr(0, 16)
   );
+  const [period_start_draft, setPeriodStartDraft] = useState(period_start);
+  const [period_end_draft, setPeriodEndDraft] = useState(period_end);
+  const [editing_start, setEditingStart] = useState(false);
+  const [editing_end, setEditingEnd] = useState(false);
+
   const [duration, setDuration] = useState(0);
 
   // load any time slots the user may have set in the past
@@ -69,7 +74,8 @@ const App = () => {
     const start = DateTime.fromISO(period_start);
     const end = DateTime.fromISO(period_end);
     const diff = end.diff(start);
-    setDuration(diff.toMillis());
+    if (diff.isValid) setDuration(diff.toMillis());
+    else setDuration(0);
   }, [period_start, period_end]);
 
   const addNewTimeSlot = (e) => {
@@ -158,31 +164,99 @@ const App = () => {
           className="flex justify-evenly items-center border"
         >
           <label>Slot Start: </label>
-          <input
-            type="datetime-local"
-            value={period_start}
-            onChange={(e) => {
-              setPeriodStart(e.target.value);
-            }}
-            min={DateTime.local({ zone: "Asia/Karachi" })
-              .toISO({ includeOffset: false })
-              .substr(0, 16)}
-            className=" bg-gray-100 px-4 py-4"
-            step="60"
-          ></input>
-          <label>Slot End: </label>
-          <input
-            type="datetime-local"
-            value={period_end}
-            onChange={(e) => {
-              setPeriodEnd(e.target.value);
-            }}
-            min={DateTime.local({ zone: "Asia/Karachi" })
-              .toISO({ includeOffset: false })
-              .substr(0, 16)}
-            className=" bg-gray-100 px-4 py-4"
-            step="60"
-          ></input>
+          {!editing_start ? (
+            <div>
+              <span className="bg-gray-200 border p-4">
+                {DateTime.fromISO(period_start).toLocaleString({
+                  weekday: "short",
+                  month: "short",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              <a
+                onClick={() => {
+                  setEditingStart(true);
+                }}
+                className="text-iec-blue hover:text-iec-blue-hover cursor-pointer"
+              >
+                <i class="far fa-edit"></i> Edit
+              </a>
+            </div>
+          ) : (
+            <div>
+              <input
+                type="datetime-local"
+                value={period_start_draft}
+                onChange={(e) => {
+                  setPeriodStartDraft(e.target.value);
+                }}
+                min={DateTime.local({ zone: "Asia/Karachi" })
+                  .toISO({ includeOffset: false })
+                  .substr(0, 16)}
+                className=" bg-gray-100 px-4 py-4"
+                step="60"
+              ></input>
+              <button
+                type="button"
+                onClick={() => {
+                  setPeriodStart(period_start_draft);
+                  setEditingStart(false);
+                }}
+                className="p-4 bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer"
+              >
+                Set
+              </button>
+            </div>
+          )}
+          {!editing_end ? (
+            <div>
+              <span className="bg-gray-200 border p-4">
+                {DateTime.fromISO(period_end).toLocaleString({
+                  weekday: "short",
+                  month: "short",
+                  day: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+              <a
+                onClick={() => {
+                  setEditingEnd(true);
+                }}
+                className="text-iec-blue hover:text-iec-blue-hover cursor-pointer"
+              >
+                <i class="far fa-edit"></i> Edit
+              </a>
+            </div>
+          ) : (
+            <div>
+              <input
+                type="datetime-local"
+                value={period_end_draft}
+                onChange={(e) => {
+                  setPeriodEndDraft(e.target.value);
+                }}
+                min={DateTime.local({ zone: "Asia/Karachi" })
+                  .toISO({ includeOffset: false })
+                  .substr(0, 16)}
+                className=" bg-gray-100 px-4 py-4"
+                step="60"
+              ></input>
+              <button
+                type="button"
+                onClick={() => {
+                  setPeriodEnd(period_end_draft);
+                  setEditingEnd(false);
+                }}
+                className="p-4 bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer"
+              >
+                Set
+              </button>
+            </div>
+          )}
+
           <p>
             Slot Duration:{" "}
             <span className="text-red-700">
@@ -226,45 +300,50 @@ const App = () => {
               </tr>
             </thead>
             <tbody>
-              {time_slots.map((time_slot, index) => (
-                <tr key={index}>
-                  <td className="p-2 border">{index + 1}</td>
-                  <td className="p-2 border">
-                    {DateTime.fromISO(time_slot.start).toLocaleString({
-                      weekday: "short",
-                      month: "short",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="p-2 border">
-                    {DateTime.fromISO(time_slot.end).toLocaleString({
-                      weekday: "short",
-                      month: "short",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </td>
-                  <td className="p-2 border">
-                    {Duration.fromMillis(time_slot.duration).toFormat(
-                      "hh 'hours' mm 'minutes'"
-                    )}
-                  </td>
-                  <td className="p-2 border ">
-                    <a
-                      className="cursor-pointer text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-                      data-index={index}
-                      onClick={(e) => {
-                        deleteSlot(e.target.dataset.index);
-                      }}
-                    >
-                      Delete
-                    </a>
-                  </td>
-                </tr>
-              ))}
+              {time_slots.map((time_slot, index) =>
+                DateTime.fromISO(time_slot.start).isValid &&
+                DateTime.fromISO(time_slot.end).isValid ? (
+                  <tr key={index}>
+                    <td className="p-2 border">{index + 1}</td>
+                    <td className="p-2 border">
+                      {DateTime.fromISO(time_slot.start).toLocaleString({
+                        weekday: "short",
+                        month: "short",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className="p-2 border">
+                      {DateTime.fromISO(time_slot.end).toLocaleString({
+                        weekday: "short",
+                        month: "short",
+                        day: "2-digit",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className="p-2 border">
+                      {Duration.fromMillis(time_slot.duration).toFormat(
+                        "hh 'hours' mm 'minutes'"
+                      )}
+                    </td>
+                    <td className="p-2 border ">
+                      <a
+                        className="cursor-pointer text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                        data-index={index}
+                        onClick={(e) => {
+                          deleteSlot(e.target.dataset.index);
+                        }}
+                      >
+                        Delete
+                      </a>
+                    </td>
+                  </tr>
+                ) : (
+                  <tr></tr>
+                )
+              )}
             </tbody>
           </table>
         </div>

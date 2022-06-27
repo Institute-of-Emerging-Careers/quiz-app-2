@@ -297,16 +297,21 @@ router.get(
   "/declare-time-slots/:interview_round_id",
   checkInterviewerAuthenticated,
   async (req, res) => {
-    const interview_round = await InterviewRound.findOne({
-      where: { id: req.params.interview_round_id },
-    });
-    res.render("interviewer/time-slots-picker.ejs", {
-      env: process.env.NODE_ENV,
-      myname: req.user.user.name,
-      user_type: req.user.type,
-      interview_round_id: req.params.interview_round_id,
-      interview_round_title: interview_round.title,
-    });
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
+      res.render("interviewer/time-slots-picker.ejs", {
+        env: process.env.NODE_ENV,
+        myname: req.user.user.name,
+        user_type: req.user.type,
+        interview_round_id: req.params.interview_round_id,
+        interview_round_title: interview_round.title,
+      });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
   }
 );
 
