@@ -4,6 +4,7 @@ const useState = React.useState;
 const useContext = React.useContext;
 const useRef = React.useRef;
 const useMemo = React.useMemo;
+const { DateTime, Duration } = luxon;
 const interview_round_id = document.getElementById(
   "interview-round-id-field"
 ).value;
@@ -168,7 +169,18 @@ const Step2 = () => {
   const [new_interviewer_name, setNewInterviewerName] = useState("");
   const [new_interviewer_email, setNewInterviewerEmail] = useState("");
   const [show_email_composer, setShowEmailComposer] = useState(false);
+  const [num_zoom_accounts, setNumZoomAccounts] = useState(3);
+  const [original_num_zoom_accounts, setOriginalNumZoomAccounts] =
+    useState(num_zoom_accounts);
+  const [show_zoom_accounts_explanation, setShowZoomAccountsExplanation] =
+    useState(false);
+  const [show_modal, setShowModal] = useState(false);
+  const [selected_interviewer_index, setSelectedInterviewerIndex] =
+    useState(-1);
+  const [specific_interviewers_to_email, setSpecificInterviewersToEmail] =
+    useState([]);
   const [saving, setSaving] = useState(false);
+  const [reload, setReload] = useState(false);
   const name_field = useRef();
 
   useEffect(() => {
@@ -176,24 +188,48 @@ const Step2 = () => {
       (raw_response) => {
         if (raw_response.ok) {
           raw_response.json().then((response) => {
-            setInterviewers(response);
+            setInterviewers(response.interviewers);
+            setNumZoomAccounts(response.num_zoom_accounts);
+            setOriginalNumZoomAccounts(response.num_zoom_accounts);
           });
         } else {
           alert("Error in URL. Wrong Interview Round. Please go to home page.");
         }
       }
     );
-  }, []);
+  }, [reload]);
+
+  useEffect(() => {
+    console.log(
+      interviewers.filter((interviewer) => !interviewer.time_declared)
+    );
+    setSpecificInterviewersToEmail([
+      ...interviewers.filter((interviewer) => !interviewer.time_declared),
+    ]);
+  }, [interviewers]);
+
+  useEffect(() => {
+    if (!show_modal) setSelectedInterviewerIndex(-1);
+  }, [show_modal]);
+
+  useEffect(() => {
+    if (!show_email_composer)
+      setSpecificInterviewersToEmail(
+        interviewers.filter((interviewer) => !interviewer.time_declared)
+      );
+  }, [show_email_composer]);
 
   const saveData = () => {
     setSaving(true);
     fetch(`/admin/interview/update-interviewer-list/${interview_round_id}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ interviewers: interviewers }),
+      body: JSON.stringify({
+        interviewers: interviewers,
+        num_zoom_accounts: num_zoom_accounts,
+      }),
     })
       .then((response) => {
-        setSaving(false);
         if (!response.ok) {
           alert("Error while saving.");
         }
@@ -201,11 +237,76 @@ const Step2 = () => {
       .catch((err) => {
         console.log(err);
         alert("Something went wrong. Check your internet connection.");
+      })
+      .finally(() => {
+        setSaving(false);
+      });
+  };
+
+  const deleteSlot = (time_slot_id) => {
+    fetch(`/admin/interview/interviewer/time-slot/delete/${time_slot_id}`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (res.ok) {
+          setReload((cur) => !cur);
+        } else {
+          alert(
+            "Could not delete time slot. Some error occured at the server."
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        alert(
+          "Error while deleting time slot. Are you sure your internet connection is working fine?"
+        );
       });
   };
 
   return (
     <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+      <label>
+        Maximum number of interviewers that can select a particular time slot
+        (aka number of zoom accounts):{" "}
+      </label>
+      <input
+        type="number"
+        min={original_num_zoom_accounts}
+        max="500"
+        value={num_zoom_accounts}
+        onChange={(e) => {
+          setNumZoomAccounts(e.target.value);
+        }}
+        className="px-3 py-2 border mb-2"
+      ></input>
+      <i
+        className="fas fa-question-circle cursor-pointer text-iec-blue ml-1"
+        onClick={() => {
+          setShowZoomAccountsExplanation((cur) => !cur);
+        }}
+      ></i>
+      {show_zoom_accounts_explanation ? (
+        <ul className="list-disc px-8 text-justify">
+          <li>
+            This feature makes sure that not more than the specified number of
+            interviewers try to select an overlapping time slot. For example, if
+            number of zoom accounts is set to 3, then only 3 interviewers can
+            select a specific time slot. If a 4th interviewer tries to select a
+            time slot that overlaps with those 3 interviewers, then he/she will
+            see an error.
+          </li>
+          <li>
+            You cannot reduce the number of zoom accounts once it has been
+            increased. This is because during the time when the greater number
+            of zoom accounts was set, a greater number of team members may have
+            selected the same time slot.
+          </li>
+        </ul>
+      ) : (
+        <span></span>
+      )}
+      <hr></hr>
       <form className="flex flex-col">
         <h2 className="text-lg">Add New Interviewer</h2>
         <div className="w-full flex gap-x-4 items-center">
@@ -265,7 +366,10 @@ const Step2 = () => {
 
       {show_email_composer ? (
         <EmailForm
-          users={interviewers}
+          users={specific_interviewers_to_email}
+          onFinish={() => {
+            setShowEmailComposer(false);
+          }}
           sending_link="/admin/interview/send-emails"
           default_values={{
             email_subject: "IEC Interview Time Slots",
@@ -292,8 +396,8 @@ const Step2 = () => {
               setShowEmailComposer((cur) => !cur);
             }}
           >
-            <i className="fas fa-paper-plane"></i> Send Emails asking all
-            Interviewers to Declare Time Slots
+            <i className="fas fa-paper-plane"></i> Send Emails to Interviewers
+            who have not declared Time Slots yet
           </button>
           <button
             type="button"
@@ -309,12 +413,81 @@ const Step2 = () => {
           </button>
         </div>
       </div>
+      <p>Number of Zoom Accounts: {num_zoom_accounts}</p>
+
+      {selected_interviewer_index >= 0 ? (
+        <Modal
+          show_modal={show_modal}
+          setShowModal={setShowModal}
+          heading={`View Time Slots of ${interviewers[selected_interviewer_index].name}`}
+          content={
+            <table className="w-full text-left">
+              <thead>
+                <tr>
+                  <th className="p-2 border">Sr. No.</th>
+                  <th className="p-2 border">Start Time</th>
+                  <th className="p-2 border">End Time</th>
+                  <th className="p-2 border">Duration</th>
+                  <th className="p-2 border">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {interviewers[selected_interviewer_index].time_slots.map(
+                  (time_slot, index) => (
+                    <tr key={index}>
+                      <td className="p-2 border">{index + 1}</td>
+                      <td className="p-2 border">
+                        {DateTime.fromISO(time_slot.start).toLocaleString({
+                          weekday: "short",
+                          month: "short",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                      <td className="p-2 border">
+                        {DateTime.fromISO(time_slot.end).toLocaleString({
+                          weekday: "short",
+                          month: "short",
+                          day: "2-digit",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </td>
+                      <td className="p-2 border">
+                        {Duration.fromMillis(time_slot.duration).toFormat(
+                          "hh 'hours' mm 'minutes'"
+                        )}
+                      </td>
+                      <td className="p-2 border ">
+                        <a
+                          className="cursor-pointer text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
+                          data-index={index}
+                          onClick={(e) => {
+                            deleteSlot(time_slot.id);
+                          }}
+                        >
+                          Delete
+                        </a>
+                      </td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+          }
+        ></Modal>
+      ) : (
+        <span></span>
+      )}
+
       <table className="w-full text-left text-sm">
         <thead>
           <tr>
             <th>Name</th>
             <th>Email</th>
-            <th>Time Declared</th>
+            <th>Time Declared?</th>
+            <th>Total Hours Dedicated</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -327,11 +500,41 @@ const Step2 = () => {
                 {interviewer.time_declared ? "Yes" : "No"}
               </td>
               <td className="border px-4 py-2">
-                <a className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover">
-                  <i className="fas fa-trash-alt"></i> Delete
+                {Duration.fromMillis(
+                  interviewer.time_slots.reduce(
+                    (total_time, cur_slot) => (total_time += cur_slot.duration),
+                    0
+                  )
+                ).toFormat("hh 'hours' mm 'minutes'")}
+              </td>
+              <td className="border px-4 py-2">
+                <a
+                  className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"
+                  onClick={() => {
+                    setShowModal((cur) => !cur);
+                    setSelectedInterviewerIndex(index);
+                  }}
+                >
+                  <i class="far fa-eye"></i> View Time Slots
+                </a>
+                |{" "}
+                <a
+                  className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover"
+                  onClick={() => {
+                    setShowModal((cur) => !cur);
+                    setSelectedInterviewerIndex(index);
+                  }}
+                >
+                  <i className="fas fa-trash-alt"></i> Delete Slots
                 </a>{" "}
                 |{" "}
-                <a className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover">
+                <a
+                  className="cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover"
+                  onClick={() => {
+                    setSpecificInterviewersToEmail([interviewer]);
+                    setShowEmailComposer(true);
+                  }}
+                >
                   <i className="far fa-paper-plane"></i> Send Email asking{" "}
                   {interviewer.name} to Declare Time Slots
                 </a>

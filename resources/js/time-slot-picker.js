@@ -1,10 +1,13 @@
 const useState = React.useState;
 const useEffect = React.useEffect;
-const { DateTime, Duration } = luxon;
+const { DateTime, Duration, Interval } = luxon;
 
 const App = () => {
   const [time_slots, setTimeSlots] = useState([]);
+  const [all_other_time_slots, setAllOtherTimeSlots] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [num_zoom_accounts, setNumZoomAccounts] = useState(3);
+  // num_zoom_accounts refers to the maximum number of interviewers that can be conducting interviews at any given moment
   const [period_start, setPeriodStart] = useState(
     DateTime.local({ zone: "Asia/Karachi" })
       .toISO({
@@ -38,6 +41,18 @@ const App = () => {
           .then((response) => {
             if (response.success) {
               setTimeSlots(response.time_slots);
+              console.log(response.all_other_time_slots);
+              const formatted_other_time_slots =
+                response.all_other_time_slots.map((slot) => {
+                  return {
+                    start: DateTime.fromISO(slot.start, {
+                      zone: "Asia/Karachi",
+                    }),
+                    end: DateTime.fromISO(slot.end, { zone: "Asia/Karachi" }),
+                  };
+                });
+              setAllOtherTimeSlots(formatted_other_time_slots);
+              setNumZoomAccounts(response.num_zoom_accounts);
             } else alert("Something went wrong. Error code 03.");
           })
           .catch((err) => {
@@ -58,13 +73,28 @@ const App = () => {
   }, [period_start, period_end]);
 
   const addNewTimeSlot = (e) => {
+    const start = DateTime.fromISO(period_start);
+    const end = DateTime.fromISO(period_end);
     e.preventDefault();
+
     const diff =
       new Date(period_end).getTime() - new Date(period_start).getTime();
     if (diff < 0) alert("Error: The time period must start BEFORE it ends.");
-    else if (diff < 600000)
+    else if (diff < 600000) {
       alert("Each slot must be at least 10 minutes long.");
-    else {
+    }
+    // checking if the selected time slot overlaps with more than {num_zoom_accounts} of the any of the other interviewers' slots
+    else if (
+      all_other_time_slots.reduce((num_overlaps, cur) => {
+        if (
+          Interval.fromDateTimes(start, end).overlaps(
+            Interval.fromDateTimes(cur.start, cur.end)
+          )
+        )
+          return num_overlaps + 1;
+        else return num_overlaps;
+      }, 0) < num_zoom_accounts
+    ) {
       setTimeSlots((cur) => {
         let copy = [
           ...cur,
@@ -81,6 +111,10 @@ const App = () => {
         );
         return copy;
       });
+    } else {
+      alert(
+        `Oh no! ${num_zoom_accounts} other interviewers have selected this same slot. We only have ${num_zoom_accounts} zoom accounts, so more than ${num_zoom_accounts} interviewers cannot conduct interviews at the same time. Please pick a different time slot.`
+      );
     }
   };
 

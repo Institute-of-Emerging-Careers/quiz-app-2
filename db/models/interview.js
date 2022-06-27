@@ -9,6 +9,11 @@ InterviewRound.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    num_zoom_accounts: {
+      type: DataTypes.TINYINT,
+      allowNull: false,
+      defaultValue: 3,
+    },
   },
   {
     sequelize,

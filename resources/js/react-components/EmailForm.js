@@ -5,6 +5,7 @@ const EmailForm = (props) => {
   const [email_subject, setEmailSubject] = useState(
     default_values.email_subject
   );
+  const onFinish = props.hasOwnProperty("onFinish") ? props.onFinish : () => {};
   let applications = null;
   if (props.hasOwnProperty("applications")) applications = props.applications;
   const [email_heading, setEmailHeading] = useState(
@@ -56,6 +57,7 @@ const EmailForm = (props) => {
       })
       .finally(() => {
         setLoading(false);
+        onFinish();
       });
   };
 

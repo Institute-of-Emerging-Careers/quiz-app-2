@@ -19,6 +19,7 @@ const passport = require("passport");
 const { Quiz, Section } = require("../../db/models/quizmodel");
 const { Score, Assignment, Student, Attempt } = require("../../db/models/user");
 const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces");
+const { Op } = require("sequelize");
 // middleware that is specific to this router
 router.use((req, res, next) => {
   next();
@@ -142,8 +143,12 @@ router.post(
         where: { id: req.params.interview_round_id },
       });
 
+      await interview_round.update(
+        { num_zoom_accounts: req.body.num_zoom_accounts },
+        { where: { id: req.params.interview_round_id } }
+      );
+
       const interviewers = await interview_round.getInterviewers();
-      console.log(interviewers);
 
       // we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
 
@@ -151,13 +156,11 @@ router.post(
       interviewers.forEach((interviewer_object) => {
         db_interviewers_map.set(interviewer_object.email, interviewer_object);
       });
-      console.log(db_interviewers_map);
 
       let new_interviewers_map = new Map();
       req.body.interviewers.forEach((interviewer) => {
         new_interviewers_map.set(interviewer.email, true);
       });
-      console.log(new_interviewers_map);
 
       await new Promise((resolve) => {
         let i = 0;
@@ -461,15 +464,49 @@ router.get(
   "/interviewer/time-slots/:interview_round_id",
   checkInterviewerAuthenticated,
   async (req, res) => {
-    const interviewer_invite = await InterviewerInvite.findOne({
-      where: {
-        InterviewerId: req.user.user.id,
-        InterviewRoundId: req.params.interview_round_id,
-      },
-    });
-    const time_slots = await interviewer_invite.getInterviewerSlots();
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+        attributes: ["num_zoom_accounts"],
+      });
 
-    res.json({ success: true, time_slots: time_slots });
+      const interviewer_invite = await InterviewerInvite.findOne({
+        where: {
+          InterviewerId: req.user.user.id,
+          InterviewRoundId: req.params.interview_round_id,
+        },
+      });
+      const interviewer_time_slots =
+        await interviewer_invite.getInterviewerSlots();
+      const all_other_invites = await InterviewerInvite.findAll({
+        where: {
+          InterviewRoundId: req.params.interview_round_id,
+          InterviewerId: { [Op.not]: req.user.user.id },
+        },
+      });
+      let all_other_time_slots = await Promise.all(
+        all_other_invites.map((invite) =>
+          invite.getInterviewerSlots({
+            attributes: ["start", "end", "duration"],
+          })
+        )
+      );
+
+      all_other_time_slots = all_other_time_slots.reduce(
+        (final_arr, cur_arr) => [...final_arr, ...cur_arr],
+        []
+      );
+
+      res.json({
+        success: true,
+        time_slots: interviewer_time_slots,
+        all_other_time_slots: all_other_time_slots,
+        num_zoom_accounts: interview_round.num_zoom_accounts,
+      });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
   }
 );
 
@@ -500,7 +537,7 @@ router.get(
 
         const interviewer_slots = await Promise.all(
           interviewer_invites.map((interviewer_invite) =>
-            InterviewerSlot.count({
+            InterviewerSlot.findAll({
               where: { InterviewerInviteId: interviewer_invite.id },
             })
           )
@@ -510,12 +547,30 @@ router.get(
           return {
             name: interviewer.name,
             email: interviewer.email,
-            time_declared: interviewer_slots[i] > 0,
+            time_slots: interviewer_slots[i],
+            time_declared: interviewer_slots[i].length > 0,
           };
         });
 
-        res.status(200).json(data);
+        res.status(200).json({
+          interviewers: data,
+          num_zoom_accounts: interview_round.num_zoom_accounts,
+        });
       }
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.delete(
+  "/interviewer/time-slot/delete/:time_slot_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      await InterviewerSlot.destroy({ where: { id: req.params.time_slot_id } });
+      res.sendStatus(200);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
