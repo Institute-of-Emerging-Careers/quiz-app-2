@@ -350,6 +350,7 @@ const Step2 = () => {
                   name: new_interviewer_name,
                   email: new_interviewer_email,
                   time_declared: false,
+                  time_slots: [],
                 });
                 return copy;
               });
