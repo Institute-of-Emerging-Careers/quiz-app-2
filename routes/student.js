@@ -35,7 +35,7 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get("/orientation", async (req, res) => {
+router.get("/orientation", checkStudentAuthenticated, async (req, res) => {
   try {
     const student = await Student.findOne({ where: { id: req.user.user.id } });
     const orientations = await student.getOrientations();
@@ -52,14 +52,14 @@ router.get("/orientation", async (req, res) => {
   }
 });
 
-router.get("/interview", (req, res) => {
+router.get("/interview", checkStudentAuthenticated, (req, res) => {
   res.render("student/interview/index.ejs", {
     user_type: req.user.type,
     query: req.query,
   });
 });
 
-router.get("/onboarding", (req, res) => {
+router.get("/onboarding", checkStudentAuthenticated, (req, res) => {
   res.render("student/onboarding/index.ejs", {
     user_type: req.user.type,
     query: req.query,
