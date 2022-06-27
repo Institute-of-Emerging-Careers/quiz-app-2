@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { DateTime } = require("luxon");
+const { DateTime, Duration } = require("luxon");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
 
@@ -148,19 +148,42 @@ router.post("/signup", async (req, res) => {
 });
 
 router.get("/", checkStudentAuthenticated, async (req, res) => {
-  if (req.query.link != undefined) {
-    const invite = await Invite.findOne({
-      where: { link: req.query.link },
-      include: { model: Quiz, attributes: ["id"] },
-    });
-    const quizId = invite.Quiz.id;
-    await Assignment.findOrCreate({
-      where: { StudentId: req.user.user.id, QuizId: quizId },
-    });
-  }
+  // Invite Links are obsolete now. Assignments are created from assign.js
+  // if (req.query.link != undefined) {
+  //   const invite = await Invite.findOne({
+  //     where: { link: req.query.link },
+  //     include: { model: Quiz, attributes: ["id"] },
+  //   });
+  //   const quizId = invite.Quiz.id;
+  //   await Assignment.findOrCreate({
+  //     where: { StudentId: req.user.user.id, QuizId: quizId },
+  //   });
+  // }
+
+  const student = await Student.findOne({ where: { id: req.user.user.id } });
+  const orientations = await student.getOrientations();
+
+  // check if an orientation exists that has a date in the future
+  const orientation_exists = orientations.reduce(
+    (orientation_exists, cur_orientation) => {
+      if (orientation_exists) return true;
+
+      if (
+        DateTime.fromFormat(cur_orientation.date, "MM/dd/yyyy").startOf(
+          "day"
+        ) >= DateTime.now().startOf("day")
+      )
+        return true;
+      else return false;
+    },
+    false
+  );
+  console.log(orientation_exists);
+
   res.render("student/index.ejs", {
     user_type: req.user.type,
     query: req.query,
+    orientation_exists: orientation_exists,
   });
 });
 

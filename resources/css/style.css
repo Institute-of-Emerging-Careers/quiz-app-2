@@ -1417,10 +1417,6 @@ video {
   grid-template-columns: repeat(6, minmax(0, 1fr));
 }
 
-.grid-cols-7 {
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-}
-
 .grid-cols-8 {
   grid-template-columns: repeat(8, minmax(0, 1fr));
 }
@@ -2170,6 +2166,11 @@ video {
   background-color: rgba(16, 185, 129, var(--tw-bg-opacity));
 }
 
+.bg-green-600 {
+  --tw-bg-opacity: 1;
+  background-color: rgba(5, 150, 105, var(--tw-bg-opacity));
+}
+
 .bg-blue-500 {
   --tw-bg-opacity: 1;
   background-color: rgba(59, 130, 246, var(--tw-bg-opacity));
@@ -2402,6 +2403,10 @@ video {
 
 .p-0 {
   padding: 0px;
+}
+
+.p-1 {
+  padding: 0.25rem;
 }
 
 .p-2 {
