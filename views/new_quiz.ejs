@@ -11,17 +11,28 @@
 
     <!-- ReactJS and ReactDOM -->
     <!-- Replace these with production links. These are dev links. -->
-    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@17/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
+    ></script>
     <!-- Babel -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-    <!-- jQuery -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script> -->
-
     <title>New Quiz - Admin Panel</title>
   </head>
-  <body class="bg-gray-200 font-body pb-24" style="background: #f5e9b3; background: -webkit-linear-gradient(top left, #f5e9b3, #2dbeec); background: -moz-linear-gradient(top left, #f5e9b3, #2dbeec); background: linear-gradient(to bottom right, #f5e9b3, #2dbeec)">
+  <body
+    class="bg-gray-200 font-body pb-24"
+    style="
+      background: #f5e9b3;
+      background: -webkit-linear-gradient(top left, #f5e9b3, #2dbeec);
+      background: -moz-linear-gradient(top left, #f5e9b3, #2dbeec);
+      background: linear-gradient(to bottom right, #f5e9b3, #2dbeec);
+    "
+  >
     <%- include('./templates/header.ejs') %>
     <p class="hidden" id="quizIdField"><%= quizId %></p>
 

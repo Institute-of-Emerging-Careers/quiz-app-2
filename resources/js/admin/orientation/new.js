@@ -11,6 +11,11 @@ const orientation_id_value = document.getElementById(
 const ContextProvider = (props) => {
   const [orientation_id, setOrientationId] = useState(-1);
   const [orientation_name, setOrientationName] = useState("");
+  const [meeting_data, setMeetingData] = useState({
+    date: "",
+    time: "11",
+    zoom_link: "",
+  });
   const [students, setStudents] = useState([]);
   // once we get our list of candidates (i.e. all students who complete the assessment), we create an object where keys are student.id and values are true/false depending on whether that student has been added to this orientation or not
 
@@ -19,6 +24,7 @@ const ContextProvider = (props) => {
       value={{
         orientation_id_object: [orientation_id, setOrientationId],
         orientation_name_object: [orientation_name, setOrientationName],
+        meeting_data_object: [meeting_data, setMeetingData],
         students_object: [students, setStudents],
       }}
     >
@@ -235,8 +241,13 @@ const EmailForm = () => {
 };
 
 const NameForm = () => {
-  const { orientation_id_object, orientation_name_object, students_object } =
-    useContext(MyContext);
+  const {
+    orientation_id_object,
+    orientation_name_object,
+    meeting_data_object,
+    students_object,
+  } = useContext(MyContext);
+  const [meeting_data, setMeetingData] = meeting_data_object;
 
   const [orientation_id, setOrientationId] = orientation_id_object;
   const [orientation_name, setOrientationName] = orientation_name_object;
@@ -280,6 +291,7 @@ const NameForm = () => {
         },
         body: JSON.stringify({
           orientation_name: orientation_name,
+          meeting_data: meeting_data,
           students: students,
         }),
       }
@@ -344,6 +356,109 @@ const NameForm = () => {
   );
 };
 
+const OrientationDetailsForm = () => {
+  const { meeting_data_object } = useContext(MyContext);
+  const [meeting_data, setMeetingData] = meeting_data_object;
+
+  useEffect(() => {
+    fetch(`/admin/orientation/get-meeting-data/${orientation_id_value}`).then(
+      (resp) => {
+        if (resp.ok) {
+          resp
+            .json()
+            .then((response) => {
+              setMeetingData(response.meeting_data);
+            })
+            .catch((err) => {
+              console.log(err);
+              alert(
+                "Error getting meeting data such as zoom link, time, and date. Server sent wrongly formatted information. Contact IT."
+              );
+            });
+        } else {
+          alert(
+            "Error getting meeting data such as zoom link, time, and date."
+          );
+        }
+      }
+    );
+  }, []);
+
+  useEffect(() => {
+    $("#date-picker").datepicker({
+      showOn: "both",
+      onSelect: (date) => {
+        setMeetingData((cur) => {
+          return { ...cur, date: date };
+        });
+      },
+    });
+
+    $("#time-picker").timepicker({
+      timeFormat: "h:mm p",
+      interval: 15,
+      minTime: "08",
+      maxTime: "11:00pm",
+      defaultTime: "11",
+      startTime: "08:00",
+      dynamic: false,
+      dropdown: true,
+      scrollbar: true,
+      change: (time) => {
+        setMeetingData((cur) => {
+          return { ...cur, time: $("#time-picker").timepicker().format(time) };
+        });
+      },
+    });
+  }, [meeting_data]);
+
+  return (
+    <div>
+      <h3 className="text-base text-center font-bold mb-4">
+        Orientation Details
+      </h3>
+      <div className="w-full flex justify-around">
+        <div>
+          <label>Zoom Link: </label>
+          <input
+            type="url"
+            className="px-3 py-2 border w-full"
+            value={meeting_data.zoom_link}
+            onChange={(e) => {
+              setMeetingData((cur) => {
+                let copy = { ...cur, zoom_link: e.target.value };
+                console.log(copy);
+                return copy;
+              });
+            }}
+          ></input>
+        </div>
+
+        <div>
+          <label>Meeting Date: </label>
+          <input
+            type="text"
+            id="date-picker"
+            className="px-3 py-2 border w-full"
+            value={meeting_data.date}
+            // jQuery DatePicker does not fire the onChange event, so the change logic was handled in this component before UI rendering
+          ></input>
+        </div>
+
+        <div>
+          <label>Meeting Time: </label>
+          <input
+            type="text"
+            id="time-picker"
+            className="px-3 py-2 border w-full"
+            value={meeting_data.time}
+          ></input>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const StudentsListWrapper = () => {
   const { students_object } = useContext(MyContext);
   const [students, setStudents] = students_object;
@@ -381,6 +496,9 @@ const App = () => {
     <ContextProvider>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <NameForm />
+      </div>
+      <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
+        <OrientationDetailsForm />
       </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <StudentsListWrapper />

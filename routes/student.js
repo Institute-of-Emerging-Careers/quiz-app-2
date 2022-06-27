@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { DateTime } = require("luxon");
 const bcrypt = require("bcrypt");
 const randomstring = require("randomstring");
 
@@ -35,11 +35,21 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get("/orientation", (req, res) => {
-  res.render("student/orientation/index.ejs", {
-    user_type: req.user.type,
-    query: req.query,
-  });
+router.get("/orientation", async (req, res) => {
+  try {
+    const student = await Student.findOne({ where: { id: req.user.user.id } });
+    const orientations = await student.getOrientations();
+
+    res.render("student/orientation/index.ejs", {
+      user_type: req.user.type,
+      query: req.query,
+      DateTime: DateTime,
+      orientations: orientations,
+    });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.get("/interview", (req, res) => {

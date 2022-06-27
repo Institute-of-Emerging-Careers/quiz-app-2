@@ -116,7 +116,13 @@ router.post(
         where: { id: req.params.orientation_id },
         include: [Quiz],
       });
-      await orientation.update({ title: req.body.orientation_name });
+      console.log(req.body.meeting_data);
+      await orientation.update({
+        title: req.body.orientation_name,
+        date: req.body.meeting_data.date,
+        time: req.body.meeting_data.time,
+        meeting_link: req.body.meeting_data.zoom_link,
+      });
 
       // let's get all students who have already been invited to this Orientation and create a hashmap.
       let orientation_invites = await OrientationInvite.findAll({
@@ -274,6 +280,30 @@ router.get(
         console.log("Error: QuizId: or orientation:", orientation, "is NULL");
         res.json({ success: false });
       }
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.get(
+  "/get-meeting-data/:orientation_id",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const orientation = await Orientation.findOne({
+        where: { id: req.params.orientation_id },
+      });
+      console.log(orientation);
+      res.json({
+        meeting_data: {
+          date: orientation.date == null ? "" : orientation.date,
+          time: orientation.time == null ? "" : orientation.time,
+          zoom_link:
+            orientation.meeting_link == null ? "" : orientation.meeting_link,
+        },
+      });
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
