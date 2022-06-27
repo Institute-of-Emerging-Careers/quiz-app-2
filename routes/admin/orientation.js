@@ -231,7 +231,8 @@ router.get(
 
             assignments.forEach(async (assignment) => {
               const total_score_achieved = assignment.Attempts.reduce(
-                (final, cur) => (final += cur.Score.score),
+                (final, cur) =>
+                  (final += cur.Score == null ? 0 : cur.Score.score),
                 0
               );
               const orientation_invite = await OrientationInvite.findOne({
