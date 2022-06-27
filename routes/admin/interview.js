@@ -223,15 +223,29 @@ router.post(
   }
 );
 
-router.get("/round/delete/:interview_round_id", (req, res) => {
-  InterviewRound.destroy({ where: { id: req.params.interview_round_id } })
-    .then(() => {
-      res.sendStatus(200);
-    })
-    .catch((err) => {
-      console.log(err);
-      res.sendStatus(500);
-    });
+router.get("/round/delete/:interview_round_id", async (req, res) => {
+  try {
+    await Promise.all([
+      ...(
+        await InterviewerInvite.findAll({
+          where: { InterviewRoundId: req.params.interview_round_id },
+        })
+      ).map((invite) =>
+        InterviewerSlot.destroy({ where: { InterviewerInviteId: invite.id } })
+      ),
+      InterviewerInvite.destroy({
+        where: { InterviewRoundId: req.params.interview_round_id },
+      }),
+      InterviewRound.destroy({
+        where: { id: req.params.interview_round_id },
+      }),
+    ]);
+
+    res.sendStatus(200);
+  } catch (err) {
+    console.log(err);
+    re.sendStatus(500);
+  }
 });
 
 router.get("/login", async (req, res) => {
