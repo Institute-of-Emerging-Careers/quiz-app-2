@@ -40,37 +40,129 @@ const StudentsList = () => {
   const [num_rows_shown, setNumRowsShown] = useState(10);
   const [show_filters, setShowFilters] = useState(false);
   const [show_section_details, setShowSectionDetails] = useState(false);
+  const [courses, setCourses] = useState({});
 
   const application_fields = [
-    "phone",
-    "gender",
-    "age",
-    "city",
-    "province",
-    "country",
-    "address",
-    "father_name",
-    "current_address",
-    "education_completed",
-    "education_completed_major",
-    "education_ongoing",
-    "education_ongoing_major",
-    "monthly_family_income",
-    "computer_and_internet_access",
-    "internet_facility_in_area",
-    "time_commitment",
-    "is_employed",
-    "type_of_employment",
-    "salary",
-    "will_leave_job",
-    "has_applied_before",
-    "preference_reason",
-    "is_comp_sci_grad",
-    "how_heard_about_iec",
-    "will_work_full_time",
-    "acknowledge_online",
-    "rejection_email_sent",
-    "assessment_email_sent",
+    { is_preference_field: false, name: "phone", text: "Phone Number" },
+    { is_preference_field: false, name: "gender", text: "Gender" },
+    { is_preference_field: false, name: "age", text: "Age" },
+    { is_preference_field: false, name: "city", text: "City" },
+    { is_preference_field: false, name: "province", text: "Province" },
+    { is_preference_field: false, name: "country", text: "Country" },
+    { is_preference_field: false, name: "address", text: "Home Address" },
+    { is_preference_field: false, name: "father_name", text: "Father Name" },
+    {
+      is_preference_field: false,
+      name: "current_address",
+      text: "Current Address",
+    },
+    {
+      is_preference_field: false,
+      name: "education_completed",
+      text: "Education Completed",
+    },
+    {
+      is_preference_field: false,
+      name: "education_completed_major",
+      text: "Education Completed Major",
+    },
+    {
+      is_preference_field: false,
+      name: "education_ongoing",
+      text: "Ongoing Education",
+    },
+    {
+      is_preference_field: false,
+      name: "education_ongoing_major",
+      text: "Ongoing Education Major",
+    },
+    {
+      is_preference_field: false,
+      name: "monthly_family_income",
+      text: "Monthly Family Income",
+    },
+    {
+      is_preference_field: false,
+      name: "computer_and_internet_access",
+      text: "Computer and Internet Access",
+    },
+    {
+      is_preference_field: false,
+      name: "internet_facility_in_area",
+      text: "Internet Facility in Area",
+    },
+    {
+      is_preference_field: false,
+      name: "time_commitment",
+      text: "30-40 hours commitment",
+    },
+    {
+      is_preference_field: false,
+      name: "is_employed",
+      text: "Is employed or not",
+    },
+    {
+      is_preference_field: false,
+      name: "type_of_employment",
+      text: "Type of Employment",
+    },
+    { is_preference_field: false, name: "salary", text: "Salary" },
+    {
+      is_preference_field: false,
+      name: "will_leave_job",
+      text: "Will leave job if asked to or not",
+    },
+    {
+      is_preference_field: false,
+      name: "has_applied_before",
+      text: "Has applied to IEC before or not",
+    },
+    {
+      name: "firstPreferenceId",
+      text: "First Preference",
+      is_preference_field: true,
+    },
+    {
+      name: "secondPreferenceId",
+      text: "Second Preference",
+      is_preference_field: true,
+    },
+    {
+      name: "thirdPreferenceId",
+      text: "Third Preference",
+      is_preference_field: true,
+    },
+    {
+      is_preference_field: false,
+      name: "preference_reason",
+      text: "Preference Reason",
+    },
+    {
+      is_preference_field: false,
+      name: "is_comp_sci_grad",
+      text: "Is a Computer Science Graduate",
+    },
+    {
+      is_preference_field: false,
+      name: "how_heard_about_iec",
+      text: "How did the applicant hear about IEC",
+    },
+    {
+      is_preference_field: false,
+      name: "will_work_full_time",
+      text: "Will the applicant work full time after graduating from IEC",
+    },
+    {
+      is_preference_field: false,
+      name: "acknowledge_online",
+      text: "Acknowledge that Program is online",
+    },
+    { name: "rejection_email_sent", text: "Was the Applicant auto-rejected" },
+    {
+      is_preference_field: false,
+      name: "assessment_email_sent",
+      text: "Was the Applicant emailed the Assessment",
+    },
   ];
 
   useEffect(() => {
@@ -297,6 +389,7 @@ const StudentsList = () => {
             .json()
             .then((obj) => {
               setStudents(obj.data);
+              setCourses(obj.courses);
               setSections(obj.quiz_sections);
               setQuizTotalScore(obj.quiz_total_score);
               setLoading(false);
@@ -836,10 +929,9 @@ const StudentsList = () => {
                 <th className="py-3 px-6">Student Email</th>
                 {show_student_personal_details
                   ? [
-                      <th className="py-3 px-6">Student Gender</th>,
                       <th className="py-3 px-6">Student CNIC</th>,
                       ...application_fields.map((field) => (
-                        <th className="py-3 px-6">{field}</th>
+                        <th className="py-3 px-6">{field.text}</th>
                       )),
                     ]
                   : []}
@@ -890,16 +982,19 @@ const StudentsList = () => {
                   <td className="py-3 px-6">{student.student_email}</td>
                   {show_student_personal_details
                     ? [
-                        <td className="py-3 px-6">{student.student_gender}</td>,
                         <td className="py-3 px-6">{student.student_cnic}</td>,
                         ...application_fields.map((field) =>
-                          student.hasOwnProperty(field) ? (
-                            student[field] === true ? (
+                          student.hasOwnProperty(field.name) ? (
+                            student[field.name] === true ? (
                               <td>Yes</td>
-                            ) : student[field] === false ? (
+                            ) : student[field.name] === false ? (
                               <td>No</td>
                             ) : (
-                              <td className="py-3 px-6">{student[field]}</td>
+                              <td className="py-3 px-6">
+                                {field.is_preference_field
+                                  ? courses[student[field.name]]
+                                  : student[field.name]}
+                              </td>
                             )
                           ) : (
                             <td>N/A</td>
