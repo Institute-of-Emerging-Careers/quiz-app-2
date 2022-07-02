@@ -267,6 +267,7 @@ router.get(
                 age: assignment.Student.age,
                 gender: assignment.Student.gender,
                 total_score_achieved: total_score_achieved,
+                assignment_completed_date: assignment.updatedAt,
                 percentage_score: roundToTwoDecimalPlaces(
                   (total_score_achieved / quiz_total_score) * 100
                 ),

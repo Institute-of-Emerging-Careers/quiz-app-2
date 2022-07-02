@@ -453,6 +453,7 @@ router.get(
               age: assignment.Student.age,
               gender: assignment.Student.gender,
               total_score_achieved: 0,
+              assignment_completed_date: assignment.updatedAt,
               percentage_score: 0,
             }) - 1;
 

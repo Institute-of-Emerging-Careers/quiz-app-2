@@ -2,6 +2,7 @@ const NewStudentAdder = (props) => {
   const [students, setStudents] = props.students_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
+  const [filter_date, setFilterDate] = useState(DateTime.now().minus({months: 1}).toFormat("yyyy-MM-dd"));
   const [orientation_status_filter, setOrientationStatusFilter] =
     useState("all");
 
@@ -31,6 +32,7 @@ const NewStudentAdder = (props) => {
       students.filter(
         (student) =>
           student.percentage_score >= filter_min_score &&
+          DateTime.fromISO(student.assignment_completed_date).startOf("day").ts >= DateTime.fromFormat(filter_date,"yyyy-MM-dd").startOf("day").ts &&
           ((student.added &&
             (orientation_status_filter == "all" ||
               orientation_status_filter == "added")) ||
@@ -39,7 +41,7 @@ const NewStudentAdder = (props) => {
                 orientation_status_filter == "not-added")))
       )
     );
-  }, [filter_min_score, orientation_status_filter]);
+  }, [filter_min_score,filter_date, orientation_status_filter]);
 
   useEffect(() => {
     setLoading(true);
@@ -103,7 +105,7 @@ const NewStudentAdder = (props) => {
         {props.title} List
       </button>
       <div ref={section2}>
-        <div className="grid grid-cols-4 items-center">
+        <div className="grid grid-cols-6 items-center">
           <div className="col-span-2">
             <label htmlFor="filter_min_score">Filter by Minimum Score: </label>
             <input
@@ -115,6 +117,22 @@ const NewStudentAdder = (props) => {
               name="filter_min_score"
               onChange={(e) => {
                 setFilterMinScore(e.target.value);
+              }}
+              className="ml-2 p-2 w-72 border"
+            ></input>
+            %
+          </div>
+          <div className="col-span-2">
+            <label htmlFor="filter_min_score">Filter by Latest Submission Date: </label>
+            <input
+              type="date"
+              min="0"
+              max={DateTime.now()}
+              value={filter_date}
+              name="filter_date"
+              onChange={(e) => {
+                setFilterDate(e.target.value);
+                console.log("Filter Date: ",e.target.value)
               }}
               className="ml-2 p-2 w-72 border"
             ></input>
@@ -160,6 +178,7 @@ const NewStudentAdder = (props) => {
         ) : (
           <div></div>
         )}
+        <p><b>{filtered_students.length}</b> filtered students.</p>
         <table className="w-full text-left px-2">
           <thead>
             <tr className="py-4">
@@ -168,6 +187,7 @@ const NewStudentAdder = (props) => {
               <th>Email</th>
               <th>Age</th>
               <th>Gender</th>
+              <th>Submission Date</th>
               <th>Score (%)</th>
             </tr>
           </thead>
@@ -193,6 +213,7 @@ const NewStudentAdder = (props) => {
                 <td className="border px-4 py-2">{student.email}</td>
                 <td className="border px-4 py-2">{student.age}</td>
                 <td className="border px-4 py-2">{student.gender}</td>
+                <td className="border px-4 py-2">{DateTime.fromISO(student.assignment_completed_date).toFormat("dd LLL yyyy")}</td>
                 <td className="border px-4 py-2">{student.percentage_score}</td>
               </tr>
             ))}

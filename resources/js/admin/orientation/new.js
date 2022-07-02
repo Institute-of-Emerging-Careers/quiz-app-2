@@ -3,6 +3,7 @@ const useEffect = React.useEffect;
 const useState = React.useState;
 const useContext = React.useContext;
 const useRef = React.useRef;
+const { DateTime, Duration } = luxon;
 const useMemo = React.useMemo;
 const orientation_id_value = document.getElementById(
   "orientation-id-field"
