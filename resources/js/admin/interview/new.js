@@ -200,9 +200,6 @@ const Step2 = () => {
   }, [reload]);
 
   useEffect(() => {
-    console.log(
-      interviewers.filter((interviewer) => !interviewer.time_declared)
-    );
     setSpecificInterviewersToEmail([
       ...interviewers.filter((interviewer) => !interviewer.time_declared),
     ]);
@@ -390,6 +387,14 @@ const Step2 = () => {
       <div className="flex mt-4 mb-4 justify-between items-center">
         <h2 className="text-lg">Interviewers Added</h2>
         <div className="flex">
+        <button
+            type="button"
+            className="py-3 px-6 bg-indigo-600 text-white cursor-pointer hover:bg-indigo-700"
+            onClick={() => {
+              downloadAsCSV(interviewers)
+            }}
+          >
+            <i className="fas fa-file-download"></i> Download as CSV</button>
           <button
             type="button"
             className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
