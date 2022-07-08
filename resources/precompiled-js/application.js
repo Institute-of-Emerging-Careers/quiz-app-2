@@ -1,14 +1,16 @@
-const list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
+"use strict";
+
+var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
 
 function handleForm(e) {
   $("#submit-spinner").removeClass("hidden-imp");
   e.preventDefault();
   e.stopPropagation();
-  const data = new URLSearchParams(new FormData(e.target));
+  var data = new URLSearchParams(new FormData(e.target));
   fetch($("#application-form").attr("action"), {
     method: "POST",
     body: data
-  }).then(raw_response => {
+  }).then(function (raw_response) {
     $("#submit-spinner").addClass("hidden-imp");
 
     if (raw_response.ok) {
@@ -24,11 +26,11 @@ function handleForm(e) {
       alert("Something went wrong.");
       $("#step5-next-button").removeClass("btn-primary").addClass("btn-danger");
     } else if (raw_response.status == 400) {
-      raw_response.json().then(response => {
+      raw_response.json().then(function (response) {
         $("#step5-next-button").removeClass("btn-primary").addClass("btn-danger");
         console.log(response);
-        $(`#${response.field}`).addClass("is-invalid").focus();
-        $(`#${response.field}-error-message`).text(response.message);
+        $("#".concat(response.field)).addClass("is-invalid").focus();
+        $("#".concat(response.field, "-error-message")).text(response.message);
         $("#application-form").addClass("was-validated");
       });
     } else if (raw_response.status == 403) {
@@ -38,23 +40,23 @@ function handleForm(e) {
 }
 
 function resetAllErrors(list_of_fields) {
-  list_of_fields.forEach(field => {
-    $(`#${field}-error-message`).text("");
+  list_of_fields.forEach(function (field) {
+    $("#".concat(field, "-error-message")).text("");
   });
 }
 
 document.getElementById("application-form").addEventListener("submit", handleForm);
 
-const nextStep = (from, to) => {
-  $(`#${to}-bar`).removeClass("bg-secondary").addClass("progress-bar-striped");
-  $(`#${from}`).addClass("was-validated");
-  if (to == "step5") $(`#${to}`).addClass("was-validated");
-  $(`#${from}-next-button`).fadeOut(() => {
-    $(`#${to}`).fadeIn();
+var nextStep = function nextStep(from, to) {
+  $("#".concat(to, "-bar")).removeClass("bg-secondary").addClass("progress-bar-striped");
+  $("#".concat(from)).addClass("was-validated");
+  if (to == "step5") $("#".concat(to)).addClass("was-validated");
+  $("#".concat(from, "-next-button")).fadeOut(function () {
+    $("#".concat(to)).fadeIn();
   });
 };
 
-const checkIfUserExists = () => {
+var checkIfUserExists = function checkIfUserExists() {
   resetAllErrors(list_of_fields);
 
   if ($("#email").val() == "") {
@@ -75,17 +77,17 @@ const checkIfUserExists = () => {
         cnic: document.getElementById("cnic").value,
         application_round_id: $("#application_round_id_field").val()
       })
-    }).then(raw_response => {
+    }).then(function (raw_response) {
       $("#step-1-next-button-spinner").addClass("hidden-imp");
       resetAllErrors(list_of_fields);
 
       if (raw_response.ok) {
-        raw_response.json().then(response => {
+        raw_response.json().then(function (response) {
           if (response.exists) {
             if (response.type == "already_applied") {
               $("#application-form input").prop("disabled", true);
-              $(`#application-form-error-message`).html("<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.").show();
-              $(`#step1-next-button`).removeClass("btn-primary").addClass("btn-danger").attr("disabled", true);
+              $("#application-form-error-message").html("<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.").show();
+              $("#step1-next-button").removeClass("btn-primary").addClass("btn-danger").attr("disabled", true);
             } else if (response.type == "both_cnic_and_email") {
               $("#password-input-group :input").prop("disabled", true);
               $("#password").attr("required", false);
@@ -94,30 +96,30 @@ const checkIfUserExists = () => {
               $("#email").attr("readonly", true);
               $("#cnic").attr("readonly", true); // resetting errors
 
-              $(`#cnic`).removeClass("is-invalid");
-              $(`#email`).removeClass("is-invalid");
+              $("#cnic").removeClass("is-invalid");
+              $("#email").removeClass("is-invalid");
               nextStep("step1", "step2");
             } else if (response.type == "email_only") {
-              $(`#cnic`).addClass("is-invalid").focus();
-              $(`#cnic-error-message`).html(`The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br>Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank">click here to change your CNIC number</a> if you remember your password from last time.`);
+              $("#cnic").addClass("is-invalid").focus();
+              $("#cnic-error-message").html("The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br>Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href=\"/application/change-cnic\" target=\"_blank\">click here to change your CNIC number</a> if you remember your password from last time.");
             } else if (response.type == "cnic_only") {
-              $(`#email`).addClass("is-invalid").focus();
-              $(`#email-error-message`).html(`We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ${response.email}.<br>If that email address was correct, then please use that same email address and cnic pair.<br>If you entered a wrong email address the last time, then <a href="/application/change-email">click here to change your email address</a>.`);
+              $("#email").addClass("is-invalid").focus();
+              $("#email-error-message").html("We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ".concat(response.email, ".<br>If that email address was correct, then please use that same email address and cnic pair.<br>If you entered a wrong email address the last time, then <a href=\"/application/change-email\">click here to change your email address</a>."));
             } else {
               // resetting errors
-              $(`#cnic`).removeClass("is-invalid");
-              $(`#email`).removeClass("is-invalid");
+              $("#cnic").removeClass("is-invalid");
+              $("#email").removeClass("is-invalid");
               nextStep("step1", "step2");
             }
           } else {
             // resetting errors
-            $(`#cnic`).removeClass("is-invalid");
-            $(`#email`).removeClass("is-invalid");
+            $("#cnic").removeClass("is-invalid");
+            $("#email").removeClass("is-invalid");
             nextStep("step1", "step2");
           }
         });
       } else alert("Something went wrong. Please check your internet connection and try again. Code 01.");
-    }).catch(err => {
+    }).catch(function (err) {
       console.log(err);
       alert("Something went wrong. Please check your internet connection and try again. Code 02.");
     });
@@ -130,17 +132,23 @@ $(document).ready(function () {
   console.logs = [];
 
   console.log = function () {
-    let last_index = console.logs.push(Array.from(arguments)) - 1;
+    var last_index = console.logs.push(Array.from(arguments)) - 1;
     console.logs[last_index] = JSON.stringify(console.logs[last_index]);
-    $("#support_email").prop("href", `mailto:mail@iec.org.pk?body=${encodeURIComponent("Console Data (do not change): " + console.logs.toString())}`);
+    $("#support_email").prop("href", "mailto:mail@iec.org.pk?body=".concat(encodeURIComponent("Console Data (do not change): " + console.logs.toString())));
     console.stdlog.apply(console, arguments);
   }; // pagination
 
 
   $("#step1-next-button").click(checkIfUserExists);
-  $("#step2-next-button").click(() => nextStep("step2", "step3"));
-  $("#step3-next-button").click(() => nextStep("step3", "step4"));
-  $("#step4-next-button").click(() => nextStep("step4", "step5")); // showing additional employment questions if the user selects "yes" on "are you employed"
+  $("#step2-next-button").click(function () {
+    return nextStep("step2", "step3");
+  });
+  $("#step3-next-button").click(function () {
+    return nextStep("step3", "step4");
+  });
+  $("#step4-next-button").click(function () {
+    return nextStep("step4", "step5");
+  }); // showing additional employment questions if the user selects "yes" on "are you employed"
 
   $("#is_employed_no").prop("checked", false);
 

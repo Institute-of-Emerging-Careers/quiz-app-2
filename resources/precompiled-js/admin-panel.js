@@ -1,11 +1,13 @@
-const invite_quizid_field = document.getElementById("invite-quiz-id");
-const modal = document.getElementById("modal");
-const real_time_url = document.getElementById("real-time-link");
-const invite_url_field = document.getElementById("invite-url-field");
-const site_domain_name = document.getElementById("site-domain-name").innerText;
-const link_creation_spinner = $("#link-creation-spinner");
-const invite_link_error = $("#invite-link-error");
-const previous_links_table_body = $("#previous-links-table-body");
+"use strict";
+
+var invite_quizid_field = document.getElementById("invite-quiz-id");
+var modal = document.getElementById("modal");
+var real_time_url = document.getElementById("real-time-link");
+var invite_url_field = document.getElementById("invite-url-field");
+var site_domain_name = document.getElementById("site-domain-name").innerText;
+var link_creation_spinner = $("#link-creation-spinner");
+var invite_link_error = $("#invite-link-error");
+var previous_links_table_body = $("#previous-links-table-body");
 real_time_url.innerHTML = "Link URL Preview: <span class='text-blue-600'>" + linkToFullUrl(invite_url_field.value) + "</span>";
 
 function linkToFullUrl(link) {
@@ -21,7 +23,7 @@ function hideModal() {
   modal.classList.toggle("hidden-imp");
 }
 
-invite_url_field.addEventListener("keyup", e => {
+invite_url_field.addEventListener("keyup", function (e) {
   real_time_url.innerHTML = "Link URL Preview: <span class='text-blue-600'>" + linkToFullUrl(e.target.value) + "</span>";
 });
 $("#invite-link-creation-form").submit(function (e) {
@@ -45,13 +47,13 @@ $("#invite-link-creation-form").submit(function (e) {
 
 function toggleDropdown(quiz_id) {
   console.log("hi", quiz_id);
-  $(`#quiz-dropdown-${quiz_id}`).toggleClass("hidden");
+  $("#quiz-dropdown-".concat(quiz_id)).toggleClass("hidden");
 }
 
 function toggleReminderEmailSetting(dom_obj) {
-  const current_reminder_setting = dom_obj.dataset.currentReminderSetting;
-  const quiz_id = dom_obj.dataset.quizId;
-  const data_to_send = {
+  var current_reminder_setting = dom_obj.dataset.currentReminderSetting;
+  var quiz_id = dom_obj.dataset.quizId;
+  var data_to_send = {
     current_reminder_setting: current_reminder_setting,
     quiz_id: quiz_id
   };

@@ -1,8 +1,10 @@
-const Modal = props => {
-  const show_modal = props.show_modal;
-  const setShowModal = props.setShowModal;
-  const heading = props.heading;
-  const content = props.content;
+"use strict";
+
+var Modal = function Modal(props) {
+  var show_modal = props.show_modal;
+  var setShowModal = props.setShowModal;
+  var heading = props.heading;
+  var content = props.content;
   return /*#__PURE__*/React.createElement("div", null, show_modal > -1 ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
     className: "h-screen w-full inset-0 fixed z-30 bg-black bg-opacity-60"
@@ -14,7 +16,7 @@ const Modal = props => {
     className: "text-xl col-auto justify-self-start self-center"
   }, heading), /*#__PURE__*/React.createElement("i", {
     className: "fas fa-times text-white cursor-pointer col-auto justify-self-end self-center",
-    onClick: () => {
+    onClick: function onClick() {
       setShowModal(false);
     }
   })), /*#__PURE__*/React.createElement("div", {

@@ -1,25 +1,27 @@
-const csv_input = document.getElementById("csv-upload");
-csv_input.addEventListener("change", uploadCSV);
-const csv_form = document.getElementById("csv_form");
-const mail_form = document.getElementById("mail-form");
-const recepients_list = document.getElementById("recepients_list");
-const recepient_field = document.getElementById("recepient_field");
-const email_button = document.getElementById("email-button");
-let email_addresses = [];
-let number_of_emails_left = 0; // email form fields
+"use strict";
 
-const email_subject = document.getElementById("subject");
-const email_heading = document.getElementById("heading");
-const email_body = document.getElementById("body");
-const email_button_announcer = document.getElementById("button_announcer");
-const email_button_label = document.getElementById("button_text");
-const email_button_url = document.getElementById("button_url");
-const load_previous_email_spinner = document.getElementById("load_previous_email_spinner");
+var csv_input = document.getElementById("csv-upload");
+csv_input.addEventListener("change", uploadCSV);
+var csv_form = document.getElementById("csv_form");
+var mail_form = document.getElementById("mail-form");
+var recepients_list = document.getElementById("recepients_list");
+var recepient_field = document.getElementById("recepient_field");
+var email_button = document.getElementById("email-button");
+var email_addresses = [];
+var number_of_emails_left = 0; // email form fields
+
+var email_subject = document.getElementById("subject");
+var email_heading = document.getElementById("heading");
+var email_body = document.getElementById("body");
+var email_button_announcer = document.getElementById("button_announcer");
+var email_button_label = document.getElementById("button_text");
+var email_button_url = document.getElementById("button_url");
+var load_previous_email_spinner = document.getElementById("load_previous_email_spinner");
 email_button.addEventListener("click", sendEmails);
 
 function arrayToCommaDeliminatedString(arr) {
-  let result = "";
-  arr.map((elem, index) => {
+  var result = "";
+  arr.map(function (elem, index) {
     result += elem;
     if (index != arr.length - 1) result += ", ";
   });
@@ -28,29 +30,31 @@ function arrayToCommaDeliminatedString(arr) {
 
 function stringIsEmail(str) {
   // Regular expression to check if string is email
-  const regexExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/gi;
+  var regexExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/gi;
   return regexExp.test(str);
 }
 
 function uploadCSV(e) {
-  let data = new FormData(csv_form);
+  var data = new FormData(csv_form);
   fetch("/upload/email/csv", {
     method: "POST",
     body: data
-  }).then(response => {
+  }).then(function (response) {
     if (response.status == 200) {
-      response.json().then(array_of_emails => {
-        array_of_emails = array_of_emails.filter(email => stringIsEmail(email));
+      response.json().then(function (array_of_emails) {
+        array_of_emails = array_of_emails.filter(function (email) {
+          return stringIsEmail(email);
+        });
         $("#list_of_emails_heading").fadeIn();
-        array_of_emails.forEach(email => {
-          $("#recepients_list").append(`<li data-email="${email}">${email}</li>`);
+        array_of_emails.forEach(function (email) {
+          $("#recepients_list").append("<li data-email=\"".concat(email, "\">").concat(email, "</li>"));
         });
         number_of_emails_left = array_of_emails.length;
         $("#emails_left").text("Emails Remaining to be Sent: ", number_of_emails_left);
         recepient_field.classList.add("hidden");
         recepient_field.disabled = true;
         email_addresses = array_of_emails;
-      }).catch(err => {
+      }).catch(function (err) {
         console.log(err);
       });
     } else if (response.status == 401) {
@@ -58,7 +62,7 @@ function uploadCSV(e) {
     } else {
       console.log("error uploading csv file");
     }
-  }).catch(err => {
+  }).catch(function (err) {
     console.log(err);
   });
 }
@@ -73,17 +77,17 @@ function sendEmails() {
   }
 
   if (email_addresses.length > 0) {
-    const socket = io();
+    var socket = io();
     socket.connect();
-    socket.on("connect", () => {
+    socket.on("connect", function () {
       console.log("Socket connected");
-      socket.on("email-sent", email_address => {
+      socket.on("email-sent", function (email_address) {
         $('#recepients_list li:contains("' + email_address + '")').css("color", "green");
 
-        for (let i = 0; i < email_addresses.length; i++) {
+        for (var i = 0; i < email_addresses.length; i++) {
           if (email_addresses[i] == email_address) {
             number_of_emails_left--;
-            $("#emails_left").text(`Emails Remaining to be Sent: ${number_of_emails_left}`);
+            $("#emails_left").text("Emails Remaining to be Sent: ".concat(number_of_emails_left));
             email_addresses.splice(i, 1);
             break;
           }
@@ -106,7 +110,7 @@ function sendEmails() {
           button_link: email_button_url.value
         }
       })
-    }).then(response => {
+    }).then(function (response) {
       document.getElementById("loading-spinner").classList.add("hidden");
       $("#mail-form").fadeOut();
       $("#csv-form").fadeOut();
@@ -118,7 +122,7 @@ function sendEmails() {
         alert("There was an error sending emails. Contact IT.");
         console.log(response);
       }
-    }).catch(err => {
+    }).catch(function (err) {
       document.getElementById("loading-spinner").classList.add("hidden");
       console.log(err);
       alert("Could not contact server. Something is wrong. Try later.");
@@ -128,26 +132,26 @@ function sendEmails() {
   }
 }
 
-const prev_email_selector = document.getElementById("prev_email_selector");
+var prev_email_selector = document.getElementById("prev_email_selector");
 prev_email_selector.addEventListener("change", loadPreviousEmail);
 
 function loadPreviousEmail(e) {
   load_previous_email_spinner.classList.remove("hidden");
-  const email_id = e.target.value;
-  fetch("/email/get/" + email_id).then(resp => {
-    resp.json().then(email => {
+  var email_id = e.target.value;
+  fetch("/email/get/" + email_id).then(function (resp) {
+    resp.json().then(function (email) {
       email_subject.value = email.subject;
       email_heading.value = email.heading;
       email_body.value = email.body;
       email_button_announcer.value = email.button_pre_text;
       email_button_label.value = email.button_label;
       email_button_url.value = email.button_url;
-    }).catch(err => {
+    }).catch(function (err) {
       console.log(err);
     });
-  }).catch(err => {
+  }).catch(function (err) {
     console.log(err);
-  }).finally(() => {
+  }).finally(function () {
     load_previous_email_spinner.classList.add("hidden");
   });
 }
