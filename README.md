@@ -1,4 +1,4 @@
-#Project Details
+# Project Details
 This is a Student Acquisition System consisting of 5 phases:
 <ul>
   <li>Application</li>
@@ -8,7 +8,7 @@ This is a Student Acquisition System consisting of 5 phases:
   <li>Onboarding</li>
 </ul>
 
-##Tech Stack
+## Tech Stack
 NodeJS | ExpressJS |  ReactJS | MySQL | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai
 For testing it uses Mocha & Chai.
 For emails it uses AWS SES and for email queues it uses Redis-Bull.
