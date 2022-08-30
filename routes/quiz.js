@@ -432,7 +432,7 @@ router.get(
     // checking if 30 days have gone by since the student was assigned this assessment, because that's the deadline
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
-    const deadline_from_signup = 30; //days
+    const deadline_from_signup = process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS; //days
 
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
       await scoreSection(req.params.sectionId, req.user.user.id, null, true);
