@@ -35,4 +35,4 @@ All models are defined in `/models` using sequelize. In `db/initialize.js`, set 
 To install required dependencies, run `npm install` in the project root.
 
 ## Customizations
-You may want to change the fontawesome import link. The one currently in use is v5.
+You may want to change the fontawesome import link because it is a free link associated with my personal fontawesome account and is only allowed to be used on one website. The version currently in use is v5.
