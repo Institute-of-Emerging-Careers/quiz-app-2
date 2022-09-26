@@ -37,11 +37,11 @@ const initializeDatabase = async () => {
 
     if (alterandforce) {
       // Add a single admin user
-      const hashedPwd = await bcrypt.hash("examplepassword", 10);
+      const hashedPwd = await bcrypt.hash("test", 10);
       const adminUser = await sequelize.models.User.create({
-        firstName: "Danish",
-        lastName: "Khan",
-        email: "admin@iec.org.pk",
+        firstName: "Test",
+        lastName: "Admin",
+        email: "admin@example.com",
         password: hashedPwd,
       });
       console.log("Admin User Danish created.");
