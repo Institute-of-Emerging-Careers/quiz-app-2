@@ -19,7 +19,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 - `NODE_ENV` | `production`, `development`, or `test`/`testing`
 - `SITE_DOMAIN_NAME` | the url of the website, like `https://www.website.com`
 - `SESSION_SERET`
-- `MYSQL_CONNETION_STRING` | as used by Sequelize ORM
+- `MYSQL_CONNECTION_STRING` | as used by Sequelize ORM
 - `PORT` | e.g. `3000`
 - `TIMEZIME_OFFSET` | offset of the server from Pakistan Standard Time, e.g. `+05:00`
 - `AWS_SES_ACCESS_KEY_ID`
@@ -29,7 +29,13 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
 
 ## Database Initialization
-All models are defined in `/models` using sequelize. In `db/initialize.js`, set `force: true` to create empty database upon server start.
+
+### MySQL
+All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `MYSQL_CONNECTION_STRING` in the `.env` file. 
+In `db/initialize.js`, set `force: true` to initialize the empty database with some sample data upon server start. Set `force: false` afterwards.
+
+### Redis
+You need to install redis before running the server as well.
 
 ## Modules
 To install required dependencies, run `npm install` in the project root.
