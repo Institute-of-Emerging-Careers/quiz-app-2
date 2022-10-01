@@ -35,7 +35,7 @@ All models are defined in `/models` using sequelize. Create an empty database in
 In `db/initialize.js`, set `force: true` to initialize the empty database with some sample data upon server start. Set `force: false` afterwards.
 
 ### Redis
-You need to install redis before running the server as well.
+You need to install redis and run it on port `6379` before running the server as well.
 
 ## Modules
 To install required dependencies, run `npm install` in the project root.
