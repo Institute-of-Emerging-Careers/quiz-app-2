@@ -19,7 +19,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 - `NODE_ENV` | `production`, `development`, or `test`/`testing`
 - `SITE_DOMAIN_NAME` | the url of the website, like `https://www.website.com`
 - `SESSION_SERET`
-- `MYSQL_CONNECTION_STRING` | as used by Sequelize ORM
+- `MYSQL_CONNECTION_STRING` | format: `mysql://username:password@localhost:3306/`
 - `PORT` | e.g. `3000`
 - `TIMEZIME_OFFSET` | offset of the server from Pakistan Standard Time, e.g. `+05:00`
 - `AWS_SES_ACCESS_KEY_ID`
