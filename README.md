@@ -31,7 +31,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 ## Database Initialization
 
 ### MySQL
-All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `MYSQL_CONNECTION_STRING` in the `.env` file. 
+All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `config` folder. By default the program expects the database to be named `quizdb`. 
 In `db/initialize.js`, set `alterandforce = true` to initialize the empty database with some sample data upon server start. Set `alterandforce = false` afterwards.
 
 ### Redis
