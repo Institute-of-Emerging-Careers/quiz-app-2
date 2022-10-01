@@ -9,7 +9,7 @@ This is a Student Acquisition System consisting of 5 phases:
 </ul>
 
 ## Tech Stack
-NodeJS | ExpressJS |  ReactJS | MySQL | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
+NodeJS (version 14) | ExpressJS |  ReactJS | MySQL | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
 For testing it uses Mocha & Chai.<br>
 For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
@@ -38,7 +38,7 @@ In `db/initialize.js`, set `force: true` to initialize the empty database with s
 You need to install redis and run it on port `6379` before running the server as well.
 
 ## Modules
-To install required dependencies, run `npm install` in the project root.
+To install required dependencies, run `npm install` in the project root. Make sure you have [Node v14 installed](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04#option-3-installing-node-using-the-node-version-manager). 
 
 ## Customizations
 You may want to change the fontawesome import link because it is a free link associated with my personal fontawesome account and is only allowed to be used on one website. The version currently in use is v5.
