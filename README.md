@@ -32,7 +32,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
 ### MySQL
 All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `MYSQL_CONNECTION_STRING` in the `.env` file. 
-In `db/initialize.js`, set `force: true` to initialize the empty database with some sample data upon server start. Set `force: false` afterwards.
+In `db/initialize.js`, set `alterandforce = true` to initialize the empty database with some sample data upon server start. Set `alterandforce = false` afterwards.
 
 ### Redis
 You need to install redis and run it on port `6379` before running the server as well.
