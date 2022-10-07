@@ -47,17 +47,14 @@ var ApplicantDetailsModal = function ApplicantDetailsModal(props) {
     title: "Current Address",
     name: ["current_address"]
   }, {
+    title: "From Flood Affected Area",
+    name: ["belongs_to_flood_area"]
+  }, {
     title: "Education Completed",
     name: ["education_completed"]
   }, {
     title: ["Major of Education Completed"],
     name: ["education_completed_major"]
-  }, {
-    title: "Ongoing Education",
-    name: ["education_ongoing"]
-  }, {
-    title: "Major of Ongoing Education",
-    name: ["education_ongoing_major"]
   }, {
     title: "Monthly Family Income",
     name: ["monthly_family_income"]
