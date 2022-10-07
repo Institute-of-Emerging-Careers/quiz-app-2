@@ -13,6 +13,7 @@ const {
   provinces,
   countries,
   education_levels,
+  degree_choice,
   type_of_employment,
   sources_of_information,
 } = require("../db/data_lists");
@@ -42,11 +43,13 @@ router.get(
           const courses = await application_round.getCourses({
             attributes: ["id", "title"],
           });
+
           res.render("application.ejs", {
             cities: cities,
             provinces: provinces,
             countries: countries,
             education_levels: education_levels,
+            degree_choice: degree_choice,
             type_of_employment: type_of_employment,
             courses: courses,
             sources_of_information: sources_of_information,

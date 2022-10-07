@@ -44,6 +44,7 @@ const application_fields = [
   "address",
   "father_name",
   "current_address",
+  "from_flooded_area",
   "education_completed",
   "education_completed_major",
   "education_ongoing",
