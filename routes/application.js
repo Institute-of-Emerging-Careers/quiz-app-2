@@ -15,6 +15,9 @@ const {
   education_levels,
   degree_choice,
   type_of_employment,
+  income_brackets,
+  people_in_household,
+  knows_from_IEC,
   sources_of_information,
 } = require("../db/data_lists");
 
@@ -51,7 +54,10 @@ router.get(
             education_levels: education_levels,
             degree_choice: degree_choice,
             type_of_employment: type_of_employment,
+            income_brackets: income_brackets,
             courses: courses,
+            people_in_household: people_in_household,
+            knows_from_IEC: knows_from_IEC,
             sources_of_information: sources_of_information,
             application_round_id: req.params.application_round_id,
           });

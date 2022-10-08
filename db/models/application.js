@@ -7,7 +7,10 @@ const {
 	education_levels,
 	degree_choice,
 	type_of_employment,
+	income_brackets,
+	people_in_household,
 	age_groups,
+	knows_from_IEC,
 	sources_of_information,
 } = require("../../db/data_lists");
 const { queueMail } = require("../../bull");
@@ -248,18 +251,17 @@ Application.init(
 				},
 			},
 		},
-
 		monthly_family_income: {
-			type: DataTypes.INTEGER.UNSIGNED,
+			type: DataTypes.STRING,
 			allowNull: false,
 			defaultValue: "0",
 			validate: {
 				notEmpty: {
 					msg: "Monthly Family Income cannot be empty. Please enter a non-negative value.",
 				},
-				min: {
-					args: [[0]],
-					msg: "Invalid monthly family income. Must be a positive number.",
+				isIn: {
+					args: [income_brackets],
+					msg: "Invalid Monthly Family Income",
 				},
 			},
 		},
@@ -291,17 +293,85 @@ Application.init(
 			},
 		},
 		salary: {
-			type: DataTypes.INTEGER.UNSIGNED,
+			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "0",
 			validate: {
-				min: {
-					args: [[0]],
-					msg: "Invalid monthly family income. Must be a positive number.",
+				isIn:{
+					args: [income_brackets],
+					msg: "Invalid salary. Please pick one of the provided options.",
 				},
 			},
 		},
+		current_field : {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: "N/A",
+		},
 		will_leave_job: {
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+		},
+		how_to_enroll: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			defaultValue: "N/A",
+			validate: {
+				notEmpty: {
+					msg: "How to enroll cannot be empty. Please select an option.",
+				}
+			}
+		},
+		salary_expectation: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			defaultValue: "0",
+			validate: {
+				isIn: {
+					args: [income_brackets],
+					msg: "Invalid salary expectation. Please pick one of the provided options.",
+				},
+				notEmpty: {
+					msg: "Salary Expectation cannot be empty. Please enter a non-negative value.",
+				},
+			}
+		},
+		on_fa_in_university: {
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+		},
+		people_in_household: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: "0",
+			validate: {
+				isIn: {
+					args: [people_in_household],
+					msg: "Invalid number of people in household. Please pick one of the provided options.",
+				}
+			}
+		},
+		people_earning_in_household: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: "0",
+			validate: {
+				isIn: {
+					args: [people_in_household],
+					msg: "Invalid number of people earning in household. Please pick one of the provided options.",
+				}
+			}
+		},
+		is_married: {
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+		},
+		how_complete_course: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			defaultValue: "N/A",
+		},
+		can_pay_2000: {
 			type: DataTypes.BOOLEAN,
 			allowNull: true,
 		},
@@ -334,11 +404,30 @@ Application.init(
 		},
 		how_heard_about_iec: {
 			type: DataTypes.STRING,
-			allowNull: true,
+			allowNull: false,
 			validate: {
 				isIn: {
 					args: [sources_of_information],
 					msg: "Please tell us how you heard about IEC.",
+				},
+			},
+		},
+		knows_from_IEC: {
+			type: DataTypes.STRING,
+			allowNull: true,
+			validate: {
+				isIn: {
+					args: [knows_from_IEC],
+					msg: "Please tell us if you know anyone from IEC."
+				},
+			},
+		},
+		LEC_acknowledgement: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			validate: {
+				notEmpty: {
+					msg: "Please tell us if you have read and understood the LEC.",
 				},
 			},
 		},

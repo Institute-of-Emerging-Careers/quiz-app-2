@@ -1,6 +1,6 @@
 "use strict";
 
-var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
+var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "current_field", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
 
 function handleForm(e) {
   $("#submit-spinner").removeClass("hidden-imp");
@@ -173,6 +173,37 @@ $(document).ready(function () {
       $("#salary").prop("required", false);
       $("#part-time").prop("required", false);
       $("#will-leave-job-yes").prop("required", false);
+    }
+  });
+  $('input:radio[name="how_to_enroll"]').change(function () {
+    $("#how_complete_course").prop("required", false);
+
+    if ($(this).is(":checked") && $(this).val() == "1") {
+      //show standard questions
+      $("#standard-questions").fadeIn();
+      $("#standard-questions :input").prop("required", true); //hide fa questions
+
+      $("#how_to_enroll_fa").prop("checked", false);
+      $("#fa-questions").fadeOut();
+      $("#fa-questions :input").prop("required", false);
+    } else {
+      $("#standard-questions").fadeOut();
+      $("#standard-questions :input").prop("required", false);
+    }
+  });
+  $('input:radio[name="how_to_enroll_fa"]').change(function () {
+    if ($(this).is(":checked") && $(this).val() == "0") {
+      //show the fa questions when checked
+      $("#fa-questions").fadeIn();
+      $("#fa-questions :input").prop("required", true);
+      $("#how_complete_course").prop("required", false); //hide standard questions
+
+      $("#how_to_enroll").prop("checked", false);
+      $("#standard-questions").fadeOut();
+      $("#standard-questions :input").prop("required", false);
+    } else {
+      $("#fa-questions").fadeOut();
+      $("#fa-questions :input").prop("required", false);
     }
   }); // form validation
 });
