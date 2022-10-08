@@ -58,6 +58,11 @@ const StudentsList = () => {
     },
     {
       is_preference_field: false,
+      name: "belongs_to_flood_area",
+      text: "Current Address",
+    },
+    {
+      is_preference_field: false,
       name: "education_completed",
       text: "Education Completed",
     },
@@ -75,6 +80,21 @@ const StudentsList = () => {
       is_preference_field: false,
       name: "education_ongoing_major",
       text: "Ongoing Education Major",
+    },
+    {
+      is_preference_field: false,
+      name: "has_completed_ba",
+      text: "Has completed Bachelor's"
+    },
+    {
+      is_preference_field: false,
+      name: "has_completed_diploma",
+      text: "Has completed Diploma"
+    },
+    {
+      is_preference_field: false,
+      name: "inst_degree_dip",
+      text: "Institute of Degree/Diploma"
     },
     {
       is_preference_field: false,
@@ -223,6 +243,36 @@ const StudentsList = () => {
         expand_possible_values: false,
       },
       {
+        title: "Do you belong to a flood affected area?",
+        name: "belongs_to_flood_area",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },      
+      {
+        title: "Have you completed a bachelor's degree?",
+        name: "has_completed_ba",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },      
+      {
+        title: "Have you completed a Diploma?",
+        name: "has_completed_diploma",
+        filter_type: "fixed_values",
+        discrepancy_between_value_and_text: true,
+        possible_values: [
+          { text: "Yes", value: 1, checked: false },
+          { text: "No", value: 0, checked: false },
+        ],
+      },      
+      {
         title: "Education Completed",
         name: "education_completed",
         filter_type: "fixed_values",
@@ -234,8 +284,8 @@ const StudentsList = () => {
         expand_possible_values: false,
       },
       {
-        title: "Ongoing Education",
-        name: "education_ongoing",
+        title: "Degree choice influence",
+        name: "education_completed",
         filter_type: "fixed_values",
         discrepancy_between_value_and_text: false,
         possible_values: education_levels.map((val) => ({

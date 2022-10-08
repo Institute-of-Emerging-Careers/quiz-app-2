@@ -174,18 +174,32 @@ const countries = ["Pakistan"];
 
 const education_levels = [
   "None",
-  "Grade 8",
   "Matric/O Levels",
   "Inter/A Levels",
-  "Bachelors",
+  "Bachelors (2 years)",
+  "Bachelors (4 years)",
+  "Diploma after Matric/O Levels",
+  "Diploma after Inter/A Levels",
   "Masters",
   "MPhil",
   "PhD",
 ];
 
+const degree_choice = [
+  "My choice",
+  "Family/Siblings/Others",
+  "Both"
+];
+
 const type_of_employment = ["Part Time", "Full Time", "Not Employed"];
 
-const age_groups = ["Under 18", "18-21", "22-24", "25-26", "27-30", "Above 30"];
+const income_brackets = ["Below 25,000", "25,000 - 50,000", "50,000 - 100,000", "100,000 - 150,000", "Above 150,000"]
+
+const age_groups = ["Under 20", "20-24", "25-29", "30-34", "35-40", "Above 40"];
+
+const people_in_household = ["1", "2",  "3", "4", "5", "6", "7", "8", "9+"]
+
+const knows_from_IEC = ["Yes, a current student", "Yes, a graduated student", "Yes, a staff member", "No, I don't know anyone"]
 
 const sources_of_information = [
   "Social Media",
@@ -202,7 +216,11 @@ module.exports = {
   provinces,
   countries,
   education_levels,
+  degree_choice,
   type_of_employment,
+  income_brackets,
+  people_in_household,
   age_groups,
+  knows_from_IEC,
   sources_of_information,
 };
