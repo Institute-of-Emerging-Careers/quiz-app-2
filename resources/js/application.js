@@ -235,7 +235,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$('input:radio[name="how_to_enroll"]').change(function () {
+	$('input:radio[id="how_to_enroll"]').change(function () {
     
     $("#how_complete_course").prop("required", false);
 
@@ -254,7 +254,7 @@ $(document).ready(function () {
 		}
 	});
 
-	$('input:radio[name="how_to_enroll_fa"]').change(function () {
+	$('input:radio[id="how_to_enroll_fa"]').change(function () {
     
 		if ($(this).is(":checked") && $(this).val() == "0") {
 			//show the fa questions when checked
