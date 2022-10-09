@@ -167,6 +167,27 @@ Application.init(
 				},
 			},
 		},
+		city_of_origin: {
+			type: DataTypes.STRING(100),
+			allowNull: true,
+			validate: {
+				isIn: {
+					args: [cities],
+					msg: "Invalid city. Please select one from the provided list.",
+				},
+				notEmpty: {
+					msg: "City cannot be empty.",
+				},
+				len: {
+					args: [[2, 100]],
+					msg: "City name must be between 2 and 100 characters long.",
+				},
+			},
+		},
+		flood_area_name: {
+			type: DataTypes.STRING(100),
+			allowNull: true,
+		},
 		has_completed_ba: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
@@ -212,6 +233,10 @@ Application.init(
 					msg: "Major/Field of Completed Education cannot be empty.",
 				},
 			},
+		},
+		can_share_fa_docs:{
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
 		},
 		education_ongoing: {
 			type: DataTypes.STRING,
@@ -572,31 +597,26 @@ Application.init(
 						heading: `Application Received`,
 						inner_text: `Dear ${student.firstName}
             
-            We have received your application for the Digital Skills Training Program by Institute of Emerging Careers (IEC).  Your application (CNIC ${student.cnic}) is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment in a week. Please stay tuned! 
+			We have received your application for the IEC Tech Apprenticeship Program by Institute of Emerging Careers (IEC). Your application is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment soon. Please stay tuned! 
 
-            Acquisition Process:
+            Next steps for Acquisition:
             <ul>
-            <li>Online Registration</li>
-            <li>Online Assessment</li>
-            <li>Online Orientation</li>
-            <li>One-on-One Interviews</li>
+            <li>Online Assessment (22nd and 23rd October)</li>
+            <li>Orientation (27th October)</li>
+            <li>Interviews (Date to be Announced)</li>
             <li>Zero Week</li>
-            <li>Probation Week</li>
-            <li>Course Begins</li>
             </ul>
+
+            The process is long but we assure you that if you give your best, you can get through it and will be rewarded for all the effort you put in!
+
             
-            We know this is a long process but we assure you that if you give your best, you can easily get through it. You will get rewarded for all the effort you put in!
-            
-             Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> or Whatsapp: 03338800947.
+            Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:namra.khan@iec.org.pk">namra.khan@iec.org.pk</a> or Whatsapp: 03338800947.
              
             Best Regards, 
             Director Admissions 
             Institute of Emerging Careers 
             http://www.iec.org.pk 
-            Facebook | Instagram | LinkedIn | Twitter`,
-						button_announcer: "You can log into your student panel here:",
-						button_text: "Student Panel",
-						button_link: `${process.env.SITE_DOMAIN_NAME}/student/login`,
+            <a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`
 					});
 				} else {
 					return new Promise((resolve) => {

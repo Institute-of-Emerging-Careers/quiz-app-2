@@ -335,6 +335,37 @@
             <div id="belongs_to_flood_area-error-message" class="invalid-feedback"></div>
           </fieldset>
 
+          <div class="hidden" id="flood_area_questions">
+            
+            <div class="mb-3 mt-3" id="city-of-origin">
+              <div class="input-group">
+                <span class="input-group-text">Please share your city of birth*: </span>
+                <select class="form-select" name="city_of_origin" id="city_of_origin">
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<cities.length;i++) { %>
+                    <option value="<%=cities[i]%>"><%=cities[i]%></option>
+                  <% } %>
+                </select>
+                <div id="city-of-origin-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <div class="input-group">
+                <span class="input-group-text">Which flood affected area do you belong to?</span>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="flood_area_name"
+                  placeholder="Area name"
+                  name="flood_area_name"
+                  required
+                ></textarea>
+                <div id="flood_area_name-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Next Button -->
             <button
               type="button"
@@ -575,21 +606,21 @@
             <div id="will_leave_job-error-message" class="invalid-feedback"></div>
             </fieldset>
 
-          </div>
-
-          <!-- Salary expectation -->
-          <div class="row mb-4">
-            <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
-            <div class="col-lg-8">
-              <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<income_brackets.length;i++) { %>
-                  <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
-                <% } %>
-              </select>
-              <div id="salary_expectation-error-message" class="invalid-feedback"></div>
+            <!-- Salary expectation -->
+            <div class="row mb-4">
+              <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<income_brackets.length;i++) { %>
+                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                  <% } %>
+                </select>
+                <div id="salary_expectation-error-message" class="invalid-feedback"></div>
+              </div>
             </div>
           </div>
+
 
           <!-- Monthly Income -->
           <div class="row mb-4">
@@ -611,7 +642,7 @@
             <label for="how_to_enroll" class="col-lg-4 col-form-label">How do you want to enroll in our course?*</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll" value="1">
+                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll" value="1" required>
                 <label class="form-check-label" for="how_to_enroll">
                   Standard (2000 per month)
                 </label>
@@ -757,6 +788,25 @@
                 <div id="how_complete_course-error-message" class="invalid-feedback"></div>
             </fieldset>
 
+            <fieldset class="row mb-4">
+              <label for="can_share_fa_docs" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_yes" value="1">
+                  <label class="form-check-label" for="can_share_fa_docs_yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_no" value="0">
+                  <label class="form-check-label" for="can_share_fa_docs_no">
+                    No
+                  </label>
+                </div>
+              </div>
+            <div id="can_share_fa_docs-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
           </div>
 
           <div class="hidden" id="standard-questions">
@@ -767,7 +817,7 @@
               </label>
               <div class="col-lg-8">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000" value="1" required>
+                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000" value="1" >
                   <label class="form-check-label" for="can_pay_2000" required>
                     Yes
                   </label>
