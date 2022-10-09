@@ -20,7 +20,7 @@ const initializeDatabase = async () => {
     alterandforce = false;
     // Sync models with database
     await sequelize.sync({
-      alter: false,
+      alter: true,
       force: alterandforce,
       logging: process.env.NODE_ENV == "test" ? true : false,
     });
