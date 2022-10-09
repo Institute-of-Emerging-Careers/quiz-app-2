@@ -167,6 +167,27 @@ Application.init(
 				},
 			},
 		},
+		city_of_origin: {
+			type: DataTypes.STRING(100),
+			allowNull: true,
+			validate: {
+				isIn: {
+					args: [cities],
+					msg: "Invalid city. Please select one from the provided list.",
+				},
+				notEmpty: {
+					msg: "City cannot be empty.",
+				},
+				len: {
+					args: [[2, 100]],
+					msg: "City name must be between 2 and 100 characters long.",
+				},
+			},
+		},
+		flood_area_name: {
+			type: DataTypes.STRING(100),
+			allowNull: true,
+		},
 		has_completed_ba: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
@@ -212,6 +233,10 @@ Application.init(
 					msg: "Major/Field of Completed Education cannot be empty.",
 				},
 			},
+		},
+		can_share_fa_docs:{
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
 		},
 		education_ongoing: {
 			type: DataTypes.STRING,
