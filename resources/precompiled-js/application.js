@@ -175,7 +175,7 @@ $(document).ready(function () {
       $("#will-leave-job-yes").prop("required", false);
     }
   });
-  $('input:radio[name="how_to_enroll"]').change(function () {
+  $('input:radio[id="how_to_enroll"]').change(function () {
     $("#how_complete_course").prop("required", false);
 
     if ($(this).is(":checked") && $(this).val() == "1") {
@@ -191,7 +191,7 @@ $(document).ready(function () {
       $("#standard-questions :input").prop("required", false);
     }
   });
-  $('input:radio[name="how_to_enroll_fa"]').change(function () {
+  $('input:radio[id="how_to_enroll_fa"]').change(function () {
     if ($(this).is(":checked") && $(this).val() == "0") {
       //show the fa questions when checked
       $("#fa-questions").fadeIn();
