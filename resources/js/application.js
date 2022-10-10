@@ -227,6 +227,16 @@ $(document).ready(function () {
 			$("#additional-employment-questions :input").prop("required", true);
 		} else {
 			$("#additional-employment-questions").fadeOut();
+			$("#additional-employment-questions :input").prop("required", false);
+		}
+	});
+
+	$('input:radio[name="is_employed_no"]').change(function () {
+		if ($(this).is(":checked") && $(this).val() == "0") {
+			$("#additional-employment-questions").fadeIn();
+			$("#additional-employment-questions :input").prop("required", false);
+		} else {
+			$("#additional-employment-questions").fadeOut();
 			$("#additional-employment-questions :input").prop("required", true);
 		}
 	});

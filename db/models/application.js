@@ -349,7 +349,7 @@ Application.init(
 		},
 		salary_expectation: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "0",
 			validate: {
 				isIn: {
