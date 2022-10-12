@@ -9,7 +9,7 @@ This is a Student Acquisition System consisting of 5 phases:
 </ul>
 
 ## Tech Stack
-NodeJS (version 14) | ExpressJS |  ReactJS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
+NodeJS (version 14) | ExpressJS |  ReactJS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis v5.0.7 | Bull | Mocha | Chai<br>
 For testing it uses Mocha & Chai.<br>
 For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
@@ -35,7 +35,7 @@ The application was developed on MySQL v8.0.30. All models are defined in `/mode
 In `db/initialize.js`, set `alterandforce = true` to initialize the empty database with some sample data upon server start. Set `alterandforce = false` afterwards.
 
 ### Redis
-You need to install redis and run it on port `6379` before running the server as well.
+You need to install redis v5.0.7 and run it on port `6379` before running the server as well.
 
 ## Modules
 To install required dependencies, run `npm install` in the project root. Make sure you have [Node v14 installed](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04#option-3-installing-node-using-the-node-version-manager). 
