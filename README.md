@@ -9,7 +9,7 @@ This is a Student Acquisition System consisting of 5 phases:
 </ul>
 
 ## Tech Stack
-NodeJS (version 14) | ExpressJS |  ReactJS | MySQL | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
+NodeJS (version 14) | ExpressJS |  ReactJS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
 For testing it uses Mocha & Chai.<br>
 For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
@@ -31,7 +31,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 ## Database Initialization
 
 ### MySQL
-All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `config` folder. By default the program expects the database to be named `quizdb`. 
+The application was developed on MySQL v8.0.30. All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `config` folder. By default the program expects the database to be named `quizdb`. 
 In `db/initialize.js`, set `alterandforce = true` to initialize the empty database with some sample data upon server start. Set `alterandforce = false` afterwards.
 
 ### Redis
