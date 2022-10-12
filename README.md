@@ -43,7 +43,7 @@ To install required dependencies, run `npm install` in the project root. Make su
 ## Customizations
 You may want to change the fontawesome import link because it is a free link associated with my personal fontawesome account and is only allowed to be used on one website. The version currently in use is v5.
 
-## Server Hardware Requirements
+## EC2 Instance Hardware Requirements
 MySQL requires 0.5Gb of RAM. If you try to use VS Code SSH-Remote on the server, you will need ~2Gb of RAM to be safe as [it is known to crash <=1Gb instances](https://github.com/microsoft/vscode-remote-release/issues/1110). So for smooth operation, the system must have 1-2Gb of RAM. With my testing, a `t3.small` instance on AWS EC2 works fine, though it does crash on using VS Code Remote sometimes.
 
 ## Building
