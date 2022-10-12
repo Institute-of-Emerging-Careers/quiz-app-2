@@ -536,56 +536,53 @@ Application.init(
 				if (age_group == "") age_group = "Above 30";
 				user.age_group = age_group;
 			},
-			beforeSave: async (user, options) => {
-				let reject = false;
-				if (user.age < 18 || user.age > 30 || user.time_commitment == false) {
-					reject = true;
-				}
+			// beforeSave: async (user, options) => {
+			// 	let reject = false;
+			// 	if (user.age < 18 || user.age > 30 || user.time_commitment == false) {
+			// 		reject = true;
+			// 	}
 
-				if (reject === true) {
-					try {
-						const student = await user.getStudent({
-							attributes: ["email", "firstName"],
-						});
-						user.rejection_email_sent = true;
-						return queueMail(student.email, `IEC Application Update`, {
-							heading: `Application Not Accepted`,
-							inner_text: `Dear ${student.firstName}, 
+			// 	if (reject === true) {
+			// 		try {
+			// 			const student = await user.getStudent({
+			// 				attributes: ["email", "firstName"],
+			// 			});
+			// 			user.rejection_email_sent = true;
+			// 			return queueMail(student.email, `IEC Application Update`, {
+			// 				heading: `Application Not Accepted`,
+			// 				inner_text: `Dear ${student.firstName}, 
  
-              Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).  
+            //   Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).  
                
-              We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
-              <ul>
-              <li>Are in the age bracket 18-30</li>
-              <li>Can commit 30-40 hours per week</li>
-              </ul>
+            //   We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
+            //   <ul>
+            //   <li>Are in the age bracket 18-30</li>
+            //   <li>Can commit 30-40 hours per week</li>
+            //   </ul>
                 
-              Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.   
+            //   Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.   
                
-              We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947 
+            //   We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947 
                
-              Best Regards, 
-              Director Admissions 
-              Institute of Emerging Careers 
-              http://www.iec.org.pk`,
-							button_announcer: "Visit out website to learn more about us",
-							button_text: "Visit",
-							button_link: "https://iec.org.pk",
-						});
-					} catch (err) {
-						console.log(err);
-						user.rejection_email_sent = false;
-						return new Promise((resolve, reject) => {
-							reject(err);
-						});
-					}
-				} else {
-					user.rejection_email_sent = false;
-					return new Promise((resolve) => {
-						resolve();
-					});
-				}
-			},
+            //   Best Regards, 
+            //   Director Admissions 
+            //   Institute of Emerging Careers 
+            //   http://www.iec.org.pk`
+			// 			});
+			// 		} catch (err) {
+			// 			console.log(err);
+			// 			user.rejection_email_sent = false;
+			// 			return new Promise((resolve, reject) => {
+			// 				reject(err);
+			// 			});
+			// 		}
+			// 	} else {
+			// 		user.rejection_email_sent = false;
+			// 		return new Promise((resolve) => {
+			// 			resolve();
+			// 		});
+			// 	}
+			// },
 
 			afterSave: async (user, options) => {
 				if (!user.rejection_email_sent) {
