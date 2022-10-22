@@ -598,7 +598,7 @@ Application.init(
 
             Next steps for Acquisition:
             <ul>
-            <li>Online Assessment (22nd and 23rd October)</li>
+            <li>Online Assessment (24th and 25th October)</li>
             <li>Orientation (27th October)</li>
             <li>Interviews (Date to be Announced)</li>
             <li>Zero Week</li>
