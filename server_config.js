@@ -209,6 +209,7 @@ app.post(
             ["dkhn.act@gmail.com"],
             ["22100063@lums.edu.pk"]    
           ] */
+              console.log(data)
               data = flatten2DArray(data);
               res.status(200).json(data);
             } else {
