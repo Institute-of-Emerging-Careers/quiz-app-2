@@ -81,11 +81,7 @@ async function sendReminderEmails() {
                     `Reminder | IEC Assessment Deadline`,
                     {
                       heading: "IEC Assessment Due",
-                      inner_text: `Dear Student<br>You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email.`,
-                      button_announcer:
-                        "Click on the button below to solve the Assessment",
-                      button_text: "Solve Assessment",
-                      button_link: "https://apply.iec.org.pk/student/login",
+                      inner_text: `Dear Student<br>You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. <br> Use this link to login at the student portal to access your assessment: https://apply.iec.org.pk/student/login `,
                     }
                   ),
 
