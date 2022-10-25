@@ -240,10 +240,6 @@ describe("Applications", () => {
     return new Promise(async (resolve, reject) => {
       let application_round
       try {
-        application_round = await ApplicationRound.create({
-          title: "Test Round",
-          open: true,
-        });
         const courses = await Promise.all([
           Course.create({ title: "Test Course 1" }),
           Course.create({ title: "Test Course 2" }),
