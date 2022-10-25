@@ -46,7 +46,7 @@ jobs:
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
         mysql version: '8.0.30' # Optional, default value is "latest". The version of the MySQL
         mysql database: 'test_quizdb' # Optional, default value is "test". The specified database which will be create
-        mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql root password: 'test_password' # Required if "mysql user" is empty, default is empty. The root superuser password
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
