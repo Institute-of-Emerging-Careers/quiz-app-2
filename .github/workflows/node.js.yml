@@ -28,7 +28,7 @@ jobs:
         echo NODE_ENV=test >> .env
         echo SITE_DOMAIN_NAME=http://localhost:4000 >> .env
         echo SESSION_SECRET='nuCEebm9^7jsc3BPRhWPKy9!u9F8$kb%wddo7nCzAG2SWe3Z8yNqjkMBW7t5##AjWewwmA@KgPwNmh#' >> .env
-        echo MYSQL_CONNECTION_STRING='mysql://developer:${{ secrets.DatabasePassword }}@localhost:3800/' >> .env
+        echo MYSQL_CONNECTION_STRING='mysql://root:${{ secrets.RootPassword }}@localhost:3800/' >> .env
         echo PORT=4000 >> .env
         echo TIMEZONE_OFFSET=+05:00 >> .env
         echo AWS_SES_ACCESS_KEY_ID='AKIA2ZA7YVMKBIPJXSKP' >> .env
@@ -46,9 +46,7 @@ jobs:
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
         mysql version: '8.0.30' # Optional, default value is "latest". The version of the MySQL
         mysql database: 'test_quizdb' # Optional, default value is "test". The specified database which will be create
-        mysql root password: 'test_password' # Required if "mysql user" is empty, default is empty. The root superuser password
-        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user" If want bind MySQL host port to 3306, please see The Default MySQL.
+        mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
