@@ -28,7 +28,7 @@ jobs:
         echo NODE_ENV=test >> .env
         echo SITE_DOMAIN_NAME=http://localhost:4000 >> .env
         echo SESSION_SECRET='nuCEebm9^7jsc3BPRhWPKy9!u9F8$kb%wddo7nCzAG2SWe3Z8yNqjkMBW7t5##AjWewwmA@KgPwNmh#' >> .env
-        echo MYSQL_CONNECTION_STRING='mysql://root:${{ secrets.RootPassword }}@localhost:3800/' >> .env
+        echo MYSQL_CONNECTION_STRING='mysql://root:test_password@localhost:3800/' >> .env
         echo PORT=4000 >> .env
         echo TIMEZONE_OFFSET=+05:00 >> .env
         echo AWS_SES_ACCESS_KEY_ID='AKIA2ZA7YVMKBIPJXSKP' >> .env
