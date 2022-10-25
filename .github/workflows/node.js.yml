@@ -21,15 +21,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup MySQL
-      # You may pin to the exact commit or the version.
-      # uses: mirromutth/mysql-action@de1fba8b3f90ce8db80f663a7043be3cf3231248
+    - name: MySQL
       uses: mirromutth/mysql-action@v1.1
       with:
-        # Version of MySQL to use
-        mysql version: 8.0.30 
-        # MYSQL_DATABASE - name for the default database that is created
-        mysql database: test_quizdb 
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mysql version: '8.0.30' # Optional, default value is "latest". The version of the MySQL
+        mysql database: 'test_quizdb' # Optional, default value is "test". The specified database which will be create
+        mysql root password: ${{ secrets.RootPassword }} # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
