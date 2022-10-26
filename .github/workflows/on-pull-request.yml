@@ -31,8 +31,8 @@ jobs:
         echo MYSQL_CONNECTION_STRING='mysql://root:test_password@localhost:3800/' >> .env
         echo PORT=4000 >> .env
         echo TIMEZONE_OFFSET=+05:00 >> .env
-        echo AWS_SES_ACCESS_KEY_ID='AKIA2ZA7YVMKBIPJXSKP' >> .env
-        echo AWS_SES_SECRET_ACCESS_KEY='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' >> .env
+        echo AWS_SES_ACCESS_KEY_ID='AKSKPlakjsldakjdl' >> .env
+        echo AWS_SES_SECRET_ACCESS_KEY='laksjdlakjlaksdjlaksdTN5' >> .env
         echo AWS_SES_REGION=us-east-2 >> .env
         echo QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS=30 >> .env
         cat .env
