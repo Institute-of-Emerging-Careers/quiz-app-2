@@ -433,7 +433,7 @@ router.get(
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
     const deadline_from_signup = process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS; //days
-
+    console.log(timeDiff, deadline_from_signup);
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
       await scoreSection(req.params.sectionId, req.user.user.id, null, true);
       await emailStudentOnSectionCompletion(
@@ -446,7 +446,7 @@ router.get(
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
         error_message:
-          "You had 30 days to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
+          `You had ${deadline_from_signup} days to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.`,
         action_link: "/student",
         action_link_text: "Click here to go to student home page.",
       });

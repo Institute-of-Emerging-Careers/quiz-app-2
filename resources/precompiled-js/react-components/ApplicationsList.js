@@ -287,6 +287,21 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
+      title: "From flood affected areas",
+      name: "belongs_to_flood_area",
+      filter_type: "fixed_values",
+      discrepancy_between_value_and_text: true,
+      possible_values: [{
+        text: "Yes",
+        value: 1,
+        checked: false
+      }, {
+        text: "No",
+        value: 0,
+        checked: false
+      }],
+      expand_possible_values: false
+    }, {
       title: "Education Completed",
       name: "education_completed",
       filter_type: "fixed_values",
