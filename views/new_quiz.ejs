@@ -39,6 +39,6 @@
     <div id="demo">Loading...</div>
 
     <!-- The React code -->
-    <script src="/precompiled-js/quiz.js"></script>
+    <%- include('templates/script-include.ejs', {script_file_name: 'quiz.js'}) %>
   </body>
 </html>
