@@ -356,9 +356,6 @@ Application.init(
 					args: [income_brackets],
 					msg: "Invalid salary expectation. Please pick one of the provided options.",
 				},
-				notEmpty: {
-					msg: "Salary Expectation cannot be empty. Please enter a non-negative value.",
-				},
 			}
 		},
 		on_fa_in_university: {

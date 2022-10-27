@@ -198,6 +198,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
     });
     for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
       stateObject.push({
+        id: sections[sectionIndex].id,
         sectionTitle: sections[sectionIndex].title,
         sectionOrder: sections[sectionIndex].sectionOrder,
         poolCount: sections[sectionIndex].poolCount,
@@ -214,6 +215,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
         questionIndex++
       ) {
         stateObject[sectionIndex].questions.push({
+          id: questions[questionIndex].id,
           passage:
             questions[questionIndex].PassageId != null
               ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
@@ -238,6 +240,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
         });
         for (let optionIndex = 0; optionIndex < options.length; optionIndex++) {
           stateObject[sectionIndex].questions[questionIndex].options.push({
+            id: options[optionIndex].id,
             optionStatement: options[optionIndex].statement,
             optionOrder: options[optionIndex].optionOrder,
             correct: options[optionIndex].correct,

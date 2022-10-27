@@ -729,7 +729,7 @@ var MCQ = function MCQ(props) {
       questionIndex: props.questionIndex,
       optionIndex: index,
       sectionIndex: props.sectionIndex,
-      key: index,
+      key: option.id,
       type: props.type
     });
   })), /*#__PURE__*/React.createElement("hr", {
@@ -926,7 +926,7 @@ var Section = function Section(props) {
     sectionNumber: props.sectionNumber,
     sectionIndex: props.sectionNumber - 1,
     totalSections: props.totalSections,
-    key: props.sectionNumber + "a",
+    key: state.mcqs[props.sectionNumber - 1].id + "a",
     autoPoolCount: autoPoolCount,
     setAutoPoolCount: setAutoPoolCount
   }), /*#__PURE__*/React.createElement("div", null, state.mcqs[props.sectionIndex].questions.map(function (question, index) {
@@ -934,7 +934,7 @@ var Section = function Section(props) {
       sectionIndex: props.sectionIndex,
       questionIndex: index,
       type: question.type,
-      key: index
+      key: question.id
     }) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Passage, {
       passageIndex: question.passage,
       sectionIndex: props.sectionIndex,
@@ -943,14 +943,14 @@ var Section = function Section(props) {
       sectionIndex: props.sectionIndex,
       questionIndex: index,
       type: question.type,
-      key: index
+      key: question.id
     }));
   })), /*#__PURE__*/React.createElement(SectionHeader, {
     sectionTitle: props.sectionTitle,
     sectionNumber: props.sectionNumber,
     sectionIndex: props.sectionNumber - 1,
     totalSections: props.totalSections,
-    key: props.sectionNumber + "b",
+    key: state.mcqs[props.sectionNumber - 1].id + "b",
     autoPoolCount: autoPoolCount,
     setAutoPoolCount: setAutoPoolCount
   }));
