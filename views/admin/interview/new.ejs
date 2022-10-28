@@ -19,10 +19,10 @@
       id="app"
     ></section>
 
-    <script src="/precompiled-js/react-components/Modal.js" defer></script>
-    <script src="/precompiled-js/react-components/EmailForm.js" defer></script>
-    <script src="/precompiled-js/react-components/NewStudentAdder.js" defer></script>
-    <script src="/precompiled-js/react-components/StudentsList.js" defer></script>
-    <script src="/precompiled-js/admin/interview/new.js" defer></script>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/Modal.js', defer: true}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/EmailForm.js', defer: true}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/NewStudentAdder.js', defer: true}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/StudentsList.js', defer: true}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'admin/interview/new.js', defer: true}) %>
   </body>
 </html>

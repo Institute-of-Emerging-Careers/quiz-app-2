@@ -23,19 +23,11 @@
       </section>
     </div>
 
-    <script src="/precompiled-js/react-components/EmailForm.js"></script>
-    <script
-      src="/precompiled-js/react-components/ApplicantDetailsModal.js"
-    
-    ></script>
-    <script
-      src="/precompiled-js/react-components/ApplicationsListStudentsAdder.js"
-    
-    ></script>
-    <script
-      src="/precompiled-js/react-components/StudentsList.js"
-    
-    ></script>
-    <script src="/precompiled-js/admin/quiz/assign.js"></script>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/EmailForm.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/ApplicantDetailsModal.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/ApplicationsListStudentsAdder.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/StudentsList.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'admin/quiz/assign.js'}) %>
+
   </body>
 </html>

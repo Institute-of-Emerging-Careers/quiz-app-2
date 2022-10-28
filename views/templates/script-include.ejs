@@ -1,0 +1,9 @@
+<% 
+    const script_type = ['production', 'test'].includes(process.env.NODE_ENV) ? 'text/javascript' : 'text/babel';
+    const script_url = `${['production', 'test'].includes(process.env.NODE_ENV) ? '/precompiled-' : '/'}js/${script_file_name}`
+%>
+<script 
+    type="<%=script_type%>" 
+    src="<%=script_url%>" 
+    <% if (typeof defer !== 'undefined' && defer) {%> defer <% } %>
+></script>

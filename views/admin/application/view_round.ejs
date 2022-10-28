@@ -45,16 +45,10 @@
       </section>
     </div>
 
-    <script src="/precompiled-js/download_table_as_csv.js"></script>
-    <script src="/precompiled-js/data_lists.js" type="text/javascript"></script>
-    <script
-      src="/precompiled-js/react-components/ApplicantDetailsModal.js"
-    ></script>
-    <script
-      src="/precompiled-js/react-components/ApplicationsList.js"
-    ></script>
-    <script
-      src="/precompiled-js/admin/application/view_round.js"
-    ></script>
+    <%- include('templates/script-include.ejs', {script_file_name: 'download_table_as_csv.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'data_lists.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/ApplicantDetailsModal.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/ApplicationsList.js'}) %>
+    <%- include('templates/script-include.ejs', {script_file_name: 'admin/application/view_round.js'}) %>
   </body>
 </html>
