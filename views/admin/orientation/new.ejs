@@ -24,10 +24,10 @@
       id="app"
     ></section>
 
-    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js" defer></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
     <script src="/js/jquery-ui-1.13.1/jquery-ui.min.js" defer></script>
-    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/NewStudentAdder.js', defer: true}) %>
-    <%- include('templates/script-include.ejs', {script_file_name: 'react-components/StudentsList.js', defer: true}) %>
-    <%- include('templates/script-include.ejs', {script_file_name: 'admin/orientation/new.js', defer: true}) %>
+    <script src="/precompiled-js/react-components/NewStudentAdder.js" defer></script>
+    <script src="/precompiled-js/react-components/StudentsList.js" defer></script>
+    <script src="/precompiled-js/admin/orientation/new.js" defer></script>
   </body>
 </html>
