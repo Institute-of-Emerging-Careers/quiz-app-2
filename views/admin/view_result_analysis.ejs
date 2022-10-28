@@ -69,7 +69,7 @@
             <p>No results found.</p>    
         <%} %>
     </section>
-
-    <script src="/precompiled-js/view_result_analysis.js" async defer></script>
+    
+    <%- include('templates/script-include.ejs', {script_file_name: 'view_result_analysis.js'}) %>
 </body>
 </html>
