@@ -24,8 +24,12 @@
       id="app"
     ></section>
 
-    <%- include('templates/script-include.ejs', {script_file_name: 'data_lists.js'}) %>
-    <%- include('templates/script-include.ejs', {script_file_name: 'admin/quiz/view_results.js', defer: true}) %>
-    <%- include('templates/script-include.ejs', {script_file_name: 'roundToTwoDecimalPlaces.js'}) %>
+    <script src="/js/data_lists.js" type="text/javascript"></script>
+    <script
+      src="/precompiled-js/admin/quiz/view_results.js"
+      async
+      defer
+    ></script>
+    <script src="/js/roundToTwoDecimalPlaces.js"></script>
   </body>
 </html>
