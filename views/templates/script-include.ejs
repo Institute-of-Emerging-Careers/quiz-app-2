@@ -1,6 +1,6 @@
 <% 
-    const script_type = ['production', 'test'].includes(process.env.NODE_ENV) ? 'text/javascript' : 'text/babel';
-    const script_url = `${['production', 'test'].includes(process.env.NODE_ENV) ? '/precompiled-' : '/'}js/${script_file_name}`
+    const script_type = process.env.NODE_ENV === 'production' ? 'text/javascript' : 'text/babel';
+    const script_url = `${process.env.NODE_ENV === 'production' ? '/precompiled-' : '/'}js/${script_file_name}`
 %>
 <script 
     type="<%=script_type%>" 
