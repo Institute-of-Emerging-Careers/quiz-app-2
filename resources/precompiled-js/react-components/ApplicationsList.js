@@ -314,21 +314,6 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Can pay 2000",
-      name: "can_pay_2000",
-      filter_type: "fixed_values",
-      discrepancy_between_value_and_text: true,
-      possible_values: [{
-        text: "Yes",
-        value: 1,
-        checked: false
-      }, {
-        text: "No",
-        value: 0,
-        checked: false
-      }],
-      expand_possible_values: false
-    }, {
       title: "Ongoing Education",
       name: "education_ongoing",
       filter_type: "fixed_values",
