@@ -168,6 +168,7 @@ var Step1 = function Step1() {
   }), " Save Interviewees"))), /*#__PURE__*/React.createElement("div", {
     className: "p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm"
   }, /*#__PURE__*/React.createElement(StudentsList, {
+    key: "".concat(students.id, "-tr"),
     students: students,
     title: "Interview",
     fields: [, {
@@ -536,11 +537,55 @@ var Step2 = function Step2() {
 };
 
 var Step3 = function Step3() {
-  return /*#__PURE__*/React.createElement("div", null, "Step 3"); // continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
+  // continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
   // ask the Admin how many minutes should each interview last. Then calcualte reactively on the frontend, whether or not
   // we have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students
   // If yes, create a time slot assignment
   // if no, ask Admin to go back to "Step 2" and either increase interviewers or resend emails asking them to increase their times.
+  var _useState31 = useState(0),
+      _useState32 = _slicedToArray(_useState31, 2),
+      interviewTime = _useState32[0],
+      setInterviewTime = _useState32[1]; //time per interview (including buffer time)
+
+
+  var _useState33 = useState([]),
+      _useState34 = _slicedToArray(_useState33, 2),
+      interviewers = _useState34[0],
+      setInterviewers = _useState34[1]; //list of interviewers
+
+
+  var _useContext3 = useContext(MyContext),
+      students_object = _useContext3.students_object; //list of students
+
+
+  return /*#__PURE__*/React.createElement("form", {
+    className: "flex flex-col"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg"
+  }, "Add Interview Time"), /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex gap-x-4 items-center"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "interview-time",
+    className: "min-w-max"
+  }, "Enter the time per interview (including any break time)"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    maxLength: "150",
+    name: "name",
+    className: "w-full border py-3 px-20 mt-1 hover:shadow-sm",
+    value: interviewTime,
+    onChange: function onChange(e) {
+      setInterviewTime(e.target.value);
+    } // ref={name_field}
+    ,
+    active: "true"
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "w-full py-3 px-6 border-2 border-gray-700 text-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white",
+    onClick: function onClick(e) {
+      e.preventDefault();
+      console.log(students_object);
+    }
+  }, "Add")));
 };
 
 var Step4 = function Step4() {
@@ -548,27 +593,27 @@ var Step4 = function Step4() {
 };
 
 var Main = function Main() {
-  var _useContext3 = useContext(MyContext),
-      steps_object = _useContext3.steps_object;
+  var _useContext4 = useContext(MyContext),
+      steps_object = _useContext4.steps_object;
 
   var _steps_object2 = _slicedToArray(steps_object, 2),
       steps = _steps_object2[0],
       setSteps = _steps_object2[1];
 
-  var _useState31 = useState(false),
-      _useState32 = _slicedToArray(_useState31, 2),
-      editInterviewRoundTitle = _useState32[0],
-      setEditInterviewRoundTitle = _useState32[1];
-
-  var _useState33 = useState(document.getElementById("interview-round-name-field").value),
-      _useState34 = _slicedToArray(_useState33, 2),
-      interviewRoundTitle = _useState34[0],
-      setInterviewRoundTitle = _useState34[1];
-
   var _useState35 = useState(false),
       _useState36 = _slicedToArray(_useState35, 2),
-      loading_name = _useState36[0],
-      setLoadingName = _useState36[1];
+      editInterviewRoundTitle = _useState36[0],
+      setEditInterviewRoundTitle = _useState36[1];
+
+  var _useState37 = useState(document.getElementById("interview-round-name-field").value),
+      _useState38 = _slicedToArray(_useState37, 2),
+      interviewRoundTitle = _useState38[0],
+      setInterviewRoundTitle = _useState38[1];
+
+  var _useState39 = useState(false),
+      _useState40 = _slicedToArray(_useState39, 2),
+      loading_name = _useState40[0],
+      setLoadingName = _useState40[1];
 
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();
