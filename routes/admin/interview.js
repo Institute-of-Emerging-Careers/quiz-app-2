@@ -248,6 +248,17 @@ router.get("/round/delete/:interview_round_id", async (req, res) => {
   }
 });
 
+router.get("/getTotalDuration/:interview_round_id", async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({
+      where: { id: req.params.interview_round_id },
+    });
+    const interviewers = await interview_round.getInterviewers();
+  } catch(err){
+  console.log(err);
+  }
+});
+
 router.get("/login", async (req, res) => {
   let password = "",
     email = "";

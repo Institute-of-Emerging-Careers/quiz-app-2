@@ -144,6 +144,7 @@ const Step1 = () => {
       </div>
       <div className="p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm">
         <StudentsList
+          key={`${students.id}-tr`}
           students={students}
           title="Interview"
           fields={[
@@ -553,15 +554,56 @@ const Step2 = () => {
   );
 };
 const Step3 = () => {
-  return <div>Step 3</div>;
   // continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
   // ask the Admin how many minutes should each interview last. Then calcualte reactively on the frontend, whether or not
   // we have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students
   // If yes, create a time slot assignment
   // if no, ask Admin to go back to "Step 2" and either increase interviewers or resend emails asking them to increase their times.
+
+  const [interviewTime, setInterviewTime] = useState(0); //time per interview (including buffer time)
+  const [interviewers, setInterviewers] = useState([]); //list of interviewers
+  const { students_object} = useContext(MyContext); //list of students
+
+
+  return (      
+  <form className="flex flex-col">
+    <h2 className="text-lg">Add Interview Time</h2>
+    <div className="w-full flex gap-x-4 items-center">
+      <label htmlFor="interview-time" className="min-w-max">
+        Enter the time per interview (including any break time)
+      </label>
+      <input
+        type="text"
+        maxLength="150"
+        name="name"
+        className="w-full border py-3 px-20 mt-1 hover:shadow-sm"
+        value={interviewTime}
+        onChange={(e) => {
+          setInterviewTime(e.target.value);
+        }}
+        // ref={name_field}
+        active="true"
+      ></input>
+      <button
+        type="submit"
+        className="w-full py-3 px-6 border-2 border-gray-700 text-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white"
+        onClick={(e) => {
+          e.preventDefault();
+          console.log(students_object)
+        }}
+      >
+        Add
+      </button>
+    </div>
+  </form>
+);
 };
 const Step4 = () => {
-  return <div>Step 4</div>;
+  return (
+    <div>
+      Step 4
+    </div>
+  );
 };
 
 const Main = () => {
