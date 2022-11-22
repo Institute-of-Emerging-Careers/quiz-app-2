@@ -620,4 +620,5 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
     });
 });
 
+
 module.exports = router;

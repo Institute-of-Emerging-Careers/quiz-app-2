@@ -513,7 +513,7 @@ var Step2 = function Step2() {
         setSelectedInterviewerIndex(index);
       }
     }, /*#__PURE__*/React.createElement("i", {
-      class: "far fa-eye"
+      className: "far fa-eye"
     }), " View Time Slots"), "|", " ", /*#__PURE__*/React.createElement("a", {
       className: "cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover",
       onClick: function onClick() {
@@ -554,14 +554,72 @@ var Step3 = function Step3() {
       setInterviewers = _useState34[1]; //list of interviewers
 
 
+  var _useState35 = useState(0),
+      _useState36 = _slicedToArray(_useState35, 2),
+      total_interviews_possible = _useState36[0],
+      setTotalInterviewsPossible = _useState36[1]; //total number of interviews possible
+
+
+  var _useState37 = useState(0),
+      _useState38 = _slicedToArray(_useState37, 2),
+      total_time_available = _useState38[0],
+      setTotalTimeAvailable = _useState38[1]; //total time available for interviews
+
+
+  var _useState39 = useState(0),
+      _useState40 = _slicedToArray(_useState39, 2),
+      total_time_required = _useState40[0],
+      setTotalTimeRequired = _useState40[1]; //total time required for interviews
+
+
   var _useContext3 = useContext(MyContext),
       students_object = _useContext3.students_object; //list of students
 
 
-  return /*#__PURE__*/React.createElement("form", {
+  var _useState41 = useState(0),
+      _useState42 = _slicedToArray(_useState41, 2),
+      students_per_interviewer = _useState42[0],
+      setStudentsPerInterviewer = _useState42[1]; //number of students per interviewer
+  //only keep students with the added flag set to true
+
+
+  useEffect(function () {
+    fetch("/admin/interview/interviewers/all/".concat(interview_round_id)).then(function (raw_response) {
+      if (raw_response.ok) {
+        raw_response.json().then(function (response) {
+          setInterviewers(response.interviewers);
+          var students = Object.values(students_object[0]).filter(function (student) {
+            return student.added;
+          }); //only students that have been selected for the interview round
+
+          var time = 0; //compute the sum of all the time slots of all the interviewers
+
+          interviewers.map(function (interviewer) {
+            return interviewer.time_slots.reduce(function (total_time, cur_slot) {
+              time += cur_slot.duration;
+              return total_time += cur_slot.duration;
+            }, 0);
+          }); //compute the total number of students
+
+          var total_students = Object.keys(students).length; //compute the total time required for all the interviews
+
+          setTotalTimeRequired(total_students * interviewTime); //time required in minutes
+          //compute the total time available for all the interviews
+
+          setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm")); //compute the total number of interviews that can be conducted
+
+          setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
+          setStudentsPerInterviewer(Math.floor(total_students / interviewers.length));
+        });
+      } else {
+        alert("Error in URL. Wrong Interview Round. Please go to home page.");
+      }
+    });
+  }, [interviewTime]);
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("form", {
     className: "flex flex-col"
   }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg"
+    className: "text-xl font-bold"
   }, "Add Interview Time"), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex gap-x-4 items-center"
   }, /*#__PURE__*/React.createElement("label", {
@@ -571,21 +629,49 @@ var Step3 = function Step3() {
     type: "text",
     maxLength: "150",
     name: "name",
-    className: "w-full border py-3 px-20 mt-1 hover:shadow-sm",
+    className: "w-30 border py-3 px-2 mt-1 hover:shadow-sm",
     value: interviewTime,
+    autoComplete: "off",
     onChange: function onChange(e) {
+      e.preventDefault();
       setInterviewTime(e.target.value);
     } // ref={name_field}
     ,
     active: "true"
-  }), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "w-full py-3 px-6 border-2 border-gray-700 text-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white",
-    onClick: function onClick(e) {
-      e.preventDefault();
-      console.log(students_object);
-    }
-  }, "Add")));
+  }), total_time_required < total_time_available ? /*#__PURE__*/React.createElement("button", {
+    className: "ml-20 bg-iec-blue p-2 text-white"
+  }, "Create Matching") : /*#__PURE__*/React.createElement("button", {
+    className: "ml-20 bg-red-500 p-2 text-white",
+    disabled: true
+  }, "Create Matching"))), total_time_required > total_time_available ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-y-4 mt-20 p-10"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg font-semibold text-red-400"
+  }, "You do not have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students. Please go back to \"Step 2\" and either increase interviewers or resend emails asking them to increase their times.")) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col gap-y-4 text-green-400 mt-20 p-10"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg font-semibold"
+  }, "You have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students."), /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg"
+  }, "You can conduct ", total_interviews_possible, " interviews.")), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg"
+  }, "Interview Time Summary"), /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex flex-col gap-y-4 items-center"
+  }, /*#__PURE__*/React.createElement("label", {
+    htmlFor: "interview-time",
+    className: "min-w-max font-bold text-2xl"
+  }, "Total Time Available"), /*#__PURE__*/React.createElement("p", null, total_time_available, " Minutes"), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "interview-time",
+    className: "min-w-max font-bold text-2xl"
+  }, "Total Time Required"), /*#__PURE__*/React.createElement("p", null, total_time_required, " Minutes"), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "interview-time",
+    className: "min-w-max font-bold text-2xl"
+  }, "Total Interviews Possible"), /*#__PURE__*/React.createElement("p", null, total_interviews_possible), /*#__PURE__*/React.createElement("label", {
+    htmlFor: "interview-time",
+    className: "min-w-max font-bold text-2xl"
+  }, "Students per Interviewer"), /*#__PURE__*/React.createElement("p", null, students_per_interviewer))));
 };
 
 var Step4 = function Step4() {
@@ -600,20 +686,20 @@ var Main = function Main() {
       steps = _steps_object2[0],
       setSteps = _steps_object2[1];
 
-  var _useState35 = useState(false),
-      _useState36 = _slicedToArray(_useState35, 2),
-      editInterviewRoundTitle = _useState36[0],
-      setEditInterviewRoundTitle = _useState36[1];
+  var _useState43 = useState(false),
+      _useState44 = _slicedToArray(_useState43, 2),
+      editInterviewRoundTitle = _useState44[0],
+      setEditInterviewRoundTitle = _useState44[1];
 
-  var _useState37 = useState(document.getElementById("interview-round-name-field").value),
-      _useState38 = _slicedToArray(_useState37, 2),
-      interviewRoundTitle = _useState38[0],
-      setInterviewRoundTitle = _useState38[1];
+  var _useState45 = useState(document.getElementById("interview-round-name-field").value),
+      _useState46 = _slicedToArray(_useState45, 2),
+      interviewRoundTitle = _useState46[0],
+      setInterviewRoundTitle = _useState46[1];
 
-  var _useState39 = useState(false),
-      _useState40 = _slicedToArray(_useState39, 2),
-      loading_name = _useState40[0],
-      setLoadingName = _useState40[1];
+  var _useState47 = useState(false),
+      _useState48 = _slicedToArray(_useState47, 2),
+      loading_name = _useState48[0],
+      setLoadingName = _useState48[1];
 
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();

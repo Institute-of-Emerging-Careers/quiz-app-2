@@ -522,7 +522,7 @@ const Step2 = () => {
                     setSelectedInterviewerIndex(index);
                   }}
                 >
-                  <i class="far fa-eye"></i> View Time Slots
+                  <i className="far fa-eye"></i> View Time Slots
                 </a>
                 |{" "}
                 <a
@@ -562,41 +562,149 @@ const Step3 = () => {
 
   const [interviewTime, setInterviewTime] = useState(0); //time per interview (including buffer time)
   const [interviewers, setInterviewers] = useState([]); //list of interviewers
+  const [total_interviews_possible, setTotalInterviewsPossible] = useState(0); //total number of interviews possible
+  const [total_time_available, setTotalTimeAvailable] = useState(0); //total time available for interviews
+  const [total_time_required, setTotalTimeRequired] = useState(0); //total time required for interviews
   const { students_object} = useContext(MyContext); //list of students
+  const [students_per_interviewer, setStudentsPerInterviewer] = useState(0); //number of students per interviewer
+
+  //only keep students with the added flag set to true
+  
 
 
-  return (      
-  <form className="flex flex-col">
-    <h2 className="text-lg">Add Interview Time</h2>
-    <div className="w-full flex gap-x-4 items-center">
-      <label htmlFor="interview-time" className="min-w-max">
-        Enter the time per interview (including any break time)
-      </label>
-      <input
-        type="text"
-        maxLength="150"
-        name="name"
-        className="w-full border py-3 px-20 mt-1 hover:shadow-sm"
-        value={interviewTime}
-        onChange={(e) => {
-          setInterviewTime(e.target.value);
-        }}
-        // ref={name_field}
-        active="true"
-      ></input>
-      <button
-        type="submit"
-        className="w-full py-3 px-6 border-2 border-gray-700 text-gray-700 cursor-pointer hover:bg-gray-700 hover:text-white"
-        onClick={(e) => {
-          e.preventDefault();
-          console.log(students_object)
-        }}
-      >
-        Add
-      </button>
-    </div>
-  </form>
-);
+  useEffect(() => {
+    fetch(`/admin/interview/interviewers/all/${interview_round_id}`).then(
+      (raw_response) => {
+        if (raw_response.ok) {
+          raw_response.json().then((response) => {
+            setInterviewers(response.interviewers);
+
+            const students = Object.values(students_object[0]).filter(
+              (student) => student.added
+            ); //only students that have been selected for the interview round
+
+            let time = 0;
+            //compute the sum of all the time slots of all the interviewers
+          interviewers.map((interviewer) => {
+              return interviewer.time_slots.reduce((total_time, cur_slot) => {
+                time += cur_slot.duration;
+                return (total_time += cur_slot.duration);
+              }, 0);
+            });
+
+            //compute the total number of students
+            const total_students = Object.keys(students).length;
+
+            //compute the total time required for all the interviews
+            setTotalTimeRequired(total_students * interviewTime); //time required in minutes
+            //compute the total time available for all the interviews
+            setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm"));
+
+            //compute the total number of interviews that can be conducted
+            setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
+
+            setStudentsPerInterviewer(Math.floor(total_students / interviewers.length));
+          });
+        } else {
+          alert("Error in URL. Wrong Interview Round. Please go to home page.");
+        }
+      }
+    );
+  }, [interviewTime]);
+
+  
+  return (
+		<>
+			<form className="flex flex-col">
+				<h2 className="text-xl font-bold">Add Interview Time</h2>
+				<div className="w-full flex gap-x-4 items-center">
+					<label htmlFor="interview-time" className="min-w-max">
+						Enter the time per interview (including any break time)
+					</label>
+					<input
+						type="text"
+						maxLength="150"
+						name="name"
+						className="w-30 border py-3 px-2 mt-1 hover:shadow-sm"
+						value={interviewTime}
+						autoComplete="off"
+						onChange={(e) => {
+							e.preventDefault();
+							setInterviewTime(e.target.value);
+						}}
+						// ref={name_field}
+						active="true"
+					></input>
+
+					{total_time_required < total_time_available ? (
+						<button className="ml-20 bg-iec-blue p-2 text-white">
+							Create Matching
+						</button>
+					) : (
+						<button className="ml-20 bg-red-500 p-2 text-white" disabled>
+							Create Matching
+						</button>
+					)}
+				</div>
+			</form>
+
+			{total_time_required > total_time_available ? (
+				<div className="flex flex-col gap-y-4 mt-20 p-10">
+					<h2 className="text-lg font-semibold text-red-400">
+						You do not have sufficient time commitment from the interviewers to
+						conduct the interviews of the selected number of students. Please go
+						back to "Step 2" and either increase interviewers or resend emails
+						asking them to increase their times.
+					</h2>
+				</div>
+			) : (
+				<div className="flex flex-col gap-y-4 text-green-400 mt-20 p-10">
+					<h2 className="text-lg font-semibold">
+						You have sufficient time commitment from the interviewers to conduct
+						the interviews of the selected number of students.
+					</h2>
+					<h2 className="text-lg">
+						You can conduct {total_interviews_possible} interviews.
+					</h2>
+				</div>
+			)}
+
+			<div className="flex flex-col">
+				<h2 className="text-lg">Interview Time Summary</h2>
+				<div className="w-full flex flex-col gap-y-4 items-center">
+					<label
+						htmlFor="interview-time"
+						className="min-w-max font-bold text-2xl"
+					>
+						Total Time Available
+					</label>
+					<p>{total_time_available} Minutes</p>
+					<label
+						htmlFor="interview-time"
+						className="min-w-max font-bold text-2xl"
+					>
+						Total Time Required
+					</label>
+					<p>{total_time_required} Minutes</p>
+					<label
+						htmlFor="interview-time"
+						className="min-w-max font-bold text-2xl"
+					>
+						Total Interviews Possible
+					</label>
+					<p>{total_interviews_possible}</p>
+
+          <label
+						htmlFor="interview-time"
+						className="min-w-max font-bold text-2xl"
+					>
+						Students per Interviewer
+					</label>
+          <p>{students_per_interviewer}</p>
+				</div>
+			</div>
+		</>
+	);
 };
 const Step4 = () => {
   return (
