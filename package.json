@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --delay 500ms -r dotenv/config server.js",
     "build:css": "npx tailwindcss -i resources/css/tailwind.css -o resources/css/style.css --minify",
-    "build:babel": "babel resources/js/ --out-dir resources/precompiled-js/ --presets=@babel/preset-env,@babel/preset-react --ignore 'resources/js/luxon.js','resources/js/react-dom.development-17.0.2.js','resources/js/react.development-17.js','resources/jquery-ui-1.13.1/' ",
+    "build:babel": "babel resources/js/ --out-dir resources/precompiled-js/ --presets=@babel/preset-env,@babel/preset-react --ignore 'resources/js/luxon.js','resources/js/react-dom.development-17.0.2.js','resources/js/react.development-17.js','resources/jquery-ui-1.13.1/'",
     "start": "node -r dotenv/config server.js",
     "test": "mocha --timeout 10000 --exit -r dotenv/config",
     "cron": "node -r dotenv/config cron-ping.js"
