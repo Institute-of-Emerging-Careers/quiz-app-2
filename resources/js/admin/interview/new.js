@@ -871,14 +871,17 @@ const Step4 = () => {
     setLoading(true);
     try{  
       //extract unique id of interviewers fron matching
-      const interviewer_ids = [...new Set(matching.map((match) => match.interviewer_id))];
-      console.log(interviewer_ids);
-      for (let i = 0; i < interviewer_ids.length; i++){
-        const response = await fetch(`/admin/interview/${interview_round_id}/${interviewer_ids[i]}/send-matching-emails`, {
+      const interviewer_emails = [...new Set(matching.map((match) => match.interviewer_email))];
+      console.log(interviewer_emails);
+      for (let i = 0; i < interviewer_emails.length; i++){
+        const response = await fetch(`/admin/interview/${interview_round_id}/send-matching-emails`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-          }
+          },
+          body: JSON.stringify({
+            interviewer_email: interviewer_emails[i],
+          }),
         })
         if (response.status == 404){
           window.alert("Some interviewers have not updated calendly links");

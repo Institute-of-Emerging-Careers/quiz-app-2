@@ -878,7 +878,7 @@ var Step4 = function Step4() {
 
   var sendEmails = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-      var interviewer_ids, i, response;
+      var interviewer_emails, i, response;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -887,24 +887,27 @@ var Step4 = function Step4() {
               setLoading(true);
               _context2.prev = 2;
               //extract unique id of interviewers fron matching
-              interviewer_ids = _toConsumableArray(new Set(matching.map(function (match) {
-                return match.interviewer_id;
+              interviewer_emails = _toConsumableArray(new Set(matching.map(function (match) {
+                return match.interviewer_email;
               })));
-              console.log(interviewer_ids);
+              console.log(interviewer_emails);
               i = 0;
 
             case 6:
-              if (!(i < interviewer_ids.length)) {
+              if (!(i < interviewer_emails.length)) {
                 _context2.next = 17;
                 break;
               }
 
               _context2.next = 9;
-              return fetch("/admin/interview/".concat(interview_round_id, "/").concat(interviewer_ids[i], "/send-matching-emails"), {
+              return fetch("/admin/interview/".concat(interview_round_id, "/send-matching-emails"), {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
-                }
+                },
+                body: JSON.stringify({
+                  interviewer_email: interviewer_emails[i]
+                })
               });
 
             case 9:

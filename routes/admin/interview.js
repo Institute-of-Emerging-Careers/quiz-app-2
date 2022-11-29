@@ -765,18 +765,17 @@ router.get("/:interview_round_id/matchings", checkAdminAuthenticated, async (req
   }
 });
 
-router.post("/:interview_round_id/:interviewer_id/send-matching-emails", checkAdminAuthenticated, async (req, res) => {
+router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated, async (req, res) => {
   try {
-    console.log(req.params)
     const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
     if (interview_round == null) res.sendStatus(404);
 
-    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id, InterviewerId: req.params.interviewer_id }});
+    const interviewer = await Interviewer.findOne({ where: { email: req.body.interviewer_email }});
 
-    const interviewer = await Interviewer.findOne({ where: { id: req.params.interviewer_id }});
-    const interviewer_link = await InterviewerCalendlyLinks.findOne({ where: { InterviewerId: req.params.interviewer_id }});
+    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id, InterviewerId: interviewer.id }});
 
-    console.log(interviewer_link);
+    const interviewer_link = await InterviewerCalendlyLinks.findOne({ where: { InterviewerId: interviewer.id }});
+
     if (interviewer_link == null) {
       res.status(404);
       res.json({ success: false, message: "Interviewer calendly link not found" });
@@ -785,6 +784,7 @@ router.post("/:interview_round_id/:interviewer_id/send-matching-emails", checkAd
 
 
     for (const matching of interview_matchings) {
+      console.log(matching);
       await queueMail(matching.student_email, `IEC interview invite`, {
         heading: "Interview Invitation",
         inner_text: `Dear Student,<br>We hope you are well.<br>Congratulations on passing the assessment phase. You have been assigned to ${interviewer.name} for your interview.<br>`,
