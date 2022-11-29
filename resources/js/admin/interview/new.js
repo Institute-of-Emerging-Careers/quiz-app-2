@@ -695,7 +695,7 @@ const Step3 = () => {
 
 		//now we have the matching. We need to send this to the backend to create the time slot assignment
 		const res = await fetch(
-			`/admin/interview/${interview_round_id}/create-matching1`,
+			`/admin/interview/${interview_round_id}/create-matching`,
 			{
 				method: "POST",
 				headers: {
@@ -710,6 +710,7 @@ const Step3 = () => {
 		if (res.ok) {
 			alert("Time Slot Assignment Created Successfully");
 			setLoading(false);
+      setMatching(flattened_matching);
 			setSteps((cur) => {
 				let copy = cur.slice();
 				for (let i = 0; i < copy.length; i++) {
@@ -860,41 +861,82 @@ const Step3 = () => {
 	);
 };;
 const Step4 = () => {
-  const [loading, setLoading] = useState(false);
-  const { students_object, matching_object } = useContext(MyContext);
-  const [matching, setMatching] = matching_object;
+	const [loading, setLoading] = useState(false);
+	const { matching_object } = useContext(MyContext);
+	const [matching, setMatching] = matching_object;
 
-  return (
-    <div>
-      			{matching.length > 0 ? (
+
+  const sendEmails = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try{  
+      //extract unique id of interviewers fron matching
+      const interviewer_ids = [...new Set(matching.map((match) => match.interviewer_id))];
+      console.log(interviewer_ids);
+      for (let i = 0; i < interviewer_ids.length; i++){
+        const response = await fetch(`/admin/interview/${interview_round_id}/${interviewer_ids[i]}/send-matching-emails`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          }
+        })
+        if (response.status == 404){
+          window.alert("Some interviewers have not updated calendly links");
+          setLoading(false);
+          return;
+        }
+      }
+
+    } catch (err){
+      console.log(err);
+      window.alert("An error occured, please try again later");
+    }
+
+
+  }
+
+	return (
+    <>
+
+    <div className="flex flex-row mt-4 p-4 w-full">
+
+      <label className="p-2 text-xl">
+        To send emails to both the interviewers and the students, click the given button.
+      </label>
+
+      <button className="ml-20 bg-green-500 p-2 text-white"  onClick = {sendEmails}>
+        Send Emails
+      </button>
+    </div>
+
+		<div>
+			{matching.length > 0 ? (
 				<div className="flex flex-col gap-y-4 mt-4 p-10">
 					<h2 className="text-lg font-semibold text-red-400">
 						You have created a matching. You can view it below.
 					</h2>
-          <table className="w-full text-left">
-              <thead>
-                <tr>
-                <th className="p-2 border border-black">Index</th>
-                  <th className="p-2 border border-black">Interviewer Email</th>
-                  <th className="p-2 border border-black">Student Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matching.map(
-                  (match, index) => (
-                    <tr key={index}>
-                      <td className="p-2 border border-black">{index + 1}</td>
-                      <td className="p-2 border border-black">
-                        {match.interviewer_email}
-                      </td>
-                      <td className="p-2 border border-black">
-                        {match.student_email}
-                      </td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-          </table>
+					<table className="w-full text-left">
+						<thead>
+							<tr>
+								<th className="p-2 border border-black">Index</th>
+								<th className="p-2 border border-black">Interviewer Email</th>
+								<th className="p-2 border border-black">Student Email</th>
+							</tr>
+						</thead>
+						<tbody>
+							{matching.map((match, index) => (
+								<tr key={index}>
+									<td className="p-2 border border-black">{index + 1}</td>
+									<td className="p-2 border border-black">
+										{match.interviewer_email}
+									</td>
+									<td className="p-2 border border-black">
+										{match.student_email}
+									</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
 				</div>
 			) : (
 				<div className="flex flex-col gap-y-4 mt-20 p-10">
@@ -903,8 +945,10 @@ const Step4 = () => {
 					</h2>
 				</div>
 			)}
-    </div>
-  );
+		</div>
+
+    </>
+	);
 };
 
 const Main = () => {

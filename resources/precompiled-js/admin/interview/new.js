@@ -730,7 +730,7 @@ var Step3 = function Step3() {
               flattened_matching = matching.flat(); //now we have the matching. We need to send this to the backend to create the time slot assignment
 
               _context.next = 16;
-              return fetch("/admin/interview/".concat(interview_round_id, "/create-matching1"), {
+              return fetch("/admin/interview/".concat(interview_round_id, "/create-matching"), {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json"
@@ -746,6 +746,7 @@ var Step3 = function Step3() {
               if (res.ok) {
                 alert("Time Slot Assignment Created Successfully");
                 setLoading(false);
+                setMatching(flattened_matching);
                 setSteps(function (cur) {
                   var copy = cur.slice();
 
@@ -869,14 +870,91 @@ var Step4 = function Step4() {
       setLoading = _useState46[1];
 
   var _useContext4 = useContext(MyContext),
-      students_object = _useContext4.students_object,
       matching_object = _useContext4.matching_object;
 
   var _matching_object2 = _slicedToArray(matching_object, 2),
       matching = _matching_object2[0],
       setMatching = _matching_object2[1];
 
-  return /*#__PURE__*/React.createElement("div", null, matching.length > 0 ? /*#__PURE__*/React.createElement("div", {
+  var sendEmails = /*#__PURE__*/function () {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+      var interviewer_ids, i, response;
+      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              e.preventDefault();
+              setLoading(true);
+              _context2.prev = 2;
+              //extract unique id of interviewers fron matching
+              interviewer_ids = _toConsumableArray(new Set(matching.map(function (match) {
+                return match.interviewer_id;
+              })));
+              console.log(interviewer_ids);
+              i = 0;
+
+            case 6:
+              if (!(i < interviewer_ids.length)) {
+                _context2.next = 17;
+                break;
+              }
+
+              _context2.next = 9;
+              return fetch("/admin/interview/".concat(interview_round_id, "/").concat(interviewer_ids[i], "/send-matching-emails"), {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                }
+              });
+
+            case 9:
+              response = _context2.sent;
+
+              if (!(response.status == 404)) {
+                _context2.next = 14;
+                break;
+              }
+
+              window.alert("Some interviewers have not updated calendly links");
+              setLoading(false);
+              return _context2.abrupt("return");
+
+            case 14:
+              i++;
+              _context2.next = 6;
+              break;
+
+            case 17:
+              _context2.next = 23;
+              break;
+
+            case 19:
+              _context2.prev = 19;
+              _context2.t0 = _context2["catch"](2);
+              console.log(_context2.t0);
+              window.alert("An error occured, please try again later");
+
+            case 23:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2, null, [[2, 19]]);
+    }));
+
+    return function sendEmails(_x2) {
+      return _ref2.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-row mt-4 p-4 w-full"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "p-2 text-xl"
+  }, "To send emails to both the interviewers and the students, click the given button."), /*#__PURE__*/React.createElement("button", {
+    className: "ml-20 bg-green-500 p-2 text-white",
+    onClick: sendEmails
+  }, "Send Emails")), /*#__PURE__*/React.createElement("div", null, matching.length > 0 ? /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-y-4 mt-4 p-10"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "text-lg font-semibold text-red-400"
@@ -902,7 +980,7 @@ var Step4 = function Step4() {
     className: "flex flex-col gap-y-4 mt-20 p-10"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "text-lg font-semibold text-red-400"
-  }, "You have not created a matching yet.")));
+  }, "You have not created a matching yet."))));
 };
 
 var Main = function Main() {
