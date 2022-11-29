@@ -100,12 +100,55 @@ StudentInterviewRoundInvite.init(
   { sequelize, modelName: "StudentInterviewRoundInvite" }
 );
 
+class InterviewMatching extends Model {}
+
+InterviewMatching.init({
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  interviewer_email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  student_email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  },
+  { sequelize, modelName: "InterviewMatching" }
+);
+
+class InterviewerCalendlyLinks extends Model {}
+
+InterviewerCalendlyLinks.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    calendly_link: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+  },
+  { sequelize, modelName: "InterviewerCalendlyLinks" }
+);
+
+
+
 module.exports = {
   InterviewRound,
   Interviewer,
   InterviewerInvite,
   InterviewerSlot,
   StudentInterviewRoundInvite,
+  InterviewMatching,
+  InterviewerCalendlyLinks
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs

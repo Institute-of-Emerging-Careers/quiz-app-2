@@ -9,6 +9,8 @@ const {
   InterviewerInvite,
   InterviewerSlot,
   StudentInterviewRoundInvite,
+  InterviewMatching,
+  InterviewerCalendlyLinks
 } = require("./interview");
 
 const {
@@ -432,8 +434,15 @@ Student.belongsToMany(InterviewRound, {
 });
 InterviewRound.belongsToMany(Student, { through: StudentInterviewRoundInvite });
 
+
 InterviewerInvite.hasMany(InterviewerSlot);
 InterviewerSlot.belongsTo(InterviewerInvite);
+
+InterviewRound.hasMany(InterviewMatching);
+Interviewer.hasMany(InterviewMatching);
+Student.hasMany(InterviewMatching);
+
+Interviewer.hasOne(InterviewerCalendlyLinks);
 
 ApplicationRound.belongsToMany(Course, {
   through: ApplicationRoundCourseJunction,

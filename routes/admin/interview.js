@@ -12,6 +12,8 @@ const {
   InterviewerInvite,
   InterviewerSlot,
   StudentInterviewRoundInvite,
+  InterviewMatching,
+  InterviewerCalendlyLinks
 } = require("../../db/models/interview");
 const { DateTime } = require("luxon");
 const { queueMail } = require("../../bull");
@@ -326,6 +328,55 @@ router.get(
   }
 );
 
+router.get("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
+  try {
+    const interview_rounds = await InterviewRound.findAll();
+
+    const calendly_link = await InterviewerCalendlyLinks.findOne({
+      where: { InterviewerId: req.user.user.id },
+    }).calendly_link;
+
+
+    res.render("interviewer/link-upload.ejs", {
+      env: process.env.NODE_ENV,
+      myname: req.user.user.name,
+      user_type: req.user.type,
+      current_link: calendly_link,
+    });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
+	try {
+		const interviewer = await Interviewer.findOne({
+			where: { id: req.user.user.id },
+		});
+
+		if (interviewer == null) {
+			res.sendStatus(404);
+			return;
+		}
+
+    const drop_previous = await InterviewerCalendlyLinks.destroy({
+      where: { InterviewerId: interviewer.id },
+    });
+
+		const response = await InterviewerCalendlyLinks.create({
+			calendly_link: req.body.calendly_link,
+			InterviewerId: interviewer.id,
+		});
+
+    res.sendStatus(200);
+
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
+});
+
 router.post(
   "/interviewer/save-time-slots",
   checkInterviewerAuthenticated,
@@ -485,7 +536,7 @@ router.get(
       }
       res.json({ success: true, data: data });
     } else {
-      console.log("Error: QuizId: or orientation:", orientation, "is NULL");
+      // console.log("Error: QuizId: or orientation:", orientation, "is NULL");
       res.json({ success: false });
     }
   }
@@ -620,5 +671,124 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
     });
 });
 
+/**
+ * @params {interviewer id, interviewee id}
+ * @returns {success}
+ */
+
+
+router.post("/:interview_round_id/create-matching", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+
+    if (interview_round == null) res.sendStatus(404);
+
+    //drop all matchings with the same interview round 
+    await InterviewMatching.destroy({ where: { InterviewRoundId: req.params.interview_round_id }});
+
+    //extract unique interviewer emails from req.body
+    const interviewer_emails = [...new Set(req.body.matching.map((slot) => slot.interviewer_email))];
+
+    // get corresponding interviewer ids
+    const interviewers = await Interviewer.findAll({ where: { email: interviewer_emails } });
+
+    //replace interviewer emails with interviewer ids
+    req.body.matching.forEach((slot) => {
+      slot.interviewer_id = interviewers.find((interviewer) => interviewer.email === slot.interviewer_email).id;
+      slot.InterviewerId = slot.interviewer_id;
+      slot.StudentId = slot.student_id ;
+      slot.InterviewRoundId = req.params.interview_round_id;
+
+      delete slot.interviewer_id;
+      delete slot.student_id;
+
+    });
+
+    await InterviewMatching.bulkCreate(
+      req.body.matching,
+    )
+  
+    res.sendStatus(200);
+
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/:interview_round_id/:interviewer_id/matchings", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+
+    if (interview_round == null) res.sendStatus(404);
+
+    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id, InterviewerId: req.params.interviewer_id }});
+
+    const students = await Promise.all(interview_matchings.map((matching) => matching.getStudent()));
+
+    console.log(students);
+
+    res.sendStatus(200);
+
+    res.json({ success: true, interview_matchings: interview_matchings });
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.get("/:interview_round_id/matchings", checkAdminAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+    if (interview_round == null) res.sendStatus(404);
+
+    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id }});
+
+    //format matchings as per frontend requirements
+    const matchings = interview_matchings.map((matching) => {
+      return {
+        student_id: matching.StudentId,
+        interviewer_id: matching.InterviewerId,
+        student_email : matching.student_email,
+        interviewer_email: matching.interviewer_email,
+      }
+    });
+
+    res.status(200);
+    res.json({ success: true, interview_matchings: interview_matchings });
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+
+
+// router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated, async (req, res) => {
+//   try {
+//     const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+//     if (interview_round == null) res.sendStatus(404);
+
+//     const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id }});
+
+//     const interviewers = await Interviewer.findAll({ where: { id: interview_matchings.map((matching) => matching.InterviewerId) }});
+
+//     const interviewees = await Student.findAll({ where: { id: interview_matchings.map((matching) => matching.StudentId) }});
+
+//     const interviewer_emails = interviewers.map((interviewer) => interviewer.email);
+
+//     const interviewee_emails = interviewees.map((interviewee) => interviewee.email);
+
+//     const interviewer_names = interviewers.map((interviewer) => interviewer.name);
+
+//     const interviewee_names = interviewees.map((interviewee) => interviewee.name);
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500);
+//   }
+// });
 
 module.exports = router;

@@ -26,6 +26,11 @@
             <div class="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card">
               <div class="grid grid-cols-4 col-span-8 h-16 bg-iec-blue justify-center content-center">
                 <a href="/admin/interview/declare-time-slots/<%= interview_rounds[i].id %>" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Declare Time Slots"><i class="fas fa-calendar-day"></i></a>
+
+                <a href="/admin/interview/upload-link" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Upload Calendly Link">
+                  <i class="fas fa-link"></i>
+                </a> 
+
                 <a class="text-white text-xl col-start-3 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="View Details" href="/admin/interview/interviewer-details/<%= interview_rounds[i].id %>"><i class="far fa-eye"></i></a>
               </div>
               <h3 class="col-span-6 font-semibold text-lg px-4"><%= interview_rounds[i].title %></h3>
