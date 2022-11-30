@@ -895,7 +895,7 @@ var Step4 = function Step4() {
 
             case 6:
               if (!(i < interviewer_emails.length)) {
-                _context2.next = 17;
+                _context2.next = 21;
                 break;
               }
 
@@ -923,26 +923,36 @@ var Step4 = function Step4() {
               return _context2.abrupt("return");
 
             case 14:
+              if (!(response.status == 200)) {
+                _context2.next = 18;
+                break;
+              }
+
+              window.alert("Emails sent successfully");
+              setLoading(false);
+              return _context2.abrupt("return");
+
+            case 18:
               i++;
               _context2.next = 6;
               break;
 
-            case 17:
-              _context2.next = 23;
+            case 21:
+              _context2.next = 27;
               break;
 
-            case 19:
-              _context2.prev = 19;
+            case 23:
+              _context2.prev = 23;
               _context2.t0 = _context2["catch"](2);
               console.log(_context2.t0);
               window.alert("An error occured, please try again later");
 
-            case 23:
+            case 27:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[2, 19]]);
+      }, _callee2, null, [[2, 23]]);
     }));
 
     return function sendEmails(_x2) {

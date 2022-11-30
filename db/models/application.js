@@ -610,7 +610,10 @@ Application.init(
             Director Admissions 
             Institute of Emerging Careers 
             http://www.iec.org.pk 
-            <a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`
+            <a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
+						button_announcer: null,
+						button_text: null,
+						button_link: null,
 					});
 				} else {
 					return new Promise((resolve) => {

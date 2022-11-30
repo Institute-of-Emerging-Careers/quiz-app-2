@@ -872,7 +872,7 @@ const Step4 = () => {
     try{  
       //extract unique id of interviewers fron matching
       const interviewer_emails = [...new Set(matching.map((match) => match.interviewer_email))];
-      console.log(interviewer_emails);
+
       for (let i = 0; i < interviewer_emails.length; i++){
         const response = await fetch(`/admin/interview/${interview_round_id}/send-matching-emails`, {
           method: "POST",
@@ -885,6 +885,11 @@ const Step4 = () => {
         })
         if (response.status == 404){
           window.alert("Some interviewers have not updated calendly links");
+          setLoading(false);
+          return;
+        }
+        if (response.status == 200){
+          window.alert("Emails sent successfully");
           setLoading(false);
           return;
         }
