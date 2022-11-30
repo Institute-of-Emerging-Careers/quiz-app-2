@@ -54,6 +54,7 @@ router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
   });
 });
 
+
 router.get("/edit/:interview_round_id", checkAdminAuthenticated, (req, res) => {
   InterviewRound.findOne({
     where: { id: req.params.interview_round_id },
@@ -782,6 +783,20 @@ router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated
       return
     };
 
+    const interviewer_password = ( await Interviewer.findOne({ where: { email: interviewer.email }, attributes: ["password"], })).password;
+    const interviewer_login_link = `${
+      process.env.SITE_DOMAIN_NAME
+    }/admin/interview/login?email=${
+      interviewer.email
+    }&password=${encodeURIComponent(interviewer_password)}`;
+
+    await queueMail(req.body.interviewer_email, `IEC interview invite`, {
+      heading: "Interview Invitation",
+      inner_text: `Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>`,
+      button_announcer: `Click the button to login to your account<br>`,
+      button_text: "Login",
+      button_link: interviewer_login_link,
+    });
 
     for (const matching of interview_matchings) {
       console.log(matching);
@@ -792,7 +807,6 @@ router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated
         button_text: "Book a slot",
         button_link: interviewer_link.calendly_link,
       });
-      
     }
       
 
