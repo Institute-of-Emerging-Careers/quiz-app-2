@@ -175,9 +175,6 @@ Application.init(
 					args: [cities],
 					msg: "Invalid city. Please select one from the provided list.",
 				},
-				notEmpty: {
-					msg: "City cannot be empty.",
-				},
 				len: {
 					args: [[2, 100]],
 					msg: "City name must be between 2 and 100 characters long.",
@@ -243,9 +240,6 @@ Application.init(
 			allowNull: true,
 			defaultValue: "N/A",
 			validate: {
-				notEmpty: {
-					msg: "Ongoing Education cannot be empty. Please select an option.",
-				},
 				isIn: {
 					args: [education_levels],
 					msg: "Invalid Education Ongoing Level",
@@ -256,11 +250,6 @@ Application.init(
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				notEmpty: {
-					msg: "Major/Field of Ongoing Education cannot be empty.",
-				},
-			},
 		},
 		degree_choice: {
 			type: DataTypes.STRING,
@@ -409,7 +398,7 @@ Application.init(
 		preference_reason: {
 			type: DataTypes.TEXT,
 			defaultValue: "",
-			allowNull: false,
+			allowNull: true,
 		},
 		is_comp_sci_grad: {
 			type: DataTypes.BOOLEAN,
@@ -472,6 +461,33 @@ Application.init(
 				},
 			},
 		},
+		firstPreferenceReason: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: {
+					msg: "Please tell us why you chose your first preference.",
+				},
+			},
+		},
+		secondPreferenceReason: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: {
+					msg: "Please tell us why you chose your second preference.",
+				},
+			},
+		},
+		thirdPreferenceReason: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: {
+					msg: "Please tell us why you chose your third preference.",
+				},
+			},
+		},
 		rejection_email_sent: {
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
@@ -483,6 +499,7 @@ Application.init(
 			defaultValue: false,
 		},
 	},
+
 	{
 		sequelize,
 		modelName: "Application",

@@ -95,6 +95,15 @@ var ApplicantDetailsModal = function ApplicantDetailsModal(props) {
     title: "Reason for Preferences",
     name: ["preference_reason"]
   }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
+  }, {
+    title: "What is your second preference reason?",
+    name: ["secondPreferenceReason"]
+  }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
+  }, {
     title: "Are you a graduate in computer science or any related field?",
     name: ["is_comp_sci_grad"]
   }, {

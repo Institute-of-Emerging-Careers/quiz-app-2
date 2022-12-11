@@ -1194,7 +1194,7 @@ router.get("/:quizId/results", checkAdminAuthenticated, async (req, res) => {
     user_type: req.user.type,
     user_id: req.user.user.id,
     quiz_id: req.params.quizId,
-    myname: req.user.user.firstName,
+    myname: req.user.user?.firstName,
     env: process.env.NODE_ENV,
   });
 });
@@ -1215,7 +1215,7 @@ router.get("/:quiz_id/analysis", checkAdminAuthenticated, async (req, res) => {
 
   res.render("admin/view_result_analysis.ejs", {
     user_type: req.user.type,
-    myname: req.user.user.firstName,
+    myname: req.user.user?.firstName,
     data_obj: final_response,
     moment: moment,
     millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
@@ -1361,7 +1361,7 @@ router.get("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
 
     res.render("admin/quiz/assign.ejs", {
       quiz_id: req.params.quiz_id,
-      myname: req.user.user.firstName,
+      myname: req.user.user?.firstName,
       user_type: req.user.type,
       env: process.env.NODE_ENV,
       current_url: `/admin/application${req.url}`,

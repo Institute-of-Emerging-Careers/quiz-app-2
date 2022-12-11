@@ -30,7 +30,7 @@ router.use((req, res, next) => {
 router.get("/", checkAdminAuthenticated, (req, res) => {
   res.render("admin/interview/index.ejs", {
     env: process.env.NODE_ENV,
-    myname: req.user.user.firstName,
+    myname: req.user.user?.firstName,
     user_type: req.user.type,
     site_domain_name: process.env.SITE_DOMAIN_NAME,
     current_url: `/admin/interview${req.url}`,
