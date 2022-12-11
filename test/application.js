@@ -20,6 +20,7 @@ let expect = chai.expect;
 chai.use(chaiHttp);
 const agent = chai.request.agent(server);
 
+describe.skip("Applications", () => {});
 //Our parent block
 describe("Applications", () => {
   before(() => {
