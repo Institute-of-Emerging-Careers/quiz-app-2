@@ -890,16 +890,15 @@ var Step4 = function Step4() {
               interviewer_emails = _toConsumableArray(new Set(matching.map(function (match) {
                 return match.interviewer_email;
               })));
-              console.log(interviewer_emails);
               i = 0;
 
-            case 6:
+            case 5:
               if (!(i < interviewer_emails.length)) {
-                _context2.next = 21;
+                _context2.next = 20;
                 break;
               }
 
-              _context2.next = 9;
+              _context2.next = 8;
               return fetch("/admin/interview/".concat(interview_round_id, "/send-matching-emails"), {
                 method: "POST",
                 headers: {
@@ -910,11 +909,11 @@ var Step4 = function Step4() {
                 })
               });
 
-            case 9:
+            case 8:
               response = _context2.sent;
 
               if (!(response.status == 404)) {
-                _context2.next = 14;
+                _context2.next = 13;
                 break;
               }
 
@@ -922,9 +921,9 @@ var Step4 = function Step4() {
               setLoading(false);
               return _context2.abrupt("return");
 
-            case 14:
+            case 13:
               if (!(response.status == 200)) {
-                _context2.next = 18;
+                _context2.next = 17;
                 break;
               }
 
@@ -932,27 +931,27 @@ var Step4 = function Step4() {
               setLoading(false);
               return _context2.abrupt("return");
 
-            case 18:
+            case 17:
               i++;
-              _context2.next = 6;
+              _context2.next = 5;
               break;
 
-            case 21:
-              _context2.next = 27;
+            case 20:
+              _context2.next = 26;
               break;
 
-            case 23:
-              _context2.prev = 23;
+            case 22:
+              _context2.prev = 22;
               _context2.t0 = _context2["catch"](2);
               console.log(_context2.t0);
               window.alert("An error occured, please try again later");
 
-            case 27:
+            case 26:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[2, 23]]);
+      }, _callee2, null, [[2, 22]]);
     }));
 
     return function sendEmails(_x2) {

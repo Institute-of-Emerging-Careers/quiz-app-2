@@ -417,7 +417,7 @@
 
           <!-- Institute -->
 
-          <fieldset class="row mb-4 input-group">
+          <!-- <fieldset class="row mb-4 input-group">
             <label for="inst_degree_dip" class="col-sm-4 col-form-label">Institution(s) from where you completed your degree and/or certification from? If none, leave empty.</label>
             <textarea
                 type="text"
@@ -427,7 +427,19 @@
                 name="inst_degree_dip"
               ></textarea>
               <div id="inst_degree_dip-error-message" class="invalid-feedback"></div>
-          </fieldset>
+          </fieldset> -->
+
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Institution(s) from where you completed your degree and/or certification from? If none, leave empty: </label>
+            <div class="col-sm-8">
+              <select class="form-select mb-2" name="inst_degree_dip" id="inst_degree_dip" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<universities.length;i++) { %>
+                  <option value="<%=universities[i]%>"><%=universities[i]%></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
 
           <!-- Education Completed -->
           
@@ -908,6 +920,21 @@
                 <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
+
+              <!-- Reasons for Preferences -->
+              <fieldset class="row mb-4 input-group">
+                <label for="firstPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your first preference.*</label>
+                <textarea
+                    type="text"
+                    class="form-control col-sm-8"
+                    id="firstPreferenceReason"
+                    placeholder="Reasons"
+                    name="firstPreferenceReason"
+                    required
+                  ></textarea>
+                <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
+              </fieldset>
+
               <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
@@ -919,6 +946,20 @@
                 <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
+              <!-- Reasons for Preferences -->
+              <fieldset class="row mb-4 input-group">
+                <label for="secondPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your second preference.*</label>
+                <textarea
+                    type="text"
+                    class="form-control col-sm-8"
+                    id="secondPreferenceReason"
+                    placeholder="Reasons"
+                    name="secondPreferenceReason"
+                    required
+                  ></textarea>
+                <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
+              </fieldset>
+
               <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
@@ -929,22 +970,21 @@
                 </select>
                 <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
+
+              <!-- Reasons for Preferences -->
+              <fieldset class="row mb-4 input-group">
+                <label for="thirdPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your third preference.*</label>
+                <textarea
+                    type="text"
+                    class="form-control col-sm-8"
+                    id="thirdPreferenceReason"
+                    placeholder="Reasons"
+                    name="thirdPreferenceReason"
+                    required
+                  ></textarea>
+                <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
+              </fieldset>
             </div>
-
-            <!-- Reasons for Preferences -->
-            <fieldset class="row mb-4 input-group">
-              <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.*</label>
-              <textarea
-                  type="text"
-                  class="form-control col-sm-8"
-                  id="preference-reason"
-                  placeholder="Reasons"
-                  name="preference_reason"
-                  required
-                ></textarea>
-              <div id="preference_reason-error-message" class="invalid-feedback"></div>
-            </fieldset>
-
 
             <!-- How did you hear -->
             <fieldset class="row mb-4 input-group">

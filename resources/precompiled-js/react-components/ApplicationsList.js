@@ -210,6 +210,15 @@ var ApplicationsList = function ApplicationsList(props) {
     title: "Will you be available for full time work after the program?",
     name: ["will_work_full_time"]
   }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
+  }, {
+    title: "What is your second preference reason?",
+    name: ["secondPreferenceReason"]
+  }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
+  }, {
     title: "The program is entirely online. Do you acknowledge that?",
     name: ["acknowledge_online"]
   }, {

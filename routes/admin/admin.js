@@ -36,8 +36,9 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
     }
     const all_invites = await Invite.findAll({ include: [Quiz] });
     console.log(req.url);
+    console.log(req.user);
     res.render("admin/index.ejs", {
-      myname: req.user.user.firstName,
+      myname: req.user.user?.firstName,
       user_type: req.user.type,
       all_quizzes: all_quizzes,
       all_invites: all_invites,
