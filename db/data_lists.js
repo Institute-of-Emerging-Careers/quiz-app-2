@@ -442,6 +442,18 @@ const sources_of_information = [
   "Other",
 ];
 
+const reasons_to_join = [
+  "Want to Establish Career",
+  "Have relevant Specialization/Educational Background ",
+  "Have Prior Experience",
+  "Want to attain additional skill set to support own business/startup/enterprise",
+  "Want to further polish and enhance the skill set",
+  "Want to pursue a full time job in the field ",
+  "Want to attain freelance opportunities",
+  "Want to switch my career/job ",
+  "Other",
+]
+
 module.exports = {
   cities,
   provinces,
@@ -455,4 +467,5 @@ module.exports = {
   age_groups,
   knows_from_IEC,
   sources_of_information,
+  reasons_to_join
 };

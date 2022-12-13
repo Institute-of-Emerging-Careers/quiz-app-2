@@ -12,6 +12,7 @@ const {
 	age_groups,
 	knows_from_IEC,
 	sources_of_information,
+	reasons_to_join
 } = require("../../db/data_lists");
 const { queueMail } = require("../../bull");
 
@@ -187,21 +188,11 @@ Application.init(
 		},
 		has_completed_ba: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have completed a Bachelor's",
-				},
-			},
+			allowNull: true,
 		},
 		has_completed_diploma: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have completed a Diploma",
-				},
-			},
+			allowNull: true,
 		},
 		inst_degree_dip: {
 			type: DataTypes.STRING,
@@ -231,39 +222,29 @@ Application.init(
 				},
 			},
 		},
-		can_share_fa_docs:{
-			type: DataTypes.BOOLEAN,
-			allowNull: true,
-		},
 		education_ongoing: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				isIn: {
-					args: [education_levels],
-					msg: "Invalid Education Ongoing Level",
-				},
-			},
 		},
 		education_ongoing_major: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
 		},
+		year_of_graduation : {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			defaultValue: 0,
+		},
+		can_share_fa_docs:{
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+		},
 		degree_choice: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				notEmpty: {
-					msg: "Degree Choice cannot be empty. Please select an option.",
-				},
-				isIn: {
-					args: [degree_choice],
-					msg: "Invalid Degree Choice",
-				},
-			},
 		},
 		monthly_family_income: {
 			type: DataTypes.STRING,
