@@ -373,64 +373,39 @@
         <div id="step3" class="hidden mt-5">
           <h3 class="mt-3">Step 3: Education Information</h3>
 
-          <!-- Completed Bachelor's degree -->
-
-          <fieldset class="row mb-4">
-            <label for="has_completed_ba" class="col-sm-4 col-form-label">Have you completed a bachelor's degree (2 or 4 years program)?</label>
+          <!-- Education Completed -->
+          
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
             <div class="col-sm-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_completed_ba" id="has_completed_ba" value="1" required>
-                <label class="form-check-label" for="has_completed_ba">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_completed_ba" id="has_completed_ba_no" value="0">
-                <label class="form-check-label" for="has_completed_ba_no">
-                  No
-                </label>
-              </div>
+              <select class="form-select mb-2" name="education_completed" id="education_completed" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<education_levels.length;i++) { %>
+                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
+                <% } %>
+              </select>
+              <div id="education_completed-error-message" class="invalid-feedback mb-2"></div>
+
             </div>
-            <div id="has_completed_ba-error-message" class="invalid-feedback"></div>
-          </fieldset>
+          </div>
 
-          <!-- Has Completed Diploma -->
-
-          <fieldset class="row mb-4">
-            <label for="has_completed_diploma" class="col-sm-4 col-form-label">Have you completed a 2 or more years of certification/diploma? </label>
+          <!-- Education Ongoing -->
+          
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Are you currently Enrolled in any of the Following Institutional Programs?*: </label>
             <div class="col-sm-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_completed_diploma" id="has_completed_diploma" value="1" required>
-                <label class="form-check-label" for="has_completed_diploma">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="has_completed_diploma" id="has_completed_diploma_no" value="0">
-                <label class="form-check-label" for="has_completed_diploma_no">
-                  No
-                </label>
-              </div>
+              <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<education_levels.length;i++) { %>
+                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
+                <% } %>
+              </select>
+              <div id="education_ongoing-error-message" class="invalid-feedback mb-2"></div>
             </div>
-            <div id="has_completed_diploma-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <!-- Institute -->
-
-          <!-- <fieldset class="row mb-4 input-group">
-            <label for="inst_degree_dip" class="col-sm-4 col-form-label">Institution(s) from where you completed your degree and/or certification from? If none, leave empty.</label>
-            <textarea
-                type="text"
-                class="form-control col-sm-8"
-                id="inst_degree_dip"
-                placeholder="Institutions and Degree names"
-                name="inst_degree_dip"
-              ></textarea>
-              <div id="inst_degree_dip-error-message" class="invalid-feedback"></div>
-          </fieldset> -->
+          </div>
 
           <div class="row mb-4">
-            <label class="col-sm-3 col-form-label">Institution(s) from where you completed your degree and/or certification from? If none, leave empty: </label>
+            <label class="col-sm-3 col-form-label">Name of your Latest educational Institution: </label>
             <div class="col-sm-8">
               <select class="form-select mb-2" name="inst_degree_dip" id="inst_degree_dip" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
@@ -441,29 +416,37 @@
             </div>
           </div>
 
-          <!-- Education Completed -->
-          
           <div class="row mb-4">
-            <label class="col-sm-3 col-form-label">Education Completed*: </label>
-            <div class="col-sm-8">
-              <select class="form-select mb-2" name="education_completed" id="education_completed" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<education_levels.length;i++) { %>
-                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
-                <% } %>
-              </select>
-              <div id="education_completed-error-message" class="invalid-feedback mb-2"></div>
-              <input
+              <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
+              <div class="col-sm-8">
+                <input
                 type="text"
                 class="form-control"
                 id="education_completed_major"
-                placeholder="Education Major e.g. Biology"
+                placeholder="e.g BS in Computer science"
                 name="education_completed_major"
                 required
-              />
-              <div id="education_completed_major-error-message" class="invalid-feedback"></div>
-            </div>
+                />
+                <div id="education_completed_major-error-message" class="invalid-feedback"></div>
+              </div>
+
           </div>
+
+          <!-- Year of Graduation -->
+
+          <fieldset class="row mb-4 input-group">
+            <label for="year_of_graduation" class="col-sm-4 col-form-label">What was or is the year of your graduation?</label>
+            <input
+                type="number"
+                class="form-control col-sm-8"
+                id="year_of_graduation"
+                placeholder="e.g. 2019"
+                name="year_of_graduation"
+              ></input>
+              <div id="year_of_graduation-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+
 
           <!-- Comp Sci student -->
 
@@ -489,7 +472,7 @@
           <!-- Digital Certifications -->
 
           <fieldset class="row mb-4 input-group">
-            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">Do you have any digital skills certifications? If yes, please share their names and the name of the institution. If no, leave empty.</label>
+            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">If you have any digital or tech related certifications, please share their names, the name of the institution and year of completion. (e.g SEO from digi skills 2022  etc). If no, leave empty.</label>
             <textarea
                 type="text"
                 class="form-control col-sm-8"
@@ -499,20 +482,6 @@
               ></textarea>
               <div id="digi_skills_certifications-error-message" class="invalid-feedback"></div>
           </fieldset>
-
-          <!-- Degree Choice -->
-          <div class="row mb-4">
-            <label class="col-sm-4 col-form-label">Did you choose your last degree by choice or your family/siblings/others made you choose it?</label>
-            <div class="col-sm-8">
-              <select class="form-select mb-2" name="degree_choice" id="degree_choice" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<degree_choice.length;i++) { %>
-                  <option value="<%=degree_choice[i]%>"><%=degree_choice[i]%></option>
-                <% } %>
-              </select>
-              <div id="degree_choice-error-message" class="invalid-feedback mb-2"></div>
-            </div>
-          </div>
 
           <button
             type="button"
@@ -568,17 +537,17 @@
             </fieldset>
 
 
-          <fieldset class="row mb-4 input-group">
-            <label for="current_field" class="col-sm-4 col-form-label">What field are you currently working in?</label>
-            <textarea
-                type="text"
-                class="form-control col-sm-8"
-                id="current_field"
-                placeholder="Current field"
-                name="current_field"
-              ></textarea>
-              <div id="current_field-error-message" class="invalid-feedback"></div>
-          </fieldset>
+            <fieldset class="row mb-4 input-group">
+              <label for="current_field" class="col-sm-4 col-form-label">What field are you currently working in?</label>
+              <textarea
+                  type="text"
+                  class="form-control col-sm-8"
+                  id="current_field"
+                  placeholder="Current field"
+                  name="current_field"
+                ></textarea>
+                <div id="current_field-error-message" class="invalid-feedback"></div>
+            </fieldset>
 
             <fieldset class="row mb-4">
               <label class="col-lg-4 col-form-label">Your Current Salary: </label>
@@ -593,6 +562,20 @@
             <div id="salary-error-message" class="invalid-feedback"></div>
 
             </fieldset>
+
+            <!-- Salary expectation -->
+            <div class="row mb-4">
+              <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<income_brackets.length;i++) { %>
+                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                  <% } %>
+                </select>
+                <div id="salary_expectation-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
 
             <fieldset class="row mb-4">
               <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
@@ -612,20 +595,6 @@
               </div>
             <div id="will_leave_job-error-message" class="invalid-feedback"></div>
             </fieldset>
-
-            <!-- Salary expectation -->
-            <div class="row mb-4">
-              <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<income_brackets.length;i++) { %>
-                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
-                  <% } %>
-                </select>
-                <div id="salary_expectation-error-message" class="invalid-feedback"></div>
-              </div>
-            </div>
           </div>
 
 
@@ -642,6 +611,25 @@
               <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
             </div>
           </div>
+
+          <!-- People earning -->
+          <fieldset class="row mb-4">
+            <label class="col-lg-4 col-form-label">How many immediate family members are earning in your household?</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="people_earning_in_household" id="people_earning_in_household" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<people_in_household.length;i++) { %>
+                  <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
+                <% } %>
+              </select>
+            </div>
+          <div id="people_earning_in_household-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
+          
+
+
 
           <!-- FA or Standard -->
 
@@ -702,21 +690,6 @@
 
             </fieldset>
 
-            <!-- People earning -->
-            <fieldset class="row mb-4">
-              <label class="col-lg-4 col-form-label">How many people are earning in your household?</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="people_earning_in_household" id="people_earning_in_household" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<people_in_household.length;i++) { %>
-                    <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
-                  <% } %>
-                </select>
-              </div>
-            <div id="people_earning_in_household-error-message" class="invalid-feedback"></div>
-
-            </fieldset>
-
             <!-- Is married -->
 
             <fieldset class="row mb-4">
@@ -761,7 +734,7 @@
 
             </fieldset>
 
-          <!-- Internet Access -->
+           <!-- Internet Access
 
             <fieldset class="row mb-4">
               <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?*</label>
@@ -780,7 +753,7 @@
                 </div>
               </div>
               <div id="internet_facility_in_area-error-message" class="invalid-feedback"></div>
-            </fieldset>
+            </fieldset> -->
           
             <!-- How will you complete course -->
 
@@ -922,18 +895,17 @@
 
 
               <!-- Reasons for Preferences -->
-              <fieldset class="row mb-4 input-group">
-                <label for="firstPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your first preference.*</label>
-                <textarea
-                    type="text"
-                    class="form-control col-sm-8"
-                    id="firstPreferenceReason"
-                    placeholder="Reasons"
-                    name="firstPreferenceReason"
-                    required
-                  ></textarea>
-                <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
-              </fieldset>
+
+              <label for="firstPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your first preference.*</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="firstPreferenceReason" id="firstPreferenceReason" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                  <% } %>
+                </select>
+              <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
+              </div>
 
               <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
               <div class="col-lg-8">
@@ -947,18 +919,19 @@
               </div>
 
               <!-- Reasons for Preferences -->
-              <fieldset class="row mb-4 input-group">
-                <label for="secondPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your second preference.*</label>
-                <textarea
-                    type="text"
-                    class="form-control col-sm-8"
-                    id="secondPreferenceReason"
-                    placeholder="Reasons"
-                    name="secondPreferenceReason"
-                    required
-                  ></textarea>
+              
+              <label for="secondPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your second preference.*</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="secondPreferenceReason" id="secondPreferenceReason" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                  <% } %>
+                </select>
                 <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
-              </fieldset>
+              </div>
+              <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
+
 
               <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
               <div class="col-lg-8">
@@ -972,18 +945,19 @@
               </div>
 
               <!-- Reasons for Preferences -->
-              <fieldset class="row mb-4 input-group">
-                <label for="thirdPreferenceReason" class="col-sm-4 col-form-label">Please share the reason for your third preference.*</label>
-                <textarea
-                    type="text"
-                    class="form-control col-sm-8"
-                    id="thirdPreferenceReason"
-                    placeholder="Reasons"
-                    name="thirdPreferenceReason"
-                    required
-                  ></textarea>
+
+                <label for="thirdPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your third preference.*</label>
+                <div class="col-lg-8">
+                  <select class="form-select mb-2" name="thirdPreferenceReason" id="thirdPreferenceReason" required>
+                    <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                    <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                      <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                    <% } %>
+                  </select>
+                  <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
+                </div>
                 <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
-              </fieldset>
+
             </div>
 
             <!-- How did you hear -->
@@ -1044,7 +1018,9 @@
             </fieldset>
 
             <fieldset class="row mb-4">
-              <label for="LEC_acknowledgement" class="col-lg-4 col-form-label">Do you acknowledge that you will be signing an LEC Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC’s support, and contribute back to IEC after you find a job?*</label>
+              <div class="col-lg-4 col-form-label flex flex-col">
+                <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's support, and contribute back to IEC after you find a job? (Dropdown- Yes & No) </label>
+              </div>
               <div class="col-lg-8">
                 <div class="form-check">
                   <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement" value="1" required>
@@ -1062,6 +1038,8 @@
               <div id="LEC_acknowledgement-error-message" class="invalid-feedback"></div>
 
             </fieldset>
+
+            <small class="mb-4 text-muted " >Learn, Earn & Contribute (LEC) is a document consisting of students' finalized payment model and their agreement to pay back the remaining course amount to IEC on the basis of 10% of their salary after getting a job.*</small>
 
           </div>
           <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out for a confirmation email from us. Make sure you remember your email and password for future use.</p>

@@ -20,6 +20,7 @@ const {
   people_in_household,
   knows_from_IEC,
   sources_of_information,
+  reasons_to_join
 } = require("../db/data_lists");
 
 router.use((req, res, next) => {
@@ -61,6 +62,7 @@ router.get(
             people_in_household: people_in_household,
             knows_from_IEC: knows_from_IEC,
             sources_of_information: sources_of_information,
+            reasons_to_join: reasons_to_join,
             application_round_id: req.params.application_round_id,
           });
         } else {

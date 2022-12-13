@@ -12,6 +12,7 @@ const {
 	age_groups,
 	knows_from_IEC,
 	sources_of_information,
+	reasons_to_join
 } = require("../../db/data_lists");
 const { queueMail } = require("../../bull");
 
@@ -187,21 +188,11 @@ Application.init(
 		},
 		has_completed_ba: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have completed a Bachelor's",
-				},
-			},
+			allowNull: true,
 		},
 		has_completed_diploma: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have completed a Diploma",
-				},
-			},
+			allowNull: true,
 		},
 		inst_degree_dip: {
 			type: DataTypes.STRING,
@@ -231,39 +222,29 @@ Application.init(
 				},
 			},
 		},
-		can_share_fa_docs:{
-			type: DataTypes.BOOLEAN,
-			allowNull: true,
-		},
 		education_ongoing: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				isIn: {
-					args: [education_levels],
-					msg: "Invalid Education Ongoing Level",
-				},
-			},
 		},
 		education_ongoing_major: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
 		},
+		year_of_graduation : {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+			defaultValue: 0,
+		},
+		can_share_fa_docs:{
+			type: DataTypes.BOOLEAN,
+			allowNull: true,
+		},
 		degree_choice: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				notEmpty: {
-					msg: "Degree Choice cannot be empty. Please select an option.",
-				},
-				isIn: {
-					args: [degree_choice],
-					msg: "Invalid Degree Choice",
-				},
-			},
 		},
 		monthly_family_income: {
 			type: DataTypes.STRING,
@@ -610,17 +591,21 @@ Application.init(
             
 			We have received your application for the IEC Tech Apprenticeship Program by Institute of Emerging Careers (IEC). Your application is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment soon. Please stay tuned! 
 
-            Next steps for Acquisition:
-            <ul>
-            <li>Online Assessment (24th and 25th October)</li>
-            <li>Orientation (27th October)</li>
-            <li>Interviews (Date to be Announced)</li>
-            <li>Zero Week</li>
-            </ul>
+			Application Process:
+			<ul>
+				<li>Online Registration (17th Dec-31st Dec, 2022)</li>
+				<li>Online Assessment (2nd & 3rd Jan, 2023)</li>
+				<li>Online Orientation  (7th Jan, 2023)</li>
+				<li>One-on-One Interviews (10th Jan -21st Jan, 2023)</li>
+				<li>Zero Week (6th Feb-10th feb, 2023)</li>
+				<li>Probation Week </li>
+				<li>Course Begins</li>
+			</ul>
+
+			<i>(Note: Dear applicants these dates might change according to unexpected circumstances. However, the procedure will remain as stated above)</i>
 
             The process is long but we assure you that if you give your best, you can get through it and will be rewarded for all the effort you put in!
 
-            
             Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:namra.khan@iec.org.pk">namra.khan@iec.org.pk</a> or Whatsapp: 03338800947.
              
             Best Regards, 
