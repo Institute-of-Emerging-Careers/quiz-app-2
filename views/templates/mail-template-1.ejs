@@ -203,7 +203,6 @@
                 </tr>
               </tbody>
             </table>
-            <% if (button_announcer) { %>
             <table
             align="center"
             border="0"
@@ -423,7 +422,7 @@
                               </td>
                             </tr>
                           </table>
-                          <% } %>
+                          <% if (button_announcer) { %>
                           <table
                             border="0"
                             cellpadding="20"
@@ -590,6 +589,7 @@
                               </td>
                             </tr>
                           </table>
+                          <% }%>
                         </td>
                       </tr>
                     </tbody>
@@ -598,7 +598,6 @@
               </tr>
             </tbody>
             </table>
-            <% }%>
           </td>
         </tr>
       </tbody>
