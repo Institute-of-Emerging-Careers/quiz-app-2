@@ -2,13 +2,12 @@ const useState = React.useState;
 const useEffect = React.useEffect;
 
 const StudentInterviewPanel = (props) => {
-	const [matchings, setMatchings] = useState([]);
+	const [matchings, setMatchings] = useState(null);
 
 	useEffect(() => {
 		fetch("/student/matching/calendly_invite")
 			.then((response) => response.json())
 			.then((data) => {
-                console.log(data)
                 setMatchings(data);
 			});
 	}, []);
@@ -31,7 +30,7 @@ const StudentInterviewPanel = (props) => {
 							id="assessments-box-content"
 							className="px-10 py-8 overflow-x-auto"
 						>
-							{matchings.length < 0 ? (
+							{matchings == null ? (
 								<p>
 									Sorry, you have not received an invitation for the orientation
 									yet.
