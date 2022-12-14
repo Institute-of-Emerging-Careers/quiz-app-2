@@ -50,7 +50,7 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
   }, /*#__PURE__*/React.createElement("thead", {
     className: "bg-gray-200"
   }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Student Email"), /*#__PURE__*/React.createElement("th", null, "Invited at"), /*#__PURE__*/React.createElement("th", null, "Interviewer Email"), /*#__PURE__*/React.createElement("th", null, "Interviewer Calendly Link"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching) {
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.student_email), /*#__PURE__*/React.createElement("td", null, matching.createdAt), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, matching.calendly_link));
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.student_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, matching.calendly_link));
   }))))))));
 };
 
