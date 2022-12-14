@@ -50,7 +50,7 @@ const StudentInterviewPanel = (props) => {
                                             {matchings.map((matching) => (
                                                 <tr>
                                                 <td>{matching.student_email}</td>
-                                                <td>{matching.createdAt}</td>
+                                                <td>{(new Date(matching.createdAt)).toLocaleDateString()}</td>
                                                 <td>{matching.interviewer_email}</td>
                                                 <td>{matching.calendly_link}</td>
                                                 </tr>
