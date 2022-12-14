@@ -8,7 +8,10 @@ const StudentInterviewPanel = (props) => {
 		fetch("/student/matching/calendly_invite")
 			.then((response) => response.json())
 			.then((data) => {
-                setMatchings(data);
+				console.log("data.length", data.length)
+				if (data.length > 0) {
+					setMatchings(data);
+				}
 			});
 	}, []);
 

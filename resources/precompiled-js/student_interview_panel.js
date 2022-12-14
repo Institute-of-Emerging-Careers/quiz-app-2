@@ -25,7 +25,11 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
     fetch("/student/matching/calendly_invite").then(function (response) {
       return response.json();
     }).then(function (data) {
-      setMatchings(data);
+      console.log("data.length", data.length);
+
+      if (data.length > 0) {
+        setMatchings(data);
+      }
     });
   }, []);
   return /*#__PURE__*/React.createElement("div", {
