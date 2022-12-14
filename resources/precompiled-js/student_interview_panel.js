@@ -16,7 +16,7 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 
 var StudentInterviewPanel = function StudentInterviewPanel(props) {
-  var _useState = useState([]),
+  var _useState = useState(null),
       _useState2 = _slicedToArray(_useState, 2),
       matchings = _useState2[0],
       setMatchings = _useState2[1];
@@ -25,7 +25,6 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
     fetch("/student/matching/calendly_invite").then(function (response) {
       return response.json();
     }).then(function (data) {
-      console.log(data);
       setMatchings(data);
     });
   }, []);
@@ -45,7 +44,7 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
   }, "My Interview Invites"), /*#__PURE__*/React.createElement("div", {
     id: "assessments-box-content",
     className: "px-10 py-8 overflow-x-auto"
-  }, matchings.length < 0 ? /*#__PURE__*/React.createElement("p", null, "Sorry, you have not received an invitation for the orientation yet.") : /*#__PURE__*/React.createElement("table", {
+  }, matchings == null ? /*#__PURE__*/React.createElement("p", null, "Sorry, you have not received an invitation for the orientation yet.") : /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mytable"
   }, /*#__PURE__*/React.createElement("thead", {
     className: "bg-gray-200"
