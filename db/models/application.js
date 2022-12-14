@@ -602,7 +602,7 @@ Application.init(
 				<li>Course Begins</li>
 			</ul>
 
-			<i>(Note: Dear applicants these dates might change according to unexpected circumstances. However, the procedure will remain as stated above)</i>
+			<em>(Note: Dear applicants these dates might change according to unexpected circumstances. However, the procedure will remain as stated above)</em>
 
             The process is long but we assure you that if you give your best, you can get through it and will be rewarded for all the effort you put in!
 
