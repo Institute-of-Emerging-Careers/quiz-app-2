@@ -392,20 +392,13 @@ router.get("/matching/calendly_invite",checkStudentAuthenticated, async (req, re
         },
       });
 
-
-        console.log("here");
-
       const link = await InterviewerCalendlyLinks.findOne({
         where: {
           InterviewerId: interviewer.id,
         },
       });
-
-      console.log("link", link.calendly_link);
-
-
+      
       matching[i].setDataValue("calendly_link", link.calendly_link);
-      console.log(matching[i])
       
     }
     res.status(200).json(matching);
