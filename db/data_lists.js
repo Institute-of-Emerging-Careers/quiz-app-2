@@ -404,7 +404,7 @@ const universities = [
 const countries = ["Pakistan"];
 
 const education_levels = [
-  "None",
+  "Other",
   "Matric/O Levels",
   "Inter/A Levels",
   "Bachelors (2 years)",
