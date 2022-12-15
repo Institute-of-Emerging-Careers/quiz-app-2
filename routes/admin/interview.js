@@ -813,8 +813,8 @@ router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated
         Director of Admissions
         Institute of Emerging Careers
         `,
-        button_announcer: null,
-        button_text: "Book a slot",
+        button_announcer: "Click the button to book a slot",
+        button_text: "Go to Calendly",
         button_link: interviewer_link.calendly_link,
       });
     }
