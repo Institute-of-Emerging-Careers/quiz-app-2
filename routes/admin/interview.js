@@ -799,11 +799,21 @@ router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated
     });
 
     for (const matching of interview_matchings) {
-      console.log(matching);
+
       await queueMail(matching.student_email, `IEC interview invite`, {
         heading: "Interview Invitation",
-        inner_text: `Dear Student,<br>We hope you are well.<br>Congratulations on passing the assessment phase. You have been assigned to ${interviewer.name} for your interview.<br>`,
-        button_announcer: `Click the following button to go to Calendly and book a slot with your assigned interviewer. <br>Please note that you need to book a slot for the interview within 48 hours.<br>`,
+        inner_text: `Dear Applicant,
+        Greetings from Institute of Emerging Careers
+        
+        Congratulations for successfully completing the assessment and qualifying for the Interview Round of the selection process. You have been assigned to ${interviewer.name} for your interview. Click the below given link to book a timeslot with your interviewer. Please check the email and ensure your availability in the giving time slot.  
+        
+        In case you have any questions, you may email your interviewer at ${interviewer.email}. 
+        
+        Kind Regards,
+        Director of Admissions
+        Institute of Emerging Careers
+        `,
+        button_announcer: null,
         button_text: "Book a slot",
         button_link: interviewer_link.calendly_link,
       });
