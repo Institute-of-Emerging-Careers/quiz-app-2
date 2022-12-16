@@ -35,7 +35,7 @@ const StudentInterviewPanel = (props) => {
 						>
 							{matchings == null ? (
 								<p>
-									Sorry, you have not received an invitation for the orientation
+									Sorry, you have not received an invitation for the interview
 									yet.
 								</p>
 							) : (
@@ -54,7 +54,7 @@ const StudentInterviewPanel = (props) => {
                                                 <td>{matching.student_email}</td>
                                                 <td>{(new Date(matching.createdAt)).toLocaleDateString()}</td>
                                                 <td>{matching.interviewer_email}</td>
-                                                <td>{matching.calendly_link}</td>
+                                                <td><a href = {matching.calendly_link} >{matching.calendly_link}</a></td>
                                                 </tr>
                                             ))}
 

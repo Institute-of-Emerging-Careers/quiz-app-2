@@ -83,7 +83,8 @@
       <!-- Progress Bar Ends -->
       <input type="hidden" value="<%=application_round_id%>" id="application_round_id_field">
 
-      <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>">
+      <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>" onsubmit="location.href='https://iec.org.pk/thankyou/;'">
+
         <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
         <div id="step1" class="mt-3">
           <h3 class="mt-3">Step 1: Basic Information *</h3>
@@ -1019,7 +1020,7 @@
 
             <fieldset class="row mb-4">
               <div class="col-lg-4 col-form-label flex flex-col">
-                <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's support, and contribute back to IEC after you find a job? (Dropdown- Yes & No) </label>
+                <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's support, and contribute back to IEC after you find a job?</label>
               </div>
               <div class="col-lg-8">
                 <div class="form-check">
@@ -1044,15 +1045,14 @@
           </div>
           <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out for a confirmation email from us. Make sure you remember your email and password for future use.</p>
 
-            <button
-              type="submit"
-              id="step5-next-button"
-              class="btn btn-primary mt-5"
-            >
-            <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
-            <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
-            </button>
-
+          <button
+            type="submit"
+            id="step5-next-button"
+            class="btn btn-primary mt-5"
+          >
+          <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
+          <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
+          </button>
         </div>
       </form>
     </div>
