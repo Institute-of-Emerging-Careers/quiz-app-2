@@ -48,12 +48,14 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
   }, "My Interview Invites"), /*#__PURE__*/React.createElement("div", {
     id: "assessments-box-content",
     className: "px-10 py-8 overflow-x-auto"
-  }, matchings == null ? /*#__PURE__*/React.createElement("p", null, "Sorry, you have not received an invitation for the orientation yet.") : /*#__PURE__*/React.createElement("table", {
+  }, matchings == null ? /*#__PURE__*/React.createElement("p", null, "Sorry, you have not received an invitation for the interview yet.") : /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mytable"
   }, /*#__PURE__*/React.createElement("thead", {
     className: "bg-gray-200"
   }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Student Email"), /*#__PURE__*/React.createElement("th", null, "Invited at"), /*#__PURE__*/React.createElement("th", null, "Interviewer Email"), /*#__PURE__*/React.createElement("th", null, "Interviewer Calendly Link"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching) {
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.student_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, matching.calendly_link));
+    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.student_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
+      href: matching.calendly_link
+    }, matching.calendly_link)));
   }))))))));
 };
 
