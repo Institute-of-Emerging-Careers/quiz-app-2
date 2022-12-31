@@ -35,8 +35,7 @@ const StudentInterviewPanel = (props) => {
 						>
 							{matchings == null ? (
 								<p>
-									Sorry, you have not received an invitation for the interview
-									yet.
+									Sorry, you have not received an invitation for the interview yet.
 								</p>
 							) : (
 								<table className="w-full text-left mytable">

@@ -10,7 +10,10 @@ const {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks
+  InterviewerCalendlyLinks,
+  InterviewQuestions,
+  InterviewAnswers,
+  InterviewScores
 } = require("./interview");
 
 const {
@@ -441,6 +444,17 @@ InterviewerSlot.belongsTo(InterviewerInvite);
 InterviewRound.hasMany(InterviewMatching);
 Interviewer.hasMany(InterviewMatching);
 Student.hasMany(InterviewMatching);
+
+InterviewRound.hasMany(InterviewQuestions);
+InterviewRound.hasMany(InterviewAnswers);
+Interviewer.hasMany(InterviewAnswers);
+Student.hasMany(InterviewAnswers);
+InterviewQuestions.hasMany(InterviewAnswers);
+
+
+InterviewRound.hasMany(InterviewScores);
+Student.hasMany(InterviewScores);
+Interviewer.hasMany(InterviewScores);
 
 Interviewer.hasOne(InterviewerCalendlyLinks);
 
