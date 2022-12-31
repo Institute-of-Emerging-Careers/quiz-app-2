@@ -19,7 +19,8 @@ const ContextProvider = (props) => {
     { title: "Step 1: Add Interviewees (Students)", active: true },
     { title: "Step 2: Add Interviewers", active: false },
     { title: "Step 3: Create Matching", active: false },
-    { title: "Step 4: Send Emails", active: false },
+    { title: "Step 4: Create Questions", active: false },
+    { title: "Step 5: Send Emails"}
   ]);
   const [students, setStudents] = useState([]);
 
@@ -56,7 +57,7 @@ const StepMenu = () => {
   };
 
   return (
-    <div className="grid grid-cols-4 w-full h-full mt-4">
+    <div className="grid grid-cols-5 w-full h-full mt-4">
       {steps.map((step, index) => (
         <div key={index}>
           {step.active ? (
@@ -859,8 +860,192 @@ const Step3 = () => {
 			)}
 		</>
 	);
-};;
+};
+
 const Step4 = () => {
+  //need to take number of questions as input
+  //need to take question type as input (descriptive or number scale)
+  //need to take question as input
+
+  const [no_questions, setNoQuestions] = useState(0);
+  const [new_question_type, setNewQuestionType] = useState("descriptive");
+  const [new_question, setNewQuestion] = useState("");
+  const [new_question_scale, setNewQuestionScale] = useState(0);
+  const [questions, setQuestions] = useState([]);
+
+
+  //first we need to check if questions have already been set for this interview round
+  //if yes, then we need to display them
+
+  useEffect(async() => {
+    let response = await fetch(`/admin/interview/${interview_round_id}/all-questions`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+
+    if (response.status == 200){
+
+      response = await response.json()
+
+      setQuestions(response.questions);
+    }
+
+    
+  },[])
+
+
+  const addQuestion = async() => {
+    try {
+			const createResponse = await (await fetch(
+				`/admin/interview/${interview_round_id}/create-question`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						question: new_question,
+						questionType: new_question_type,
+						questionScale: new_question_scale,
+					}),
+				}
+			)).json();
+      
+      const questionID = createResponse.questionID;
+
+      setQuestions([...questions, {questionID: questionID, question: new_question, type: new_question_type, scale: new_question_scale}]);
+      setNewQuestion("");
+      setNewQuestionType("descriptive");
+      setNewQuestionScale(0);
+      window.alert("Question added");
+
+		} catch (err) {
+			console.log(err);
+      window.alert("Error adding question, please try again");
+		}
+  }
+
+  const deleteQuestion = async (questionID) => {
+    //will directly delete the question from the database
+    try{
+      const deleteResponse = await fetch(`/admin/interview/${interview_round_id}/delete-question/${questionID}`, {
+        method: "DELETE",
+      })
+
+      if(deleteResponse.status === 200){
+        
+        setQuestions(questions.filter((question) => question.questionID !== questionID));
+      }
+    } catch(err){
+      console.log(err);
+      window.alert("Error deleting question, please try again");
+    }
+  }
+
+
+  return(
+    <div className = "flex flex-col w-full justify-start items-start mt-5 p-4">
+
+      <div className = "flex flex-col w-full bg-white rounded-lg">
+
+        <label className = " m-2 p-2 flex items-center justify-center font-bold text-xl">
+          Add new question
+        </label>
+
+
+        <div className = "flex flex-col w-full m-4 p-2">
+          
+          <div className = "flex flex-col p-2 m-2">
+            <label className = "text-lg p-2">
+              Question Text
+            </label>
+            <input type = "text" id = "new_question" placeholder = "Enter the question here" className = "bg-gray-200 p-2 rounded-md h-10" value = {new_question} onChange = {(e) => setNewQuestion(e.target.value)}></input>
+          </div>
+
+          <div className = "flex flex-col p-2 m-2">
+            <label className = "p-2 text-lg">
+              Question Type
+            </label>
+
+            <select id = "new_question_type" className = "p-2 bg-gray-200 h-10 rounded-md" value = {new_question_type} onChange = {(e) => setNewQuestionType(e.target.value)}>
+              <option value = "descriptive">Descriptive</option>
+              <option value = "number scale">Number Scale</option>
+            </select>
+          </div>
+
+          {new_question_type === "number scale" ? (
+            <div className = "flex flex-col p-2 m-2">
+
+              <label className = "p-2 text-lg">
+                Rating Scale
+              </label>
+
+              <input required className = "flex flex-col p-2 m-2 h-10 rounded-md bg-gray-200" type = "number" id = "new_question_scale" value = {new_question_scale} onChange = {(e) => setNewQuestionScale(e.target.value)}></input>
+
+            </div>
+          ) : (
+            <></>
+          )}
+
+          <button 
+          className = "bg-green-400 p-2 rounded-xl mt-2 h-10 w-1/4 self-center justify-self-center"
+          onClick = {addQuestion}>
+            Add Question
+          </button>
+
+        </div>
+
+      </div>
+
+      <div className = "mt-10 flex flex-col w-full bg-white rounded-lg">
+
+        {questions.length > 0 ? (
+          <div className = "flex flex-col w-full p-2">
+            <label className = "m-2 p-2 flex items-center justify-center font-bold text-xl">
+              Questions
+            </label>
+
+            <table className = "w-full">
+              <thead>
+                <tr>
+                  <th className = "p-2 border border-black">S.No</th>
+                  <th className = "p-2 border border-black">Question</th>
+                  <th className = "p-2 border border-black">Type</th>
+                  <th className = "p-2 border border-black">Scale</th>
+                  <th className = "p-2 border border-black">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {questions.map((question, index) => (
+                  <tr key = {question.questionID}>
+                    <td className = "p-2 border border-black">{index + 1}</td>
+                    <td className = "p-2 border border-black">{question.question}</td>
+                    <td className = "p-2 border border-black">{question.type}</td>
+                    <td className = "p-2 border border-black">{question.type == "descriptive" ? "No scale": question.scale}</td>
+                    <td className = "p-2 border border-black text-red-400"><button onClick = {() => deleteQuestion(question.questionID)} className="bg-transparent w-full h-full">Delete</button> </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          </div>
+          )
+          : 
+          <div className = "m-4 p-2 text-xl">
+            You have not set any questions yet
+          </div>
+          }
+
+      </div>
+
+    </div>
+
+  )
+}
+
+const Step5 = () => {
 	const [loading, setLoading] = useState(false);
 	const { matching_object } = useContext(MyContext);
 	const [matching, setMatching] = matching_object;
@@ -1042,6 +1227,7 @@ const Main = () => {
       {steps[1].active ? <Step2 /> : <div className="hidden"></div>}
       {steps[2].active ? <Step3 /> : <div className="hidden"></div>}
       {steps[3].active ? <Step4 /> : <div className="hidden"></div>}
+      {steps[4].active ? <Step5 /> : <div className="hidden"></div>}
     </div>
   );
 };

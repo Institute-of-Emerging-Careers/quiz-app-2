@@ -55,8 +55,10 @@ var ContextProvider = function ContextProvider(props) {
     title: "Step 3: Create Matching",
     active: false
   }, {
-    title: "Step 4: Send Emails",
+    title: "Step 4: Create Questions",
     active: false
+  }, {
+    title: "Step 5: Send Emails"
   }]),
       _useState2 = _slicedToArray(_useState, 2),
       steps = _useState2[0],
@@ -103,7 +105,7 @@ var StepMenu = function StepMenu() {
   };
 
   return /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-4 w-full h-full mt-4"
+    className: "grid grid-cols-5 w-full h-full mt-4"
   }, steps.map(function (step, index) {
     return /*#__PURE__*/React.createElement("div", {
       key: index
@@ -861,13 +863,277 @@ var Step3 = function Step3() {
   }, "You have not created a matching yet.")));
 };
 
-;
-
 var Step4 = function Step4() {
-  var _useState45 = useState(false),
+  //need to take number of questions as input
+  //need to take question type as input (descriptive or number scale)
+  //need to take question as input
+  var _useState45 = useState(0),
       _useState46 = _slicedToArray(_useState45, 2),
-      loading = _useState46[0],
-      setLoading = _useState46[1];
+      no_questions = _useState46[0],
+      setNoQuestions = _useState46[1];
+
+  var _useState47 = useState("descriptive"),
+      _useState48 = _slicedToArray(_useState47, 2),
+      new_question_type = _useState48[0],
+      setNewQuestionType = _useState48[1];
+
+  var _useState49 = useState(""),
+      _useState50 = _slicedToArray(_useState49, 2),
+      new_question = _useState50[0],
+      setNewQuestion = _useState50[1];
+
+  var _useState51 = useState(0),
+      _useState52 = _slicedToArray(_useState51, 2),
+      new_question_scale = _useState52[0],
+      setNewQuestionScale = _useState52[1];
+
+  var _useState53 = useState([]),
+      _useState54 = _slicedToArray(_useState53, 2),
+      questions = _useState54[0],
+      setQuestions = _useState54[1]; //first we need to check if questions have already been set for this interview round
+  //if yes, then we need to display them
+
+
+  useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var response;
+    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            _context2.next = 2;
+            return fetch("/admin/interview/".concat(interview_round_id, "/all-questions"), {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json"
+              }
+            });
+
+          case 2:
+            response = _context2.sent;
+
+            if (!(response.status == 200)) {
+              _context2.next = 8;
+              break;
+            }
+
+            _context2.next = 6;
+            return response.json();
+
+          case 6:
+            response = _context2.sent;
+            setQuestions(response.questions);
+
+          case 8:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  })), []);
+
+  var addQuestion = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var createResponse, questionID;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.prev = 0;
+              _context3.next = 3;
+              return fetch("/admin/interview/".concat(interview_round_id, "/create-question"), {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  question: new_question,
+                  questionType: new_question_type,
+                  questionScale: new_question_scale
+                })
+              });
+
+            case 3:
+              _context3.next = 5;
+              return _context3.sent.json();
+
+            case 5:
+              createResponse = _context3.sent;
+              questionID = createResponse.questionID;
+              setQuestions([].concat(_toConsumableArray(questions), [{
+                questionID: questionID,
+                question: new_question,
+                type: new_question_type,
+                scale: new_question_scale
+              }]));
+              setNewQuestion("");
+              setNewQuestionType("descriptive");
+              setNewQuestionScale(0);
+              window.alert("Question added");
+              _context3.next = 18;
+              break;
+
+            case 14:
+              _context3.prev = 14;
+              _context3.t0 = _context3["catch"](0);
+              console.log(_context3.t0);
+              window.alert("Error adding question, please try again");
+
+            case 18:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3, null, [[0, 14]]);
+    }));
+
+    return function addQuestion() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
+  var deleteQuestion = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(questionID) {
+      var deleteResponse;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              _context4.prev = 0;
+              _context4.next = 3;
+              return fetch("/admin/interview/".concat(interview_round_id, "/delete-question/").concat(questionID), {
+                method: "DELETE"
+              });
+
+            case 3:
+              deleteResponse = _context4.sent;
+
+              if (deleteResponse.status === 200) {
+                setQuestions(questions.filter(function (question) {
+                  return question.questionID !== questionID;
+                }));
+              }
+
+              _context4.next = 11;
+              break;
+
+            case 7:
+              _context4.prev = 7;
+              _context4.t0 = _context4["catch"](0);
+              console.log(_context4.t0);
+              window.alert("Error deleting question, please try again");
+
+            case 11:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4, null, [[0, 7]]);
+    }));
+
+    return function deleteQuestion(_x2) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
+
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col w-full justify-start items-start mt-5 p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col w-full bg-white rounded-lg"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: " m-2 p-2 flex items-center justify-center font-bold text-xl"
+  }, "Add new question"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col w-full m-4 p-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col p-2 m-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "text-lg p-2"
+  }, "Question Text"), /*#__PURE__*/React.createElement("input", {
+    type: "text",
+    id: "new_question",
+    placeholder: "Enter the question here",
+    className: "bg-gray-200 p-2 rounded-md h-10",
+    value: new_question,
+    onChange: function onChange(e) {
+      return setNewQuestion(e.target.value);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col p-2 m-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "p-2 text-lg"
+  }, "Question Type"), /*#__PURE__*/React.createElement("select", {
+    id: "new_question_type",
+    className: "p-2 bg-gray-200 h-10 rounded-md",
+    value: new_question_type,
+    onChange: function onChange(e) {
+      return setNewQuestionType(e.target.value);
+    }
+  }, /*#__PURE__*/React.createElement("option", {
+    value: "descriptive"
+  }, "Descriptive"), /*#__PURE__*/React.createElement("option", {
+    value: "number scale"
+  }, "Number Scale"))), new_question_type === "number scale" ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col p-2 m-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "p-2 text-lg"
+  }, "Rating Scale"), /*#__PURE__*/React.createElement("input", {
+    required: true,
+    className: "flex flex-col p-2 m-2 h-10 rounded-md bg-gray-200",
+    type: "number",
+    id: "new_question_scale",
+    value: new_question_scale,
+    onChange: function onChange(e) {
+      return setNewQuestionScale(e.target.value);
+    }
+  })) : /*#__PURE__*/React.createElement(React.Fragment, null), /*#__PURE__*/React.createElement("button", {
+    className: "bg-green-400 p-2 rounded-xl mt-2 h-10 w-1/4 self-center justify-self-center",
+    onClick: addQuestion
+  }, "Add Question"))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 flex flex-col w-full bg-white rounded-lg"
+  }, questions.length > 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col w-full p-2"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "m-2 p-2 flex items-center justify-center font-bold text-xl"
+  }, "Questions"), /*#__PURE__*/React.createElement("table", {
+    className: "w-full"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border border-black"
+  }, "S.No"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border border-black"
+  }, "Question"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border border-black"
+  }, "Type"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border border-black"
+  }, "Scale"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border border-black"
+  }, "Action"))), /*#__PURE__*/React.createElement("tbody", null, questions.map(function (question, index) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: question.questionID
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "p-2 border border-black"
+    }, index + 1), /*#__PURE__*/React.createElement("td", {
+      className: "p-2 border border-black"
+    }, question.question), /*#__PURE__*/React.createElement("td", {
+      className: "p-2 border border-black"
+    }, question.type), /*#__PURE__*/React.createElement("td", {
+      className: "p-2 border border-black"
+    }, question.type == "descriptive" ? "No scale" : question.scale), /*#__PURE__*/React.createElement("td", {
+      className: "p-2 border border-black text-red-400"
+    }, /*#__PURE__*/React.createElement("button", {
+      onClick: function onClick() {
+        return deleteQuestion(question.questionID);
+      },
+      className: "bg-transparent w-full h-full"
+    }, "Delete"), " "));
+  })))) : /*#__PURE__*/React.createElement("div", {
+    className: "m-4 p-2 text-xl"
+  }, "You have not set any questions yet")));
+};
+
+var Step5 = function Step5() {
+  var _useState55 = useState(false),
+      _useState56 = _slicedToArray(_useState55, 2),
+      loading = _useState56[0],
+      setLoading = _useState56[1];
 
   var _useContext4 = useContext(MyContext),
       matching_object = _useContext4.matching_object;
@@ -877,15 +1143,15 @@ var Step4 = function Step4() {
       setMatching = _matching_object2[1];
 
   var sendEmails = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(e) {
       var interviewer_emails, i, response;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context5.prev = _context5.next) {
             case 0:
               e.preventDefault();
               setLoading(true);
-              _context2.prev = 2;
+              _context5.prev = 2;
               //extract unique id of interviewers fron matching
               interviewer_emails = _toConsumableArray(new Set(matching.map(function (match) {
                 return match.interviewer_email;
@@ -894,11 +1160,11 @@ var Step4 = function Step4() {
 
             case 5:
               if (!(i < interviewer_emails.length)) {
-                _context2.next = 20;
+                _context5.next = 20;
                 break;
               }
 
-              _context2.next = 8;
+              _context5.next = 8;
               return fetch("/admin/interview/".concat(interview_round_id, "/send-matching-emails"), {
                 method: "POST",
                 headers: {
@@ -910,52 +1176,52 @@ var Step4 = function Step4() {
               });
 
             case 8:
-              response = _context2.sent;
+              response = _context5.sent;
 
               if (!(response.status == 404)) {
-                _context2.next = 13;
+                _context5.next = 13;
                 break;
               }
 
               window.alert("Some interviewers have not updated calendly links");
               setLoading(false);
-              return _context2.abrupt("return");
+              return _context5.abrupt("return");
 
             case 13:
               if (!(response.status == 200)) {
-                _context2.next = 17;
+                _context5.next = 17;
                 break;
               }
 
               window.alert("Emails sent successfully");
               setLoading(false);
-              return _context2.abrupt("return");
+              return _context5.abrupt("return");
 
             case 17:
               i++;
-              _context2.next = 5;
+              _context5.next = 5;
               break;
 
             case 20:
-              _context2.next = 26;
+              _context5.next = 26;
               break;
 
             case 22:
-              _context2.prev = 22;
-              _context2.t0 = _context2["catch"](2);
-              console.log(_context2.t0);
+              _context5.prev = 22;
+              _context5.t0 = _context5["catch"](2);
+              console.log(_context5.t0);
               window.alert("An error occured, please try again later");
 
             case 26:
             case "end":
-              return _context2.stop();
+              return _context5.stop();
           }
         }
-      }, _callee2, null, [[2, 22]]);
+      }, _callee5, null, [[2, 22]]);
     }));
 
-    return function sendEmails(_x2) {
-      return _ref2.apply(this, arguments);
+    return function sendEmails(_x3) {
+      return _ref5.apply(this, arguments);
     };
   }();
 
@@ -1003,20 +1269,20 @@ var Main = function Main() {
       steps = _steps_object3[0],
       setSteps = _steps_object3[1];
 
-  var _useState47 = useState(false),
-      _useState48 = _slicedToArray(_useState47, 2),
-      editInterviewRoundTitle = _useState48[0],
-      setEditInterviewRoundTitle = _useState48[1];
+  var _useState57 = useState(false),
+      _useState58 = _slicedToArray(_useState57, 2),
+      editInterviewRoundTitle = _useState58[0],
+      setEditInterviewRoundTitle = _useState58[1];
 
-  var _useState49 = useState(document.getElementById("interview-round-name-field").value),
-      _useState50 = _slicedToArray(_useState49, 2),
-      interviewRoundTitle = _useState50[0],
-      setInterviewRoundTitle = _useState50[1];
+  var _useState59 = useState(document.getElementById("interview-round-name-field").value),
+      _useState60 = _slicedToArray(_useState59, 2),
+      interviewRoundTitle = _useState60[0],
+      setInterviewRoundTitle = _useState60[1];
 
-  var _useState51 = useState(false),
-      _useState52 = _slicedToArray(_useState51, 2),
-      loading_name = _useState52[0],
-      setLoadingName = _useState52[1];
+  var _useState61 = useState(false),
+      _useState62 = _slicedToArray(_useState61, 2),
+      loading_name = _useState62[0],
+      setLoadingName = _useState62[1];
 
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();
@@ -1078,6 +1344,8 @@ var Main = function Main() {
   }), steps[2].active ? /*#__PURE__*/React.createElement(Step3, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }), steps[3].active ? /*#__PURE__*/React.createElement(Step4, null) : /*#__PURE__*/React.createElement("div", {
+    className: "hidden"
+  }), steps[4].active ? /*#__PURE__*/React.createElement(Step5, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }));
 };
