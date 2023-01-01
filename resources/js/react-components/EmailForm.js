@@ -1,4 +1,5 @@
 const EmailForm = (props) => {
+  const afterSending = props?.afterSending ?? (() => {});
   const users = props.users;
   const default_values = props.default_values;
   const sending_link = props.sending_link;
@@ -45,6 +46,7 @@ const EmailForm = (props) => {
       .then((response) => {
         if (response.ok) {
           alert("Emails sent successfully.");
+          afterSending();
         } else {
           alert("There was an error while sending emails. Error code 01.");
         }
