@@ -17,7 +17,7 @@ const { OrientationInvite, Orientation } = require("./models/orientation");
 
 const initializeDatabase = async () => {
   try {
-    alterandforce = false;
+    let alterandforce = false;
     // Sync models with database
     await sequelize.sync({
       alter: false,
