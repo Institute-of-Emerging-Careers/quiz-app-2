@@ -13,7 +13,7 @@ const {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks
+  InterviewerCalendlyLinks,
 } = require("../../db/models/interview");
 const { DateTime } = require("luxon");
 const { queueMail } = require("../../bull");
@@ -53,7 +53,6 @@ router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
     });
   });
 });
-
 
 router.get("/edit/:interview_round_id", checkAdminAuthenticated, (req, res) => {
   InterviewRound.findOne({
@@ -172,16 +171,13 @@ router.post(
         else {
           req.body.interviewers.forEach(async (interviewer) => {
             if (!db_interviewers_map.has(interviewer.email)) {
-              console.log("oye hoy");
               const new_interviewer = (
                 await Interviewer.findOrCreate({
                   where: { email: interviewer.email },
                   defaults: {
                     name: interviewer.name,
                     email: interviewer.email,
-                    password: randomstring.generate({
-                      length: generateRandomNumberInRange(14, 20),
-                    }),
+                    password: "examplepassword",
                   },
                 })
               )[0];
@@ -257,8 +253,8 @@ router.get("/getTotalDuration/:interview_round_id", async (req, res) => {
       where: { id: req.params.interview_round_id },
     });
     const interviewers = await interview_round.getInterviewers();
-  } catch(err){
-  console.log(err);
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -337,7 +333,6 @@ router.get("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
       where: { InterviewerId: req.user.user.id },
     }).calendly_link;
 
-
     res.render("interviewer/link-upload.ejs", {
       env: process.env.NODE_ENV,
       myname: req.user.user.name,
@@ -351,31 +346,30 @@ router.get("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
 });
 
 router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
-	try {
-		const interviewer = await Interviewer.findOne({
-			where: { id: req.user.user.id },
-		});
+  try {
+    const interviewer = await Interviewer.findOne({
+      where: { id: req.user.user.id },
+    });
 
-		if (interviewer == null) {
-			res.sendStatus(404);
-			return;
-		}
+    if (interviewer == null) {
+      res.sendStatus(404);
+      return;
+    }
 
     const drop_previous = await InterviewerCalendlyLinks.destroy({
       where: { InterviewerId: interviewer.id },
     });
 
-		const response = await InterviewerCalendlyLinks.create({
-			calendly_link: req.body.calendly_link,
-			InterviewerId: interviewer.id,
-		});
+    const response = await InterviewerCalendlyLinks.create({
+      calendly_link: req.body.calendly_link,
+      InterviewerId: interviewer.id,
+    });
 
     res.sendStatus(200);
-
-	} catch (err) {
-		console.log(err);
-		res.sendStatus(500);
-	}
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
 });
 
 router.post(
@@ -677,132 +671,180 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
  * @returns {success}
  */
 
+router.post(
+  "/:interview_round_id/create-matching",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
 
-router.post("/:interview_round_id/create-matching", checkAdminAuthenticated, async (req, res) => {
-  try {
-    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+      if (interview_round == null) res.sendStatus(300);
 
-    if (interview_round == null) res.sendStatus(300);
+      //drop all matchings with the same interview round
+      await InterviewMatching.destroy({
+        where: { InterviewRoundId: req.params.interview_round_id },
+      });
 
-    //drop all matchings with the same interview round 
-    await InterviewMatching.destroy({ where: { InterviewRoundId: req.params.interview_round_id }});
+      //extract unique interviewer emails from req.body
+      const interviewer_emails = [
+        ...new Set(req.body.matching.map((slot) => slot.interviewer_email)),
+      ];
 
-    //extract unique interviewer emails from req.body
-    const interviewer_emails = [...new Set(req.body.matching.map((slot) => slot.interviewer_email))];
+      // get corresponding interviewer ids
+      const interviewers = await Interviewer.findAll({
+        where: { email: interviewer_emails },
+      });
 
-    // get corresponding interviewer ids
-    const interviewers = await Interviewer.findAll({ where: { email: interviewer_emails } });
+      //replace interviewer emails with interviewer ids
+      req.body.matching.forEach((slot) => {
+        slot.interviewer_id = interviewers.find(
+          (interviewer) => interviewer.email === slot.interviewer_email
+        ).id;
+        slot.InterviewerId = slot.interviewer_id;
+        slot.StudentId = slot.student_id;
+        slot.InterviewRoundId = req.params.interview_round_id;
 
-    //replace interviewer emails with interviewer ids
-    req.body.matching.forEach((slot) => {
-      slot.interviewer_id = interviewers.find((interviewer) => interviewer.email === slot.interviewer_email).id;
-      slot.InterviewerId = slot.interviewer_id;
-      slot.StudentId = slot.student_id ;
-      slot.InterviewRoundId = req.params.interview_round_id;
+        delete slot.interviewer_id;
+        delete slot.student_id;
+      });
 
-      delete slot.interviewer_id;
-      delete slot.student_id;
+      await InterviewMatching.bulkCreate(req.body.matching);
 
-    });
-
-    await InterviewMatching.bulkCreate(
-      req.body.matching,
-    )
-  
-    res.sendStatus(200);
-
-
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
-router.get("/:interview_round_id/:interviewer_id/matchings", checkAdminAuthenticated, async (req, res) => {
-  try {
-    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
+router.get(
+  "/:interview_round_id/:interviewer_id/matchings",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
 
-    if (interview_round == null) res.sendStatus(404);
+      if (interview_round == null) res.sendStatus(404);
 
-    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id, InterviewerId: req.params.interviewer_id }});
+      const interview_matchings = await InterviewMatching.findAll({
+        where: {
+          InterviewRoundId: req.params.interview_round_id,
+          InterviewerId: req.params.interviewer_id,
+        },
+      });
 
-    const students = await Promise.all(interview_matchings.map((matching) => matching.getStudent()));
+      const students = await Promise.all(
+        interview_matchings.map((matching) => matching.getStudent())
+      );
 
-    console.log(students);
+      console.log(students);
 
-    res.sendStatus(200);
+      res.sendStatus(200);
 
-    res.json({ success: true, interview_matchings: interview_matchings });
-
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
+      res.json({ success: true, interview_matchings: interview_matchings });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
   }
-});
+);
 
-router.get("/:interview_round_id/matchings", checkAdminAuthenticated, async (req, res) => {
-  try {
-    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
-    if (interview_round == null) res.sendStatus(404);
+router.get(
+  "/:interview_round_id/matchings",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
+      if (interview_round == null) res.sendStatus(404);
 
-    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id }});
+      const interview_matchings = await InterviewMatching.findAll({
+        where: { InterviewRoundId: req.params.interview_round_id },
+      });
 
-    //format matchings as per frontend requirements
-    const matchings = interview_matchings.map((matching) => {
-      return {
-        student_id: matching.StudentId,
-        interviewer_id: matching.InterviewerId,
-        student_email : matching.student_email,
-        interviewer_email: matching.interviewer_email,
+      //format matchings as per frontend requirements
+      const matchings = interview_matchings.map((matching) => {
+        return {
+          student_id: matching.StudentId,
+          interviewer_id: matching.InterviewerId,
+          student_email: matching.student_email,
+          interviewer_email: matching.interviewer_email,
+        };
+      });
+
+      res.status(200);
+      res.json({ success: true, interview_matchings: matchings });
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+  }
+);
+
+router.post(
+  "/:interview_round_id/send-matching-emails",
+  checkAdminAuthenticated,
+  async (req, res) => {
+    try {
+      const interview_round = await InterviewRound.findOne({
+        where: { id: req.params.interview_round_id },
+      });
+      if (interview_round == null) res.sendStatus(404);
+
+      const interviewer = await Interviewer.findOne({
+        where: { email: req.body.interviewer_email },
+      });
+
+      const interview_matchings = await InterviewMatching.findAll({
+        where: {
+          InterviewRoundId: req.params.interview_round_id,
+          InterviewerId: interviewer.id,
+        },
+      });
+
+      const interviewer_link = await InterviewerCalendlyLinks.findOne({
+        where: { InterviewerId: interviewer.id },
+      });
+
+      if (interviewer_link == null) {
+        res.status(404);
+        res.json({
+          success: false,
+          message: "Interviewer calendly link not found",
+        });
+        return;
       }
-    });
 
-    res.status(200);
-    res.json({ success: true, interview_matchings: matchings });
+      const interviewer_password = (
+        await Interviewer.findOne({
+          where: { email: interviewer.email },
+          attributes: ["password"],
+        })
+      ).password;
+      const interviewer_login_link = `${
+        process.env.SITE_DOMAIN_NAME
+      }/admin/interview/login?email=${
+        interviewer.email
+      }&password=${encodeURIComponent(interviewer_password)}`;
 
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
-});
-
-router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated, async (req, res) => {
-  try {
-    const interview_round = await InterviewRound.findOne({ where: { id: req.params.interview_round_id }});
-    if (interview_round == null) res.sendStatus(404);
-
-    const interviewer = await Interviewer.findOne({ where: { email: req.body.interviewer_email }});
-
-    const interview_matchings = await InterviewMatching.findAll({ where: { InterviewRoundId: req.params.interview_round_id, InterviewerId: interviewer.id }});
-
-    const interviewer_link = await InterviewerCalendlyLinks.findOne({ where: { InterviewerId: interviewer.id }});
-
-    if (interviewer_link == null) {
-      res.status(404);
-      res.json({ success: false, message: "Interviewer calendly link not found" });
-      return
-    };
-
-    const interviewer_password = ( await Interviewer.findOne({ where: { email: interviewer.email }, attributes: ["password"], })).password;
-    const interviewer_login_link = `${
-      process.env.SITE_DOMAIN_NAME
-    }/admin/interview/login?email=${
-      interviewer.email
-    }&password=${encodeURIComponent(interviewer_password)}`;
-
-    await queueMail(req.body.interviewer_email, `IEC interview invite`, {
-      heading: "Interview Invitation",
-      inner_text: `Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>`,
-      button_announcer: `Click the button to login to your account<br>`,
-      button_text: "Login",
-      button_link: interviewer_login_link,
-    });
-
-    for (const matching of interview_matchings) {
-
-      await queueMail(matching.student_email, `IEC interview invite`, {
+      await queueMail(req.body.interviewer_email, `IEC interview invite`, {
         heading: "Interview Invitation",
-        inner_text: `Dear Applicant,
+        inner_text: `Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>`,
+        button_announcer: `Click the button to login to your account<br>`,
+        button_text: "Login",
+        button_link: interviewer_login_link,
+      });
+
+      for (const matching of interview_matchings) {
+        await queueMail(matching.student_email, `IEC interview invite`, {
+          heading: "Interview Invitation",
+          inner_text: `Dear Applicant,
         Greetings from Institute of Emerging Careers
         
         Congratulations for successfully completing the assessment and qualifying for the Interview Round of the selection process. You have been assigned to ${interviewer.name} for your interview. Click the below given link to book a timeslot with your interviewer. Please check the email and ensure your availability in the giving time slot.  
@@ -813,19 +855,18 @@ router.post("/:interview_round_id/send-matching-emails", checkAdminAuthenticated
         Director of Admissions
         Institute of Emerging Careers
         `,
-        button_announcer: "Click the button to book a slot",
-        button_text: "Go to Calendly",
-        button_link: interviewer_link.calendly_link,
-      });
+          button_announcer: "Click the button to book a slot",
+          button_text: "Go to Calendly",
+          button_link: interviewer_link.calendly_link,
+        });
+      }
+
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.sendStatus(500);
     }
-      
-
-    res.sendStatus(200)
-
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
   }
-});
+);
 
 module.exports = router;
