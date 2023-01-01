@@ -174,13 +174,21 @@ const countries = ["Pakistan"];
 
 const education_levels = [
   "None",
-  "Grade 8",
   "Matric/O Levels",
   "Inter/A Levels",
-  "Bachelors",
+  "Bachelors (2 years)",
+  "Bachelors (4 years)",
+  "Diploma after Matric/O Levels",
+  "Diploma after Inter/A Levels",
   "Masters",
   "MPhil",
   "PhD",
+];
+
+const degree_choice = [
+  "My choice",
+  "Family/Siblings/Others",
+  "Both"
 ];
 
 const sources_of_information = [

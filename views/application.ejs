@@ -31,12 +31,7 @@
       rel="stylesheet"
     />
 
-    <!-- Fontawesome Icons -->
-    <script
-      src="https://kit.fontawesome.com/13ad6678d8.js"
-      crossorigin="anonymous"
-      defer
-    ></script>
+    <script src="https://kit.fontawesome.com/bf601caba0.js" crossorigin="anonymous"></script>
   </head>
   <body
     style="
@@ -48,47 +43,48 @@
   <div class="container bg-white rounded-3 w-md-75 p-4 p-md-5  mt-3">
       <h1><img src="/img/iec_logo_only.png" height="50px"> Apply to IEC</h1>
       <!-- Progress Bar Starts -->
-      <div class="progress mt-3" style="height:30px;">
+      <div class="progress mt-3" style="height:60px;">
         <div
           class="progress-bar progress-bar-striped"
-          style="width: 20%; height: 30px;"
+          style="width: 20%; height: 60px;"
           id="step1-bar"
         >
-          Step 1
+          <p style="font-size:20px">Step 1</p>
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step2-bar"
-          style="width: 20%; height: 30px;"
+          style="width: 20%; height: 60px;"
         >
-          Step 2
+          <p style="font-size:20px">Step 2</p>
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step3-bar"
-          style="width: 20%; height: 30px;"
+          style="width: 20%; height: 60px;"
         >
-          Step 3
+          <p style="font-size:20px">Step 3</p>
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step4-bar"
-          style="width: 20%; height: 30px;"
+          style="width: 20%; height: 60px;"
         >
-          Step 4
+          <p style="font-size:20px">Step 4</p>
         </div>
         <div
           class="progress-bar bg-secondary"
           id="step5-bar"
-          style="width: 20%; height: 30px;"
+          style="width: 20%; height: 60px;"
         >
-          Step 5
+          <p style="font-size:20px">Step 5</p>
         </div>
       </div>
       <!-- Progress Bar Ends -->
       <input type="hidden" value="<%=application_round_id%>" id="application_round_id_field">
 
-      <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>">
+      <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>" onsubmit="location.href='https://iec.org.pk/thankyou/;'">
+
         <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
         <div id="step1" class="mt-3">
           <h3 class="mt-3">Step 1: Basic Information *</h3>
@@ -198,9 +194,9 @@
               />
               <span class="input-group-text">Gender*: </span>
               <select class="form-select" name="gender" required>
+                <option value="other">Other</option>
                 <option value="female">Female</option>
                 <option value="male">Male</option>
-                <option value="other">Other</option>
               </select>
               <div id="age-error-message" class="invalid-feedback"></div>
               <div id="gender-error-message" class="invalid-feedback"></div>
@@ -315,6 +311,57 @@
             </div>
           </div>
 
+          <!-- Flood Affected Areas -->
+          <fieldset class="mt-3 mb-4 input-group">
+            <label for="belongs_to_flood_area" class="input-group-text">Are you an individual belonging to flood affected areas?*</label>
+            <div class="col-sm-8 form-control">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area" value="1" required>
+                <label class="form-check-label" for="belongs_to_flood_area">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area_no" value="0">
+                <label class="form-check-label" for="belongs_to_flood_area_no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="belongs_to_flood_area-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+          <div class="hidden" id="flood_area_questions">
+            
+            <div class="mb-3 mt-3" id="city-of-origin">
+              <div class="input-group">
+                <span class="input-group-text">Please share your city of birth*: </span>
+                <select class="form-select" name="city_of_origin" id="city_of_origin">
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<cities.length;i++) { %>
+                    <option value="<%=cities[i]%>"><%=cities[i]%></option>
+                  <% } %>
+                </select>
+                <div id="city-of-origin-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+              <div class="input-group">
+                <span class="input-group-text">Which flood affected area do you belong to?</span>
+                <textarea
+                  type="text"
+                  class="form-control"
+                  id="flood_area_name"
+                  placeholder="Area name"
+                  name="flood_area_name"
+                  required
+                ></textarea>
+                <div id="flood_area_name-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
+          </div>
+
           <!-- Next Button -->
             <button
               type="button"
@@ -326,11 +373,12 @@
         </div>
         <div id="step3" class="hidden mt-5">
           <h3 class="mt-3">Step 3: Education Information</h3>
+
+          <!-- Education Completed -->
           
           <div class="row mb-4">
-            <!-- Education Completed -->
-            <label class="col-sm-2 col-form-label">Education Completed*: </label>
-            <div class="col-sm-10">
+            <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
+            <div class="col-sm-8">
               <select class="form-select mb-2" name="education_completed" id="education_completed" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
@@ -338,21 +386,15 @@
                 <% } %>
               </select>
               <div id="education_completed-error-message" class="invalid-feedback mb-2"></div>
-              <input
-                type="text"
-                class="form-control"
-                id="education_completed_major"
-                placeholder="Education Major e.g. Biology"
-                name="education_completed_major"
-                required
-              />
-              <div id="education_completed_major-error-message" class="invalid-feedback"></div>
+
             </div>
           </div>
+
+          <!-- Education Ongoing -->
+          
           <div class="row mb-4">
-            <!-- Education Ongoing -->
-            <label class="col-sm-2 col-form-label">Education Ongoing*: </label>
-            <div class="col-sm-10">
+            <label class="col-sm-3 col-form-label">Are you currently Enrolled in any of the Following Institutional Programs?*: </label>
+            <div class="col-sm-8">
               <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<education_levels.length;i++) { %>
@@ -360,20 +402,57 @@
                 <% } %>
               </select>
               <div id="education_ongoing-error-message" class="invalid-feedback mb-2"></div>
-              <input
-                type="text"
-                class="form-control"
-                id="education_ongoing_major"
-                placeholder="Education Major e.g. Biology"
-                name="education_ongoing_major"
-                required
-              />
-              <div id="education_ongoing_major-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
+          <div class="row mb-4">
+            <label class="col-sm-3 col-form-label">Name of your Latest educational Institution: </label>
+            <div class="col-sm-8">
+              <select class="form-select mb-2" name="inst_degree_dip" id="inst_degree_dip" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<universities.length;i++) { %>
+                  <option value="<%=universities[i]%>"><%=universities[i]%></option>
+                <% } %>
+              </select>
+            </div>
+          </div>
+
+          <div class="row mb-4">
+              <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
+              <div class="col-sm-8">
+                <input
+                type="text"
+                class="form-control"
+                id="education_completed_major"
+                placeholder="e.g BS in Computer science"
+                name="education_completed_major"
+                required
+                />
+                <div id="education_completed_major-error-message" class="invalid-feedback"></div>
+              </div>
+
+          </div>
+
+          <!-- Year of Graduation -->
+
+          <fieldset class="row mb-4 input-group">
+            <label for="year_of_graduation" class="col-sm-4 col-form-label">What was or is the year of your graduation?</label>
+            <input
+                type="number"
+                class="form-control col-sm-8"
+                id="year_of_graduation"
+                placeholder="e.g. 2019"
+                name="year_of_graduation"
+              ></input>
+              <div id="year_of_graduation-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+
+
+          <!-- Comp Sci student -->
+
           <fieldset class="row mb-4">
-            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you a graduate in computer science or any related field?*</label>
+            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you from a CS background?*</label>
             <div class="col-sm-8">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad" value="1" required>
@@ -391,8 +470,10 @@
             <div id="is_comp_sci_grad-error-message" class="invalid-feedback"></div>
           </fieldset>
 
+          <!-- Digital Certifications -->
+
           <fieldset class="row mb-4 input-group">
-            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">Do you have any digital skills certifications? If yes, please share their names and the name of the institution. If no, leave empty.</label>
+            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">If you have any digital or tech related certifications, please share their names, the name of the institution and year of completion. (e.g SEO from digi skills 2022  etc). If no, leave empty.</label>
             <textarea
                 type="text"
                 class="form-control col-sm-8"
@@ -415,23 +496,6 @@
         <div id="step4" class="hidden mt-5">
           <h3 class="mt-3">Step 4: Financial Information</h3>
 
-          <!-- Monthly Income -->
-          <div class="row mb-4">
-            <label class="col-lg-4 col-form-label">Monthly Family Income*: </label>
-            <div class="col-lg-8">
-              <input
-                type="number"
-                class="form-control"
-                id="monthly_family_income"
-                min="0"
-                placeholder="Enter Monthly Family Income"
-                name="monthly_family_income"
-                required
-              />
-              <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-
           <!-- Employment -->
           <fieldset class="row mb-4">
             <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?*</label>
@@ -451,6 +515,7 @@
             </div>
             <div id="is_employed-error-message" class="invalid-feedback"></div>
           </fieldset>
+
           <div class="hidden" id="additional-employment-questions">
             <fieldset class="row mb-4">
               <label for="type-of-employment" class="col-lg-4 col-form-label">Are you working part-time or full-time?</label>
@@ -471,22 +536,48 @@
             <div id="type_of_employment-error-message" class="invalid-feedback"></div>
 
             </fieldset>
+
+
+            <fieldset class="row mb-4 input-group">
+              <label for="current_field" class="col-sm-4 col-form-label">What field are you currently working in?</label>
+              <textarea
+                  type="text"
+                  class="form-control col-sm-8"
+                  id="current_field"
+                  placeholder="Current field"
+                  name="current_field"
+                ></textarea>
+                <div id="current_field-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
             <fieldset class="row mb-4">
               <label class="col-lg-4 col-form-label">Your Current Salary: </label>
               <div class="col-lg-8">
-                <input
-                  type="number"
-                  class="form-control"
-                  id="salary"
-                  min="0"
-                  value="0"
-                  placeholder="Enter Your Salary"
-                  name="salary"
-                />
+                <select class="form-select mb-2" name="salary" id="salary" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<income_brackets.length;i++) { %>
+                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                  <% } %>
+                </select>
               </div>
             <div id="salary-error-message" class="invalid-feedback"></div>
 
             </fieldset>
+
+            <!-- Salary expectation -->
+            <div class="row mb-4">
+              <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<income_brackets.length;i++) { %>
+                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                  <% } %>
+                </select>
+                <div id="salary_expectation-error-message" class="invalid-feedback"></div>
+              </div>
+            </div>
+
             <fieldset class="row mb-4">
               <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
               <div class="col-lg-8">
@@ -507,47 +598,222 @@
             </fieldset>
           </div>
 
+
+          <!-- Monthly Income -->
+          <div class="row mb-4">
+            <label class="col-lg-4 col-form-label">Monthly Family Income (Including yours)*: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="monthly_family_income" id="monthly_family_income" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<income_brackets.length;i++) { %>
+                  <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                <% } %>
+              </select>
+              <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
+            </div>
+          </div>
+
+          <!-- People earning -->
+          <fieldset class="row mb-4">
+            <label class="col-lg-4 col-form-label">How many immediate family members are earning in your household?</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="people_earning_in_household" id="people_earning_in_household" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<people_in_household.length;i++) { %>
+                  <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
+                <% } %>
+              </select>
+            </div>
+          <div id="people_earning_in_household-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
           
-          <fieldset class="row mb-4">
-            <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?*</label>
-            <div class="col-lg-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access" value="1" required>
-                <label class="form-check-label" for="computer_and_internet_access">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access_no" value="0">
-                <label class="form-check-label" for="computer_and_internet_access_no">
-                  No
-                </label>
-              </div>
-            <div id="computer_and_internet_access-error-message" class="invalid-feedback"></div>
 
-            </div>
 
-          </fieldset>
+
+          <!-- FA or Standard -->
 
           <fieldset class="row mb-4">
-            <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?*</label>
+            <label for="how_to_enroll" class="col-lg-4 col-form-label">How do you want to enroll in our course?*</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet_facility_in_area" value="1" required>
-                <label class="form-check-label" for="internet_facility_in_area">
-                  Yes
+                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll" value="1" required>
+                <label class="form-check-label" for="how_to_enroll">
+                  Standard (2000 per month)
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet_facility_in_area_no" value="0">
-                <label class="form-check-label" for="internet_facility_in_area_no">
-                  No
+                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll_fa" value="0">
+                <label class="form-check-label" for="how_to_enroll_fa">
+                  Financial Aid
                 </label>
               </div>
             </div>
-            <div id="internet_facility_in_area-error-message" class="invalid-feedback"></div>
+            <div id="how_to_enroll-error-message" class="invalid-feedback"></div>
           </fieldset>
 
+          <div class="hidden" id="fa-questions">
+
+            <!-- On fa in uni -->
+            <fieldset class="row mb-4">
+              <label for="on_fa_in_university" class="col-lg-4 col-form-label">Were you on financial aid/assistance while in university?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university" value="1" required>
+                  <label class="form-check-label" for="on_fa_in_university" required>
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university_no" value="0">
+                  <label class="form-check-label" for="on_fa_in_university_no">
+                    No
+                  </label>
+                </div>
+              </div>
+              <div id="on_fa_in_university-error-message" class="invalid-feedback"></div>
+            </fieldset>
+  
+            <!-- People in HouseHold -->
+
+            <fieldset class="row mb-4">
+                <label class="col-lg-4 col-form-label">How many people are there in your household?</label>
+                <div class="col-lg-8">
+                  <select class="form-select mb-2" name="people_in_household" id="people_in_household" required>
+                    <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                    <% for (let i=0;i<people_in_household.length;i++) { %>
+                      <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
+                    <% } %>
+                  </select>
+                </div>
+              <div id="people_in_household-error-message" class="invalid-feedback"></div>
+
+            </fieldset>
+
+            <!-- Is married -->
+
+            <fieldset class="row mb-4">
+              <label for="is_married" class="col-lg-4 col-form-label">Are you married?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="is_married" id="is_married-yes" value="1">
+                  <label class="form-check-label" for="is_married-yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="is_married" id="is_married-no" value="0">
+                  <label class="form-check-label" for="is_married-no">
+                    No
+                  </label>
+                </div>
+              </div>
+            <div id="is_married-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+
+          <!-- Computer access -->
+            <fieldset class="row mb-4">
+              <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?*</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access" value="1" required>
+                  <label class="form-check-label" for="computer_and_internet_access">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access_no" value="0">
+                  <label class="form-check-label" for="computer_and_internet_access_no">
+                    No
+                  </label>
+                </div>
+              <div id="computer_and_internet_access-error-message" class="invalid-feedback"></div>
+
+              </div>
+
+            </fieldset>
+
+           <!-- Internet Access
+
+            <fieldset class="row mb-4">
+              <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?*</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet_facility_in_area" value="1" required>
+                  <label class="form-check-label" for="internet_facility_in_area">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="internet_facility_in_area" id="internet_facility_in_area_no" value="0">
+                  <label class="form-check-label" for="internet_facility_in_area_no">
+                    No
+                  </label>
+                </div>
+              </div>
+              <div id="internet_facility_in_area-error-message" class="invalid-feedback"></div>
+            </fieldset> -->
+          
+            <!-- How will you complete course -->
+
+            <fieldset class="row mb-4 input-group">
+              <label for="how_complete_course" class="col-sm-4 col-form-label">How will you complete the course if you do not have internet or a laptop? (leave empty if not applicable)</label>
+              <textarea
+                  type="text"
+                  class="form-control col-sm-8"
+                  id="how_complete_course"
+                  name="how_complete_course"
+                ></textarea>
+                <div id="how_complete_course-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+            <fieldset class="row mb-4">
+              <label for="can_share_fa_docs" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_yes" value="1">
+                  <label class="form-check-label" for="can_share_fa_docs_yes">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_no" value="0">
+                  <label class="form-check-label" for="can_share_fa_docs_no">
+                    No
+                  </label>
+                </div>
+              </div>
+            <div id="can_share_fa_docs-error-message" class="invalid-feedback"></div>
+            </fieldset>
+
+          </div>
+
+          <div class="hidden" id="standard-questions">
+
+            <!-- Can pay 2000 -->
+            <fieldset class="row mb-4">
+              <label for="can_pay_2000" class="col-lg-4 col-form-label">Can you pay 2,000 RS per month for 6 months of the program?
+              </label>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000" value="1" >
+                  <label class="form-check-label" for="can_pay_2000" required>
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000_no" value="0">
+                  <label class="form-check-label" for="can_pay_2000_no">
+                    No
+                  </label>
+                </div>
+              </div>
+              <div id="can_pay_2000-error-message" class="invalid-feedback"></div>
+            </fieldset>
+  
+          </div>
 
  
             <button
@@ -563,6 +829,20 @@
         <div id="step5" class="hidden mt-5">
           <div id="step5-fields">
             <h3 class="mt-3">Step 5: Final Information</h3>
+
+            <fieldset class="row mb-4">
+              <label class="col-lg-4 col-form-label">Do you know anyone from IEC?</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="knows_from_IEC" id="knows_from_IEC" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<knows_from_IEC.length;i++) { %>
+                    <option value="<%=knows_from_IEC[i]%>"><%=knows_from_IEC[i]%></option>
+                  <% } %>
+                </select>
+              </div>
+            <div id="knows_from_IEC-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
 
             <fieldset class="row mb-4">
               <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?*</label>
@@ -614,6 +894,20 @@
                 <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
+
+              <!-- Reasons for Preferences -->
+
+              <label for="firstPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your first preference.*</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="firstPreferenceReason" id="firstPreferenceReason" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                  <% } %>
+                </select>
+              <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
+              </div>
+
               <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
@@ -625,6 +919,21 @@
                 <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
 
+              <!-- Reasons for Preferences -->
+              
+              <label for="secondPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your second preference.*</label>
+              <div class="col-lg-8">
+                <select class="form-select mb-2" name="secondPreferenceReason" id="secondPreferenceReason" required>
+                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                  <% } %>
+                </select>
+                <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
+              </div>
+              <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
+
+
               <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
               <div class="col-lg-8">
                 <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
@@ -635,22 +944,22 @@
                 </select>
                 <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
               </div>
+
+              <!-- Reasons for Preferences -->
+
+                <label for="thirdPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your third preference.*</label>
+                <div class="col-lg-8">
+                  <select class="form-select mb-2" name="thirdPreferenceReason" id="thirdPreferenceReason" required>
+                    <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                    <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                      <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
+                    <% } %>
+                  </select>
+                  <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
+                </div>
+                <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
+
             </div>
-
-            <!-- Reasons for Preferences -->
-            <fieldset class="row mb-4 input-group">
-              <label for="preference-reason" class="col-sm-4 col-form-label">Please share the reasons for the preferences above. Also share if you have any previous experience learning these skills or working with them.*</label>
-              <textarea
-                  type="text"
-                  class="form-control col-sm-8"
-                  id="preference-reason"
-                  placeholder="Reasons"
-                  name="preference_reason"
-                  required
-                ></textarea>
-              <div id="preference_reason-error-message" class="invalid-feedback"></div>
-            </fieldset>
-
 
             <!-- How did you hear -->
             <fieldset class="row mb-4 input-group">
@@ -708,18 +1017,42 @@
               </div>
               <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
             </fieldset>
+
+            <fieldset class="row mb-4">
+              <div class="col-lg-4 col-form-label flex flex-col">
+                <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's support, and contribute back to IEC after you find a job?</label>
+              </div>
+              <div class="col-lg-8">
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement" value="1" required>
+                  <label class="form-check-label" for="LEC_acknowledgement">
+                    Yes
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement-no" value="0">
+                  <label class="form-check-label" for="LEC_acknowledgement-no">
+                    No
+                  </label>
+                </div>
+              </div>
+              <div id="LEC_acknowledgement-error-message" class="invalid-feedback"></div>
+
+            </fieldset>
+
+            <small class="mb-4 text-muted" >Learn, Earn & Contribute (LEC) is a document consisting of students' finalized payment model and their agreement to pay back the remaining course amount to IEC on the basis of 10% of their salary after getting a job.*</small>
+
           </div>
           <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out for a confirmation email from us. Make sure you remember your email and password for future use.</p>
 
-            <button
-              type="submit"
-              id="step5-next-button"
-              class="btn btn-primary"
-            >
-            <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
-            <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
-            </button>
-
+          <button
+            type="submit"
+            id="step5-next-button"
+            class="btn btn-primary mt-5"
+          >
+          <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
+          <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
+          </button>
         </div>
       </form>
     </div>

@@ -198,6 +198,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
     });
     for (let sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
       stateObject.push({
+        id: sections[sectionIndex].id,
         sectionTitle: sections[sectionIndex].title,
         sectionOrder: sections[sectionIndex].sectionOrder,
         poolCount: sections[sectionIndex].poolCount,
@@ -214,6 +215,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
         questionIndex++
       ) {
         stateObject[sectionIndex].questions.push({
+          id: questions[questionIndex].id,
           passage:
             questions[questionIndex].PassageId != null
               ? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
@@ -238,6 +240,7 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
         });
         for (let optionIndex = 0; optionIndex < options.length; optionIndex++) {
           stateObject[sectionIndex].questions[questionIndex].options.push({
+            id: options[optionIndex].id,
             optionStatement: options[optionIndex].statement,
             optionOrder: options[optionIndex].optionOrder,
             correct: options[optionIndex].correct,
@@ -433,7 +436,7 @@ router.get(
     const now = new Date();
     const timeDiff = now - assignment.createdAt;
     const deadline_from_signup = process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS; //days
-
+    console.log(timeDiff, deadline_from_signup);
     if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
       await scoreSection(req.params.sectionId, req.user.user.id, null, true);
       await emailStudentOnSectionCompletion(
@@ -446,7 +449,7 @@ router.get(
       res.render("templates/error.ejs", {
         additional_info: "Deadline Passed :(",
         error_message:
-          "You had 30 days to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.",
+          `You had ${deadline_from_signup} days to solve this assessment, and the deadline has passed now. You cannot solve the assessment now.`,
         action_link: "/student",
         action_link_text: "Click here to go to student home page.",
       });
@@ -1191,7 +1194,7 @@ router.get("/:quizId/results", checkAdminAuthenticated, async (req, res) => {
     user_type: req.user.type,
     user_id: req.user.user.id,
     quiz_id: req.params.quizId,
-    myname: req.user.user.firstName,
+    myname: req.user.user?.firstName,
     env: process.env.NODE_ENV,
   });
 });
@@ -1212,7 +1215,7 @@ router.get("/:quiz_id/analysis", checkAdminAuthenticated, async (req, res) => {
 
   res.render("admin/view_result_analysis.ejs", {
     user_type: req.user.type,
-    myname: req.user.user.firstName,
+    myname: req.user.user?.firstName,
     data_obj: final_response,
     moment: moment,
     millisecondsToMinutesAndSeconds: millisecondsToMinutesAndSeconds,
@@ -1358,7 +1361,7 @@ router.get("/assign/:quiz_id", checkAdminAuthenticated, async (req, res) => {
 
     res.render("admin/quiz/assign.ejs", {
       quiz_id: req.params.quiz_id,
-      myname: req.user.user.firstName,
+      myname: req.user.user?.firstName,
       user_type: req.user.type,
       env: process.env.NODE_ENV,
       current_url: `/admin/application${req.url}`,

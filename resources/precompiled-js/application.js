@@ -1,6 +1,6 @@
 "use strict";
 
-var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
+var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "current_field", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
 
 function handleForm(e) {
   $("#submit-spinner").removeClass("hidden-imp");
@@ -165,14 +165,64 @@ $(document).ready(function () {
   $('input:radio[name="is_employed"]').change(function () {
     if ($(this).is(":checked") && $(this).val() == "1") {
       $("#additional-employment-questions").fadeIn();
-      $("#salary").prop("required", true);
-      $("#part-time").prop("required", true);
-      $("#will-leave-job-yes").prop("required", true);
+      $("#additional-employment-questions :input").prop("required", true);
     } else {
       $("#additional-employment-questions").fadeOut();
-      $("#salary").prop("required", false);
-      $("#part-time").prop("required", false);
-      $("#will-leave-job-yes").prop("required", false);
+      $("#additional-employment-questions :input").prop("required", false);
+    }
+  });
+  $('input:radio[name="is_employed_no"]').change(function () {
+    if ($(this).is(":checked") && $(this).val() == "0") {
+      $("#additional-employment-questions").fadeIn();
+      $("#additional-employment-questions :input").prop("required", false);
+    } else {
+      $("#additional-employment-questions").fadeOut();
+      $("#additional-employment-questions :input").prop("required", true);
+    }
+  });
+  $('input:radio[id="how_to_enroll"]').change(function () {
+    $("#how_complete_course").prop("required", false);
+
+    if ($(this).is(":checked") && $(this).val() == "1") {
+      //show standard questions
+      $("#standard-questions").fadeIn();
+      $("#standard-questions :input").prop("required", true); //hide fa questions
+
+      $("#how_to_enroll_fa").prop("checked", false);
+      $("#fa-questions").fadeOut();
+      $("#fa-questions :input").prop("required", false);
+    } else {
+      $("#standard-questions").fadeOut();
+      $("#standard-questions :input").prop("required", false);
+    }
+  });
+  $('input:radio[id="how_to_enroll_fa"]').change(function () {
+    if ($(this).is(":checked") && $(this).val() == "0") {
+      //show the fa questions when checked
+      $("#fa-questions").fadeIn();
+      $("#fa-questions :input").prop("required", true);
+      $("#how_complete_course").prop("required", false);
+    } else {
+      $("#fa-questions").fadeOut();
+      $("#fa-questions :input").prop("required", false);
+    }
+  });
+  $('input:radio[id="belongs_to_flood_area"]').change(function () {
+    if ($(this).is(":checked") && $(this).val() == "1") {
+      $("#flood_area_questions").fadeIn();
+      $("#flood_area_questions :input").prop("required", true);
+    } else {
+      $("#flood_area_questions").fadeOut();
+      $("#flood_area_questions :input").prop("required", false);
+    }
+  });
+  $('input:radio[id="belongs_to_flood_area_no"]').change(function () {
+    if ($(this).is(":checked") && $(this).val() == "0") {
+      $("#flood_area_questions").fadeOut();
+      $("#flood_area_questions :input").prop("required", false);
+    } else {
+      $("#flood_area_questions").fadeIn();
+      $("#flood_area_questions :input").prop("required", true);
     }
   }); // form validation
 });

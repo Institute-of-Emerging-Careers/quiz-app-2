@@ -11,13 +11,13 @@ const ApplicantDetailsModal = (props) => {
     { title: "Country of Residence", name: ["country"] },
     { title: "Home Address", name: ["address"] },
     { title: "Current Address", name: ["current_address"] },
+    { title: "From Flood Affected Area", name: ["belongs_to_flood_area"] },
+
     { title: "Education Completed", name: ["education_completed"] },
     {
       title: ["Major of Education Completed"],
       name: ["education_completed_major"],
     },
-    { title: "Ongoing Education", name: ["education_ongoing"] },
-    { title: "Major of Ongoing Education", name: ["education_ongoing_major"] },
     { title: "Monthly Family Income", name: ["monthly_family_income"] },
     {
       title: "Do you have computer and internet access?",
@@ -45,6 +45,19 @@ const ApplicantDetailsModal = (props) => {
     { title: "Third Preference", name: ["third preference", "title"] },
     { title: "Reason for Preferences", name: ["preference_reason"] },
     {
+      title: "What is your first preference reason?",
+      name: ["firstPreferenceReason"]
+    },
+    {
+      title: "What is your second preference reason?",
+      name: ["secondPreferenceReason"]
+    },
+    {
+      title: "What is your first preference reason?",
+      name: ["firstPreferenceReason"]
+    },
+
+    {
       title: "Are you a graduate in computer science or any related field?",
       name: ["is_comp_sci_grad"],
     },
@@ -59,6 +72,7 @@ const ApplicantDetailsModal = (props) => {
         "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
       name: ["will_work_full_time"],
     },
+    
     {
       title: "The program is entirely online. Do you acknowledge that?",
       name: ["acknowledge_online"],

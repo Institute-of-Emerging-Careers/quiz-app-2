@@ -9,7 +9,7 @@ This is a Student Acquisition System consisting of 5 phases:
 </ul>
 
 ## Tech Stack
-NodeJS | ExpressJS |  ReactJS | MySQL | Sequelize ORM |  AWS EC2 |  AWS SES | Redis-Bull | Mocha | Chai<br>
+NodeJS (version 14) | ExpressJS |  ReactJS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis v5.0.7 | Bull | Mocha | Chai<br>
 For testing it uses Mocha & Chai.<br>
 For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
@@ -19,7 +19,7 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 - `NODE_ENV` | `production`, `development`, or `test`/`testing`
 - `SITE_DOMAIN_NAME` | the url of the website, like `https://www.website.com`
 - `SESSION_SERET`
-- `MYSQL_CONNETION_STRING` | as used by Sequelize ORM
+- `MYSQL_CONNECTION_STRING` | format: `mysql://username:password@localhost:3306/`
 - `PORT` | e.g. `3000`
 - `TIMEZIME_OFFSET` | offset of the server from Pakistan Standard Time, e.g. `+05:00`
 - `AWS_SES_ACCESS_KEY_ID`
@@ -29,10 +29,25 @@ For emails it uses AWS SES and for email queues it uses Redis-Bull.
 
 
 ## Database Initialization
-All models are defined in `/models` using sequelize. In `db/initialize.js`, set `force: true` to create empty database upon server start.
+
+### MySQL
+The application was developed on MySQL v8.0.30. All models are defined in `/models` using sequelize. Create an empty database in MySQL and mention its name in the `config` folder. By default the program expects the database to be named `quizdb`. 
+In `db/initialize.js`, set `alterandforce = true` to initialize the empty database with some sample data upon server start. Set `alterandforce = false` afterwards.
+
+### Redis
+You need to install redis v5.0.7 and run it on port `6379` before running the server as well.
 
 ## Modules
-To install required dependencies, run `npm install` in the project root.
+To install required dependencies, run `npm install` in the project root. Make sure you have [Node v14 installed](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-22-04#option-3-installing-node-using-the-node-version-manager). 
 
 ## Customizations
-You may want to change the fontawesome import link because it is a free link associated with my personal fontawesome account and is only allowed to be used on one website. The version currently in use is v5.
+You may want to change the fontawesome import link because it is a free link associated with my personal fontawesome account and is only allowed to be used on one website.
+
+## EC2 Instance Hardware Requirements
+MySQL requires 0.5Gb of RAM. If you try to use VS Code SSH-Remote on the server, you will need ~2Gb of RAM to be safe as [it is known to crash <=1Gb instances](https://github.com/microsoft/vscode-remote-release/issues/1110). So for smooth operation, the system must have 1-2Gb of RAM. With my testing, a `t3.small` instance on AWS EC2 works fine, though it does crash on using VS Code Remote sometimes.
+
+## Building
+To build javascript files optimized for production, you need to run `npm run build:babel` on production.
+
+## Running
+To finally start the server, run `npm run dev` for development or `npm start` for production.

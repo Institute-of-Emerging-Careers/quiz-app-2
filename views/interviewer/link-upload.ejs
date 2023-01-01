@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../templates/global.ejs') %> <%-
+    include('../templates/react-includes.ejs') %>
+    <title>Home - Interviewer Panel</title>
+  </head>
+  <body class="min-h-screen bg-gray-200">
+    <%- include('../templates/header-7-by-8.ejs') %>
+
+    <div>
+      <section class="p-10" id="main-section">
+        <div class="mt-16">
+          <h1 class="text-2xl">Welcome <%= myname %></h1>
+          
+        </div>
+        <div class="w-full flex items-center justify-center">
+            <div id="app">
+
+            </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="/precompiled-js/calendly_upload.js" defer ></script>
+
+  </body>
+</html>

@@ -57,11 +57,12 @@ var csv_storage = multer.diskStorage({
   destination: "./uploads/csv",
   filename: function (req, file, cb) {
     console.log(file.mimetype);
-    switch (file.mimetype) {
-      case "application/vnd.ms-excel":
-        ext = ".csv";
-        break;
-    }
+    // switch (file.mimetype) {
+    //   case "application/vnd.ms-excel":
+    //     ext = ".csv";
+    //     break;
+    // }
+    ext = ".csv";
     cb(null, file.originalname + "-" + Date.now() + ext);
   },
 });

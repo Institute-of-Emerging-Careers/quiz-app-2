@@ -93,6 +93,30 @@ var ApplicationsList = function ApplicationsList(props) {
     title: "Current Address",
     name: ["current_address"]
   }, {
+    title: "From flood affected area",
+    name: ["belongs_to_flood_area"]
+  }, {
+    title: "City of origin",
+    name: ["city_of_origin"]
+  },, {
+    title: "Flood area name",
+    name: ["flood_area_name"]
+  }, {
+    title: "Has completed bachelor's degree",
+    name: ["has_completed_ba"]
+  }, {
+    title: "Has completed diploma",
+    name: ["has_completed_diploma"]
+  }, {
+    title: "Institute of degree or diploma",
+    name: ["inst_degree_dip"]
+  }, {
+    title: "Can share FinAid docs",
+    name: ["can_share_fa_docs"]
+  }, {
+    title: "Can share FinAid docs",
+    name: ["can_share_fa_docs"]
+  }, {
     title: "Education Completed",
     name: ["education_completed"]
   }, {
@@ -101,6 +125,9 @@ var ApplicationsList = function ApplicationsList(props) {
   }, {
     title: "Ongoing Education",
     name: ["education_ongoing"]
+  }, {
+    title: "Degree Choice",
+    name: ["degree_choice"]
   }, {
     title: "Major of Ongoing Education",
     name: ["education_ongoing_major"]
@@ -126,11 +153,32 @@ var ApplicationsList = function ApplicationsList(props) {
     title: "Current salary",
     name: ["salary"]
   }, {
+    title: "How are you enrolling in the program",
+    name: ["how_to_enroll"]
+  }, {
     title: "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
     name: ["will_leave_job"]
   }, {
+    title: "Salary expectations after graduation",
+    name: ["salary_expectation"]
+  }, {
+    title: "Are you on financial aid in university?",
+    name: ["on_fa_in_university"]
+  }, {
+    title: "How many people are earning in your household?",
+    name: ["people_earning_in_household"]
+  }, {
     title: "Have you applied to IEC before?",
     name: ["has_applied_before"]
+  }, {
+    title: "How will you complete the course?",
+    name: ["how_complete_course"]
+  }, {
+    title: "Can you pay 2000 PKR per month?",
+    name: ["can_pay_2000"]
+  }, {
+    title: "Are you married?",
+    name: ["is_married"]
   }, {
     title: "First Preference",
     name: ["first preference", "title"]
@@ -152,6 +200,24 @@ var ApplicationsList = function ApplicationsList(props) {
   }, {
     title: "How did you hear about IEC?",
     name: ["how_heard_about_iec"]
+  }, {
+    title: "Do you know anyone from IEC?",
+    name: ["knows_from_IEC"]
+  }, {
+    title: "Will you sign the LEC agreement?",
+    name: ["LEC_acknowledgement"]
+  }, {
+    title: "Will you be available for full time work after the program?",
+    name: ["will_work_full_time"]
+  }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
+  }, {
+    title: "What is your second preference reason?",
+    name: ["secondPreferenceReason"]
+  }, {
+    title: "What is your first preference reason?",
+    name: ["firstPreferenceReason"]
   }, {
     title: "The program is entirely online. Do you acknowledge that?",
     name: ["acknowledge_online"]
@@ -230,6 +296,21 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
+      title: "From flood affected areas",
+      name: "belongs_to_flood_area",
+      filter_type: "fixed_values",
+      discrepancy_between_value_and_text: true,
+      possible_values: [{
+        text: "Yes",
+        value: 1,
+        checked: false
+      }, {
+        text: "No",
+        value: 0,
+        checked: false
+      }],
+      expand_possible_values: false
+    }, {
       title: "Education Completed",
       name: "education_completed",
       filter_type: "fixed_values",
@@ -240,6 +321,21 @@ var ApplicationsList = function ApplicationsList(props) {
           checked: false
         };
       }),
+      expand_possible_values: false
+    }, {
+      title: "Can pay 2000",
+      name: "can_pay_2000",
+      filter_type: "fixed_values",
+      discrepancy_between_value_and_text: true,
+      possible_values: [{
+        text: "Yes",
+        value: 1,
+        checked: false
+      }, {
+        text: "No",
+        value: 0,
+        checked: false
+      }],
       expand_possible_values: false
     }, {
       title: "Ongoing Education",

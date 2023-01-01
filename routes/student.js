@@ -16,6 +16,8 @@ const {
   PasswordResetLink,
 } = require("../db/models/user");
 
+const { Interviewer, InterviewerCalendlyLinks, InterviewMatching } = require("../db/models/interview.js");
+
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus");
 
 const { queueMail } = require("../bull");
@@ -365,6 +367,45 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
     console.log(err);
     res.sendStatus(500);
   }
+});
+
+router.get("/matching/calendly_invite",checkStudentAuthenticated, async (req, res) => {
+  const student = await Student.findOne({
+    where: {
+      id: req.user.user.id,
+    },
+  });
+
+  const matching = await InterviewMatching.findAll({
+    where: {
+      StudentId: student.id,
+    },
+  });
+
+
+  if (matching.length > 0) {
+    //find the calendly links of all interviewers
+    for (let i = 0; i < matching.length; i++) {
+      const interviewer = await Interviewer.findOne({
+        where: {
+          id: matching[i].InterviewerId,
+        },
+      });
+
+      const link = await InterviewerCalendlyLinks.findOne({
+        where: {
+          InterviewerId: interviewer.id,
+        },
+      });
+      
+      matching[i].setDataValue("calendly_link", link.calendly_link);
+      
+    }
+    res.status(200).json(matching);
+  } else {
+    res.status(404).json({ message: "No matching found" });
+  }
+
 });
 
 module.exports = router;

@@ -9,6 +9,7 @@ const email_bull_queue = new Queue("Email Sending", {
 });
 
 function queueMail(recepient, subject, ejs_obj, force_send = false) {
+  console.log("Queueing email to ", recepient, "about '", subject, "'");
   return new Promise((resolve) => {
     email_bull_queue.add({
       recepient: recepient,

@@ -12,8 +12,8 @@ const {
   Course,
 } = require("../db/models/application");
 const { Student, Assignment } = require("../db/models/user");
+const {education_levels, degree_choice, income_brackets}  = require("../db/data_lists")
 
-let should = chai.should();
 let expect = chai.expect;
 
 chai.use(chaiHttp);
@@ -237,54 +237,69 @@ describe("Applications", () => {
 
   it("it should return 'already_applied' if student has already applied to this round", () => {
     return new Promise(async (resolve, reject) => {
-      const application_round = await ApplicationRound.create({
-        title: "Test Round",
-        open: true,
-      });
-      const courses = await Promise.all([
-        Course.create({ title: "Test Course 1" }),
-        Course.create({ title: "Test Course 2" }),
-        Course.create({ title: "Test Course 3" }),
-      ]);
-      await agent.post(`/application/submit/${application_round.id}`).send({
-        firstName: "Test",
-        lastName: "User",
-        password: "test",
-        password2: "test",
-        gender: "male",
-        email: "test@test.com",
-        cnic: "00000-0000000-0",
-        phone: "03021234567",
-        age: 23,
-        city: "Lahore",
-        province: "Punjab",
-        country: "Pakistan",
-        address: "Street X House Y City Z",
-        father_name: "Test Parent",
-        current_address: "Street A House B City Z",
-        education_completed: "Grade 8",
-        education_completed_major: "Biology",
-        education_ongoing: "None",
-        education_ongoing_major: "None",
-        monthly_family_income: 25000,
-        computer_and_internet_access: 1,
-        internet_facility_in_area: 1,
-        time_commitment: 1,
-        is_employed: 0,
-        type_of_employment: null,
-        salary: null,
-        will_leave_job: null,
-        has_applied_before: 0,
-        firstPreferenceId: courses[0].id,
-        secondPreferenceId: courses[1].id,
-        thirdPreferenceId: courses[2].id,
-        preference_reason: "Test reason",
-        is_comp_sci_grad: 0,
-        how_heard_about_iec: "Social Media",
-        will_work_full_time: 1,
-        acknowledge_online: 1,
-      });
-
+      let application_round
+      try {
+        application_round = await ApplicationRound.create({
+          title: "Test Round",
+          open: true,
+        });
+        const courses = await Promise.all([
+          Course.create({ title: "Test Course 1" }),
+          Course.create({ title: "Test Course 2" }),
+          Course.create({ title: "Test Course 3" }),
+        ]);
+        await agent.post(`/application/submit/${application_round.id}`).send({
+          
+          firstName: "Test",
+          lastName: "User",
+          password: "test",
+          password2: "test",
+          gender: "male",
+          email: "test@test.com",
+          cnic: "00000-0000000-0",
+          phone: "03021234567",
+          age: 23,
+          city: "Lahore",
+          province: "Punjab",
+          country: "Pakistan",
+          address: "Street X House Y City Z",
+          father_name: "Test Parent",
+          current_address: "Street A House B City Z",
+          education_completed: education_levels[1],
+          education_completed_major: "Biology",
+          education_ongoing: "None",
+          education_ongoing_major: "None",
+          monthly_family_income: income_brackets[0],
+          computer_and_internet_access: 1,
+          internet_facility_in_area: 1,
+          time_commitment: 1,
+          is_employed: 0,
+          type_of_employment: null,
+          salary: null,
+          will_leave_job: null,
+          has_applied_before: 0,
+          firstPreferenceId: courses[0].id,
+          secondPreferenceId: courses[1].id,
+          thirdPreferenceId: courses[2].id,
+          preference_reason: "Test reason",
+          firstPreferenceReason: "Test reason",
+          secondPreferenceReason: "Test reason",
+          thirdPreferenceReason: "Test reason",
+          is_comp_sci_grad: 0,
+          how_heard_about_iec: "Social Media",
+          will_work_full_time: 1,
+          acknowledge_online: 1,
+          belongs_to_flood_area: true,
+          has_completed_ba: true,
+          has_completed_diploma: false,
+          degree_choice: degree_choice[0],
+          how_to_enroll: "N/A",
+          LEC_acknowledgement: true,
+        });  
+      } catch(err) {
+        reject(err);
+      }
+      
       chai
         .request(server)
         .post(`/application/check-if-user-exists`)
@@ -300,9 +315,7 @@ describe("Applications", () => {
           });
           resolve();
         })
-        .catch((err) => {
-          reject(err);
-        })
+        .catch(reject)
         .end();
     });
   });
@@ -334,11 +347,11 @@ describe("Applications", () => {
               address: "Street X House Y City Z",
               father_name: "Test Parent",
               current_address: "Street A House B City Z",
-              education_completed: "Grade 8",
+              education_completed: education_levels[1],
               education_completed_major: "Biology",
               education_ongoing: "None",
               education_ongoing_major: "None",
-              monthly_family_income: 25000,
+              monthly_family_income: income_brackets[0],
               computer_and_internet_access: 1,
               internet_facility_in_area: 1,
               time_commitment: 1,
@@ -350,11 +363,19 @@ describe("Applications", () => {
               firstPreferenceId: courses[0].id,
               secondPreferenceId: courses[1].id,
               thirdPreferenceId: courses[2].id,
-              preference_reason: "Test reason",
+              firstPreferenceReason: "Test reason",
+              secondPreferenceReason: "Test reason",
+              thirdPreferenceReason: "Test reason",
               is_comp_sci_grad: 0,
               how_heard_about_iec: "Social Media",
               will_work_full_time: 1,
               acknowledge_online: 1,
+              belongs_to_flood_area: true,
+          has_completed_ba: true,
+          has_completed_diploma: false,
+          degree_choice: degree_choice[0],
+          how_to_enroll: "N/A",
+          LEC_acknowledgement: true,
             })
             .end((err, res) => {
               expect(res.status).to.eql(201);

@@ -11,16 +11,7 @@
 
     <!-- ReactJS and ReactDOM -->
     <!-- Replace these with production links. These are dev links. -->
-    <script
-      crossorigin
-      src="https://unpkg.com/react@17/umd/react.development.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"
-    ></script>
-    <!-- Babel -->
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <%- include('templates/react-includes.ejs', {env: process.env.NODE_ENV}) %>
 
     <title>New Quiz - Admin Panel</title>
   </head>

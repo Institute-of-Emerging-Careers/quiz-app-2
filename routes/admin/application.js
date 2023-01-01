@@ -19,7 +19,7 @@ router.use((req, res, next) => {
 router.get("/", checkAdminAuthenticated, (req, res) => {
   res.render("admin/application/index.ejs", {
     env: process.env.NODE_ENV,
-    myname: req.user.user.firstName,
+    myname: req.user.firstName,
     user_type: req.user.type,
     site_domain_name: process.env.SITE_DOMAIN_NAME,
     current_url: `/admin/application${req.url}`,
@@ -129,7 +129,7 @@ router.get(
 
       res.render("admin/application/view_round.ejs", {
         application_round_id: req.params.application_round_id,
-        myname: req.user.user.firstName,
+        myname: req.user.user?.firstName,
         user_type: req.user.type,
         env: process.env.NODE_ENV,
         current_url: `/admin/application${req.url}`,
