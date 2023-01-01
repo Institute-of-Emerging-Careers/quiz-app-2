@@ -13,6 +13,9 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var EmailForm = function EmailForm(props) {
+  var _props$afterSending;
+
+  var afterSending = (_props$afterSending = props === null || props === void 0 ? void 0 : props.afterSending) !== null && _props$afterSending !== void 0 ? _props$afterSending : function () {};
   var users = props.users;
   var default_values = props.default_values;
   var sending_link = props.sending_link;
@@ -78,6 +81,7 @@ var EmailForm = function EmailForm(props) {
     }).then(function (response) {
       if (response.ok) {
         alert("Emails sent successfully.");
+        afterSending();
       } else {
         alert("There was an error while sending emails. Error code 01.");
       }

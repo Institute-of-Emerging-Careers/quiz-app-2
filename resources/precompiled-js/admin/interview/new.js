@@ -407,6 +407,9 @@ var Step2 = function Step2() {
   }, "Add"))), /*#__PURE__*/React.createElement("hr", {
     className: "mt-4"
   }), show_email_composer ? /*#__PURE__*/React.createElement(EmailForm, {
+    afterSending: function afterSending() {
+      alert("Please visit the following link to log in as interviewer:\n                '".concat(window.location.hostname, "/admin/interview/login'. The password is 'examplepassword'"));
+    },
     users: specific_interviewers_to_email,
     onFinish: function onFinish() {
       setShowEmailComposer(false);
@@ -860,8 +863,6 @@ var Step3 = function Step3() {
     className: "text-lg font-semibold text-red-400"
   }, "You have not created a matching yet.")));
 };
-
-;
 
 var Step4 = function Step4() {
   var _useState45 = useState(false),
