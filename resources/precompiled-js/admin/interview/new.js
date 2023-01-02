@@ -912,7 +912,7 @@ var Step4 = function Step4() {
             response = _context2.sent;
 
             if (!(response.status == 200)) {
-              _context2.next = 8;
+              _context2.next = 9;
               break;
             }
 
@@ -921,9 +921,10 @@ var Step4 = function Step4() {
 
           case 6:
             response = _context2.sent;
+            console.log(response.questions);
             setQuestions(response.questions);
 
-          case 8:
+          case 9:
           case "end":
             return _context2.stop();
         }
@@ -962,8 +963,8 @@ var Step4 = function Step4() {
               setQuestions([].concat(_toConsumableArray(questions), [{
                 questionID: questionID,
                 question: new_question,
-                type: new_question_type,
-                scale: new_question_scale
+                questionType: new_question_type,
+                questionScale: new_question_scale
               }]));
               setNewQuestion("");
               setNewQuestionType("descriptive");
@@ -1114,9 +1115,9 @@ var Step4 = function Step4() {
       className: "p-2 border border-black"
     }, question.question), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border border-black"
-    }, question.type), /*#__PURE__*/React.createElement("td", {
+    }, question.questionType), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border border-black"
-    }, question.type == "descriptive" ? "No scale" : question.scale), /*#__PURE__*/React.createElement("td", {
+    }, question.questionType == "Descriptive" ? "No scale" : question.questionScale), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border border-black text-red-400"
     }, /*#__PURE__*/React.createElement("button", {
       onClick: function onClick() {

@@ -888,6 +888,7 @@ const Step4 = () => {
     if (response.status == 200){
 
       response = await response.json()
+      console.log(response.questions);
 
       setQuestions(response.questions);
     }
@@ -915,7 +916,7 @@ const Step4 = () => {
       
       const questionID = createResponse.questionID;
 
-      setQuestions([...questions, {questionID: questionID, question: new_question, type: new_question_type, scale: new_question_scale}]);
+      setQuestions([...questions, {questionID: questionID, question: new_question, questionType: new_question_type, questionScale: new_question_scale}]);
       setNewQuestion("");
       setNewQuestionType("descriptive");
       setNewQuestionScale(0);
@@ -1022,8 +1023,8 @@ const Step4 = () => {
                   <tr key = {question.questionID}>
                     <td className = "p-2 border border-black">{index + 1}</td>
                     <td className = "p-2 border border-black">{question.question}</td>
-                    <td className = "p-2 border border-black">{question.type}</td>
-                    <td className = "p-2 border border-black">{question.type == "descriptive" ? "No scale": question.scale}</td>
+                    <td className = "p-2 border border-black">{question.questionType}</td>
+                    <td className = "p-2 border border-black">{question.questionType == "Descriptive" ? "No scale": question.questionScale}</td>
                     <td className = "p-2 border border-black text-red-400"><button onClick = {() => deleteQuestion(question.questionID)} className="bg-transparent w-full h-full">Delete</button> </td>
                   </tr>
                 ))}
