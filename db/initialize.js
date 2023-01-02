@@ -1,19 +1,6 @@
 // This file will initialize all Models so that the models and the database are in sync
 const sequelize = require("./connect");
 const bcrypt = require("bcrypt");
-const {
-  Interviewer,
-  InterviewerInvite,
-  InterviewRound,
-  InterviewerSlot,
-} = require("./models/interview");
-const {
-  Application,
-  ApplicationRound,
-  ApplicationRoundCourseJunction,
-} = require("./models/application");
-const { Assignment } = require("./models/user");
-const { OrientationInvite, Orientation } = require("./models/orientation");
 
 const initializeDatabase = async () => {
   try {
