@@ -1,7 +1,12 @@
 const useState = React.useState;
-
+const useEffect = React.useEffect;
 const CalendlyUpload = () => {
 	const [link, setLink] = useState("");
+
+	useEffect(async () => {
+		const response = await fetch("/admin/interview/get-link");
+	  
+	},[])
 
 	const uploadLink = (e) => {
 		e.preventDefault();
@@ -24,10 +29,11 @@ const CalendlyUpload = () => {
 	};
 
 	return (
-		<>
+		<div>
 			<h1 className="text-2xl">Please enter your Calendly link</h1>
 			<form onSubmit={uploadLink}>
 				<input
+					className = "bg-white h-10 rounded-md border-black border"
 					type="text"
 					name="calendly_link"
 					id="calendly_link"
@@ -37,7 +43,7 @@ const CalendlyUpload = () => {
 				></input>
 				<button type="submit">Upload</button>
 			</form>
-		</>
+		</div>
 	);
 };
 

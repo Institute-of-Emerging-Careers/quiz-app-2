@@ -381,6 +381,34 @@ router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
 	}
 });
 
+router.get("/get-link", checkInterviewerAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({
+      where: { id: req.params.interview_round_id },
+    });
+    if (interview_round == null) res.sendStatus(404);
+
+
+    const interviewer = await Interviewer.findOne({
+      where: { id: req.user.user.id },
+    });
+    if (interviewer == null) res.sendStatus(404);
+
+    const calendly_link = await InterviewerCalendlyLinks.findOne({
+      where: { InterviewerId: interviewer.id },
+    });
+    if (calendly_link == null) res.sendStatus(404);
+
+    res.status(200).json({
+      calendly_link: calendly_link.calendly_link,
+    });
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 router.post(
   "/interviewer/save-time-slots",
   checkInterviewerAuthenticated,
@@ -874,7 +902,7 @@ router.delete("/:interview_round_id/delete-question/:questionID", checkAdminAuth
   }
 });
 
-router.get("/:interview_round_id/all-questions", checkAdminAuthenticated, async (req, res) => {
+router.get("/:interview_round_id/all-questions", async (req, res) => {
   try{  
 
     const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
@@ -899,6 +927,184 @@ router.get("/:interview_round_id/all-questions", checkAdminAuthenticated, async 
     console.log(err);
   }
   
+});
+
+router.get("/:interview_round_id/view-students", checkInterviewerAuthenticated, async (req, res) => {
+
+  res.status(200).render("interviewer/view-students.ejs", {
+    env: process.env.NODE_ENV,
+    myname: req.user.user.name,
+    user_type: req.user.type,
+    interview_round_id: req.params.interview_round_id,
+  });
+
+});
+
+router.get("/:interview_round_id/get-assigned-students", checkInterviewerAuthenticated, async (req, res) => {
+  try{
+    const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
+    if (interview_round == null) res.sendStatus(404);
+
+    let matchings = await InterviewMatching.findAll({where: {InterviewRoundId : req.params.interview_round_id, InterviewerId: req.user.user.id}})
+
+
+    //get the student details for each student in the matching
+
+    matchings = await Promise.all(matchings.map(async (matching) => {
+      const student = await Student.findOne({where: {id: matching.StudentId}});
+      matching.dataValues.cnic = student.cnic;
+      matching.dataValues.firstName = student.firstName;
+      matching.dataValues.lastName = student.lastName;
+      matching.dataValues.gender = student.gender
+      return {
+				...matching.dataValues,
+				cnic: student.cnic,
+				firstName: student.firstName,
+				lastName: student.lastName,
+				gender: student.gender,
+			};
+    }));
+
+    matchings = matchings.map(matching => {
+      return {
+        id: matching.id,
+        student_email: matching.student_email,
+        firstName: matching.firstName,
+        lastName: matching.lastName,
+        gender: matching.gender,
+        cnic: matching.cnic,
+        createdAt: matching.createdAt,
+        updatedAt: matching.updatedAt,
+        StudentId: matching.StudentId,
+      }
+    }) 
+
+
+    res.status(200).json({success: "ok", matchings: matchings});
+  } catch (err){
+    console.log(err);
+    res.sendStatus(500);
+  }
 })
+
+router.get("/:interview_round_id/student/:student_id/enter-marks", checkInterviewerAuthenticated, async (req, res) => {
+  try{
+    const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
+    if (interview_round == null) res.sendStatus(404);
+
+    const student = await Student.findOne({where: {id: req.params.student_id}});
+    if (student == null) res.sendStatus(404);
+
+    res.status(200).render("interviewer/view-student.ejs", {
+      env: process.env.NODE_ENV,
+      myname: req.user.user.name,
+      user_type: req.user.type,
+      student_id: req.params.student_id,
+      interview_round_id: req.params.interview_round_id,
+    });
+
+  } catch (err){
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/:interview_round_id/student/:student_id/enter-marks", checkInterviewerAuthenticated, async (req, res) => {
+  try{
+    const interview_round = InterviewRound.findOne({where: {id: req.params.interview_round_id}})
+    if (interview_round == null) res.sendStatus(404);
+
+    const student = Student.findOne({where: {id: req.params.student_id}})
+    if (student == null) res.sendStatus(404);
+
+    const answer = InterviewAnswers.findOne({where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id, InterviewQuestionId: req.body.questionID}})
+
+    if (answer == null){ //update if found, create if not found
+      InterviewAnswers.create({
+        InterviewRoundId: req.params.interview_round_id,
+        StudentId: req.params.student_id,
+        InterviewerId: req.user.user.id,
+        InterviewQuestionId: req.body.questionID,
+        questionAnswer: req.body.questionAnswer,
+        questionRating: req.body.questionScale,
+      });
+    } else {
+      InterviewAnswers.update({
+        questionAnswer: req.body.questionAnswer,
+        questionRating: req.body.questionScale,
+      }, {where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id, InterviewQuestionId: req.body.questionID}})
+    }
+
+    res.sendStatus(200);
+
+  } catch (err){
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/:interview_round_id/student/:student_id/total-marks", checkInterviewerAuthenticated, async (req, res) => {
+  try{
+    const interview_round = InterviewRound.findOne({where: {id: req.params.interview_round_id}})
+    if (interview_round == null) res.sendStatus(404);
+
+    const student = Student.findOne({where: {id: req.params.student_id}})
+    if (student == null) res.sendStatus(404);
+
+    InterviewScores.create({
+      InterviewRoundId: req.params.interview_round_id,
+      StudentId: req.params.student_id,
+      InterviewerId: req.user.user.id,
+      totalScore: req.body.totalMarks,
+      obtainedScore: req.body.obtainedMarks,
+    })
+
+    res.sendStatus(200);
+
+  }
+  catch (err){
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+//get total marks, obtained marks, scores in each component and comments for a student in a particular interview round
+router.get("/:interview_round_id/student/:student_id/view-marks", checkInterviewerAuthenticated, async (req, res) => {
+  try{
+    const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
+    if (interview_round == null) res.sendStatus(404);
+
+    const student = await Student.findOne({where: {id: req.params.student_id}});
+    if (student == null) res.sendStatus(404);
+
+    const interview_score = await InterviewScores.findOne({where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}})
+    if (interview_score == null) res.sendStatus(404);
+
+    const interview_answers = await InterviewAnswers.findAll({where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}})
+
+
+    const answers = await Promise.all(interview_answers.map(async (answer) => {
+				return {
+					questionID: answer.InterviewQuestionId,
+					questionAnswer: answer.questionAnswer,
+					questionRating: answer.questionRating,
+				};
+			})
+		);
+
+    res.status(200).json(
+      {
+        success: "ok",
+        obtainedMarks: interview_score.obtainedScore,
+        totalMarks: interview_score.totalScore,
+        answers: answers,
+      }
+    );
+  } catch (err){
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
 
 module.exports = router;

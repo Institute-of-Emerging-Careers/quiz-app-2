@@ -182,18 +182,22 @@ InterviewAnswers.init(
 		InterviewRoundId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+      unique: "uniqueCompositeIndex",
 		},
 		StudentId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+      unique: "uniqueCompositeIndex",
 		},
 		InterviewerId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+      unique: "uniqueCompositeIndex",
 		},
-		questionId: {
+		InterviewQuestionId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
+      unique: "uniqueCompositeIndex",
 		},
 		questionAnswer: {
 			//if descriptive then this is the answer
@@ -232,7 +236,11 @@ InterviewScores.init(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    score: {
+    obtainedScore: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    totalScore: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },

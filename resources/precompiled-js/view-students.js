@@ -22,12 +22,13 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var useState = React.useState;
 var useEffect = React.useEffect;
+var interview_round_id = document.getElementById("interview-round-id").innerHTML;
 
-var CalendlyUpload = function CalendlyUpload() {
-  var _useState = useState(""),
+var StudentsList = function StudentsList() {
+  var _useState = useState([]),
       _useState2 = _slicedToArray(_useState, 2),
-      link = _useState2[0],
-      setLink = _useState2[1];
+      matchings = _useState2[0],
+      setMatchings = _useState2[1];
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     var response;
@@ -35,55 +36,74 @@ var CalendlyUpload = function CalendlyUpload() {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            _context.next = 2;
-            return fetch("/admin/interview/get-link");
-
-          case 2:
-            response = _context.sent;
+            console.log(interview_round_id);
+            _context.next = 3;
+            return fetch("/admin/interview/".concat(interview_round_id, "/get-assigned-students"));
 
           case 3:
+            _context.next = 5;
+            return _context.sent.json();
+
+          case 5:
+            response = _context.sent;
+
+            if (response.matchings.length > 0) {
+              setMatchings(response.matchings);
+              console.log(response.matchings);
+            }
+
+          case 7:
           case "end":
             return _context.stop();
         }
       }
     }, _callee);
   })), []);
-
-  var uploadLink = function uploadLink(e) {
-    e.preventDefault();
-    console.log(link);
-    fetch("/admin/interview/upload-link", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        calendly_link: link
-      })
-    }).then(function (res) {
-      if (res.status === 200) {
-        window.alert("Link uploaded successfully!");
-      }
-    });
-  };
-
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("h1", {
-    className: "text-2xl"
-  }, "Please enter your Calendly link"), /*#__PURE__*/React.createElement("form", {
-    onSubmit: uploadLink
-  }, /*#__PURE__*/React.createElement("input", {
-    className: "bg-white h-10 rounded-md border-black border",
-    type: "text",
-    name: "calendly_link",
-    id: "calendly_link",
-    value: link,
-    onChange: function onChange(e) {
-      return setLink(e.target.value);
-    },
-    required: true
-  }), /*#__PURE__*/React.createElement("button", {
-    type: "submit"
-  }, "Upload")));
+  return /*#__PURE__*/React.createElement("div", {
+    className: "mt-36"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center justify-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-1/2 flex items-center justify-center bg-white rounded-md "
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-3xl font-bold p-4 w-full"
+  }, "Assigned students")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex items-center justify-center mt-10"
+  }, matchings.length > 0 ? /*#__PURE__*/React.createElement("table", {
+    className: "table-auto bg-white rounded-md w-1/2"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Sr. No"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Student Email"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Student Name"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Student CNIC"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Student Gender"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
+  }, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching, index) {
+    return /*#__PURE__*/React.createElement("tr", {
+      key: matching.id
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, index + 1), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.student_email), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.firstName + " " + matching.lastName), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.cnic), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.gender), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, /*#__PURE__*/React.createElement("button", {
+      className: "text-green-500"
+    }, /*#__PURE__*/React.createElement("a", {
+      href: "/admin/interview/".concat(interview_round_id, "/student/").concat(matching.StudentId, "/enter-marks")
+    }, "Enter Marks "))));
+  }))) : /*#__PURE__*/React.createElement("div", null, "No students have been assigned to you yet"))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(CalendlyUpload, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(StudentsList, null), document.getElementById("app"));
