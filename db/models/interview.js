@@ -139,7 +139,114 @@ InterviewerCalendlyLinks.init(
   { sequelize, modelName: "InterviewerCalendlyLinks" }
 );
 
+class InterviewQuestions extends Model {}
 
+InterviewQuestions.init(
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			primaryKey: true,
+			autoIncrement: true,
+			allowNull: false,
+		},
+		InterviewRoundId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
+		question: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		questionType: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		questionScale: {
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+	},
+	{ sequelize, modelName: "InterviewQuestions" }
+);
+
+class InterviewAnswers extends Model {}
+
+InterviewAnswers.init(
+	{
+		id: {
+			type: DataTypes.INTEGER,
+			primaryKey: true,
+			autoIncrement: true,
+			allowNull: false,
+		},
+		InterviewRoundId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+      unique: "uniqueCompositeIndex",
+		},
+		StudentId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+      unique: "uniqueCompositeIndex",
+		},
+		InterviewerId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+      unique: "uniqueCompositeIndex",
+		},
+		InterviewQuestionId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+      unique: "uniqueCompositeIndex",
+		},
+		questionAnswer: {
+			//if descriptive then this is the answer
+			type: DataTypes.STRING,
+			allowNull: true,
+		},
+		questionRating: {
+			//if number scale, this is the rating
+			type: DataTypes.INTEGER,
+			allowNull: true,
+		},
+	},
+	{ sequelize, modelName: "InterviewAnswers" }
+);
+
+
+class InterviewScores extends Model {}
+
+InterviewScores.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+      allowNull: false,
+    },
+    InterviewRoundId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    StudentId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    InterviewerId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    obtainedScore: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    totalScore: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+  },
+  { sequelize, modelName: "InterviewScores" }
+);
 
 module.exports = {
   InterviewRound,
@@ -148,7 +255,10 @@ module.exports = {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks
+  InterviewerCalendlyLinks,
+  InterviewQuestions,
+  InterviewAnswers,
+  InterviewScores
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs
