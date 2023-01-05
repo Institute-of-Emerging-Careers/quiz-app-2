@@ -44,9 +44,17 @@ var ViewStudent = function ViewStudent() {
   var _useState3 = useState([]),
       _useState4 = _slicedToArray(_useState3, 2),
       answers = _useState4[0],
-      setAnswers = _useState4[1]; // const [totalMarks, setTotalMarks] = useState(0);
-  // const [obtainedMarks, setObtainedMarks] = useState(0);
-  //fetch questions for this cohort on mount
+      setAnswers = _useState4[1];
+
+  var _useState5 = useState(0),
+      _useState6 = _slicedToArray(_useState5, 2),
+      totalMarks = _useState6[0],
+      setTotalMarks = _useState6[1];
+
+  var _useState7 = useState(0),
+      _useState8 = _slicedToArray(_useState7, 2),
+      obtainedMarks = _useState8[0],
+      setObtainedMarks = _useState8[1]; //fetch questions for this cohort on mount
 
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -100,21 +108,23 @@ var ViewStudent = function ViewStudent() {
           case 5:
             response = _context2.sent;
             if (response.answers.length > 0) setAnswers(response.answers);
-            _context2.next = 13;
+            if (response.totalMarks) setTotalMarks(response.totalMarks);
+            if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+            _context2.next = 15;
             break;
 
-          case 9:
-            _context2.prev = 9;
+          case 11:
+            _context2.prev = 11;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
             window.alert("An error occured, please refresh the page");
 
-          case 13:
+          case 15:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 9]]);
+    }, _callee2, null, [[0, 11]]);
   })), []);
 
   var addAnswers = function addAnswers(e) {
@@ -216,15 +226,23 @@ var ViewStudent = function ViewStudent() {
   };
 
   return /*#__PURE__*/React.createElement("div", {
-    className: "mt-36"
+    className: "mt-36 mx-10"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col items-center justify-center "
   }, /*#__PURE__*/React.createElement("div", {
-    className: "w-1/2 flex items-center justify-center bg-white rounded-md"
+    className: "w-full flex bg-white rounded-md"
   }, /*#__PURE__*/React.createElement("p", {
-    className: "text-3xl font-bold p-4 w-full"
-  }, "Marking Criteria")), /*#__PURE__*/React.createElement("div", {
-    className: "mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-1/2 "
+    className: "text-3xl font-bold p-4 w-full self-start justify-items-start"
+  }, "Marking Criteria"), totalMarks > 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-left justify-center self-end justify-self-end p-4 m-10"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold"
+  }, "Total Marks: ", totalMarks), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold"
+  }, "Obtained Marks: ", obtainedMarks), /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold"
+  }, "Percentage: ", (obtainedMarks / totalMarks * 100).toFixed(2), "%")) : null), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-full "
   }, questions.length > 0 ? /*#__PURE__*/React.createElement("form", {
     onSubmit: addAnswers
   }, /*#__PURE__*/React.createElement("div", {
