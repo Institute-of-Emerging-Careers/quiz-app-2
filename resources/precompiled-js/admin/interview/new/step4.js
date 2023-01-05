@@ -155,25 +155,15 @@ var Step4 = function Step4() {
       show_modal = _useState2[0],
       setShowModal = _useState2[1];
 
-  var _useState3 = useState(EMPTY_NUMERIC_QUESTION),
+  var _useState3 = useState([]),
       _useState4 = _slicedToArray(_useState3, 2),
-      newNumericQuestion = _useState4[0],
-      setNewNumericQuestion = _useState4[1];
+      numericQuestions = _useState4[0],
+      setNumericQuestions = _useState4[1];
 
-  var _useState5 = useState(EMPTY_TEXTUAL_QUESTION),
+  var _useState5 = useState([]),
       _useState6 = _slicedToArray(_useState5, 2),
-      newTextualQuestion = _useState6[0],
-      setNewTextualQuestion = _useState6[1];
-
-  var _useState7 = useState([]),
-      _useState8 = _slicedToArray(_useState7, 2),
-      numericQuestions = _useState8[0],
-      setNumericQuestions = _useState8[1];
-
-  var _useState9 = useState([]),
-      _useState10 = _slicedToArray(_useState9, 2),
-      textualQuestions = _useState10[0],
-      setTextualQuestions = _useState10[1]; //first we need to check if questions have already been set for this interview round
+      textualQuestions = _useState6[0],
+      setTextualQuestions = _useState6[1]; //first we need to check if questions have already been set for this interview round
   //if yes, then we need to display them
 
 
@@ -230,25 +220,15 @@ var Step4 = function Step4() {
   var addNumericQuestion = useCallback(function () {
     if (numericQuestions[numericQuestions.length - 1].question === "") return;
     setNumericQuestions(function (cur) {
-      return [].concat(_toConsumableArray(cur), [{
-        question: newNumericQuestion.question,
-        questionType: QUESTION_TYPE.NUMERIC,
-        questionScale: newNumericQuestion.questionScale
-      }]);
+      return [].concat(_toConsumableArray(cur), [EMPTY_NUMERIC_QUESTION]);
     });
-    setNewNumericQuestion(EMPTY_NUMERIC_QUESTION);
-  }, [numericQuestions, newNumericQuestion]);
+  }, [numericQuestions]);
   var addTextualQuestion = useCallback(function () {
     if (textualQuestions[textualQuestions.length - 1].question === "") return;
     setTextualQuestions(function (cur) {
-      return [].concat(_toConsumableArray(cur), [{
-        question: newTextualQuestion.question,
-        questionType: QUESTION_TYPE.TEXTUAL,
-        questionScale: null
-      }]);
+      return [].concat(_toConsumableArray(cur), [EMPTY_TEXTUAL_QUESTION]);
     });
-    setNewTextualQuestion(EMPTY_TEXTUAL_QUESTION);
-  }, [textualQuestions, newTextualQuestion]);
+  }, [textualQuestions]);
   return /*#__PURE__*/React.createElement("div", {
     className: " mt-20 px-8 font-normal"
   }, /*#__PURE__*/React.createElement("div", {
