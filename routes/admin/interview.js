@@ -902,31 +902,6 @@ router.post(
 );
 
 router.post(
-  "/:interview_round_id/create-question",
-  checkAdminAuthenticated,
-  async (req, res) => {
-    try {
-      const interview_round = await InterviewRound.findOne({
-        where: { id: req.params.interview_round_id },
-      });
-      if (interview_round == null) res.sendStatus(404);
-
-      const question = await InterviewQuestions.create({
-        question: req.body.question,
-        InterviewRoundId: req.params.interview_round_id,
-        questionType: req.body.questionType,
-        questionScale: req.body.questionScale,
-      });
-
-      res.status(200).json({ success: true, questionID: question.id });
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    }
-  }
-);
-
-router.post(
   "/:interview_round_id/save-questions",
   checkAdminAuthenticated,
   async (req, res) => {
@@ -936,6 +911,9 @@ router.post(
       });
       if (interview_round == null) res.sendStatus(404);
 
+      await InterviewQuestions.destroy({
+        where: { InterviewRoundId: req.params.interview_round_id },
+      });
       await Promise.all(
         req.body.questions.map(
           ({ question: statement, questionType, questionScale }) =>
@@ -943,7 +921,7 @@ router.post(
               where: {
                 question: statement,
                 InterviewRoundId: req.params.interview_round_id,
-                questionType: questionType,
+                questionType: questionType, //either "number scale" or "descriptive"
                 questionScale: questionScale,
               },
             })
@@ -951,34 +929,6 @@ router.post(
       );
 
       res.sendStatus(200);
-    } catch (err) {
-      console.log(err);
-      res.sendStatus(500);
-    }
-  }
-);
-
-router.delete(
-  "/:interview_round_id/delete-question/:questionID",
-  checkAdminAuthenticated,
-  async (req, res) => {
-    try {
-      const interview_round = await InterviewRound.findOne({
-        where: { id: req.params.interview_round_id },
-      });
-      if (interview_round == null) res.sendStatus(404);
-
-      const question = await InterviewQuestions.findOne({
-        where: { id: req.params.questionID },
-      });
-      if (question == null) res.sendStatus(404);
-
-      console.log(req.params, question);
-
-      const deleted = await question.destroy();
-
-      if (deleted) res.sendStatus(200);
-      else res.sendStatus(500);
     } catch (err) {
       console.log(err);
       res.sendStatus(500);
