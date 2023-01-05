@@ -20,7 +20,7 @@ const {
   people_in_household,
   knows_from_IEC,
   sources_of_information,
-  reasons_to_join
+  reasons_to_join,
 } = require("../db/data_lists");
 
 router.use((req, res, next) => {
@@ -54,7 +54,7 @@ router.get(
             provinces: provinces,
             countries: countries,
             education_levels: education_levels,
-            universities : universities,
+            universities: universities,
             degree_choice: degree_choice,
             type_of_employment: type_of_employment,
             income_brackets: income_brackets,

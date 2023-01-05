@@ -2,6 +2,7 @@ const MyContext = React.createContext();
 const useEffect = React.useEffect;
 const useState = React.useState;
 const useContext = React.useContext;
+const useCallback = React.useCallback;
 const useRef = React.useRef;
 const useMemo = React.useMemo;
 const { DateTime, Duration } = luxon;
@@ -20,7 +21,7 @@ const ContextProvider = (props) => {
     { title: "Step 2: Add Interviewers", active: false },
     { title: "Step 3: Create Matching", active: false },
     { title: "Step 4: Create Questions", active: false },
-    { title: "Step 5: Send Emails"}
+    { title: "Step 5: Send Emails" },
   ]);
   const [students, setStudents] = useState([]);
 
@@ -393,14 +394,15 @@ const Step2 = () => {
       <div className="flex mt-4 mb-4 justify-between items-center">
         <h2 className="text-lg">Interviewers Added</h2>
         <div className="flex">
-        <button
+          <button
             type="button"
             className="py-3 px-6 bg-indigo-600 text-white cursor-pointer hover:bg-indigo-700"
             onClick={() => {
-              downloadAsCSV(interviewers)
+              downloadAsCSV(interviewers);
             }}
           >
-            <i className="fas fa-file-download"></i> Download as CSV</button>
+            <i className="fas fa-file-download"></i> Download as CSV
+          </button>
           <button
             type="button"
             className="py-3 px-6 bg-iec-blue text-white cursor-pointer hover:bg-iec-blue-hover"
@@ -559,590 +561,407 @@ const Step2 = () => {
   );
 };
 const Step3 = () => {
-	// continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
-	// ask the Admin how many minutes should each interview last. Then calcualte reactively on the frontend, whether or not
-	// we have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students
-	// If yes, create a time slot assignment
-	// if no, ask Admin to go back to "Step 2" and either increase interviewers or resend emails asking them to increase their times.
+  // continue here. Show the Admin how many interviewers have declared their time slots, who dedicated how many hours of time
+  // ask the Admin how many minutes should each interview last. Then calcualte reactively on the frontend, whether or not
+  // we have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students
+  // If yes, create a time slot assignment
+  // if no, ask Admin to go back to "Step 2" and either increase interviewers or resend emails asking them to increase their times.
 
-	const [interviewTime, setInterviewTime] = useState(0); //time per interview (including buffer time)
-	const [interviewers, setInterviewers] = useState([]); //list of interviewers
-	const [total_interviews_possible, setTotalInterviewsPossible] = useState(0); //total number of interviews possible
-	const [total_time_available, setTotalTimeAvailable] = useState(0); //total time available for interviews
-	const [total_time_required, setTotalTimeRequired] = useState(0); //total time required for interviews
-	const { students_object, steps_object, matching_object } = useContext(MyContext); //list of students in selected for interview
-	const [loading, setLoading] = useState(false); //loading state
-	const [steps, setSteps] = steps_object; //steps object;
-	const [matching, setMatching] = matching_object; //matching object
+  const [interviewTime, setInterviewTime] = useState(0); //time per interview (including buffer time)
+  const [interviewers, setInterviewers] = useState([]); //list of interviewers
+  const [total_interviews_possible, setTotalInterviewsPossible] = useState(0); //total number of interviews possible
+  const [total_time_available, setTotalTimeAvailable] = useState(0); //total time available for interviews
+  const [total_time_required, setTotalTimeRequired] = useState(0); //total time required for interviews
+  const { students_object, steps_object, matching_object } =
+    useContext(MyContext); //list of students in selected for interview
+  const [loading, setLoading] = useState(false); //loading state
+  const [steps, setSteps] = steps_object; //steps object;
+  const [matching, setMatching] = matching_object; //matching object
 
-	//only keep students with the added flag set to true
+  //only keep students with the added flag set to true
 
-	useEffect(() => {
-		//check if a matching already exists
-		fetch(`/admin/interview/${interview_round_id}/matchings`).then((res) =>
-			res.json().then((data) => {
-				// console.log(data);
-				console.log(data.interview_matchings.length);
-				if (data.interview_matchings.length > 0) {
-					setMatching(data.interview_matchings);
-				}
-			})
-		);
-	}, []);
+  useEffect(() => {
+    //check if a matching already exists
+    fetch(`/admin/interview/${interview_round_id}/matchings`).then((res) =>
+      res.json().then((data) => {
+        // console.log(data);
+        console.log(data.interview_matchings.length);
+        if (data.interview_matchings.length > 0) {
+          setMatching(data.interview_matchings);
+        }
+      })
+    );
+  }, []);
 
-	useEffect(() => {
-		fetch(`/admin/interview/interviewers/all/${interview_round_id}`).then(
-			(raw_response) => {
-				if (raw_response.ok) {
-					raw_response.json().then((response) => {
-						//filter interviewers to include only those who have declared time
-						const interviewers_with_time = response.interviewers.filter(
-							(interviewer) => interviewer.time_declared
-						);
-						setInterviewers(interviewers_with_time);
+  useEffect(() => {
+    fetch(`/admin/interview/interviewers/all/${interview_round_id}`).then(
+      (raw_response) => {
+        if (raw_response.ok) {
+          raw_response.json().then((response) => {
+            //filter interviewers to include only those who have declared time
+            const interviewers_with_time = response.interviewers.filter(
+              (interviewer) => interviewer.time_declared
+            );
+            setInterviewers(interviewers_with_time);
 
-						const students = Object.values(students_object[0]).filter(
-							(student) => student.added
-						); //only students that have been selected for the interview round
+            const students = Object.values(students_object[0]).filter(
+              (student) => student.added
+            ); //only students that have been selected for the interview round
 
-						let time = 0;
-						//compute the sum of all the time slots of all the interviewers
-						interviewers.map((interviewer) => {
-							return interviewer.time_slots.reduce((total_time, cur_slot) => {
-								time += cur_slot.duration;
-								return (total_time += cur_slot.duration);
-							}, 0);
-						});
+            let time = 0;
+            //compute the sum of all the time slots of all the interviewers
+            interviewers.map((interviewer) => {
+              return interviewer.time_slots.reduce((total_time, cur_slot) => {
+                time += cur_slot.duration;
+                return (total_time += cur_slot.duration);
+              }, 0);
+            });
 
-						//compute the total number of students
-						const total_students = Object.keys(students).length;
+            //compute the total number of students
+            const total_students = Object.keys(students).length;
 
-						//compute the total time required for all the interviews
-						setTotalTimeRequired(total_students * interviewTime); //time required in minutes
-						//compute the total time available for all the interviews
-						setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm"));
+            //compute the total time required for all the interviews
+            setTotalTimeRequired(total_students * interviewTime); //time required in minutes
+            //compute the total time available for all the interviews
+            setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm"));
 
-						//compute the total number of interviews that can be conducted
-						setTotalInterviewsPossible(
-							Math.floor(total_time_available / interviewTime)
-						);
-					});
-				} else {
-					alert("Error in URL. Wrong Interview Round. Please go to home page.");
-				}
-			}
-		);
-	}, [interviewTime]);
-
-	const computeMatching = async (e) => {
-		e.preventDefault();
-		setLoading(true);
-
-		//for each interviewer, assign students
-		//need an object of the format {interviewer_id: [student1, student2, student3]}
-
-		const students = Object.values(students_object[0]).filter(
-			(student) => student.added
-		); //only students that have been selected for the interview round
-
-		for (let i = 0; i < interviewers.length; i++) {
-			//calculate the number of students per interviewer (different for all)
-			//for each interviewer
-			const interviewer = interviewers[i];
-			//calculate sum of durations for this interviwer
-			const total_time = interviewer.time_slots.reduce(
-				(total_time, cur_slot) => (total_time += cur_slot.duration),
-				0
-			);
-
-			interviewer.num_interviews = Math.floor(
-				Duration.fromMillis(total_time).toFormat("mm") / interviewTime
-			);
-			interviewer.students = [];
-		}
-
-		let counter = 0;
-		//to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
-		while (true) {
-			if (
-				interviewers[counter % interviewers.length].students.length <
-				interviewers[counter % interviewers.length].num_interviews
-			) {
-				//check if the interviewer has space for another interview
-				const student = students.pop(0);
-				interviewers[counter % interviewers.length].students.push({
-					id: student.id,
-					email: student.email,
-				});
-			}
-			counter++;
-			if (students.length === 0) {
-				//if all students have been assigned
-				break;
-			}
-		}
-		//extract matching in the format {interviewer_email, student_id}
-		const matching = interviewers.map((interviewer) => {
-			return interviewer.students.map((student) => {
-				return {
-					interviewer_email: interviewer.email,
-					student_id: student.id,
-					student_email: student.email,
-				};
-			});
-		});
-
-		const flattened_matching = matching.flat();
-
-		//now we have the matching. We need to send this to the backend to create the time slot assignment
-		const res = await fetch(
-			`/admin/interview/${interview_round_id}/create-matching`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					matching: flattened_matching,
-				}),
-			}
-		);
-
-		if (res.ok) {
-			alert("Time Slot Assignment Created Successfully");
-			setLoading(false);
-      setMatching(flattened_matching);
-			setSteps((cur) => {
-				let copy = cur.slice();
-				for (let i = 0; i < copy.length; i++) {
-					if (i == 3) copy[i].active = true;
-					else copy[i].active = false;
-				}
-				return copy;
-			});
-		} else {
-			alert("Error in creating Time Slot Assignment, try again");
-		}
-	};
-
-	return (
-		<>
-			<form className="flex flex-col">
-				<h2 className="text-xl font-bold">Add Interview Time</h2>
-				<div className="w-full flex gap-x-4 items-center">
-					<label htmlFor="interview-time" className="min-w-max">
-						Enter the time per interview (including any break time)
-					</label>
-					<input
-						type="text"
-						maxLength="150"
-						name="name"
-						className="w-30 border py-3 px-2 mt-1 hover:shadow-sm"
-						value={interviewTime}
-						autoComplete="off"
-						onChange={(e) => {
-							e.preventDefault();
-							setInterviewTime(e.target.value);
-						}}
-						// ref={name_field}
-						active="true"
-					></input>
-
-					{total_time_required < total_time_available ? (
-						<button
-							className="ml-20 bg-iec-blue p-2 text-white"
-							onClick={computeMatching}
-						>
-							Create Matching
-							{loading ? (
-								<i className="fas fa-spinner animate-spin text-lg"></i>
-							) : (
-								<i className="fas fa-save text-lg"></i>
-							)}
-						</button>
-					) : (
-						<button className="ml-20 bg-red-500 p-2 text-white" disabled>
-							Create Matching
-						</button>
-					)}
-
-					<label className="text-red-500 text-xl">
-						Creating a new matching destroys the previous one, if any. ONLY
-						create a matching if you are sure that you want to do so.
-					</label>
-				</div>
-			</form>
-
-			{total_time_required > total_time_available ? (
-				<div className="flex flex-col gap-y-4 mt-4 p-10">
-					<h2 className="text-lg font-semibold text-red-400">
-						You do not have sufficient time commitment from the interviewers to
-						conduct the interviews of the selected number of students. Please go
-						back to "Step 2" and either increase interviewers or resend emails
-						asking them to increase their times.
-					</h2>
-				</div>
-			) : (
-				<div className="flex flex-col gap-y-4 text-green-400 mt-4 p-10">
-					<h2 className="text-lg font-semibold">
-						You have sufficient time commitment from the interviewers to conduct
-						the interviews of the selected number of students.
-					</h2>
-					<h2 className="text-lg">
-						You can conduct {total_interviews_possible} interviews.
-					</h2>
-				</div>
-			)}
-
-			<div className="flex flex-col">
-				<h2 className="text-lg">Interview Time Summary</h2>
-				<div className="w-full flex flex-col gap-y-4 items-center">
-					<label
-						htmlFor="interview-time"
-						className="min-w-max font-bold text-2xl"
-					>
-						Total Time Available
-					</label>
-					<p>{total_time_available} Minutes</p>
-					<label
-						htmlFor="interview-time"
-						className="min-w-max font-bold text-2xl"
-					>
-						Total Time Required
-					</label>
-					<p>{total_time_required} Minutes</p>
-					<label
-						htmlFor="interview-time"
-						className="min-w-max font-bold text-2xl"
-					>
-						Total Interviews Possible
-					</label>
-					<p>{total_interviews_possible}</p>
-				</div>
-			</div>
-
-			{matching.length > 0 ? (
-				<div className="flex flex-col gap-y-4 mt-4 p-10">
-					<h2 className="text-lg font-semibold text-red-400">
-						You have created a matching. You can view it below.
-					</h2>
-          <table className="w-full text-left">
-              <thead>
-                <tr>
-                <th className="p-2 border border-black">Index</th>
-                  <th className="p-2 border border-black">Interviewer Email</th>
-                  <th className="p-2 border border-black">Student Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matching.map(
-                  (match, index) => (
-                    <tr key={index}>
-                      <td className="p-2 border border-black">{index + 1}</td>
-                      <td className="p-2 border border-black">
-                        {match.interviewer_email}
-                      </td>
-                      <td className="p-2 border border-black">
-                        {match.student_email}
-                      </td>
-                    </tr>
-                  )
-                )}
-              </tbody>
-          </table>
-				</div>
-			) : (
-				<div className="flex flex-col gap-y-4 mt-20 p-10">
-					<h2 className="text-lg font-semibold text-red-400">
-						You have not created a matching yet.
-					</h2>
-				</div>
-			)}
-		</>
-	);
-};
-
-const Step4 = () => {
-  //need to take number of questions as input
-  //need to take question type as input (descriptive or number scale)
-  //need to take question as input
-
-  const [no_questions, setNoQuestions] = useState(0);
-  const [new_question_type, setNewQuestionType] = useState("descriptive");
-  const [new_question, setNewQuestion] = useState("");
-  const [new_question_scale, setNewQuestionScale] = useState(0);
-  const [questions, setQuestions] = useState([]);
-
-
-  //first we need to check if questions have already been set for this interview round
-  //if yes, then we need to display them
-
-  useEffect(async() => {
-    let response = await fetch(`/admin/interview/${interview_round_id}/all-questions`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
+            //compute the total number of interviews that can be conducted
+            setTotalInterviewsPossible(
+              Math.floor(total_time_available / interviewTime)
+            );
+          });
+        } else {
+          alert("Error in URL. Wrong Interview Round. Please go to home page.");
+        }
       }
+    );
+  }, [interviewTime]);
+
+  const computeMatching = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    //for each interviewer, assign students
+    //need an object of the format {interviewer_id: [student1, student2, student3]}
+
+    const students = Object.values(students_object[0]).filter(
+      (student) => student.added
+    ); //only students that have been selected for the interview round
+
+    for (let i = 0; i < interviewers.length; i++) {
+      //calculate the number of students per interviewer (different for all)
+      //for each interviewer
+      const interviewer = interviewers[i];
+      //calculate sum of durations for this interviwer
+      const total_time = interviewer.time_slots.reduce(
+        (total_time, cur_slot) => (total_time += cur_slot.duration),
+        0
+      );
+
+      interviewer.num_interviews = Math.floor(
+        Duration.fromMillis(total_time).toFormat("mm") / interviewTime
+      );
+      interviewer.students = [];
+    }
+
+    let counter = 0;
+    //to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
+    while (true) {
+      if (
+        interviewers[counter % interviewers.length].students.length <
+        interviewers[counter % interviewers.length].num_interviews
+      ) {
+        //check if the interviewer has space for another interview
+        const student = students.pop(0);
+        interviewers[counter % interviewers.length].students.push({
+          id: student.id,
+          email: student.email,
+        });
+      }
+      counter++;
+      if (students.length === 0) {
+        //if all students have been assigned
+        break;
+      }
+    }
+    //extract matching in the format {interviewer_email, student_id}
+    const matching = interviewers.map((interviewer) => {
+      return interviewer.students.map((student) => {
+        return {
+          interviewer_email: interviewer.email,
+          student_id: student.id,
+          student_email: student.email,
+        };
+      });
     });
 
-    if (response.status == 200){
+    const flattened_matching = matching.flat();
 
-      response = await response.json()
-      console.log(response.questions);
-
-      setQuestions(response.questions);
-    }
-
-    
-  },[])
-
-
-  const addQuestion = async() => {
-    try {
-			const createResponse = await (await fetch(
-				`/admin/interview/${interview_round_id}/create-question`,
-				{
-					method: "POST",
-					headers: {
-						"Content-Type": "application/json",
-					},
-					body: JSON.stringify({
-						question: new_question,
-						questionType: new_question_type,
-						questionScale: new_question_scale,
-					}),
-				}
-			)).json();
-      
-      const questionID = createResponse.questionID;
-
-      setQuestions([...questions, {questionID: questionID, question: new_question, questionType: new_question_type, questionScale: new_question_scale}]);
-      setNewQuestion("");
-      setNewQuestionType("descriptive");
-      setNewQuestionScale(0);
-      window.alert("Question added");
-
-		} catch (err) {
-			console.log(err);
-      window.alert("Error adding question, please try again");
-		}
-  }
-
-  const deleteQuestion = async (questionID) => {
-    //will directly delete the question from the database
-    try{
-      const deleteResponse = await fetch(`/admin/interview/${interview_round_id}/delete-question/${questionID}`, {
-        method: "DELETE",
-      })
-
-      if(deleteResponse.status === 200){
-        
-        setQuestions(questions.filter((question) => question.questionID !== questionID));
+    //now we have the matching. We need to send this to the backend to create the time slot assignment
+    const res = await fetch(
+      `/admin/interview/${interview_round_id}/create-matching`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          matching: flattened_matching,
+        }),
       }
-    } catch(err){
-      console.log(err);
-      window.alert("Error deleting question, please try again");
+    );
+
+    if (res.ok) {
+      alert("Time Slot Assignment Created Successfully");
+      setLoading(false);
+      setMatching(flattened_matching);
+      setSteps((cur) => {
+        let copy = cur.slice();
+        for (let i = 0; i < copy.length; i++) {
+          if (i == 3) copy[i].active = true;
+          else copy[i].active = false;
+        }
+        return copy;
+      });
+    } else {
+      alert("Error in creating Time Slot Assignment, try again");
     }
-  }
+  };
 
+  return (
+    <div>
+      <form className="flex flex-col">
+        <h2 className="text-xl font-bold">Add Interview Time</h2>
+        <div className="w-full flex gap-x-4 items-center">
+          <label htmlFor="interview-time" className="min-w-max">
+            Enter the time per interview (including any break time)
+          </label>
+          <input
+            type="text"
+            maxLength="150"
+            name="name"
+            className="w-30 border py-3 px-2 mt-1 hover:shadow-sm"
+            value={interviewTime}
+            autoComplete="off"
+            onChange={(e) => {
+              e.preventDefault();
+              setInterviewTime(e.target.value);
+            }}
+            // ref={name_field}
+            active="true"
+          ></input>
 
-  return(
-    <div className = "flex flex-col w-full justify-start items-start mt-5 p-4">
-
-      <div className = "flex flex-col w-full bg-white rounded-lg">
-
-        <label className = " m-2 p-2 flex items-center justify-center font-bold text-xl">
-          Add new question
-        </label>
-
-
-        <div className = "flex flex-col w-full m-4 p-2">
-          
-          <div className = "flex flex-col p-2 m-2">
-            <label className = "text-lg p-2">
-              Question Text
-            </label>
-            <input type = "text" id = "new_question" placeholder = "Enter the question here" className = "bg-gray-200 p-2 rounded-md h-10" value = {new_question} onChange = {(e) => setNewQuestion(e.target.value)}></input>
-          </div>
-
-          <div className = "flex flex-col p-2 m-2">
-            <label className = "p-2 text-lg">
-              Question Type
-            </label>
-
-            <select id = "new_question_type" className = "p-2 bg-gray-200 h-10 rounded-md" value = {new_question_type} onChange = {(e) => setNewQuestionType(e.target.value)}>
-              <option value = "descriptive">Descriptive</option>
-              <option value = "number scale">Number Scale</option>
-            </select>
-          </div>
-
-          {new_question_type === "number scale" ? (
-            <div className = "flex flex-col p-2 m-2">
-
-              <label className = "p-2 text-lg">
-                Rating Scale
-              </label>
-
-              <input required className = "flex flex-col p-2 m-2 h-10 rounded-md bg-gray-200" type = "number" id = "new_question_scale" value = {new_question_scale} onChange = {(e) => setNewQuestionScale(e.target.value)}></input>
-
-            </div>
+          {total_time_required < total_time_available ? (
+            <button
+              className="ml-20 bg-iec-blue p-2 text-white"
+              onClick={computeMatching}
+            >
+              Create Matching
+              {loading ? (
+                <i className="fas fa-spinner animate-spin text-lg"></i>
+              ) : (
+                <i className="fas fa-save text-lg"></i>
+              )}
+            </button>
           ) : (
-            <></>
+            <button className="ml-20 bg-red-500 p-2 text-white" disabled>
+              Create Matching
+            </button>
           )}
 
-          <button 
-          className = "bg-green-400 p-2 rounded-xl mt-2 h-10 w-1/4 self-center justify-self-center"
-          onClick = {addQuestion}>
-            Add Question
-          </button>
-
+          <label className="text-red-500 text-xl">
+            Creating a new matching destroys the previous one, if any. ONLY
+            create a matching if you are sure that you want to do so.
+          </label>
         </div>
+      </form>
 
+      {total_time_required > total_time_available ? (
+        <div className="flex flex-col gap-y-4 mt-4 p-10">
+          <h2 className="text-lg font-semibold text-red-400">
+            You do not have sufficient time commitment from the interviewers to
+            conduct the interviews of the selected number of students. Please go
+            back to "Step 2" and either increase interviewers or resend emails
+            asking them to increase their times.
+          </h2>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-y-4 text-green-400 mt-4 p-10">
+          <h2 className="text-lg font-semibold">
+            You have sufficient time commitment from the interviewers to conduct
+            the interviews of the selected number of students.
+          </h2>
+          <h2 className="text-lg">
+            You can conduct {total_interviews_possible} interviews.
+          </h2>
+        </div>
+      )}
+
+      <div className="flex flex-col">
+        <h2 className="text-lg">Interview Time Summary</h2>
+        <div className="w-full flex flex-col gap-y-4 items-center">
+          <label
+            htmlFor="interview-time"
+            className="min-w-max font-bold text-2xl"
+          >
+            Total Time Available
+          </label>
+          <p>{total_time_available} Minutes</p>
+          <label
+            htmlFor="interview-time"
+            className="min-w-max font-bold text-2xl"
+          >
+            Total Time Required
+          </label>
+          <p>{total_time_required} Minutes</p>
+          <label
+            htmlFor="interview-time"
+            className="min-w-max font-bold text-2xl"
+          >
+            Total Interviews Possible
+          </label>
+          <p>{total_interviews_possible}</p>
+        </div>
       </div>
 
-      <div className = "mt-10 flex flex-col w-full bg-white rounded-lg">
-
-        {questions.length > 0 ? (
-          <div className = "flex flex-col w-full p-2">
-            <label className = "m-2 p-2 flex items-center justify-center font-bold text-xl">
-              Questions
-            </label>
-
-            <table className = "w-full">
-              <thead>
-                <tr>
-                  <th className = "p-2 border border-black">S.No</th>
-                  <th className = "p-2 border border-black">Question</th>
-                  <th className = "p-2 border border-black">Type</th>
-                  <th className = "p-2 border border-black">Scale</th>
-                  <th className = "p-2 border border-black">Action</th>
+      {matching.length > 0 ? (
+        <div className="flex flex-col gap-y-4 mt-4 p-10">
+          <h2 className="text-lg font-semibold text-red-400">
+            You have created a matching. You can view it below.
+          </h2>
+          <table className="w-full text-left">
+            <thead>
+              <tr>
+                <th className="p-2 border border-black">Index</th>
+                <th className="p-2 border border-black">Interviewer Email</th>
+                <th className="p-2 border border-black">Student Email</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matching.map((match, index) => (
+                <tr key={index}>
+                  <td className="p-2 border border-black">{index + 1}</td>
+                  <td className="p-2 border border-black">
+                    {match.interviewer_email}
+                  </td>
+                  <td className="p-2 border border-black">
+                    {match.student_email}
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {questions.map((question, index) => (
-                  <tr key = {question.questionID}>
-                    <td className = "p-2 border border-black">{index + 1}</td>
-                    <td className = "p-2 border border-black">{question.question}</td>
-                    <td className = "p-2 border border-black">{question.questionType}</td>
-                    <td className = "p-2 border border-black">{question.questionType == "Descriptive" ? "No scale": question.questionScale}</td>
-                    <td className = "p-2 border border-black text-red-400"><button onClick = {() => deleteQuestion(question.questionID)} className="bg-transparent w-full h-full">Delete</button> </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-          </div>
-          )
-          : 
-          <div className = "m-4 p-2 text-xl">
-            You have not set any questions yet
-          </div>
-          }
-
-      </div>
-
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-y-4 mt-20 p-10">
+          <h2 className="text-lg font-semibold text-red-400">
+            You have not created a matching yet.
+          </h2>
+        </div>
+      )}
     </div>
-
-  )
-}
+  );
+};
 
 const Step5 = () => {
-	const [loading, setLoading] = useState(false);
-	const { matching_object } = useContext(MyContext);
-	const [matching, setMatching] = matching_object;
-
+  const [loading, setLoading] = useState(false);
+  const { matching_object } = useContext(MyContext);
+  const [matching, setMatching] = matching_object;
 
   const sendEmails = async (e) => {
     e.preventDefault();
     setLoading(true);
-    try{  
+    try {
       //extract unique id of interviewers fron matching
-      const interviewer_emails = [...new Set(matching.map((match) => match.interviewer_email))];
+      const interviewer_emails = [
+        ...new Set(matching.map((match) => match.interviewer_email)),
+      ];
 
-      for (let i = 0; i < interviewer_emails.length; i++){
-        const response = await fetch(`/admin/interview/${interview_round_id}/send-matching-emails`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            interviewer_email: interviewer_emails[i],
-          }),
-        })
-        if (response.status == 404){
+      for (let i = 0; i < interviewer_emails.length; i++) {
+        const response = await fetch(
+          `/admin/interview/${interview_round_id}/send-matching-emails`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              interviewer_email: interviewer_emails[i],
+            }),
+          }
+        );
+        if (response.status == 404) {
           window.alert("Some interviewers have not updated calendly links");
           setLoading(false);
           return;
         }
-        if (response.status == 200){
+        if (response.status == 200) {
           window.alert("Emails sent successfully");
           setLoading(false);
           return;
         }
       }
-
-    } catch (err){
+    } catch (err) {
       console.log(err);
       window.alert("An error occured, please try again later");
     }
+  };
 
+  return (
+    <div>
+      <div className="flex flex-row mt-4 p-4 w-full">
+        <label className="p-2 text-xl">
+          To send emails to both the interviewers and the students, click the
+          given button.
+        </label>
 
-  }
+        <button
+          className="ml-20 bg-green-500 p-2 text-white"
+          onClick={sendEmails}
+        >
+          Send Emails
+        </button>
+      </div>
 
-	return (
-    <>
-
-    <div className="flex flex-row mt-4 p-4 w-full">
-
-      <label className="p-2 text-xl">
-        To send emails to both the interviewers and the students, click the given button.
-      </label>
-
-      <button className="ml-20 bg-green-500 p-2 text-white"  onClick = {sendEmails}>
-        Send Emails
-      </button>
+      <div>
+        {matching.length > 0 ? (
+          <div className="flex flex-col gap-y-4 mt-4 p-10">
+            <h2 className="text-lg font-semibold text-red-400">
+              You have created a matching. You can view it below.
+            </h2>
+            <table className="w-full text-left">
+              <thead>
+                <tr>
+                  <th className="p-2 border border-black">Index</th>
+                  <th className="p-2 border border-black">Interviewer Email</th>
+                  <th className="p-2 border border-black">Student Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {matching.map((match, index) => (
+                  <tr key={index}>
+                    <td className="p-2 border border-black">{index + 1}</td>
+                    <td className="p-2 border border-black">
+                      {match.interviewer_email}
+                    </td>
+                    <td className="p-2 border border-black">
+                      {match.student_email}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-y-4 mt-20 p-10">
+            <h2 className="text-lg font-semibold text-red-400">
+              You have not created a matching yet.
+            </h2>
+          </div>
+        )}
+      </div>
     </div>
-
-		<div>
-			{matching.length > 0 ? (
-				<div className="flex flex-col gap-y-4 mt-4 p-10">
-					<h2 className="text-lg font-semibold text-red-400">
-						You have created a matching. You can view it below.
-					</h2>
-					<table className="w-full text-left">
-						<thead>
-							<tr>
-								<th className="p-2 border border-black">Index</th>
-								<th className="p-2 border border-black">Interviewer Email</th>
-								<th className="p-2 border border-black">Student Email</th>
-							</tr>
-						</thead>
-						<tbody>
-							{matching.map((match, index) => (
-								<tr key={index}>
-									<td className="p-2 border border-black">{index + 1}</td>
-									<td className="p-2 border border-black">
-										{match.interviewer_email}
-									</td>
-									<td className="p-2 border border-black">
-										{match.student_email}
-									</td>
-								</tr>
-							))}
-						</tbody>
-					</table>
-				</div>
-			) : (
-				<div className="flex flex-col gap-y-4 mt-20 p-10">
-					<h2 className="text-lg font-semibold text-red-400">
-						You have not created a matching yet.
-					</h2>
-				</div>
-			)}
-		</div>
-
-    </>
-	);
+  );
 };
 
 const Main = () => {

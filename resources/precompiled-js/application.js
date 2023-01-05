@@ -3,6 +3,7 @@
 var list_of_fields = ["firstName", "lastName", "email", "cnic", "phone", "age", "city", "province", "country", "address", "father_name", "current_address", "education_completed", "education_completed_major", "education_ongoing", "education_ongoing_major", "monthly_family_income", "computer_and_internet_access", "internet_facility_in_area", "time_commitment", "is_employed", "type_of_employment", "salary", "current_field", "will_leave_job", "has_applied_before", "preference_reason", "is_comp_sci_grad", "how_heard_about_iec", "will_work_full_time", "acknowledge_online"];
 
 function handleForm(e) {
+  alert("abay");
   $("#submit-spinner").removeClass("hidden-imp");
   e.preventDefault();
   e.stopPropagation();
@@ -22,6 +23,7 @@ function handleForm(e) {
       $("#after_save_message").removeClass("hidden");
       $("#step5-next-button").removeClass("btn-primary").removeClass("btn-danger").addClass("btn-success").attr("disabled", true);
       $("#submit-button-text").html("<i class='fas fa-check'></i> Application Submitted Successfully");
+      location.href = "https://iec.org.pk/thankyou/";
     } else if (raw_response.status == 500) {
       alert("Something went wrong.");
       $("#step5-next-button").removeClass("btn-primary").addClass("btn-danger");
