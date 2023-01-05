@@ -89,12 +89,6 @@ const Step4 = () => {
   //need to take question as input
 
   const [show_modal, setShowModal] = useState(false);
-  const [newNumericQuestion, setNewNumericQuestion] = useState(
-    EMPTY_NUMERIC_QUESTION
-  );
-  const [newTextualQuestion, setNewTextualQuestion] = useState(
-    EMPTY_TEXTUAL_QUESTION
-  );
   const [numericQuestions, setNumericQuestions] = useState([]);
   const [textualQuestions, setTextualQuestions] = useState([]);
 
@@ -136,29 +130,13 @@ const Step4 = () => {
 
   const addNumericQuestion = useCallback(() => {
     if (numericQuestions[numericQuestions.length - 1].question === "") return;
-    setNumericQuestions((cur) => [
-      ...cur,
-      {
-        question: newNumericQuestion.question,
-        questionType: QUESTION_TYPE.NUMERIC,
-        questionScale: newNumericQuestion.questionScale,
-      },
-    ]);
-    setNewNumericQuestion(EMPTY_NUMERIC_QUESTION);
-  }, [numericQuestions, newNumericQuestion]);
+    setNumericQuestions((cur) => [...cur, EMPTY_NUMERIC_QUESTION]);
+  }, [numericQuestions]);
 
   const addTextualQuestion = useCallback(() => {
     if (textualQuestions[textualQuestions.length - 1].question === "") return;
-    setTextualQuestions((cur) => [
-      ...cur,
-      {
-        question: newTextualQuestion.question,
-        questionType: QUESTION_TYPE.TEXTUAL,
-        questionScale: null,
-      },
-    ]);
-    setNewTextualQuestion(EMPTY_TEXTUAL_QUESTION);
-  }, [textualQuestions, newTextualQuestion]);
+    setTextualQuestions((cur) => [...cur, EMPTY_TEXTUAL_QUESTION]);
+  }, [textualQuestions]);
 
   return (
     <div className=" mt-20 px-8 font-normal">
