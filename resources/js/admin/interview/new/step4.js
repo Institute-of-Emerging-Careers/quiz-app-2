@@ -5,44 +5,6 @@ const deleteQuestion = (setQuestions, index) =>
     return copy;
   });
 
-const NumericQuestion = ({ questions, setQuestions, question, index }) => {
-  const onChange = (property) => (e) => {
-    setQuestions((cur) => {
-      let copy = [...cur];
-      copy[index][property] = e.target.value;
-      return copy;
-    });
-  };
-
-  return (
-    <div className="flex gap-x-6 w-full items-center text-xl text-gray-900">
-      <span className="justify-self-center">{index + 1}</span>
-      <div className="relative flex-grow">
-        <input
-          className="w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400"
-          rows="1"
-          placeholder="Enter text here"
-          value={question?.question ?? ""}
-          onChange={onChange("question")}
-        />
-        <i
-          class="fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer"
-          onClick={() => deleteQuestion(setQuestions, index)}
-        ></i>
-      </div>
-      {question.questionScale !== null && (
-        <input
-          type="number"
-          value={question?.questionScale ?? "0"}
-          onChange={onChange("questionScale")}
-          className="text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700"
-          style={{ width: "80px" }}
-        />
-      )}
-    </div>
-  );
-};
-
 const QUESTION_TYPE = { NUMERIC: "number scale", TEXTUAL: "descriptive" };
 const EMPTY_NUMERIC_QUESTION = {
   question: null,
@@ -81,6 +43,44 @@ const saveQuestions = async (
     console.log(err);
     alert("Something went wrong. Contact IT.");
   }
+};
+
+const Question = ({ questions, setQuestions, question, index }) => {
+  const onChange = (property) => (e) => {
+    setQuestions((cur) => {
+      let copy = JSON.parse(JSON.stringify(cur));
+      copy[index][property] = e.target.value;
+      return copy;
+    });
+  };
+
+  return (
+    <div className="flex gap-x-6 w-full items-center text-xl text-gray-900">
+      <span className="justify-self-center">{index + 1}</span>
+      <div className="relative flex-grow">
+        <input
+          className="w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400"
+          rows="1"
+          placeholder="Enter text here"
+          value={questions[index]?.question ?? ""}
+          onChange={onChange("question")}
+        />
+        <i
+          class="fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer"
+          onClick={() => deleteQuestion(setQuestions, index)}
+        ></i>
+      </div>
+      {questions[index]?.questionScale !== null && (
+        <input
+          type="number"
+          value={questions[index]?.questionScale ?? "0"}
+          onChange={onChange("questionScale")}
+          className="text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700"
+          style={{ width: "80px" }}
+        />
+      )}
+    </div>
+  );
 };
 
 const Step4 = () => {
@@ -162,10 +162,12 @@ const Step4 = () => {
 
           <div className="w-full flex flex-col gap-y-2">
             {numericQuestions.map((question, index) => (
-              <NumericQuestion
+              <Question
+                questions={numericQuestions}
                 setQuestions={setNumericQuestions}
                 question={question}
                 index={index}
+                key={`numeric${index}`}
               />
             ))}
           </div>
@@ -196,10 +198,12 @@ const Step4 = () => {
 
           <div className="w-full flex flex-col gap-y-2">
             {textualQuestions.map((question, index) => (
-              <NumericQuestion
+              <Question
+                questions={textualQuestions}
                 setQuestions={setTextualQuestions}
                 question={question}
                 index={index}
+                key={`textual${index}`}
               />
             ))}
           </div>
