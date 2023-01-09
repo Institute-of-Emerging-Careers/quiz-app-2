@@ -45,7 +45,7 @@ const saveQuestions = async (
   }
 };
 
-const Question = ({ questions, setQuestions, question, index }) => {
+const Question = ({ questions, setQuestions, index }) => {
   const onChange = (property) => (e) => {
     setQuestions((cur) => {
       let copy = JSON.parse(JSON.stringify(cur));
@@ -165,7 +165,6 @@ const Step4 = () => {
               <Question
                 questions={numericQuestions}
                 setQuestions={setNumericQuestions}
-                question={question}
                 index={index}
                 key={`numeric${index}`}
               />
@@ -201,7 +200,6 @@ const Step4 = () => {
               <Question
                 questions={textualQuestions}
                 setQuestions={setTextualQuestions}
-                question={question}
                 index={index}
                 key={`textual${index}`}
               />
