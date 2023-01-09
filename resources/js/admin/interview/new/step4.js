@@ -45,7 +45,7 @@ const saveQuestions = async (
   }
 };
 
-const Question = ({ questions, setQuestions, index }) => {
+const Question = ({ questions, setQuestions, question, index }) => {
   const onChange = (property) => (e) => {
     setQuestions((cur) => {
       let copy = JSON.parse(JSON.stringify(cur));

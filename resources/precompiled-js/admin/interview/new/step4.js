@@ -104,6 +104,7 @@ var Question = function Question(_ref3) {
 
   var questions = _ref3.questions,
       setQuestions = _ref3.setQuestions,
+      question = _ref3.question,
       index = _ref3.index;
 
   var onChange = function onChange(property) {
@@ -252,6 +253,7 @@ var Step4 = function Step4() {
     return /*#__PURE__*/React.createElement(Question, {
       questions: numericQuestions,
       setQuestions: setNumericQuestions,
+      question: question,
       index: index,
       key: "numeric".concat(index)
     });
@@ -277,6 +279,7 @@ var Step4 = function Step4() {
     return /*#__PURE__*/React.createElement(Question, {
       questions: textualQuestions,
       setQuestions: setTextualQuestions,
+      question: question,
       index: index,
       key: "textual".concat(index)
     });
