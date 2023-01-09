@@ -16,7 +16,7 @@ const {
   PasswordResetLink,
 } = require("../db/models/user");
 
-const { Interviewer, InterviewerCalendlyLinks, InterviewMatching } = require("../db/models/interview.js");
+const { Interviewer, InterviewRound, InterviewMatching, InterviewBookingSlots } = require("../db/models/interview.js");
 
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus");
 
@@ -369,43 +369,166 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
   }
 });
 
-router.get("/matching/calendly_invite",checkStudentAuthenticated, async (req, res) => {
-  const student = await Student.findOne({
-    where: {
-      id: req.user.user.id,
-    },
-  });
+router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
+	try {
+		const student = await Student.findOne({
+			where: {
+				id: req.user.user.id,
+			},
+		});
 
-  const matching = await InterviewMatching.findAll({
-    where: {
-      StudentId: student.id,
-    },
-  });
+		const matching = await InterviewMatching.findAll({
+			where: {
+				StudentId: student.id,
+			},
+		});
 
-
-  if (matching.length > 0) {
-    //find the calendly links of all interviewers
+    //get interviewer names from their emails in all matchings
     for (let i = 0; i < matching.length; i++) {
       const interviewer = await Interviewer.findOne({
         where: {
-          id: matching[i].InterviewerId,
+          email: matching[i].interviewer_email,
         },
       });
-
-      const link = await InterviewerCalendlyLinks.findOne({
-        where: {
-          InterviewerId: interviewer.id,
-        },
-      });
-      
-      matching[i].setDataValue("calendly_link", link.calendly_link);
-      
+      matching[i].interviewer_name = interviewer.name;
     }
-    res.status(200).json(matching);
-  } else {
-    res.status(404).json({ message: "No matching found" });
-  }
 
+    //check if a slot has already been booked with the interviewer
+    for (let i = 0; i < matching.length; i++) {
+      const booking = await InterviewBookingSlots.findOne({
+        where: {
+          InterviewerId: matching[i].InterviewerId,
+          StudentId: matching[i].StudentId,
+          booked : true,
+        },
+      });
+      if (booking != null) {
+        matching[i].booked = true;
+      } else {
+        matching[i].booked = false;
+      }
+    }
+
+
+    const response = matching.map(match => {
+      return {
+        id: match.id,
+        interviewer_name: match.interviewer_name,
+        student_id: match.StudentId,
+        interviewer_id: match.InterviewerId,
+        interviewer_email: match.interviewer_email,
+        interview_round_id: match.InterviewRoundId,
+        booked: match.booked,
+        createdAt: match.createdAt,
+        }
+    })
+
+		res.status(200).json(response);
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
 });
+
+router.get("/interview/:interview_round_id/pick-timeslot/:interviewer_id", checkStudentAuthenticated, async (req, res) => {
+  res.render("student/interview/pick-timeslot.ejs", {
+    user_type: req.user.type,
+    interviewer_id: req.params.interviewer_id,
+    interview_round_id: req.params.interview_round_id,
+  });  
+});
+
+router.get("/interview/:interview_round_id/interviewer/:interviewer_id/booking-slots", checkStudentAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({
+      where: {
+        id: req.params.interview_round_id,
+      },
+    });
+    if (interview_round == null) return res.sendStatus(404);
+    
+    const booking_slots = await InterviewBookingSlots.findAll({
+      where: {
+        InterviewRoundId: req.params.interview_round_id,
+        InterviewerId: req.params.interviewer_id,
+        booked: false,
+      },
+    });
+
+    const response = booking_slots.map(slot => {
+      return {
+        id: slot.id,
+        InterviewRoundId: slot.InterviewRoundId,
+        InterviewerId: slot.InterviewerId,
+        start_time: slot.startTime,
+        end_time: slot.endTime,
+        duration: slot.duration,
+        booked: slot.booked,
+        createdAt: slot.createdAt,
+        updatedAt: slot.updatedAt,
+      }
+    })
+
+    res.status(200).json({
+      booking_slots: response
+    });
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+router.post("/interview/:interview_round_id/interviewer/:interviewer_id/book-slot", checkStudentAuthenticated, async (req, res) => {
+  try {
+    const interview_round = await InterviewRound.findOne({
+      where: {
+        id: req.params.interview_round_id,
+      },
+    });
+    if (interview_round == null) return res.status(404).json({
+      success: false,
+      message: "Booking slot not found or already booked."
+    });
+
+    const booking_slot = await InterviewBookingSlots.findOne({
+      where: {
+        id: req.body.booking_slot_id,
+        booked: false
+      },
+    });
+    if (booking_slot == null) return res.status(404).json({
+      success: false,
+      message: "Booking slot not found or already booked."
+    });
+
+    const success = await InterviewBookingSlots.update({
+      booked: true,
+      StudentId: req.user.user.id,
+    }, {
+      where: {
+        id: req.body.booking_slot_id,
+      }
+    });
+
+
+    if (success) {
+      res.status(200).json({
+        success: true,
+        message: "Interview successfully booked!"
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "Booking slot not found or already booked."
+      });
+    }
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
+
+
 
 module.exports = router;

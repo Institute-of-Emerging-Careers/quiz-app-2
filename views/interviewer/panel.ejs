@@ -27,15 +27,10 @@
               <div class="flex flex-row col-span-8 h-16 bg-iec-blue justify-center content-center">
                 <a href="/admin/interview/declare-time-slots/<%= interview_rounds[i].id %>" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Declare Time Slots"><i class=" p-2 fas fa-calendar-day"></i></a>
 
-                <a href="/admin/interview/upload-link" class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="Upload Calendly Link">
-                  <i class=" p-2 fas fa-link"></i>
-                </a> 
-
                 <a href= "/admin/interview/<%= interview_rounds[i].id %>/view-students"  class="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="View Matched students">
                   <i class=" p-2 fas fa-users"></i>
                 </a> 
-
-                <a class="text-white text-xl col-start-3 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="View Details" href="/admin/interview/interviewer-details/<%= interview_rounds[i].id %>"><i class=" p-2 far fa-eye"></i></a>
+                <!-- <a class="text-white text-xl col-start-3 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer" title="View Details" href="/admin/interview/interviewer-details/<%= interview_rounds[i].id %>"><i class=" p-2 far fa-eye"></i></a> -->
               </div>
               <h3 class="col-span-6 font-semibold text-lg px-4"><%= interview_rounds[i].title %></h3>
               <div class="col-start-1 col-span-6 text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer"><a href="/admin/interview/declare-time-slots/<%= interview_rounds[i].id %>" class="pl-4 pt-0"><i class="far fa-calendar"></i> Select Interview Slots</a></div>

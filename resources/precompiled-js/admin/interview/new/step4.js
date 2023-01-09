@@ -69,7 +69,7 @@ var NumericQuestion = function NumericQuestion(_ref) {
     value: (_question$question = question === null || question === void 0 ? void 0 : question.question) !== null && _question$question !== void 0 ? _question$question : "",
     onChange: onChange("question")
   }), /*#__PURE__*/React.createElement("i", {
-    class: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
+    className: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
     onClick: function onClick() {
       return deleteQuestion(setQuestions, index);
     }
