@@ -86,7 +86,15 @@ const TimeSlotPicker = () => {
 			}
 		});
 
-		console.log(timeSlotsByDate);
+		//sort timeslots by start time
+		for (const date in timeSlotsByDate) {
+			timeSlotsByDate[date].sort((a, b) => {
+				return new Number(a.start_time) - new Number(b.start_time);
+			});
+		}
+		
+
+
 
 		setTimeSlots(timeSlotsByDate);
 	}, []);

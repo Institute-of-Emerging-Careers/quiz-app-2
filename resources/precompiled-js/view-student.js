@@ -107,24 +107,27 @@ var ViewStudent = function ViewStudent() {
 
           case 5:
             response = _context2.sent;
-            if (response.answers.length > 0) setAnswers(response.answers);
-            if (response.totalMarks) setTotalMarks(response.totalMarks);
-            if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
-            _context2.next = 15;
+
+            if (response.success == "ok") {
+              if (response.answers.length > 0) setAnswers(response.answers);
+              if (response.totalMarks) setTotalMarks(response.totalMarks);
+              if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+            }
+
+            _context2.next = 12;
             break;
 
-          case 11:
-            _context2.prev = 11;
+          case 9:
+            _context2.prev = 9;
             _context2.t0 = _context2["catch"](0);
             console.log(_context2.t0);
-            window.alert("An error occured, please refresh the page");
 
-          case 15:
+          case 12:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2, null, [[0, 11]]);
+    }, _callee2, null, [[0, 9]]);
   })), []);
 
   var addAnswers = function addAnswers(e) {

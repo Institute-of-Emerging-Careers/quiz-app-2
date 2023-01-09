@@ -91,7 +91,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
 
   React.useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var response, timeslots, dates, timeSlotsByDate;
+    var response, timeslots, dates, timeSlotsByDate, date;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -122,8 +122,14 @@ var TimeSlotPicker = function TimeSlotPicker() {
               } else {
                 timeSlotsByDate[date] = [timeslot];
               }
-            });
-            console.log(timeSlotsByDate);
+            }); //sort timeslots by start time
+
+            for (date in timeSlotsByDate) {
+              timeSlotsByDate[date].sort(function (a, b) {
+                return new Number(a.start_time) - new Number(b.start_time);
+              });
+            }
+
             setTimeSlots(timeSlotsByDate);
 
           case 12:

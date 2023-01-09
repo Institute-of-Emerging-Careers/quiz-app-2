@@ -842,15 +842,6 @@ router.post(
         where: { InterviewerId: interviewer.id },
       });
 
-      if (interviewer_link == null) {
-        res.status(404);
-        res.json({
-          success: false,
-          message: "Interviewer calendly link not found",
-        });
-        return;
-      }
-
       const interviewer_password = (
         await Interviewer.findOne({
           where: { email: interviewer.email },
@@ -885,9 +876,6 @@ router.post(
         Director of Admissions
         Institute of Emerging Careers
         `,
-          button_announcer: "Click the button to book a slot",
-          button_text: "Go to Calendly",
-          button_link: interviewer_link.calendly_link,
         });
       }
 
@@ -1165,6 +1153,7 @@ router.get(
       });
       if (student == null) return res.sendStatus(404);
 
+
       const interview_score = await InterviewScores.findOne({
         where: {
           InterviewRoundId: req.params.interview_round_id,
@@ -1172,7 +1161,8 @@ router.get(
           InterviewerId: req.user.user.id,
         },
       });
-      if (interview_score == null) return res.sendStatus(404);
+      if (interview_score == null) return res.status(404).json({ message: "No marks entered yet" });
+
 
       const interview_answers = await InterviewAnswers.findAll({
         where: {
