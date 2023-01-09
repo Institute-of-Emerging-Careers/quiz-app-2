@@ -122,12 +122,15 @@ InterviewMatching.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+<<<<<<< HEAD
     //if the student did not show up for the interview and needs resceduling
     student_absent: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
     }
+=======
+>>>>>>> 6120ccd (added question orders for certainty)
   },
   { sequelize, modelName: "InterviewMatching" }
 );
@@ -323,7 +326,10 @@ module.exports = {
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,
+<<<<<<< HEAD
   InterviewBookingSlots
+=======
+>>>>>>> 6120ccd (added question orders for certainty)
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs
