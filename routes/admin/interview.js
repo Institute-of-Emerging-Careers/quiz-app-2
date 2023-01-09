@@ -916,13 +916,14 @@ router.post(
       });
       await Promise.all(
         req.body.questions.map(
-          ({ question: statement, questionType, questionScale }) =>
+          ({ question: statement, questionType, questionScale }, order) =>
             InterviewQuestions.findOrCreate({
               where: {
                 question: statement,
                 InterviewRoundId: req.params.interview_round_id,
                 questionType: questionType, //either "number scale" or "descriptive"
                 questionScale: questionScale,
+                order,
               },
             })
         )
@@ -945,6 +946,7 @@ router.get("/:interview_round_id/all-questions", async (req, res) => {
 
     const questions = await InterviewQuestions.findAll({
       where: { InterviewRoundId: req.params.interview_round_id },
+      order: [["order", "asc"]],
     });
     if (questions == null) res.sendStatus(404);
 
