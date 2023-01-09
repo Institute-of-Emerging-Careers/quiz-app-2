@@ -37,15 +37,16 @@ const ViewStudent = () => {
 					`/admin/interview/${interview_round_id}/student/${student_id}/view-marks`
 				)
 			).json();
-
-			if (response.answers.length > 0) setAnswers(response.answers);
-
-			if (response.totalMarks) setTotalMarks(response.totalMarks);
-			if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+			
+			if(response.success == "ok"){				
+				if (response.answers.length > 0) setAnswers(response.answers);
+				if (response.totalMarks) setTotalMarks(response.totalMarks);
+				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+			}
 
 		} catch (err) {
 			console.log(err);
-			window.alert("An error occured, please refresh the page");
+
 		}
 	}, []);
 
