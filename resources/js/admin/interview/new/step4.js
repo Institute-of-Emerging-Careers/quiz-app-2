@@ -26,7 +26,7 @@ const NumericQuestion = ({ questions, setQuestions, question, index }) => {
           onChange={onChange("question")}
         />
         <i
-          class="fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer"
+          className="fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer"
           onClick={() => deleteQuestion(setQuestions, index)}
         ></i>
       </div>

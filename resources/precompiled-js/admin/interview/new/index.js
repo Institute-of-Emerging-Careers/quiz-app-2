@@ -610,15 +610,41 @@ var Step3 = function Step3() {
       matching = _matching_object[0],
       setMatching = _matching_object[1]; //matching object
   //only keep students with the added flag set to true
+  //check if interview-duration has previously been set
 
 
+  useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
+    var response;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.next = 2;
+            return fetch("/admin/interview/".concat(interview_round_id, "/get-interview-duration"));
+
+          case 2:
+            _context.next = 4;
+            return _context.sent.json();
+
+          case 4:
+            response = _context.sent;
+
+            if (response.interview_duration) {
+              setInterviewTime(response.interview_duration);
+            }
+
+          case 6:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee);
+  })), []);
   useEffect(function () {
     //check if a matching already exists
     fetch("/admin/interview/".concat(interview_round_id, "/matchings")).then(function (res) {
       return res.json().then(function (data) {
         // console.log(data);
-        console.log(data.interview_matchings.length);
-
         if (data.interview_matchings.length > 0) {
           setMatching(data.interview_matchings);
         }
@@ -663,16 +689,31 @@ var Step3 = function Step3() {
   }, [interviewTime]);
 
   var computeMatching = /*#__PURE__*/function () {
-    var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
-      var students, i, interviewer, total_time, counter, student, matching, flattened_matching, res;
-      return _regeneratorRuntime().wrap(function _callee$(_context) {
+    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
+      var response, students, i, interviewer, total_time, counter, student, _matching, flattened_matching, res, unique_interviewers;
+
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
-          switch (_context.prev = _context.next) {
+          switch (_context3.prev = _context3.next) {
             case 0:
               e.preventDefault();
-              setLoading(true); //for each interviewer, assign students
-              //need an object of the format {interviewer_id: [student1, student2, student3]}
+              setLoading(true);
+              _context3.prev = 2;
+              _context3.next = 5;
+              return fetch("/admin/interview/".concat(interview_round_id, "/set-interview-duration"), {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  interview_duration: interviewTime
+                })
+              });
 
+            case 5:
+              response = _context3.sent;
+              //for each interviewer, assign students
+              //need an object of the format {interviewer_id: [student1, student2, student3]}
               students = Object.values(students_object[0]).filter(function (student) {
                 return student.added;
               }); //only students that have been selected for the interview round
@@ -691,9 +732,9 @@ var Step3 = function Step3() {
 
               counter = 0; //to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
 
-            case 5:
+            case 9:
               if (!true) {
-                _context.next = 12;
+                _context3.next = 16;
                 break;
               }
 
@@ -709,19 +750,19 @@ var Step3 = function Step3() {
               counter++;
 
               if (!(students.length === 0)) {
-                _context.next = 10;
+                _context3.next = 14;
                 break;
               }
 
-              return _context.abrupt("break", 12);
+              return _context3.abrupt("break", 16);
 
-            case 10:
-              _context.next = 5;
+            case 14:
+              _context3.next = 9;
               break;
 
-            case 12:
+            case 16:
               //extract matching in the format {interviewer_email, student_id}
-              matching = interviewers.map(function (interviewer) {
+              _matching = interviewers.map(function (interviewer) {
                 return interviewer.students.map(function (student) {
                   return {
                     interviewer_email: interviewer.email,
@@ -730,9 +771,9 @@ var Step3 = function Step3() {
                   };
                 });
               });
-              flattened_matching = matching.flat(); //now we have the matching. We need to send this to the backend to create the time slot assignment
+              flattened_matching = _matching.flat(); //now we have the matching. We need to send this to the backend to create the matching
 
-              _context.next = 16;
+              _context3.next = 20;
               return fetch("/admin/interview/".concat(interview_round_id, "/create-matching"), {
                 method: "POST",
                 headers: {
@@ -743,11 +784,11 @@ var Step3 = function Step3() {
                 })
               });
 
-            case 16:
-              res = _context.sent;
+            case 20:
+              res = _context3.sent;
 
               if (res.ok) {
-                alert("Time Slot Assignment Created Successfully");
+                alert("Matching Created Successfully");
                 setLoading(false);
                 setMatching(flattened_matching);
                 setSteps(function (cur) {
@@ -758,21 +799,66 @@ var Step3 = function Step3() {
                   }
 
                   return copy;
-                });
+                }); //after creating the matching, we need to create booking slots for each interviewer
+                //for each unique interviewer in the matching, create a booking slot
+
+                unique_interviewers = _toConsumableArray(new Set(flattened_matching.map(function (item) {
+                  return item.interviewer_email;
+                })));
+                console.log(unique_interviewers);
+                unique_interviewers.map( /*#__PURE__*/function () {
+                  var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(interviewer_email) {
+                    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+                      while (1) {
+                        switch (_context2.prev = _context2.next) {
+                          case 0:
+                            _context2.next = 2;
+                            return fetch("/admin/interview/".concat(interview_round_id, "/create-booking-slots"), {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json"
+                              },
+                              body: JSON.stringify({
+                                interviewer_email: interviewer_email
+                              })
+                            });
+
+                          case 2:
+                          case "end":
+                            return _context2.stop();
+                        }
+                      }
+                    }, _callee2);
+                  }));
+
+                  return function (_x2) {
+                    return _ref3.apply(this, arguments);
+                  };
+                }());
               } else {
                 alert("Error in creating Time Slot Assignment, try again");
               }
 
-            case 18:
+              _context3.next = 29;
+              break;
+
+            case 24:
+              _context3.prev = 24;
+              _context3.t0 = _context3["catch"](2);
+              console.log(_context3.t0);
+              setLoading(false);
+              alert("Something went wrong, please try again");
+
+            case 29:
             case "end":
-              return _context.stop();
+              return _context3.stop();
           }
         }
-      }, _callee);
+      }, _callee3, null, [[2, 24]]);
     }));
 
     return function computeMatching(_x) {
-      return _ref.apply(this, arguments);
+      return _ref2.apply(this, arguments);
     };
   }();
 
@@ -799,7 +885,7 @@ var Step3 = function Step3() {
     ,
     active: "true"
   }), total_time_required < total_time_available ? /*#__PURE__*/React.createElement("button", {
-    className: "ml-20 bg-iec-blue p-2 text-white",
+    className: "ml-20 bg-iec-blue p-2 text-white rounded-md",
     onClick: computeMatching
   }, "Create Matching", loading ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin text-lg"
@@ -878,15 +964,15 @@ var Step5 = function Step5() {
       setMatching = _matching_object2[1];
 
   var sendEmails = /*#__PURE__*/function () {
-    var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
       var interviewer_emails, i, response;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
         while (1) {
-          switch (_context2.prev = _context2.next) {
+          switch (_context4.prev = _context4.next) {
             case 0:
               e.preventDefault();
               setLoading(true);
-              _context2.prev = 2;
+              _context4.prev = 2;
               //extract unique id of interviewers fron matching
               interviewer_emails = _toConsumableArray(new Set(matching.map(function (match) {
                 return match.interviewer_email;
@@ -895,11 +981,11 @@ var Step5 = function Step5() {
 
             case 5:
               if (!(i < interviewer_emails.length)) {
-                _context2.next = 20;
+                _context4.next = 20;
                 break;
               }
 
-              _context2.next = 8;
+              _context4.next = 8;
               return fetch("/admin/interview/".concat(interview_round_id, "/send-matching-emails"), {
                 method: "POST",
                 headers: {
@@ -911,52 +997,52 @@ var Step5 = function Step5() {
               });
 
             case 8:
-              response = _context2.sent;
+              response = _context4.sent;
 
               if (!(response.status == 404)) {
-                _context2.next = 13;
+                _context4.next = 13;
                 break;
               }
 
               window.alert("Some interviewers have not updated calendly links");
               setLoading(false);
-              return _context2.abrupt("return");
+              return _context4.abrupt("return");
 
             case 13:
               if (!(response.status == 200)) {
-                _context2.next = 17;
+                _context4.next = 17;
                 break;
               }
 
               window.alert("Emails sent successfully");
               setLoading(false);
-              return _context2.abrupt("return");
+              return _context4.abrupt("return");
 
             case 17:
               i++;
-              _context2.next = 5;
+              _context4.next = 5;
               break;
 
             case 20:
-              _context2.next = 26;
+              _context4.next = 26;
               break;
 
             case 22:
-              _context2.prev = 22;
-              _context2.t0 = _context2["catch"](2);
-              console.log(_context2.t0);
+              _context4.prev = 22;
+              _context4.t0 = _context4["catch"](2);
+              console.log(_context4.t0);
               window.alert("An error occured, please try again later");
 
             case 26:
             case "end":
-              return _context2.stop();
+              return _context4.stop();
           }
         }
-      }, _callee2, null, [[2, 22]]);
+      }, _callee4, null, [[2, 22]]);
     }));
 
-    return function sendEmails(_x2) {
-      return _ref2.apply(this, arguments);
+    return function sendEmails(_x3) {
+      return _ref4.apply(this, arguments);
     };
   }();
 

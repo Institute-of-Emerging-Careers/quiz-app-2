@@ -580,12 +580,22 @@ const Step3 = () => {
 
   //only keep students with the added flag set to true
 
+  //check if interview-duration has previously been set
+  useEffect(async () => {
+		const response = await (await fetch(
+			`/admin/interview/${interview_round_id}/get-interview-duration`
+		)).json();
+
+    if (response.interview_duration) {
+      setInterviewTime(response.interview_duration);
+    }
+	}, []);
+
   useEffect(() => {
     //check if a matching already exists
     fetch(`/admin/interview/${interview_round_id}/matchings`).then((res) =>
       res.json().then((data) => {
         // console.log(data);
-        console.log(data.interview_matchings.length);
         if (data.interview_matchings.length > 0) {
           setMatching(data.interview_matchings);
         }
@@ -640,6 +650,21 @@ const Step3 = () => {
   const computeMatching = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    try{
+    //set interviewDuration
+    const response = await fetch(`/admin/interview/${interview_round_id}/set-interview-duration`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        interview_duration : interviewTime
+      }),
+      }
+    );
+
+
 
     //for each interviewer, assign students
     //need an object of the format {interviewer_id: [student1, student2, student3]}
@@ -697,7 +722,7 @@ const Step3 = () => {
 
     const flattened_matching = matching.flat();
 
-    //now we have the matching. We need to send this to the backend to create the time slot assignment
+    //now we have the matching. We need to send this to the backend to create the matching
     const res = await fetch(
       `/admin/interview/${interview_round_id}/create-matching`,
       {
@@ -712,7 +737,7 @@ const Step3 = () => {
     );
 
     if (res.ok) {
-      alert("Time Slot Assignment Created Successfully");
+      alert("Matching Created Successfully");
       setLoading(false);
       setMatching(flattened_matching);
       setSteps((cur) => {
@@ -723,9 +748,38 @@ const Step3 = () => {
         }
         return copy;
       });
+
+
+      //after creating the matching, we need to create booking slots for each interviewer
+      //for each unique interviewer in the matching, create a booking slot
+
+      const unique_interviewers = [...new Set(flattened_matching.map(item => item.interviewer_email))];
+      console.log(unique_interviewers);
+
+      unique_interviewers.map(async (interviewer_email) => {
+        await fetch(`/admin/interview/${interview_round_id}/create-booking-slots`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            interviewer_email: interviewer_email,
+          }),
+        });
+
+      });
+
+
+
+
     } else {
       alert("Error in creating Time Slot Assignment, try again");
     }
+  } catch(err) {
+    console.log(err);
+    setLoading(false);
+    alert("Something went wrong, please try again");
+  }
   };
 
   return (
@@ -753,7 +807,7 @@ const Step3 = () => {
 
           {total_time_required < total_time_available ? (
             <button
-              className="ml-20 bg-iec-blue p-2 text-white"
+              className="ml-20 bg-iec-blue p-2 text-white rounded-md"
               onClick={computeMatching}
             >
               Create Matching
