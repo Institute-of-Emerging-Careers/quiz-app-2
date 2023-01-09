@@ -13,7 +13,8 @@ const {
   InterviewerCalendlyLinks,
   InterviewQuestions,
   InterviewAnswers,
-  InterviewScores
+  InterviewScores,
+  InterviewBookingSlots
 } = require("./interview");
 
 const {
@@ -451,6 +452,10 @@ Interviewer.hasMany(InterviewAnswers);
 Student.hasMany(InterviewAnswers);
 InterviewQuestions.hasMany(InterviewAnswers);
 
+Student.hasMany(InterviewBookingSlots);
+Interviewer.hasMany(InterviewBookingSlots);
+InterviewerSlot.hasMany(InterviewBookingSlots);
+InterviewRound.hasMany(InterviewBookingSlots);
 
 InterviewRound.hasMany(InterviewScores);
 Student.hasMany(InterviewScores);

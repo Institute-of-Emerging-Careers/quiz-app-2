@@ -33,7 +33,6 @@ const list_of_fields = [
 ];
 
 function handleForm(e) {
-  alert("abay");
   $("#submit-spinner").removeClass("hidden-imp");
   e.preventDefault();
   e.stopPropagation();
