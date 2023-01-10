@@ -14,6 +14,10 @@ InterviewRound.init(
       allowNull: false,
       defaultValue: 3,
     },
+    interview_duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    }
   },
   {
     sequelize,
@@ -253,6 +257,52 @@ InterviewScores.init(
   { sequelize, modelName: "InterviewScores" }
 );
 
+class InterviewBookingSlots extends Model {};
+
+InterviewBookingSlots.init({
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+    allowNull: false,
+  },
+  InterviewRoundId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  StudentId: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  InterviewerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  InterviewerSlotId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  startTime: {
+    type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+    allowNull: true,
+  },
+  endTime: {
+    type: DataTypes.STRING(16), //ISO Format without seconds and milliseconds is 16 digits long
+    allowNull: true,
+  },
+  duration: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  booked: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  }
+}, {
+  sequelize, modelName: "InterviewBookingSlots" 
+})
+
 module.exports = {
   InterviewRound,
   Interviewer,
@@ -264,6 +314,7 @@ module.exports = {
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,
+  InterviewBookingSlots
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs

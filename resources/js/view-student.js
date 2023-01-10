@@ -11,8 +11,8 @@ const student_id = document.getElementById("student-id").innerHTML;
 const ViewStudent = () => {
 	const [questions, setQuestions] = useState([]);
 	const [answers, setAnswers] = useState([]);
-	// const [totalMarks, setTotalMarks] = useState(0);
-	// const [obtainedMarks, setObtainedMarks] = useState(0);
+	const [totalMarks, setTotalMarks] = useState(0);
+	const [obtainedMarks, setObtainedMarks] = useState(0);
 
 	//fetch questions for this cohort on mount
 	useEffect(async () => {
@@ -37,11 +37,16 @@ const ViewStudent = () => {
 					`/admin/interview/${interview_round_id}/student/${student_id}/view-marks`
 				)
 			).json();
+			
+			if(response.success == "ok"){				
+				if (response.answers.length > 0) setAnswers(response.answers);
+				if (response.totalMarks) setTotalMarks(response.totalMarks);
+				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+			}
 
-			if (response.answers.length > 0) setAnswers(response.answers);
 		} catch (err) {
 			console.log(err);
-			window.alert("An error occured, please refresh the page");
+
 		}
 	}, []);
 
@@ -123,13 +128,25 @@ const ViewStudent = () => {
 	};
 
 	return (
-		<div className="mt-36">
+		<div className="mt-36 mx-10">
 			<div className="flex flex-col items-center justify-center ">
-				<div className="w-1/2 flex items-center justify-center bg-white rounded-md">
-					<p className="text-3xl font-bold p-4 w-full">Marking Criteria</p>
+				<div className="w-full flex bg-white rounded-md">
+					<p className="text-3xl font-bold p-4 w-full self-start justify-items-start">Marking Criteria</p>
+
+
+					{totalMarks > 0 ? (
+						<div className="flex flex-col items-left justify-center self-end justify-self-end p-4 m-10">
+							<p className="text-2xl font-bold">Total Marks: {totalMarks}</p>
+							<p className="text-2xl font-bold">Obtained Marks: {obtainedMarks}</p>
+
+							<p className="text-2xl font-bold">
+								Percentage: {((obtainedMarks / totalMarks) * 100).toFixed(2)}%
+							</p>
+						</div>
+					) : null}
 				</div>
 
-				<div className="mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-1/2 ">
+				<div className="mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-full ">
 					{questions.length > 0 ? (
 						<form onSubmit={addAnswers}>
 							<div className="">
