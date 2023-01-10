@@ -73,7 +73,11 @@ var ViewStudent = function ViewStudent() {
 
           case 5:
             response = _context.sent;
-            if (response.questions.length > 0) setQuestions(response.questions);
+
+            if (response.questions.length > 0) {
+              setQuestions(response.questions);
+            }
+
             _context.next = 13;
             break;
 
@@ -230,57 +234,44 @@ var ViewStudent = function ViewStudent() {
 
   return /*#__PURE__*/React.createElement("div", {
     className: "mt-36 mx-10"
+  }, /*#__PURE__*/React.createElement("form", {
+    onSubmit: addAnswers
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col items-center justify-center "
   }, /*#__PURE__*/React.createElement("div", {
-    className: "w-full flex bg-white rounded-md"
+    className: "w-full flex mx-10 px-10"
   }, /*#__PURE__*/React.createElement("p", {
-    className: "text-3xl font-bold p-4 w-full self-start justify-items-start"
-  }, "Marking Criteria"), totalMarks > 0 ? /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col items-left justify-center self-end justify-self-end p-4 m-10"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "text-2xl font-bold"
-  }, "Total Marks: ", totalMarks), /*#__PURE__*/React.createElement("p", {
-    className: "text-2xl font-bold"
-  }, "Obtained Marks: ", obtainedMarks), /*#__PURE__*/React.createElement("p", {
-    className: "text-2xl font-bold"
-  }, "Percentage: ", (obtainedMarks / totalMarks * 100).toFixed(2), "%")) : null), /*#__PURE__*/React.createElement("div", {
-    className: "mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-full "
-  }, questions.length > 0 ? /*#__PURE__*/React.createElement("form", {
-    onSubmit: addAnswers
+    className: "text-3xl font-bold w-full self-center justify-items-center"
+  }, "Interview Scores"), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col "
   }, /*#__PURE__*/React.createElement("div", {
-    className: ""
-  }, questions.map(function (question, index) {
-    return question.questionType == "descriptive" ? /*#__PURE__*/React.createElement("div", {
-      className: "flex flex-col items-left justify-left mt-10"
+    className: "w-full mt-10 bg-iec-blue text-white rounded-md p-4"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: " font-bold p-1 flex flex-row"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-save p-1"
+  }), "Save")))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 mx-10 rounded-md flex flex-col p-10 w-full "
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-row items-left justify-left"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold border-b-2 p-2 border-iec-blue"
+  }, "Numeric Questions")), questions.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, questions.map(function (question) {
+    return question.questionType == "number scale" && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-row items-left justify-left mt-10"
     }, /*#__PURE__*/React.createElement("div", {
-      className: "w-full flex items-left justify-left"
+      className: "flex items-left justify-left w-3/4"
     }, /*#__PURE__*/React.createElement("p", {
       className: "text-2xl font-bold"
     }, question.question)), /*#__PURE__*/React.createElement("div", {
-      className: "w-full flex items-left justify-left mt-4"
-    }, /*#__PURE__*/React.createElement("textarea", {
-      className: "w-full h-40 border border-black rounded-md p-2",
-      name: question.questionID,
-      type: "text",
-      placeholder: "Enter answer here",
-      defaultValue: answers.length > 0 ? answers.find(function (answer) {
-        return answer.questionID == question.questionID;
-      }).questionAnswer : null
-    }))) : /*#__PURE__*/React.createElement("div", {
-      className: "flex flex-col items-left justify-left mt-10"
-    }, /*#__PURE__*/React.createElement("div", {
-      className: "w-full flex items-left justify-left"
-    }, /*#__PURE__*/React.createElement("p", {
-      className: "text-2xl font-bold"
-    }, question.question)), /*#__PURE__*/React.createElement("div", {
-      className: "w-full flex items-left justify-left mt-4"
+      className: "flex items-left justify-left w-1/4"
     }, /*#__PURE__*/React.createElement("div", {
       className: "flex flex-row items-left justify-left"
     }, /*#__PURE__*/React.createElement("div", {
       className: "flex items-left justify-left"
     }, /*#__PURE__*/React.createElement("input", {
-      className: "w-20 h-10 border border-black rounded-md p-2 outline-none appearance-none",
+      className: "w-20 h-10 border-b-2 border-iec-blue bg-transparent p-2 outline-none appearance-none",
       type: "number",
       name: question.questionID,
       max: question.questionScale,
@@ -292,12 +283,31 @@ var ViewStudent = function ViewStudent() {
     }, /*#__PURE__*/React.createElement("p", {
       className: "ml-2 text-xl font-bold"
     }, "/ ", question.questionScale)))));
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "w-full flex items-center justify-center mt-10"
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-20 rounded"
-  }, "Submit")))) : /*#__PURE__*/React.createElement("div", null, "No questions have been created yet"))));
+  })) : null), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 mx-10 rounded-md flex flex-col p-10 w-full "
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-row items-left justify-left"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold border-b-2 p-2 border-iec-blue"
+  }, "Descriptive Questions")), questions.length > 0 ? questions.map(function (question) {
+    return question.questionType == "descriptive" && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col items-left justify-left mt-10"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "w-full flex items-left justify-left"
+    }, /*#__PURE__*/React.createElement("p", {
+      className: "text-2xl font-bold"
+    }, question.question)), /*#__PURE__*/React.createElement("div", {
+      className: "w-full flex items-left justify-left mt-4"
+    }, /*#__PURE__*/React.createElement("textarea", {
+      className: "w-full h-40 bg-gray-300 rounded-md p-10 outline-none appearance-none",
+      name: question.questionID,
+      type: "text",
+      placeholder: "Enter answer here",
+      defaultValue: answers.length > 0 ? answers.find(function (answer) {
+        return answer.questionID == question.questionID;
+      }).questionAnswer : null
+    })));
+  }) : null))));
 };
 
 ReactDOM.render( /*#__PURE__*/React.createElement(ViewStudent, null), document.getElementById("app"));
