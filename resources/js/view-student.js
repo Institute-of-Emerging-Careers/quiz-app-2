@@ -21,8 +21,9 @@ const ViewStudent = () => {
 				await fetch(`/admin/interview/${interview_round_id}/all-questions`)
 			).json();
 
-			if (response.questions.length > 0) setQuestions(response.questions);
-
+			if (response.questions.length > 0) {
+				setQuestions(response.questions);
+			}
 		} catch (err) {
 			console.log(err);
 			window.alert("An error occured, please refresh the page");
@@ -37,16 +38,14 @@ const ViewStudent = () => {
 					`/admin/interview/${interview_round_id}/student/${student_id}/view-marks`
 				)
 			).json();
-			
-			if(response.success == "ok"){				
+
+			if (response.success == "ok") {
 				if (response.answers.length > 0) setAnswers(response.answers);
 				if (response.totalMarks) setTotalMarks(response.totalMarks);
 				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
 			}
-
 		} catch (err) {
 			console.log(err);
-
 		}
 	}, []);
 
@@ -129,71 +128,57 @@ const ViewStudent = () => {
 
 	return (
 		<div className="mt-36 mx-10">
-			<div className="flex flex-col items-center justify-center ">
-				<div className="w-full flex bg-white rounded-md">
-					<p className="text-3xl font-bold p-4 w-full self-start justify-items-start">Marking Criteria</p>
+			<form onSubmit={addAnswers}>
+				<div className="flex flex-col items-center justify-center ">
+					<div className="w-full flex mx-10 px-10">
+						<p className="text-3xl font-bold w-full self-center justify-items-center">
+							Interview Scores
+						</p>
 
+						<div className = "flex flex-col ">
+							<div className="w-full mt-10 bg-iec-blue text-white rounded-md p-4">
+								{/* save icon */}
+								<button
+									type="submit"
+									className=" font-bold p-1 flex flex-row"
+								>
+									<i className="fa fa-save p-1"></i>
 
-					{totalMarks > 0 ? (
-						<div className="flex flex-col items-left justify-center self-end justify-self-end p-4 m-10">
-							<p className="text-2xl font-bold">Total Marks: {totalMarks}</p>
-							<p className="text-2xl font-bold">Obtained Marks: {obtainedMarks}</p>
-
-							<p className="text-2xl font-bold">
-								Percentage: {((obtainedMarks / totalMarks) * 100).toFixed(2)}%
-							</p>
+									Save
+								</button>
+							</div>
 						</div>
-					) : null}
-				</div>
 
-				<div className="mt-10 mx-10 bg-white rounded-md flex flex-col p-10 w-full ">
-					{questions.length > 0 ? (
-						<form onSubmit={addAnswers}>
-							<div className="">
-								{questions.map((question, index) => {
-									return question.questionType == "descriptive" ? (
-										<div className="flex flex-col items-left justify-left mt-10">
-											<div className="w-full flex items-left justify-left">
-												<p className="text-2xl font-bold">
-													{question.question}
-												</p>
+					</div>
+					{/* numeric questions */}
+					<div className="mt-10 mx-10 rounded-md flex flex-col p-10 w-full ">
+						<div className="flex flex-row items-left justify-left">
+							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">Numeric Questions</p>
+						</div>
+						{questions.length > 0 ? (
+							<>
+								{questions.map((question) => (
+									question.questionType == "number scale" && (
+									<div className="flex flex-row items-left justify-left mt-10">
+											<div className="flex items-left justify-left w-3/4">
+												<p className="text-2xl font-bold">{question.question}</p>
 											</div>
-											<div className="w-full flex items-left justify-left mt-4">
-												<textarea
-													className="w-full h-40 border border-black rounded-md p-2"
-													name={question.questionID}
-													type="text"
-													placeholder="Enter answer here"
-													defaultValue = {
-														answers.length > 0 ? 
-															answers.find((answer) => answer.questionID == question.questionID).questionAnswer
-															: null
-													}
-												>
-
-												</textarea>
-											</div>
-										</div>
-									) : (
-										<div className="flex flex-col items-left justify-left mt-10">
-											<div className="w-full flex items-left justify-left">
-												<p className="text-2xl font-bold">
-													{question.question}
-												</p>
-											</div>
-											<div className="w-full flex items-left justify-left mt-4">
+											<div className="flex items-left justify-left w-1/4">
 												<div className="flex flex-row items-left justify-left">
 													<div className="flex items-left justify-left">
 														<input
-															className="w-20 h-10 border border-black rounded-md p-2 outline-none appearance-none"
+															className="w-20 h-10 border-b-2 border-iec-blue bg-transparent p-2 outline-none appearance-none"
 															type="number"
 															name={question.questionID}
 															max={question.questionScale}
-															defaultValue = {
-																answers.length > 0 ? 
-																	answers.find((answer) => answer.questionID == question.questionID).questionRating
+															defaultValue={
+																answers.length > 0
+																	? answers.find(
+																			(answer) =>
+																				answer.questionID == question.questionID
+																	  ).questionRating
 																	: null
-																}
+															}
 														></input>
 													</div>
 													<div className="flex items-left justify-left">
@@ -203,25 +188,48 @@ const ViewStudent = () => {
 													</div>
 												</div>
 											</div>
-										</div>
-									);
-								})}
+									</div>
+								)))}
+							</>
+						) : null}
+					</div>
+					{/* descriptive questions */}
 
-								<div className="w-full flex items-center justify-center mt-10">
-									<button
-										type="submit"
-										className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 h-20 rounded"
-									>
-										Submit
-									</button>
+					<div className="mt-10 mx-10 rounded-md flex flex-col p-10 w-full ">
+						<div className="flex flex-row items-left justify-left">
+							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">Descriptive Questions</p>
+						</div>
+
+					{questions.length > 0
+						? questions.map((question) => (
+								question.questionType == "descriptive" &&
+								<div className="flex flex-col items-left justify-left mt-10">
+									<div className="w-full flex items-left justify-left">
+										<p className="text-2xl font-bold">{question.question}</p>
+									</div>
+									<div className="w-full flex items-left justify-left mt-4">
+										<textarea
+											className="w-full h-40 bg-gray-300 rounded-md p-10 outline-none appearance-none"
+											name={question.questionID}
+											type="text"
+											placeholder="Enter answer here"
+											defaultValue={
+												answers.length > 0
+													? answers.find(
+															(answer) =>
+																answer.questionID == question.questionID
+													  ).questionAnswer
+													: null
+											}
+										></textarea>
+									</div>
 								</div>
-							</div>
-						</form>
-					) : (
-						<div>No questions have been created yet</div>
-					)}
+						  ))
+						: null}
+
+					</div>
 				</div>
-			</div>
+			</form>
 		</div>
 	);
 };
