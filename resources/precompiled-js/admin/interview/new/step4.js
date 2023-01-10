@@ -37,53 +37,6 @@ var deleteQuestion = function deleteQuestion(setQuestions, index) {
   });
 };
 
-var NumericQuestion = function NumericQuestion(_ref) {
-  var _question$question, _question$questionSca;
-
-  var questions = _ref.questions,
-      setQuestions = _ref.setQuestions,
-      question = _ref.question,
-      index = _ref.index;
-
-  var onChange = function onChange(property) {
-    return function (e) {
-      setQuestions(function (cur) {
-        var copy = _toConsumableArray(cur);
-
-        copy[index][property] = e.target.value;
-        return copy;
-      });
-    };
-  };
-
-  return /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-x-6 w-full items-center text-xl text-gray-900"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "justify-self-center"
-  }, index + 1), /*#__PURE__*/React.createElement("div", {
-    className: "relative flex-grow"
-  }, /*#__PURE__*/React.createElement("input", {
-    className: "w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400",
-    rows: "1",
-    placeholder: "Enter text here",
-    value: (_question$question = question === null || question === void 0 ? void 0 : question.question) !== null && _question$question !== void 0 ? _question$question : "",
-    onChange: onChange("question")
-  }), /*#__PURE__*/React.createElement("i", {
-    className: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
-    onClick: function onClick() {
-      return deleteQuestion(setQuestions, index);
-    }
-  })), question.questionScale !== null && /*#__PURE__*/React.createElement("input", {
-    type: "number",
-    value: (_question$questionSca = question === null || question === void 0 ? void 0 : question.questionScale) !== null && _question$questionSca !== void 0 ? _question$questionSca : "0",
-    onChange: onChange("questionScale"),
-    className: "text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700",
-    style: {
-      width: "80px"
-    }
-  }));
-};
-
 var QUESTION_TYPE = {
   NUMERIC: "number scale",
   TEXTUAL: "descriptive"
@@ -100,7 +53,7 @@ var EMPTY_TEXTUAL_QUESTION = {
 };
 
 var saveQuestions = /*#__PURE__*/function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(numericQuestions, textualQuestions, setShowModal) {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(numericQuestions, textualQuestions, setShowModal) {
     var response;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
@@ -114,8 +67,8 @@ var saveQuestions = /*#__PURE__*/function () {
                 "Content-Type": "application/json"
               },
               body: JSON.stringify({
-                questions: [].concat(_toConsumableArray(numericQuestions), _toConsumableArray(textualQuestions)).filter(function (_ref3) {
-                  var question = _ref3.question;
+                questions: [].concat(_toConsumableArray(numericQuestions), _toConsumableArray(textualQuestions)).filter(function (_ref2) {
+                  var question = _ref2.question;
                   return !!question;
                 })
               })
@@ -142,9 +95,54 @@ var saveQuestions = /*#__PURE__*/function () {
   }));
 
   return function saveQuestions(_x, _x2, _x3) {
-    return _ref2.apply(this, arguments);
+    return _ref.apply(this, arguments);
   };
 }();
+
+var Question = function Question(_ref3) {
+  var _questions$index$ques, _questions$index, _questions$index2, _questions$index$ques2, _questions$index3;
+
+  var questions = _ref3.questions,
+      setQuestions = _ref3.setQuestions,
+      index = _ref3.index;
+
+  var onChange = function onChange(property) {
+    return function (e) {
+      setQuestions(function (cur) {
+        var copy = JSON.parse(JSON.stringify(cur));
+        copy[index][property] = e.target.value;
+        return copy;
+      });
+    };
+  };
+
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-x-6 w-full items-center text-xl text-gray-900"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "justify-self-center"
+  }, index + 1), /*#__PURE__*/React.createElement("div", {
+    className: "relative flex-grow"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400",
+    rows: "1",
+    placeholder: "Enter text here",
+    value: (_questions$index$ques = (_questions$index = questions[index]) === null || _questions$index === void 0 ? void 0 : _questions$index.question) !== null && _questions$index$ques !== void 0 ? _questions$index$ques : "",
+    onChange: onChange("question")
+  }), /*#__PURE__*/React.createElement("i", {
+    class: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
+    onClick: function onClick() {
+      return deleteQuestion(setQuestions, index);
+    }
+  })), ((_questions$index2 = questions[index]) === null || _questions$index2 === void 0 ? void 0 : _questions$index2.questionScale) !== null && /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: (_questions$index$ques2 = (_questions$index3 = questions[index]) === null || _questions$index3 === void 0 ? void 0 : _questions$index3.questionScale) !== null && _questions$index$ques2 !== void 0 ? _questions$index$ques2 : "0",
+    onChange: onChange("questionScale"),
+    className: "text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700",
+    style: {
+      width: "80px"
+    }
+  }));
+};
 
 var Step4 = function Step4() {
   //need to take number of questions as input
@@ -251,10 +249,11 @@ var Step4 = function Step4() {
   }, "Marks"), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex flex-col gap-y-2"
   }, numericQuestions.map(function (question, index) {
-    return /*#__PURE__*/React.createElement(NumericQuestion, {
+    return /*#__PURE__*/React.createElement(Question, {
+      questions: numericQuestions,
       setQuestions: setNumericQuestions,
-      question: question,
-      index: index
+      index: index,
+      key: "numeric".concat(index)
     });
   })), /*#__PURE__*/React.createElement("div", {
     className: "flex justify-between mt-6"
@@ -275,10 +274,11 @@ var Step4 = function Step4() {
   }, "Textual Questions")), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex flex-col gap-y-2"
   }, textualQuestions.map(function (question, index) {
-    return /*#__PURE__*/React.createElement(NumericQuestion, {
+    return /*#__PURE__*/React.createElement(Question, {
+      questions: textualQuestions,
       setQuestions: setTextualQuestions,
-      question: question,
-      index: index
+      index: index,
+      key: "textual".concat(index)
     });
   })), /*#__PURE__*/React.createElement("button", {
     className: "bg-iec-blue hover:bg-iec-blue-hover text-white py-2 px-10 mt-6",
