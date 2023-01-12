@@ -81,7 +81,7 @@ var App = function App() {
 
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     id: "modal",
-    className: show_modal ? "h-screen w-screen inset-0 absolute z-30 bg-black bg-opacity-60" : "hidden"
+    className: show_modal ? "h-screen w-screen inset-0 absolute z-30 bg-black/60" : "hidden"
   }, /*#__PURE__*/React.createElement("div", {
     className: "mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {
