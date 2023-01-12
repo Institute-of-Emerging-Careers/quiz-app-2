@@ -785,19 +785,19 @@ const MCQ = (props) => {
           <p>Question {props.questionIndex + 1}</p>
           <div className="col-start-2 col-span-3 justify-self-end">
             <i
-              className="far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2"
+              className="far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0 mr-2"
               onClick={copyQuestion}
             ></i>
             <i
-              className="fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2"
+              className="fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0 mr-2"
               onClick={moveQuestionUp}
             ></i>
             <i
-              className="fas fa-arrow-down cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0"
+              className="fas fa-arrow-down cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0"
               onClick={moveQuestionDown}
             ></i>
             <i
-              className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0"
+              className="fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0"
               onClick={deleteQuestion}
             ></i>
           </div>
@@ -1330,7 +1330,7 @@ const SectionHeader = (props) => {
           {props.sectionTitle}
         </h1>
         <i
-          className="fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 hover:gray-100 active:bg-opacity-0"
+          className="fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 active:bg-white/0 hover:gray-100"
           onClick={deleteSection}
         ></i>
       </div>

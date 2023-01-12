@@ -7,7 +7,7 @@ var Modal = function Modal(props) {
       content = props.content;
   return /*#__PURE__*/React.createElement("div", null, show_modal === true ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
-    className: "h-min w-full inset-0 fixed z-30 bg-black bg-opacity-60"
+    className: "h-min w-full inset-0 fixed z-30 bg-black/60"
   }, /*#__PURE__*/React.createElement("div", {
     className: "h-min mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {

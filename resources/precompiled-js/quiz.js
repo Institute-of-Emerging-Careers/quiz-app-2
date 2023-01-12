@@ -639,16 +639,16 @@ var MCQ = function MCQ(props) {
   }, /*#__PURE__*/React.createElement("p", null, "Question ", props.questionIndex + 1), /*#__PURE__*/React.createElement("div", {
     className: "col-start-2 col-span-3 justify-self-end"
   }, /*#__PURE__*/React.createElement("i", {
-    className: "far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2",
+    className: "far fa-copy cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0 mr-2",
     onClick: copyQuestion
   }), /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0 mr-2",
+    className: "fas fa-arrow-up cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0 mr-2",
     onClick: moveQuestionUp
   }), /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-arrow-down cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0",
+    className: "fas fa-arrow-down cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0",
     onClick: moveQuestionDown
   }), /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-opacity-0",
+    className: "fas fa-trash-alt cursor-pointer text-xl p-2 text-gray-500 hover:bg-green-500 hover:text-gray-700 active:bg-white/0",
     onClick: deleteQuestion
   }))), /*#__PURE__*/React.createElement("div", {
     className: "py-4 px-8"
@@ -1093,7 +1093,7 @@ var SectionHeader = function SectionHeader(props) {
   }, /*#__PURE__*/React.createElement("h1", {
     className: "text-lg"
   }, "Section ", props.sectionNumber, " of ", props.totalSections, ":", " ", props.sectionTitle), /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 hover:gray-100 active:bg-opacity-0",
+    className: "fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 active:bg-white/0 hover:gray-100",
     onClick: deleteSection
   })), /*#__PURE__*/React.createElement("div", {
     className: "py-4 px-8"

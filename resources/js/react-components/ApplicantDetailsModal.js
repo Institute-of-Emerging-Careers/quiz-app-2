@@ -46,15 +46,15 @@ const ApplicantDetailsModal = (props) => {
     { title: "Reason for Preferences", name: ["preference_reason"] },
     {
       title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"]
+      name: ["firstPreferenceReason"],
     },
     {
       title: "What is your second preference reason?",
-      name: ["secondPreferenceReason"]
+      name: ["secondPreferenceReason"],
     },
     {
       title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"]
+      name: ["firstPreferenceReason"],
     },
 
     {
@@ -72,7 +72,7 @@ const ApplicantDetailsModal = (props) => {
         "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
       name: ["will_work_full_time"],
     },
-    
+
     {
       title: "The program is entirely online. Do you acknowledge that?",
       name: ["acknowledge_online"],
@@ -104,7 +104,7 @@ const ApplicantDetailsModal = (props) => {
       {show_modal > -1 ? (
         <div
           id="modal"
-          className="h-screen w-full inset-0 fixed z-30 bg-black bg-opacity-60"
+          className="h-screen w-full inset-0 fixed z-30 bg-black/60"
         >
           <div className=" h-90vh mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2">
             <div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
