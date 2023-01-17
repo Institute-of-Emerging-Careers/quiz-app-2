@@ -1025,14 +1025,20 @@ const Step6 = () => {
 
     useEffect(async () => {
       try{
-        const response = await (await fetch(`/admin/interview/${interview_round_id}/get-student-scores`)).json();
+        let response = await fetch(`/admin/interview/${interview_round_id}/get-student-scores`);
 
-        if(response.success == "ok"){
-          console.log(response.scores.filter(score => score));
-          setStudents(response.scores.filter(score => score))
+        if (response.status == 200){
+          response = await response.json()
+
+          if(response.success == "ok"){
+            console.log(response.scores.filter(score => score));
+            setStudents(response.scores.filter(score => score))
+          }
+        } else {
+          console.log(response);
+          alert("An error occured, please refresh the page");          
         }
       
-
       } catch (err){
         console.log(err);
         alert("An error occured, please refresh the page");
