@@ -615,16 +615,25 @@ var deleteQuestion = function deleteQuestion(setQuestions, index) {
 
 var QUESTION_TYPE = {
   NUMERIC: "number scale",
+<<<<<<< HEAD
   TEXTUAL: "descriptive",
+=======
+  TEXTUAL: "descriptive"
+>>>>>>> f6b346e (accepted step4 changes)
 };
 var EMPTY_NUMERIC_QUESTION = {
   question: null,
   questionType: QUESTION_TYPE.NUMERIC,
+<<<<<<< HEAD
   questionScale: 0,
+=======
+  questionScale: 0
+>>>>>>> f6b346e (accepted step4 changes)
 };
 var EMPTY_TEXTUAL_QUESTION = {
   question: null,
   questionType: QUESTION_TYPE.TEXTUAL,
+<<<<<<< HEAD
   questionScale: null,
 };
 
@@ -692,10 +701,57 @@ var saveQuestions = /*#__PURE__*/ (function () {
       );
     })
   );
+=======
+  questionScale: null
+};
+
+var saveQuestions = /*#__PURE__*/function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(numericQuestions, textualQuestions, setShowModal) {
+    var response;
+    return _regeneratorRuntime().wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return fetch("/admin/interview/".concat(interview_round_id, "/save-questions"), {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                questions: [].concat(_toConsumableArray(numericQuestions), _toConsumableArray(textualQuestions)).filter(function (_ref2) {
+                  var question = _ref2.question;
+                  return !!question;
+                })
+              })
+            });
+
+          case 3:
+            response = _context.sent;
+            if (response.ok) setShowModal(true);else alert("Error occured. Contact IT.");
+            _context.next = 11;
+            break;
+
+          case 7:
+            _context.prev = 7;
+            _context.t0 = _context["catch"](0);
+            console.log(_context.t0);
+            alert("Something went wrong. Contact IT.");
+
+          case 11:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[0, 7]]);
+  }));
+>>>>>>> f6b346e (accepted step4 changes)
 
   return function saveQuestions(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
+<<<<<<< HEAD
 })();
 
 var Question = function Question(_ref3) {
@@ -708,6 +764,17 @@ var Question = function Question(_ref3) {
   var questions = _ref3.questions,
     setQuestions = _ref3.setQuestions,
     index = _ref3.index;
+=======
+}();
+
+var Question = function Question(_ref3) {
+  var _questions$index$ques, _questions$index, _questions$index2, _questions$index$ques2, _questions$index3;
+
+  var questions = _ref3.questions,
+      setQuestions = _ref3.setQuestions,
+      question = _ref3.question,
+      index = _ref3.index;
+>>>>>>> f6b346e (accepted step4 changes)
 
   var onChange = function onChange(property) {
     return function (e) {
@@ -719,6 +786,7 @@ var Question = function Question(_ref3) {
     };
   };
 
+<<<<<<< HEAD
   return /*#__PURE__*/ React.createElement(
     "div",
     {
@@ -783,6 +851,34 @@ var Question = function Question(_ref3) {
         },
       })
   );
+=======
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-x-6 w-full items-center text-xl text-gray-900"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "justify-self-center"
+  }, index + 1), /*#__PURE__*/React.createElement("div", {
+    className: "relative flex-grow"
+  }, /*#__PURE__*/React.createElement("input", {
+    className: "w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400",
+    rows: "1",
+    placeholder: "Enter text here",
+    value: (_questions$index$ques = (_questions$index = questions[index]) === null || _questions$index === void 0 ? void 0 : _questions$index.question) !== null && _questions$index$ques !== void 0 ? _questions$index$ques : "",
+    onChange: onChange("question")
+  }), /*#__PURE__*/React.createElement("i", {
+    class: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
+    onClick: function onClick() {
+      return deleteQuestion(setQuestions, index);
+    }
+  })), ((_questions$index2 = questions[index]) === null || _questions$index2 === void 0 ? void 0 : _questions$index2.questionScale) !== null && /*#__PURE__*/React.createElement("input", {
+    type: "number",
+    value: (_questions$index$ques2 = (_questions$index3 = questions[index]) === null || _questions$index3 === void 0 ? void 0 : _questions$index3.questionScale) !== null && _questions$index$ques2 !== void 0 ? _questions$index$ques2 : "0",
+    onChange: onChange("questionScale"),
+    className: "text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700",
+    style: {
+      width: "80px"
+    }
+  }));
+>>>>>>> f6b346e (accepted step4 changes)
 };
 
 var Step4 = function Step4() {
@@ -1025,6 +1121,7 @@ var Step4 = function Step4() {
               index: index,
               key: "textual".concat(index),
             });
+<<<<<<< HEAD
           })
         ),
         /*#__PURE__*/ React.createElement(
@@ -1049,3 +1146,99 @@ var Step4 = function Step4() {
     })
   );
 };
+=======
+            setNumericQuestions(numericQuestionsInResponse.length === 0 ? [EMPTY_NUMERIC_QUESTION] : numericQuestionsInResponse);
+            setTextualQuestions(textualQuestionsInResponse.length === 0 ? [EMPTY_TEXTUAL_QUESTION] : textualQuestionsInResponse);
+            _context2.next = 14;
+            break;
+
+          case 13:
+            alert("Could not load questions from server. Contact IT.");
+
+          case 14:
+          case "end":
+            return _context2.stop();
+        }
+      }
+    }, _callee2);
+  })), []);
+  var addNumericQuestion = useCallback(function () {
+    if (numericQuestions[numericQuestions.length - 1].question === "") return;
+    setNumericQuestions(function (cur) {
+      return [].concat(_toConsumableArray(cur), [EMPTY_NUMERIC_QUESTION]);
+    });
+  }, [numericQuestions]);
+  var addTextualQuestion = useCallback(function () {
+    if (textualQuestions[textualQuestions.length - 1].question === "") return;
+    setTextualQuestions(function (cur) {
+      return [].concat(_toConsumableArray(cur), [EMPTY_TEXTUAL_QUESTION]);
+    });
+  }, [textualQuestions]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: " mt-20 px-8 font-normal"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mt-8"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue hover:bg-iec-blue-hover text-white px-6 py-2 float-right",
+    onClick: function onClick() {
+      return saveQuestions(numericQuestions, textualQuestions, setShowModal);
+    }
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa-regular fa-floppy-disk"
+  }), " Save"), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("section", {
+    id: "numeric"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "w-max font-semibold text-2xl border-solid border-l-2 border-b-2 border-iec-blue px-2 mb-4"
+  }, "Numeric Questions")), /*#__PURE__*/React.createElement("p", {
+    className: "block float-right mr-6"
+  }, "Marks"), /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex flex-col gap-y-2"
+  }, numericQuestions.map(function (question, index) {
+    return /*#__PURE__*/React.createElement(Question, {
+      questions: numericQuestions,
+      setQuestions: setNumericQuestions,
+      question: question,
+      index: index,
+      key: "numeric".concat(index)
+    });
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between mt-6"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue hover:bg-iec-blue-hover text-white py-2 px-10",
+    onClick: addNumericQuestion
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa-solid fa-plus"
+  }), " Add Question"), /*#__PURE__*/React.createElement("p", null, "Total Marks:", " ", numericQuestions.reduce(function (prev, cur) {
+    return prev += parseInt(cur.questionScale);
+  }, 0)))), /*#__PURE__*/React.createElement("section", {
+    id: "textual",
+    className: "mt-12"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full"
+  }, /*#__PURE__*/React.createElement("h2", {
+    className: "w-max font-semibold text-2xl border-solid border-l-2 border-b-2 border-iec-blue px-2 mb-4"
+  }, "Textual Questions")), /*#__PURE__*/React.createElement("div", {
+    className: "w-full flex flex-col gap-y-2"
+  }, textualQuestions.map(function (question, index) {
+    return /*#__PURE__*/React.createElement(Question, {
+      questions: textualQuestions,
+      setQuestions: setTextualQuestions,
+      question: question,
+      index: index,
+      key: "textual".concat(index)
+    });
+  })), /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue hover:bg-iec-blue-hover text-white py-2 px-10 mt-6",
+    onClick: addTextualQuestion
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa-solid fa-plus"
+  }), " Add Question"))), /*#__PURE__*/React.createElement(Modal, {
+    show_modal: show_modal,
+    setShowModal: setShowModal,
+    heading: "Success",
+    content: "Question has been saved"
+  }));
+};
+>>>>>>> f6b346e (accepted step4 changes)
