@@ -113,6 +113,7 @@ var ViewStudent = function ViewStudent() {
             response = _context2.sent;
 
             if (response.success == "ok") {
+              console.log(response.answers);
               if (response.answers.length > 0) setAnswers(response.answers);
               if (response.totalMarks) setTotalMarks(response.totalMarks);
               if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
@@ -134,103 +135,111 @@ var ViewStudent = function ViewStudent() {
     }, _callee2, null, [[0, 9]]);
   })), []);
 
-  var addAnswers = function addAnswers(e) {
-    e.preventDefault();
-    var answers = [];
-    questions.map(function (question) {
-      var value = e.target.elements.namedItem(question.questionID).value;
-      answers = [].concat(_toConsumableArray(answers), [{
-        questionID: question.questionID,
-        questionAnswer: question.questionType == "descriptive" ? value : null,
-        questionScale: question.questionType == "descriptive" ? null : value
-      }]);
-    }); //compute total marks from number scale answers
+  var addAnswers = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
+      var answers, totalMarks, obtainedMarks, response;
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              e.preventDefault();
+              answers = [];
+              questions.map(function (question) {
+                var value = e.target.elements.namedItem(question.questionID).value;
+                answers = [].concat(_toConsumableArray(answers), [{
+                  questionID: question.questionID,
+                  questionAnswer: question.questionType == "descriptive" ? value : null,
+                  questionScale: question.questionType == "descriptive" ? null : value
+                }]);
+              }); //compute total marks from number scale answers
 
-    var totalMarks = questions.reduce(function (total, question) {
-      if (question.questionType == "number scale") {
-        return total + parseInt(question.questionScale);
-      }
-
-      return total + 0;
-    }, 0); //compute obtained marks from number scale answers
-
-    var obtainedMarks = answers.reduce(function (total, answer) {
-      if (answer.questionScale) {
-        return total + parseInt(answer.questionScale);
-      }
-
-      return total + 0;
-    }, 0); //insert answers into Answers table
-
-    answers.map( /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(answer) {
-        var response, _response;
-
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.prev = 0;
-                _context3.next = 3;
-                return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/enter-marks"), {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify(answer)
-                });
-
-              case 3:
-                response = _context3.sent;
-
-                if (!(response.status == 200)) {
-                  _context3.next = 9;
-                  break;
+              totalMarks = questions.reduce(function (total, question) {
+                if (question.questionType == "number scale") {
+                  return total + parseInt(question.questionScale);
                 }
 
-                _context3.next = 7;
-                return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/total-marks"), {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                    totalMarks: totalMarks,
-                    obtainedMarks: obtainedMarks
-                  })
-                });
+                return total + 0;
+              }, 0); //compute obtained marks from number scale answers
 
-              case 7:
-                _response = _context3.sent;
-
-                if (_response.status == 200) {
-                  window.alert("Marks added successfully");
-                  window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
+              obtainedMarks = answers.reduce(function (total, answer) {
+                if (answer.questionScale) {
+                  return total + parseInt(answer.questionScale);
                 }
 
-              case 9:
-                _context3.next = 15;
-                break;
+                return total + 0;
+              }, 0); //insert answers into Answers table
 
-              case 11:
-                _context3.prev = 11;
-                _context3.t0 = _context3["catch"](0);
-                console.log(_context3.t0);
-                window.alert("An error occured, please refresh the page");
+              answers.map( /*#__PURE__*/function () {
+                var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(answer) {
+                  return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+                    while (1) {
+                      switch (_context3.prev = _context3.next) {
+                        case 0:
+                          _context3.prev = 0;
+                          _context3.next = 3;
+                          return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/enter-marks"), {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(answer)
+                          });
 
-              case 15:
-              case "end":
-                return _context3.stop();
-            }
+                        case 3:
+                          _context3.next = 9;
+                          break;
+
+                        case 5:
+                          _context3.prev = 5;
+                          _context3.t0 = _context3["catch"](0);
+                          console.log(_context3.t0);
+                          window.alert("An error occured, please refresh the page");
+
+                        case 9:
+                        case "end":
+                          return _context3.stop();
+                      }
+                    }
+                  }, _callee3, null, [[0, 5]]);
+                }));
+
+                return function (_x2) {
+                  return _ref4.apply(this, arguments);
+                };
+              }());
+              _context4.next = 8;
+              return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/total-marks"), {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  totalMarks: totalMarks,
+                  obtainedMarks: obtainedMarks
+                })
+              });
+
+            case 8:
+              response = _context4.sent;
+              console.log(response);
+
+              if (response.status == 200) {
+                window.alert("Marks added successfully");
+                window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
+              }
+
+            case 11:
+            case "end":
+              return _context4.stop();
           }
-        }, _callee3, null, [[0, 11]]);
-      }));
+        }
+      }, _callee4);
+    }));
 
-      return function (_x) {
-        return _ref3.apply(this, arguments);
-      };
-    }());
-  };
+    return function addAnswers(_x) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 
   return /*#__PURE__*/React.createElement("div", {
     className: "mt-36 mx-10"

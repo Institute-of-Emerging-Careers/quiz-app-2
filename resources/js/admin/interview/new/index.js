@@ -21,7 +21,8 @@ const ContextProvider = (props) => {
     { title: "Step 2: Add Interviewers", active: false },
     { title: "Step 3: Create Matching", active: false },
     { title: "Step 4: Create Questions", active: false },
-    { title: "Step 5: Send Emails" },
+    { title: "Step 5: Send Emails", active: false  },
+    { title: "Step 6: Finalize Students", active: false  },
   ]);
   const [students, setStudents] = useState([]);
 
@@ -58,7 +59,7 @@ const StepMenu = () => {
   };
 
   return (
-    <div className="grid grid-cols-5 w-full h-full mt-4">
+    <div className="grid grid-cols-6 w-full h-full mt-4">
       {steps.map((step, index) => (
         <div key={index}>
           {step.active ? (
@@ -1018,6 +1019,60 @@ const Step5 = () => {
   );
 };
 
+const Step6 = () => {
+    const [students, setStudents] = useState([]);
+
+
+    useEffect(async () => {
+      try{
+        const response = await (await fetch(`/admin/interview/${interview_round_id}/get-student-scores`)).json();
+
+        if(response.success == "ok"){
+          console.log(response.scores.filter(score => score));
+          setStudents(response.scores.filter(score => score))
+        }
+      
+
+      } catch (err){
+        console.log(err);
+        alert("An error occured, please refresh the page");
+      }
+    },[]);
+  
+    
+
+    return (
+			<div>
+				{students.length > 0 ? (
+					<table className="w-full text-left mt-20">
+						<thead>
+							<tr className="bg-gray-800 text-white p-4">
+								<th className="p-2 border">Student Name</th>
+								<th className="p-2 border">Student Email</th>
+								<th className="p-2 border">Student CNIC</th>
+								<th className="p-2 border">Interviewer Name</th>
+								<th className="p-2 border">Marks Obtained</th>
+							</tr>
+						</thead>
+						<tbody className = "m-2 p-4">
+              {students.map((student) => (
+                  <tr className="bg-gray-300 p-4 m-2" key = {student.id} >
+                    <td className = "m-2 p-4">{student.studentFirstName + " " + student.studentLastName}</td>
+                    <td className = "m-2 p-4">{student.studentEmail}</td>
+                    <td className = "m-2 p-4">{student.studentCnic}</td>
+                    <td className = "m-2 p-4">{student.interviewerName}</td>
+                    <td className = "m-2 p-4">{student.obtainedScore + " / " + student.totalScore}</td>
+                  </tr>)
+              )}
+            </tbody>
+					</table>
+				) : (
+					<div>No Students have been marked yet</div>
+				)}
+			</div>
+		);
+}
+
 const Main = () => {
   const { steps_object } = useContext(MyContext);
   const [steps, setSteps] = steps_object;
@@ -1102,6 +1157,7 @@ const Main = () => {
       {steps[2].active ? <Step3 /> : <div className="hidden"></div>}
       {steps[3].active ? <Step4 /> : <div className="hidden"></div>}
       {steps[4].active ? <Step5 /> : <div className="hidden"></div>}
+      {steps[5].active ? <Step6 /> : <div className="hidden"></div>}
     </div>
   );
 };
