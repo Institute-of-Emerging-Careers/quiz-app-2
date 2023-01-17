@@ -59,7 +59,11 @@ var ContextProvider = function ContextProvider(props) {
     title: "Step 4: Create Questions",
     active: false
   }, {
-    title: "Step 5: Send Emails"
+    title: "Step 5: Send Emails",
+    active: false
+  }, {
+    title: "Step 6: Finalize Students",
+    active: false
   }]),
       _useState2 = _slicedToArray(_useState, 2),
       steps = _useState2[0],
@@ -106,7 +110,7 @@ var StepMenu = function StepMenu() {
   };
 
   return /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-5 w-full h-full mt-4"
+    className: "grid grid-cols-6 w-full h-full mt-4"
   }, steps.map(function (step, index) {
     return /*#__PURE__*/React.createElement("div", {
       key: index
@@ -1082,6 +1086,88 @@ var Step5 = function Step5() {
   }, "You have not created a matching yet."))));
 };
 
+var Step6 = function Step6() {
+  var _useState47 = useState([]),
+      _useState48 = _slicedToArray(_useState47, 2),
+      students = _useState48[0],
+      setStudents = _useState48[1];
+
+  useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+    var response;
+    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.prev = 0;
+            _context5.next = 3;
+            return fetch("/admin/interview/".concat(interview_round_id, "/get-student-scores"));
+
+          case 3:
+            _context5.next = 5;
+            return _context5.sent.json();
+
+          case 5:
+            response = _context5.sent;
+
+            if (response.success == "ok") {
+              console.log(response.scores.filter(function (score) {
+                return score;
+              }));
+              setStudents(response.scores.filter(function (score) {
+                return score;
+              }));
+            }
+
+            _context5.next = 13;
+            break;
+
+          case 9:
+            _context5.prev = 9;
+            _context5.t0 = _context5["catch"](0);
+            console.log(_context5.t0);
+            alert("An error occured, please refresh the page");
+
+          case 13:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5, null, [[0, 9]]);
+  })), []);
+  return /*#__PURE__*/React.createElement("div", null, students.length > 0 ? /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-left mt-20"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "bg-gray-800 text-white p-4"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border"
+  }, "Student Name"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border"
+  }, "Student Email"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border"
+  }, "Student CNIC"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border"
+  }, "Interviewer Name"), /*#__PURE__*/React.createElement("th", {
+    className: "p-2 border"
+  }, "Marks Obtained"))), /*#__PURE__*/React.createElement("tbody", {
+    className: "m-2 p-4"
+  }, students.map(function (student) {
+    return /*#__PURE__*/React.createElement("tr", {
+      className: "bg-gray-300 p-4 m-2",
+      key: student.id
+    }, /*#__PURE__*/React.createElement("td", {
+      className: "m-2 p-4"
+    }, student.studentFirstName + " " + student.studentLastName), /*#__PURE__*/React.createElement("td", {
+      className: "m-2 p-4"
+    }, student.studentEmail), /*#__PURE__*/React.createElement("td", {
+      className: "m-2 p-4"
+    }, student.studentCnic), /*#__PURE__*/React.createElement("td", {
+      className: "m-2 p-4"
+    }, student.interviewerName), /*#__PURE__*/React.createElement("td", {
+      className: "m-2 p-4"
+    }, student.obtainedScore + " / " + student.totalScore));
+  }))) : /*#__PURE__*/React.createElement("div", null, "No Students have been marked yet"));
+};
+
 var Main = function Main() {
   var _useContext5 = useContext(MyContext),
       steps_object = _useContext5.steps_object;
@@ -1090,20 +1176,20 @@ var Main = function Main() {
       steps = _steps_object3[0],
       setSteps = _steps_object3[1];
 
-  var _useState47 = useState(false),
-      _useState48 = _slicedToArray(_useState47, 2),
-      editInterviewRoundTitle = _useState48[0],
-      setEditInterviewRoundTitle = _useState48[1];
-
-  var _useState49 = useState(document.getElementById("interview-round-name-field").value),
+  var _useState49 = useState(false),
       _useState50 = _slicedToArray(_useState49, 2),
-      interviewRoundTitle = _useState50[0],
-      setInterviewRoundTitle = _useState50[1];
+      editInterviewRoundTitle = _useState50[0],
+      setEditInterviewRoundTitle = _useState50[1];
 
-  var _useState51 = useState(false),
+  var _useState51 = useState(document.getElementById("interview-round-name-field").value),
       _useState52 = _slicedToArray(_useState51, 2),
-      loading_name = _useState52[0],
-      setLoadingName = _useState52[1];
+      interviewRoundTitle = _useState52[0],
+      setInterviewRoundTitle = _useState52[1];
+
+  var _useState53 = useState(false),
+      _useState54 = _slicedToArray(_useState53, 2),
+      loading_name = _useState54[0],
+      setLoadingName = _useState54[1];
 
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();
@@ -1167,6 +1253,8 @@ var Main = function Main() {
   }), steps[3].active ? /*#__PURE__*/React.createElement(Step4, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }), steps[4].active ? /*#__PURE__*/React.createElement(Step5, null) : /*#__PURE__*/React.createElement("div", {
+    className: "hidden"
+  }), steps[5].active ? /*#__PURE__*/React.createElement(Step6, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }));
 };

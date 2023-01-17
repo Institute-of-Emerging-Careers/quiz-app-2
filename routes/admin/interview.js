@@ -1123,13 +1123,30 @@ router.post(
       const student = await Student.findOne({ where: { id: req.params.student_id } });
       if (student == null) return res.sendStatus(404);
 
-      InterviewScores.create({
-        InterviewRoundId: req.params.interview_round_id,
-        StudentId: req.params.student_id,
-        InterviewerId: req.user.user.id,
-        totalScore: req.body.totalMarks,
-        obtainedScore: req.body.obtainedMarks,
-      });
+      const score = await InterviewScores.findOne({where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}})
+
+      if (score){
+        //update
+
+        await InterviewScores.update({
+          obtainedScore:  req.body.obtainedMarks,
+          totalScore: req.body.totalMarks
+        }, 
+       { where: {
+          InterviewRoundId: req.params.interview_round_id,
+          StudentId: req.params.student_id,
+          InterviewerId: req.user.user.id,
+        }});
+      } else {
+        //create
+        await InterviewScores.create({
+					InterviewRoundId: req.params.interview_round_id,
+					StudentId: req.params.student_id,
+					InterviewerId: req.user.user.id,
+					obtainedScore: req.body.obtainedMarks,
+					totalScore: req.body.totalMarks,
+				});
+      }
 
       res.sendStatus(200);
     } catch (err) {
@@ -1155,15 +1172,14 @@ router.get(
       });
       if (student == null) return res.sendStatus(404);
 
-
-      const interview_score = await InterviewScores.findOne({
-        where: {
-          InterviewRoundId: req.params.interview_round_id,
-          StudentId: req.params.student_id,
-          InterviewerId: req.user.user.id,
-        },
-      });
-      if (interview_score == null) return res.status(404).json({ message: "No marks entered yet" });
+      // const interview_score = await InterviewScores.findOne({
+      //   where: {
+      //     InterviewRoundId: req.params.interview_round_id,
+      //     StudentId: req.params.student_id,
+      //     InterviewerId: req.user.user.id,
+      //   },
+      // });
+      // if (interview_score == null) return res.status(404).json({ message: "No marks entered yet" });
 
 
       const interview_answers = await InterviewAnswers.findAll({
@@ -1186,8 +1202,7 @@ router.get(
 
       res.status(200).json({
         success: "ok",
-        obtainedMarks: interview_score.obtainedScore,
-        totalMarks: interview_score.totalScore,
+
         answers: answers,
       });
     } catch (err) {
@@ -1289,4 +1304,46 @@ router.post('/:interview_round_id/create-booking-slots', checkAdminAuthenticated
   }
 });
 
+router.get("/:interview_round_id/get-student-scores", checkAdminAuthenticated, async (req, res) => {
+  try{
+    const interview_round = await InterviewRound.findOne({
+			where: { id: req.params.interview_round_id },
+		});
+    if (interview_round == null) return res.sendStatus(404);
+
+
+    const matchings = await InterviewMatching.findAll({where : {InterviewRoundId: req.params.interview_round_id}});
+    if (matchings == null) return res.sendStatus(500);
+
+
+    let list = await Promise.all(matchings.map(async (matching, index) => {
+        console.log("matching.id", matching.StudentId);
+        const student_score = await InterviewScores.findOne({where : {StudentId : matching.StudentId, InterviewRoundId: req.params.interview_round_id}});
+        return student_score?.dataValues;
+    }));
+
+    list = await Promise.all (list.map(async(score) => {
+      if (score){
+        const student = await Student.findOne({where : {id: score.StudentId}});
+        score = {...score, studentFirstName: student.dataValues.firstName, studentLastName: student.dataValues.lastName, studentEmail: student.dataValues.email, studentCnic: student.dataValues.cnic}
+
+        const interviewer = await Interviewer.findOne({where: {id: score.InterviewerId}});
+        score = {...score,  interviewerName: interviewer.dataValues.name, interviewerEmail: interviewer.dataValues.email}
+
+        return score
+      }
+    }))
+
+    res.status(200).json({
+      success: "ok",
+      scores: list
+    })
+
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+})
+
 module.exports = router;
+
