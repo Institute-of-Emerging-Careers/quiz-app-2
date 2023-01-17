@@ -45,7 +45,8 @@ const saveQuestions = async (
   }
 };
 
-const Question = ({ questions, setQuestions, index }) => {
+
+const Question = ({ questions, setQuestions, question, index }) => {
   const onChange = (property) => (e) => {
     setQuestions((cur) => {
       let copy = JSON.parse(JSON.stringify(cur));
@@ -57,7 +58,7 @@ const Question = ({ questions, setQuestions, index }) => {
   return (
     <div className="flex gap-x-6 w-full items-center text-xl text-gray-900">
       <span className="justify-self-center">{index + 1}</span>
-      <div className="relative grow">
+      <div className="relative flex-grow">
         <input
           className="w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400"
           rows="1"
