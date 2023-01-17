@@ -616,23 +616,32 @@ var deleteQuestion = function deleteQuestion(setQuestions, index) {
 var QUESTION_TYPE = {
   NUMERIC: "number scale",
 <<<<<<< HEAD
+<<<<<<< HEAD
   TEXTUAL: "descriptive",
 =======
   TEXTUAL: "descriptive"
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+  TEXTUAL: "descriptive",
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 };
 var EMPTY_NUMERIC_QUESTION = {
   question: null,
   questionType: QUESTION_TYPE.NUMERIC,
 <<<<<<< HEAD
+<<<<<<< HEAD
   questionScale: 0,
 =======
   questionScale: 0
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+  questionScale: 0,
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 };
 var EMPTY_TEXTUAL_QUESTION = {
   question: null,
   questionType: QUESTION_TYPE.TEXTUAL,
+<<<<<<< HEAD
 <<<<<<< HEAD
   questionScale: null,
 };
@@ -703,42 +712,64 @@ var saveQuestions = /*#__PURE__*/ (function () {
   );
 =======
   questionScale: null
+=======
+  questionScale: null,
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 };
 
-var saveQuestions = /*#__PURE__*/function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(numericQuestions, textualQuestions, setShowModal) {
-    var response;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            _context.prev = 0;
-            _context.next = 3;
-            return fetch("/admin/interview/".concat(interview_round_id, "/save-questions"), {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                questions: [].concat(_toConsumableArray(numericQuestions), _toConsumableArray(textualQuestions)).filter(function (_ref2) {
-                  var question = _ref2.question;
-                  return !!question;
-                })
-              })
-            });
+var saveQuestions = /*#__PURE__*/ (function () {
+  var _ref = _asyncToGenerator(
+    /*#__PURE__*/ _regeneratorRuntime().mark(function _callee(
+      numericQuestions,
+      textualQuestions,
+      setShowModal
+    ) {
+      var response;
+      return _regeneratorRuntime().wrap(
+        function _callee$(_context) {
+          while (1) {
+            switch ((_context.prev = _context.next)) {
+              case 0:
+                _context.prev = 0;
+                _context.next = 3;
+                return fetch(
+                  "/admin/interview/".concat(
+                    interview_round_id,
+                    "/save-questions"
+                  ),
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      questions: []
+                        .concat(
+                          _toConsumableArray(numericQuestions),
+                          _toConsumableArray(textualQuestions)
+                        )
+                        .filter(function (_ref2) {
+                          var question = _ref2.question;
+                          return !!question;
+                        }),
+                    }),
+                  }
+                );
 
-          case 3:
-            response = _context.sent;
-            if (response.ok) setShowModal(true);else alert("Error occured. Contact IT.");
-            _context.next = 11;
-            break;
+              case 3:
+                response = _context.sent;
+                if (response.ok) setShowModal(true);
+                else alert("Error occured. Contact IT.");
+                _context.next = 11;
+                break;
 
-          case 7:
-            _context.prev = 7;
-            _context.t0 = _context["catch"](0);
-            console.log(_context.t0);
-            alert("Something went wrong. Contact IT.");
+              case 7:
+                _context.prev = 7;
+                _context.t0 = _context["catch"](0);
+                console.log(_context.t0);
+                alert("Something went wrong. Contact IT.");
 
+<<<<<<< HEAD
           case 11:
           case "end":
             return _context.stop();
@@ -747,10 +778,25 @@ var saveQuestions = /*#__PURE__*/function () {
     }, _callee, null, [[0, 7]]);
   }));
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+              case 11:
+              case "end":
+                return _context.stop();
+            }
+          }
+        },
+        _callee,
+        null,
+        [[0, 7]]
+      );
+    })
+  );
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 
   return function saveQuestions(_x, _x2, _x3) {
     return _ref.apply(this, arguments);
   };
+<<<<<<< HEAD
 <<<<<<< HEAD
 })();
 
@@ -766,15 +812,30 @@ var Question = function Question(_ref3) {
     index = _ref3.index;
 =======
 }();
+=======
+})();
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 
 var Question = function Question(_ref3) {
-  var _questions$index$ques, _questions$index, _questions$index2, _questions$index$ques2, _questions$index3;
+  var _questions$index$ques,
+    _questions$index,
+    _questions$index2,
+    _questions$index$ques2,
+    _questions$index3;
 
   var questions = _ref3.questions,
+<<<<<<< HEAD
       setQuestions = _ref3.setQuestions,
       question = _ref3.question,
       index = _ref3.index;
+<<<<<<< HEAD
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+=======
+    setQuestions = _ref3.setQuestions,
+    index = _ref3.index;
+>>>>>>> d9a21c5 (upgraded to tailwind v3)
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 
   var onChange = function onChange(property) {
     return function (e) {
@@ -787,6 +848,9 @@ var Question = function Question(_ref3) {
   };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
   return /*#__PURE__*/ React.createElement(
     "div",
     {
@@ -851,6 +915,7 @@ var Question = function Question(_ref3) {
         },
       })
   );
+<<<<<<< HEAD
 =======
   return /*#__PURE__*/React.createElement("div", {
     className: "flex gap-x-6 w-full items-center text-xl text-gray-900"
@@ -879,6 +944,8 @@ var Question = function Question(_ref3) {
     }
   }));
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
 };
 
 var Step4 = function Step4() {
@@ -1122,6 +1189,7 @@ var Step4 = function Step4() {
               key: "textual".concat(index),
             });
 <<<<<<< HEAD
+<<<<<<< HEAD
           })
         ),
         /*#__PURE__*/ React.createElement(
@@ -1147,6 +1215,8 @@ var Step4 = function Step4() {
   );
 };
 =======
+=======
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
             setNumericQuestions(numericQuestionsInResponse.length === 0 ? [EMPTY_NUMERIC_QUESTION] : numericQuestionsInResponse);
             setTextualQuestions(textualQuestionsInResponse.length === 0 ? [EMPTY_TEXTUAL_QUESTION] : textualQuestionsInResponse);
             _context2.next = 14;
@@ -1241,4 +1311,33 @@ var Step4 = function Step4() {
     content: "Question has been saved"
   }));
 };
+<<<<<<< HEAD
 >>>>>>> f6b346e (accepted step4 changes)
+=======
+=======
+          })
+        ),
+        /*#__PURE__*/ React.createElement(
+          "button",
+          {
+            className:
+              "bg-iec-blue hover:bg-iec-blue-hover text-white py-2 px-10 mt-6",
+            onClick: addTextualQuestion,
+          },
+          /*#__PURE__*/ React.createElement("i", {
+            className: "fa-solid fa-plus",
+          }),
+          " Add Question"
+        )
+      )
+    ),
+    /*#__PURE__*/ React.createElement(Modal, {
+      show_modal: show_modal,
+      setShowModal: setShowModal,
+      heading: "Success",
+      content: "Question has been saved",
+    })
+  );
+};
+>>>>>>> d9a21c5 (upgraded to tailwind v3)
+>>>>>>> 19a6e5d (upgraded to tailwind v3)
