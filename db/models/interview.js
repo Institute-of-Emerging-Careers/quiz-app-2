@@ -122,21 +122,6 @@ InterviewMatching.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> bd5bd01 (Added step 6 to interview process)
-    //if the student did not show up for the interview and needs resceduling
-    student_absent: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
-    }
-<<<<<<< HEAD
-=======
->>>>>>> 6120ccd (added question orders for certainty)
-=======
->>>>>>> bd5bd01 (Added step 6 to interview process)
   },
   { sequelize, modelName: "InterviewMatching" }
 );
@@ -251,17 +236,14 @@ InterviewScores.init(
     InterviewRoundId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: "uniqueScoreIndex",
     },
     StudentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: "uniqueScoreIndex",
     },
     InterviewerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: "uniqueScoreIndex",
     },
     obtainedScore: {
       type: DataTypes.INTEGER,
@@ -332,10 +314,7 @@ module.exports = {
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,
-<<<<<<< HEAD
   InterviewBookingSlots
-=======
->>>>>>> 6120ccd (added question orders for certainty)
 };
 
 //all associations are in the user.js and quizmodel.js files because different ordering of loading of these files causes bugs
