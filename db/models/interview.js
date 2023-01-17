@@ -122,6 +122,12 @@ InterviewMatching.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    //if the student did not show up for the interview and needs resceduling
+    student_absent: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    }
   },
   { sequelize, modelName: "InterviewMatching" }
 );
@@ -230,20 +236,21 @@ InterviewScores.init(
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true,
       allowNull: false,
     },
     InterviewRoundId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      unique: "uniqueScoreIndex",
     },
     StudentId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      unique: "uniqueScoreIndex",
     },
     InterviewerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      unique: "uniqueScoreIndex",
     },
     obtainedScore: {
       type: DataTypes.INTEGER,
@@ -302,7 +309,6 @@ InterviewBookingSlots.init({
 }, {
   sequelize, modelName: "InterviewBookingSlots" 
 })
-
 module.exports = {
   InterviewRound,
   Interviewer,
