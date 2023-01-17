@@ -150,7 +150,7 @@ const App = () => {
         id="modal"
         className={
           show_modal
-            ? "h-screen w-screen inset-0 absolute z-30 bg-black bg-opacity-60"
+            ? "h-screen w-screen inset-0 absolute z-30 bg-black/60"
             : "hidden"
         }
       >

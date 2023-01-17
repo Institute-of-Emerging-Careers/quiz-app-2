@@ -1,14 +1,16 @@
+const colors = require("tailwindcss/colors");
+
 module.exports = {
-  purge: {
-    enabled: true,
-    content: ["./**/*.html", "./**/*.js", "./**/*.ejs"],
-  },
-  darkMode: false, // or 'media' or 'class'
+  content: ["./**/*.html", "./**/*.js", "./**/*.ejs"],
   theme: {
     extend: {
       colors: {
         "iec-blue": "#2A6095",
         "iec-blue-hover": "#306aa5",
+        green: colors.emerald,
+        yellow: colors.amber,
+        purple: colors.violet,
+        gray: colors.neutral,
       },
       left: {
         "1/8": "12.5%",
@@ -39,13 +41,6 @@ module.exports = {
   },
   fontFamily: {
     body: ["Roboto", "sans-serif"],
-  },
-  variants: {
-    extend: {
-      backgroundColor: ["active"],
-      backgroundOpacity: ["focus"],
-      dropShadow: ["hover", "active"],
-    },
   },
   plugins: [],
 };
