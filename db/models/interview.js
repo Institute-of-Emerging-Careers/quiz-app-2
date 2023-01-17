@@ -123,14 +123,20 @@ InterviewMatching.init(
       allowNull: false,
     },
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> bd5bd01 (Added step 6 to interview process)
     //if the student did not show up for the interview and needs resceduling
     student_absent: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
     }
+<<<<<<< HEAD
 =======
 >>>>>>> 6120ccd (added question orders for certainty)
+=======
+>>>>>>> bd5bd01 (Added step 6 to interview process)
   },
   { sequelize, modelName: "InterviewMatching" }
 );
