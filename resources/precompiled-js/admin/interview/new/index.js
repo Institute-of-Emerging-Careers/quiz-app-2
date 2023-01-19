@@ -1117,9 +1117,6 @@ var Step6 = function Step6() {
             response = _context5.sent;
 
             if (response.success == "ok") {
-              console.log(response.scores.filter(function (score) {
-                return score;
-              }));
               setStudents(response.scores.filter(function (score) {
                 return score;
               }));

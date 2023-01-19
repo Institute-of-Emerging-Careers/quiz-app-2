@@ -1317,7 +1317,6 @@ router.get("/:interview_round_id/get-student-scores", checkAdminAuthenticated, a
 
 
     let list = await Promise.all(matchings.map(async (matching, index) => {
-        console.log("matching.id", matching.StudentId);
         const student_score = await InterviewScores.findOne({where : {StudentId : matching.StudentId, InterviewRoundId: req.params.interview_round_id}});
         return student_score?.dataValues;
     }));

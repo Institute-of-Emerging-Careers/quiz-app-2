@@ -1031,7 +1031,6 @@ const Step6 = () => {
           response = await response.json()
 
           if(response.success == "ok"){
-            console.log(response.scores.filter(score => score));
             setStudents(response.scores.filter(score => score))
           }
         } else {
