@@ -1103,10 +1103,17 @@ var Step6 = function Step6() {
             return fetch("/admin/interview/".concat(interview_round_id, "/get-student-scores"));
 
           case 3:
-            _context5.next = 5;
-            return _context5.sent.json();
+            response = _context5.sent;
 
-          case 5:
+            if (!(response.status == 200)) {
+              _context5.next = 11;
+              break;
+            }
+
+            _context5.next = 7;
+            return response.json();
+
+          case 7:
             response = _context5.sent;
 
             if (response.success == "ok") {
@@ -1121,18 +1128,26 @@ var Step6 = function Step6() {
             _context5.next = 13;
             break;
 
-          case 9:
-            _context5.prev = 9;
+          case 11:
+            console.log(response);
+            alert("An error occured, please refresh the page");
+
+          case 13:
+            _context5.next = 19;
+            break;
+
+          case 15:
+            _context5.prev = 15;
             _context5.t0 = _context5["catch"](0);
             console.log(_context5.t0);
             alert("An error occured, please refresh the page");
 
-          case 13:
+          case 19:
           case "end":
             return _context5.stop();
         }
       }
-    }, _callee5, null, [[0, 9]]);
+    }, _callee5, null, [[0, 15]]);
   })), []);
   return /*#__PURE__*/React.createElement("div", null, students.length > 0 ? /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mt-20"
