@@ -132,23 +132,7 @@ InterviewMatching.init(
   { sequelize, modelName: "InterviewMatching" }
 );
 
-class InterviewerCalendlyLinks extends Model {}
 
-InterviewerCalendlyLinks.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
-      allowNull: false,
-    },
-    calendly_link: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  { sequelize, modelName: "InterviewerCalendlyLinks" }
-);
 
 class InterviewQuestions extends Model {}
 
@@ -316,7 +300,6 @@ module.exports = {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks,
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,

@@ -10,7 +10,6 @@ const {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks,
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,
@@ -460,8 +459,6 @@ InterviewRound.hasMany(InterviewBookingSlots);
 InterviewRound.hasMany(InterviewScores);
 Student.hasMany(InterviewScores);
 Interviewer.hasMany(InterviewScores);
-
-Interviewer.hasOne(InterviewerCalendlyLinks);
 
 ApplicationRound.belongsToMany(Course, {
   through: ApplicationRoundCourseJunction,
