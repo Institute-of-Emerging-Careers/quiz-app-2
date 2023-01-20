@@ -634,8 +634,6 @@ const Step3 = () => {
               }, 0);
             });
 
-            console.log(time);
-
             //compute the total number of students
             const total_students = Object.keys(students).length;
 
