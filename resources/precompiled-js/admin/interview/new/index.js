@@ -700,8 +700,7 @@ var Step3 = function Step3() {
               time += cur_slot.duration;
               return total_time += cur_slot.duration;
             }, 0);
-          });
-          console.log(time); //compute the total number of students
+          }); //compute the total number of students
 
           var total_students = Object.keys(students).length;
           setNumberOfStudents(total_students); //compute the total time required for all the interviews

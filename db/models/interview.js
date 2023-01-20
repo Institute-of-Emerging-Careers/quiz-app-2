@@ -221,6 +221,7 @@ InterviewScores.init(
       type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true,
     },
     InterviewRoundId: {
       type: DataTypes.INTEGER,
