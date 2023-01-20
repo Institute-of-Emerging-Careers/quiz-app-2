@@ -58,11 +58,9 @@ var ContextProvider = function ContextProvider(props) {
   }, {
     title: "Step 4: Create Questions",
     active: false
-  }, {
-    title: "Step 5: Send Emails",
-    active: false
-  }, {
-    title: "Step 6: Finalize Students",
+  }, // { title: "Step 5: Send Emails", active: false  },
+  {
+    title: "Step 5: Finalize Students",
     active: false
   }]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -110,7 +108,7 @@ var StepMenu = function StepMenu() {
   };
 
   return /*#__PURE__*/React.createElement("div", {
-    className: "grid grid-cols-6 w-full h-full mt-4"
+    className: "grid grid-cols-5 w-full h-full mt-4"
   }, steps.map(function (step, index) {
     return /*#__PURE__*/React.createElement("div", {
       key: index
@@ -595,25 +593,52 @@ var Step3 = function Step3() {
 
   var _useContext3 = useContext(MyContext),
       students_object = _useContext3.students_object,
-      steps_object = _useContext3.steps_object,
-      matching_object = _useContext3.matching_object; //list of students in selected for interview
-
-
-  var _useState43 = useState(false),
-      _useState44 = _slicedToArray(_useState43, 2),
-      loading = _useState44[0],
-      setLoading = _useState44[1]; //loading state
+      steps_object = _useContext3.steps_object; //list of students in selected for interview
 
 
   var _steps_object2 = _slicedToArray(steps_object, 2),
       steps = _steps_object2[0],
-      setSteps = _steps_object2[1]; //steps object;
+      setSteps = _steps_object2[1];
 
+  var _useState43 = useState(0),
+      _useState44 = _slicedToArray(_useState43, 2),
+      numberOfStudents = _useState44[0],
+      setNumberOfStudents = _useState44[1];
 
-  var _matching_object = _slicedToArray(matching_object, 2),
-      matching = _matching_object[0],
-      setMatching = _matching_object[1]; //matching object
-  //only keep students with the added flag set to true
+  var _useState45 = useState([]),
+      _useState46 = _slicedToArray(_useState45, 2),
+      matching = _useState46[0],
+      setMatching = _useState46[1];
+
+  var _useState47 = useState(false),
+      _useState48 = _slicedToArray(_useState47, 2),
+      loading = _useState48[0],
+      setLoading = _useState48[1];
+
+  var _useState49 = useState(false),
+      _useState50 = _slicedToArray(_useState49, 2),
+      showModal = _useState50[0],
+      setShowModal = _useState50[1];
+
+  var _useState51 = useState(false),
+      _useState52 = _slicedToArray(_useState51, 2),
+      showMatchingModal = _useState52[0],
+      setShowMatchingModal = _useState52[1];
+
+  var _useState53 = useState(false),
+      _useState54 = _slicedToArray(_useState53, 2),
+      recreateMatching = _useState54[0],
+      setRecreateMatching = _useState54[1];
+
+  var _useState55 = useState(false),
+      _useState56 = _slicedToArray(_useState55, 2),
+      showEmailStudents = _useState56[0],
+      setShowEmailStudents = _useState56[1];
+
+  var _useState57 = useState(false),
+      _useState58 = _slicedToArray(_useState57, 2),
+      showEmailInterviewers = _useState58[0],
+      setShowEmailInterviewers = _useState58[1]; //only keep students with the added flag set to true
   //check if interview-duration has previously been set
 
 
@@ -643,9 +668,9 @@ var Step3 = function Step3() {
         }
       }
     }, _callee);
-  })), []);
+  })), []); //check if a matching already exists
+
   useEffect(function () {
-    //check if a matching already exists
     fetch("/admin/interview/".concat(interview_round_id, "/matchings")).then(function (res) {
       return res.json().then(function (data) {
         // console.log(data);
@@ -675,16 +700,18 @@ var Step3 = function Step3() {
               time += cur_slot.duration;
               return total_time += cur_slot.duration;
             }, 0);
-          }); //compute the total number of students
+          });
+          console.log(time); //compute the total number of students
 
-          var total_students = Object.keys(students).length; //compute the total time required for all the interviews
+          var total_students = Object.keys(students).length;
+          setNumberOfStudents(total_students); //compute the total time required for all the interviews
 
           setTotalTimeRequired(total_students * interviewTime); //time required in minutes
           //compute the total time available for all the interviews
 
-          setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm")); //compute the total number of interviews that can be conducted
+          setTotalTimeAvailable(Duration.fromMillis(time).toFormat("m")); //compute the total number of interviews that can be conducted
 
-          setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
+          if (interviewTime > 0) setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
         });
       } else {
         alert("Error in URL. Wrong Interview Round. Please go to home page.");
@@ -694,7 +721,7 @@ var Step3 = function Step3() {
 
   var computeMatching = /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
-      var response, students, i, interviewer, total_time, counter, student, _matching, flattened_matching, res, unique_interviewers;
+      var students, i, interviewer, total_time, counter, student, _matching, flattened_matching, res, unique_interviewers;
 
       return _regeneratorRuntime().wrap(function _callee3$(_context3) {
         while (1) {
@@ -715,7 +742,6 @@ var Step3 = function Step3() {
               });
 
             case 5:
-              response = _context3.sent;
               //for each interviewer, assign students
               //need an object of the format {interviewer_id: [student1, student2, student3]}
               students = Object.values(students_object[0]).filter(function (student) {
@@ -736,9 +762,9 @@ var Step3 = function Step3() {
 
               counter = 0; //to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
 
-            case 9:
+            case 8:
               if (!true) {
-                _context3.next = 16;
+                _context3.next = 15;
                 break;
               }
 
@@ -754,17 +780,17 @@ var Step3 = function Step3() {
               counter++;
 
               if (!(students.length === 0)) {
-                _context3.next = 14;
+                _context3.next = 13;
                 break;
               }
 
-              return _context3.abrupt("break", 16);
+              return _context3.abrupt("break", 15);
 
-            case 14:
-              _context3.next = 9;
+            case 13:
+              _context3.next = 8;
               break;
 
-            case 16:
+            case 15:
               //extract matching in the format {interviewer_email, student_id}
               _matching = interviewers.map(function (interviewer) {
                 return interviewer.students.map(function (student) {
@@ -777,7 +803,7 @@ var Step3 = function Step3() {
               });
               flattened_matching = _matching.flat(); //now we have the matching. We need to send this to the backend to create the matching
 
-              _context3.next = 20;
+              _context3.next = 19;
               return fetch("/admin/interview/".concat(interview_round_id, "/create-matching"), {
                 method: "POST",
                 headers: {
@@ -788,7 +814,7 @@ var Step3 = function Step3() {
                 })
               });
 
-            case 20:
+            case 19:
               res = _context3.sent;
 
               if (res.ok) {
@@ -809,7 +835,6 @@ var Step3 = function Step3() {
                 unique_interviewers = _toConsumableArray(new Set(flattened_matching.map(function (item) {
                   return item.interviewer_email;
                 })));
-                console.log(unique_interviewers);
                 unique_interviewers.map( /*#__PURE__*/function () {
                   var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(interviewer_email) {
                     return _regeneratorRuntime().wrap(function _callee2$(_context2) {
@@ -843,22 +868,22 @@ var Step3 = function Step3() {
                 alert("Error in creating Time Slot Assignment, try again");
               }
 
-              _context3.next = 29;
+              _context3.next = 28;
               break;
 
-            case 24:
-              _context3.prev = 24;
+            case 23:
+              _context3.prev = 23;
               _context3.t0 = _context3["catch"](2);
               console.log(_context3.t0);
               setLoading(false);
               alert("Something went wrong, please try again");
 
-            case 29:
+            case 28:
             case "end":
               return _context3.stop();
           }
         }
-      }, _callee3, null, [[2, 24]]);
+      }, _callee3, null, [[2, 23]]);
     }));
 
     return function computeMatching(_x) {
@@ -866,255 +891,332 @@ var Step3 = function Step3() {
     };
   }();
 
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("form", {
-    className: "flex flex-col"
+  return /*#__PURE__*/React.createElement(React.Fragment, null, matching.length === 0 || recreateMatching == true ? /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col mt-20 p-4"
+  }, /*#__PURE__*/React.createElement("div", null, showModal === true ? /*#__PURE__*/React.createElement("div", {
+    id: "modal",
+    className: "min-h-screen w-full inset-0 fixed z-30 bg-black/60 flex justify-center items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-min mx-auto mt-10 w-1/2 bg-white  shadow-xl pb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl col-auto justify-self-start self-center"
+  }, "Insufficient Time"), /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times text-white cursor-pointer col-auto justify-self-end self-center",
+    onClick: function onClick() {
+      setShowModal(false);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "p-8 h-min overflow-y-scroll"
+  }, /*#__PURE__*/React.createElement("p", null, "Insufficient time available to conduct interviews of all students. You can:"), /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("br", null), "1. Decrease time per interview"), /*#__PURE__*/React.createElement("p", null, "2. Ask Interviewers for more time (Go back to Step 2)")))) : null), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-row"
+  }, /*#__PURE__*/React.createElement("form", {
+    className: "flex flex-col w-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-xl font-bold border-l-2 border-b-2 border-iec-blue p-2 justify-self-start w-max"
   }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-xl font-bold"
-  }, "Add Interview Time"), /*#__PURE__*/React.createElement("div", {
-    className: "w-full flex gap-x-4 items-center"
+    className: ""
+  }, "Set Interview Time")), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-x-4 items-center self-center mt-5 p-4"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "interview-time",
-    className: "min-w-max"
-  }, "Enter the time per interview (including any break time)"), /*#__PURE__*/React.createElement("input", {
+    className: "w-full p-4 mr-5 text-xl"
+  }, "Set time per interview (including any break time):"), /*#__PURE__*/React.createElement("input", {
     type: "text",
     maxLength: "150",
     name: "name",
-    className: "w-30 border py-3 px-2 mt-1 hover:shadow-sm",
+    className: "bg-gray-300 w-1/5 px-4 h-10",
     value: interviewTime,
-    autoComplete: "off",
     onChange: function onChange(e) {
       e.preventDefault();
       setInterviewTime(e.target.value);
     } // ref={name_field}
     ,
     active: "true"
-  }), total_time_required < total_time_available ? /*#__PURE__*/React.createElement("button", {
-    className: "ml-20 bg-iec-blue p-2 text-white rounded-md",
-    onClick: computeMatching
-  }, "Create Matching", loading ? /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-spinner animate-spin text-lg"
-  }) : /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-save text-lg"
-  })) : /*#__PURE__*/React.createElement("button", {
-    className: "ml-20 bg-red-500 p-2 text-white",
-    disabled: true
-  }, "Create Matching"), /*#__PURE__*/React.createElement("label", {
-    className: "text-red-500 text-xl"
-  }, "Creating a new matching destroys the previous one, if any. ONLY create a matching if you are sure that you want to do so."))), total_time_required > total_time_available ? /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-y-4 mt-4 p-10"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold text-red-400"
-  }, "You do not have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students. Please go back to \"Step 2\" and either increase interviewers or resend emails asking them to increase their times.")) : /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-y-4 text-green-400 mt-4 p-10"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold"
-  }, "You have sufficient time commitment from the interviewers to conduct the interviews of the selected number of students."), /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg"
-  }, "You can conduct ", total_interviews_possible, " interviews.")), /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("label", null, "minutes"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col bg-gray-300 rounded-md p-5 m-5 w-full text-lg"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 mt-5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-end items-start"
+  }, "Total time required:"), /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-start items-start"
+  }, " ", total_time_required > 60 ? Math.floor(total_time_required / 60) + " hours " + total_time_required % 60 + " minutes" : total_time_required + " minutes")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-end items-start"
+  }, "Time available:", " "), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg"
-  }, "Interview Time Summary"), /*#__PURE__*/React.createElement("div", {
-    className: "w-full flex flex-col gap-y-4 items-center"
-  }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "interview-time",
-    className: "min-w-max font-bold text-2xl"
-  }, "Total Time Available"), /*#__PURE__*/React.createElement("p", null, total_time_available, " Minutes"), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "interview-time",
-    className: "min-w-max font-bold text-2xl"
-  }, "Total Time Required"), /*#__PURE__*/React.createElement("p", null, total_time_required, " Minutes"), /*#__PURE__*/React.createElement("label", {
-    htmlFor: "interview-time",
-    className: "min-w-max font-bold text-2xl"
-  }, "Total Interviews Possible"), /*#__PURE__*/React.createElement("p", null, total_interviews_possible))), matching.length > 0 ? /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-start items-start"
+  }, total_time_available > 60 ? Math.floor(total_time_available / 60) + " hours " + total_time_available % 60 + " minutes" : total_time_available + " minutes"), total_time_available < total_time_required ? /*#__PURE__*/React.createElement("label", {
+    className: "text-red-400"
+  }, "(Insufficient time)") : null)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-end items-start"
+  }, "Number of Students:"), /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-start items-start"
+  }, numberOfStudents)), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-end items-start"
+  }, "Interviews Possible:"), /*#__PURE__*/React.createElement("p", {
+    className: "p-2 m-2 flex justify-start items-start"
+  }, total_interviews_possible)), total_time_available < total_time_required ? /*#__PURE__*/React.createElement("div", {
+    className: "p-4 m-4"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-bold text-black inline"
+  }, "Note:"), /*#__PURE__*/React.createElement("p", {
+    className: "text-iec-blue inline m-2"
+  }, "You don\u2019t have sufficient time commitment from interviewers to conduct interviews of selected no. of students.")) : null)), /*#__PURE__*/React.createElement("button", {
+    className: "m-20 w-1/10 self-center justify-self-center bg-iec-blue p-4 text-white rounded-md",
+    onClick: total_time_available >= total_time_required ? computeMatching : function () {
+      setShowModal(function (lastVal) {
+        return !lastVal;
+      });
+    }
+  }, "Create Matching", loading ? /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-spinner animate-spin text-lg m-2"
+  }) : /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-save text-lg m-2"
+  }))) : /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-y-4 mt-4 p-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-xl font-bold justify-self-start flex w-full"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full"
   }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold text-red-400"
-  }, "You have created a matching. You can view it below."), /*#__PURE__*/React.createElement("table", {
+    className: "border-l-2 border-b-2 border-iec-blue p-2 self-start justify-self-start w-max"
+  }, "Matching Status")), /*#__PURE__*/React.createElement("button", {
+    className: "self-end justify-self-end w-full p-4 ml-auto text-iec-blue underline",
+    onClick: function onClick() {
+      setShowMatchingModal(true);
+    }
+  }, "Recreate matching"), showMatchingModal === true ? /*#__PURE__*/React.createElement("div", {
+    id: "modal",
+    className: "min-h-screen w-full inset-0 fixed z-30 bg-black/60 flex justify-center items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-min mx-auto mt-10 w-1/2 bg-white  shadow-xl pb-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "text-xl col-auto justify-self-start self-center"
+  }, "WARNING"), /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-times text-white cursor-pointer col-auto justify-self-end self-center",
+    onClick: function onClick() {
+      setShowMatchingModal(false);
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "p-8 h-min overflow-y-scroll flex flex-col items-center justify-center"
+  }, /*#__PURE__*/React.createElement("p", null, "Creating new matching will erase the previous matching, if any. Only create matching if you are sure you want to do so. ", /*#__PURE__*/React.createElement("br", null), " Do you want to create new matching?"), /*#__PURE__*/React.createElement("div", {
+    className: "mt-10 flex"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bg-gray-400 py-4 px-8 rounded-md text-white mx-10",
+    onClick: function onClick() {
+      setShowMatchingModal(false);
+    }
+  }, "No"), /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue py-4 px-8 rounded-md text-white mx-10",
+    onClick: function onClick() {
+      setShowMatchingModal(false);
+      setRecreateMatching(true);
+    }
+  }, "Yes"))))) : null), showEmailStudents && /*#__PURE__*/React.createElement(EmailForm, {
+    users: matching.map(function (match) {
+      return match.student_email;
+    }),
+    onFinish: function onFinish() {
+      setShowEmailStudents(false);
+    },
+    sending_link: "/admin/interview/".concat(interview_round_id, "/send-matching-emails-student"),
+    default_values: {
+      email_subject: "IEC Interview Invite",
+      email_heading: "IEC Interview Invite",
+      email_body: "Dear Student<br>We hope you are well.<br>You have been assigned an interviewer, please log into your portal to book an appointment.<br>",
+      email_button_pre_text: "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.",
+      email_button_label: "Log In",
+      email_button_url: "https://apply.iec.org.pk/student/login"
+    }
+  }), showEmailInterviewers && /*#__PURE__*/React.createElement(EmailForm, {
+    users: matching.map(function (match) {
+      return match.interviewer_email;
+    }),
+    onFinish: function onFinish() {
+      setShowEmailInterviewers(false);
+    },
+    sending_link: "/admin/interview/".concat(interview_round_id, "/send-matching-emails-interviewer"),
+    default_values: {
+      email_subject: "IEC Interview Invite",
+      email_heading: "IEC Interview Invite",
+      email_body: "Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>",
+      email_button_pre_text: "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to view your assigned students and to record the Interview Scores of the students whom you interview.",
+      email_button_label: "Log In",
+      email_button_url: "This will be automatically set"
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-end justify-end mt-10"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue py-4 px-8 text-white mx-10",
+    onClick: function onClick() {
+      setShowEmailInterviewers(false);
+      setShowEmailStudents(true);
+    }
+  }, "Email Students"), /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue py-4 px-8 text-white mx-10",
+    onClick: function onClick() {
+      setShowEmailStudents(false);
+      setShowEmailInterviewers(true);
+    }
+  }, "Email Interviewers")), /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "bg-gray-800 text-white"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "p-2 "
   }, "Index"), /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
+    className: "p-2 "
   }, "Interviewer Email"), /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
+    className: "p-2 "
   }, "Student Email"))), /*#__PURE__*/React.createElement("tbody", null, matching.map(function (match, index) {
     return /*#__PURE__*/React.createElement("tr", {
-      key: index
+      key: index,
+      className: "bg-gray-300 p-4 mb-4"
     }, /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
+      className: "p-4 mt-4"
     }, index + 1), /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
+      className: "p-4 mt-4"
     }, match.interviewer_email), /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
+      className: "p-4 mt-4"
     }, match.student_email));
-  })))) : /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-y-4 mt-20 p-10"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold text-red-400"
-  }, "You have not created a matching yet.")));
-};
+  })))));
+}; // const Step5 = () => {
+//   const [loading, setLoading] = useState(false);
+//   const { matching_object } = useContext(MyContext);
+//   const [matching, setMatching] = matching_object;
+//   const sendEmails = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     try {
+//       //extract unique id of interviewers fron matching
+//       const interviewer_emails = [
+//         ...new Set(matching.map((match) => match.interviewer_email)),
+//       ];
+//       for (let i = 0; i < interviewer_emails.length; i++) {
+//         const response = await fetch(
+//           `/admin/interview/${interview_round_id}/send-matching-emails`,
+//           {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//               interviewer_email: interviewer_emails[i],
+//             }),
+//           }
+//         );
+//         if (response.status == 404) {
+//           window.alert("Some interviewers have not updated calendly links");
+//           setLoading(false);
+//           return;
+//         }
+//         if (response.status == 200) {
+//           window.alert("Emails sent successfully");
+//           setLoading(false);
+//           return;
+//         }
+//       }
+//     } catch (err) {
+//       console.log(err);
+//       window.alert("An error occured, please try again later");
+//     }
+//   };
+//   return (
+//     <div>
+//       <div className="flex flex-row mt-4 p-4 w-full">
+//         <label className="p-2 text-xl">
+//           To send emails to both the interviewers and the students, click the
+//           given button.
+//         </label>
+//         <button
+//           className="ml-20 bg-green-500 p-2 text-white"
+//           onClick={sendEmails}
+//         >
+//           Send Emails
+//         </button>
+//       </div>
+//       <div>
+//         {matching.length > 0 ? (
+//           <div className="flex flex-col gap-y-4 mt-4 p-10">
+//             <h2 className="text-lg font-semibold text-red-400">
+//               You have created a matching. You can view it below.
+//             </h2>
+//             <table className="w-full text-left">
+//               <thead>
+//                 <tr>
+//                   <th className="p-2 border border-black">Index</th>
+//                   <th className="p-2 border border-black">Interviewer Email</th>
+//                   <th className="p-2 border border-black">Student Email</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {matching.map((match, index) => (
+//                   <tr key={index}>
+//                     <td className="p-2 border border-black">{index + 1}</td>
+//                     <td className="p-2 border border-black">
+//                       {match.interviewer_email}
+//                     </td>
+//                     <td className="p-2 border border-black">
+//                       {match.student_email}
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+//         ) : (
+//           <div className="flex flex-col gap-y-4 mt-20 p-10">
+//             <h2 className="text-lg font-semibold text-red-400">
+//               You have not created a matching yet.
+//             </h2>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
-var Step5 = function Step5() {
-  var _useState45 = useState(false),
-      _useState46 = _slicedToArray(_useState45, 2),
-      loading = _useState46[0],
-      setLoading = _useState46[1];
-
-  var _useContext4 = useContext(MyContext),
-      matching_object = _useContext4.matching_object;
-
-  var _matching_object2 = _slicedToArray(matching_object, 2),
-      matching = _matching_object2[0],
-      setMatching = _matching_object2[1];
-
-  var sendEmails = /*#__PURE__*/function () {
-    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(e) {
-      var interviewer_emails, i, response;
-      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              e.preventDefault();
-              setLoading(true);
-              _context4.prev = 2;
-              //extract unique id of interviewers fron matching
-              interviewer_emails = _toConsumableArray(new Set(matching.map(function (match) {
-                return match.interviewer_email;
-              })));
-              i = 0;
-
-            case 5:
-              if (!(i < interviewer_emails.length)) {
-                _context4.next = 20;
-                break;
-              }
-
-              _context4.next = 8;
-              return fetch("/admin/interview/".concat(interview_round_id, "/send-matching-emails"), {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                  interviewer_email: interviewer_emails[i]
-                })
-              });
-
-            case 8:
-              response = _context4.sent;
-
-              if (!(response.status == 404)) {
-                _context4.next = 13;
-                break;
-              }
-
-              window.alert("Some interviewers have not updated calendly links");
-              setLoading(false);
-              return _context4.abrupt("return");
-
-            case 13:
-              if (!(response.status == 200)) {
-                _context4.next = 17;
-                break;
-              }
-
-              window.alert("Emails sent successfully");
-              setLoading(false);
-              return _context4.abrupt("return");
-
-            case 17:
-              i++;
-              _context4.next = 5;
-              break;
-
-            case 20:
-              _context4.next = 26;
-              break;
-
-            case 22:
-              _context4.prev = 22;
-              _context4.t0 = _context4["catch"](2);
-              console.log(_context4.t0);
-              window.alert("An error occured, please try again later");
-
-            case 26:
-            case "end":
-              return _context4.stop();
-          }
-        }
-      }, _callee4, null, [[2, 22]]);
-    }));
-
-    return function sendEmails(_x3) {
-      return _ref4.apply(this, arguments);
-    };
-  }();
-
-  return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-row mt-4 p-4 w-full"
-  }, /*#__PURE__*/React.createElement("label", {
-    className: "p-2 text-xl"
-  }, "To send emails to both the interviewers and the students, click the given button."), /*#__PURE__*/React.createElement("button", {
-    className: "ml-20 bg-green-500 p-2 text-white",
-    onClick: sendEmails
-  }, "Send Emails")), /*#__PURE__*/React.createElement("div", null, matching.length > 0 ? /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-y-4 mt-4 p-10"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold text-red-400"
-  }, "You have created a matching. You can view it below."), /*#__PURE__*/React.createElement("table", {
-    className: "w-full text-left"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
-  }, "Index"), /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
-  }, "Interviewer Email"), /*#__PURE__*/React.createElement("th", {
-    className: "p-2 border border-black"
-  }, "Student Email"))), /*#__PURE__*/React.createElement("tbody", null, matching.map(function (match, index) {
-    return /*#__PURE__*/React.createElement("tr", {
-      key: index
-    }, /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
-    }, index + 1), /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
-    }, match.interviewer_email), /*#__PURE__*/React.createElement("td", {
-      className: "p-2 border border-black"
-    }, match.student_email));
-  })))) : /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col gap-y-4 mt-20 p-10"
-  }, /*#__PURE__*/React.createElement("h2", {
-    className: "text-lg font-semibold text-red-400"
-  }, "You have not created a matching yet."))));
-};
 
 var Step6 = function Step6() {
-  var _useState47 = useState([]),
-      _useState48 = _slicedToArray(_useState47, 2),
-      students = _useState48[0],
-      setStudents = _useState48[1];
+  var _useState59 = useState([]),
+      _useState60 = _slicedToArray(_useState59, 2),
+      students = _useState60[0],
+      setStudents = _useState60[1];
 
-  useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5() {
+  useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
     var response;
-    return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+    return _regeneratorRuntime().wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
-            _context5.prev = 0;
-            _context5.next = 3;
+            _context4.prev = 0;
+            _context4.next = 3;
             return fetch("/admin/interview/".concat(interview_round_id, "/get-student-scores"));
 
           case 3:
-            response = _context5.sent;
+            response = _context4.sent;
 
             if (!(response.status == 200)) {
-              _context5.next = 11;
+              _context4.next = 11;
               break;
             }
 
-            _context5.next = 7;
+            _context4.next = 7;
             return response.json();
 
           case 7:
-            response = _context5.sent;
+            response = _context4.sent;
 
             if (response.success == "ok") {
               setStudents(response.scores.filter(function (score) {
@@ -1122,7 +1224,7 @@ var Step6 = function Step6() {
               }));
             }
 
-            _context5.next = 13;
+            _context4.next = 13;
             break;
 
           case 11:
@@ -1130,21 +1232,21 @@ var Step6 = function Step6() {
             alert("An error occured, please refresh the page");
 
           case 13:
-            _context5.next = 19;
+            _context4.next = 19;
             break;
 
           case 15:
-            _context5.prev = 15;
-            _context5.t0 = _context5["catch"](0);
-            console.log(_context5.t0);
+            _context4.prev = 15;
+            _context4.t0 = _context4["catch"](0);
+            console.log(_context4.t0);
             alert("An error occured, please refresh the page");
 
           case 19:
           case "end":
-            return _context5.stop();
+            return _context4.stop();
         }
       }
-    }, _callee5, null, [[0, 15]]);
+    }, _callee4, null, [[0, 15]]);
   })), []);
   return /*#__PURE__*/React.createElement("div", null, students.length > 0 ? /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mt-20"
@@ -1177,31 +1279,33 @@ var Step6 = function Step6() {
     }, student.interviewerName), /*#__PURE__*/React.createElement("td", {
       className: "m-2 p-4"
     }, student.obtainedScore + " / " + student.totalScore));
-  }))) : /*#__PURE__*/React.createElement("div", null, "No Students have been marked yet"));
+  }))) : /*#__PURE__*/React.createElement("div", {
+    className: "w-full bg-white flex items-center justify-center text-xl mt-20 rounded-md p-4 "
+  }, "No Students have been marked yet"));
 };
 
 var Main = function Main() {
-  var _useContext5 = useContext(MyContext),
-      steps_object = _useContext5.steps_object;
+  var _useContext4 = useContext(MyContext),
+      steps_object = _useContext4.steps_object;
 
   var _steps_object3 = _slicedToArray(steps_object, 2),
       steps = _steps_object3[0],
       setSteps = _steps_object3[1];
 
-  var _useState49 = useState(false),
-      _useState50 = _slicedToArray(_useState49, 2),
-      editInterviewRoundTitle = _useState50[0],
-      setEditInterviewRoundTitle = _useState50[1];
+  var _useState61 = useState(false),
+      _useState62 = _slicedToArray(_useState61, 2),
+      editInterviewRoundTitle = _useState62[0],
+      setEditInterviewRoundTitle = _useState62[1];
 
-  var _useState51 = useState(document.getElementById("interview-round-name-field").value),
-      _useState52 = _slicedToArray(_useState51, 2),
-      interviewRoundTitle = _useState52[0],
-      setInterviewRoundTitle = _useState52[1];
+  var _useState63 = useState(document.getElementById("interview-round-name-field").value),
+      _useState64 = _slicedToArray(_useState63, 2),
+      interviewRoundTitle = _useState64[0],
+      setInterviewRoundTitle = _useState64[1];
 
-  var _useState53 = useState(false),
-      _useState54 = _slicedToArray(_useState53, 2),
-      loading_name = _useState54[0],
-      setLoadingName = _useState54[1];
+  var _useState65 = useState(false),
+      _useState66 = _slicedToArray(_useState65, 2),
+      loading_name = _useState66[0],
+      setLoadingName = _useState66[1];
 
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();
@@ -1264,9 +1368,7 @@ var Main = function Main() {
     className: "hidden"
   }), steps[3].active ? /*#__PURE__*/React.createElement(Step4, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
-  }), steps[4].active ? /*#__PURE__*/React.createElement(Step5, null) : /*#__PURE__*/React.createElement("div", {
-    className: "hidden"
-  }), steps[5].active ? /*#__PURE__*/React.createElement(Step6, null) : /*#__PURE__*/React.createElement("div", {
+  }), steps[4].active ? /*#__PURE__*/React.createElement(Step6, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }));
 };

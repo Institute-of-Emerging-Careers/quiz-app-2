@@ -13,7 +13,6 @@ const {
   InterviewerSlot,
   StudentInterviewRoundInvite,
   InterviewMatching,
-  InterviewerCalendlyLinks,
   InterviewQuestions,
   InterviewAnswers,
   InterviewScores,
@@ -352,55 +351,55 @@ router.get("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
   }
 });
 
-router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
-  try {
-    const interviewer = await Interviewer.findOne({
-      where: { id: req.user.user.id },
-    });
+// router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
+//   try {
+//     const interviewer = await Interviewer.findOne({
+//       where: { id: req.user.user.id },
+//     });
 
-    if (interviewer == null) return res.sendStatus(404);
+//     if (interviewer == null) return res.sendStatus(404);
 
-    const drop_previous = await InterviewerCalendlyLinks.destroy({
-      where: { InterviewerId: interviewer.id },
-    });
+//     const drop_previous = await InterviewerCalendlyLinks.destroy({
+//       where: { InterviewerId: interviewer.id },
+//     });
 
-    const response = await InterviewerCalendlyLinks.create({
-      calendly_link: req.body.calendly_link,
-      InterviewerId: interviewer.id,
-    });
+//     const response = await InterviewerCalendlyLinks.create({
+//       calendly_link: req.body.calendly_link,
+//       InterviewerId: interviewer.id,
+//     });
 
-    res.sendStatus(200);
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
-});
+//     res.sendStatus(200);
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500);
+//   }
+// });
 
-router.get("/get-link", checkInterviewerAuthenticated, async (req, res) => {
-  try {
-    const interview_round = await InterviewRound.findOne({
-      where: { id: req.params.interview_round_id },
-    });
-    if (interview_round == null) return res.sendStatus(404);
+// router.get("/get-link", checkInterviewerAuthenticated, async (req, res) => {
+//   try {
+//     const interview_round = await InterviewRound.findOne({
+//       where: { id: req.params.interview_round_id },
+//     });
+//     if (interview_round == null) return res.sendStatus(404);
 
-    const interviewer = await Interviewer.findOne({
-      where: { id: req.user.user.id },
-    });
-    if (interviewer == null) return res.sendStatus(404);
+//     const interviewer = await Interviewer.findOne({
+//       where: { id: req.user.user.id },
+//     });
+//     if (interviewer == null) return res.sendStatus(404);
 
-    const calendly_link = await InterviewerCalendlyLinks.findOne({
-      where: { InterviewerId: interviewer.id },
-    });
-    if (calendly_link == null) return res.sendStatus(404);
+//     const calendly_link = await InterviewerCalendlyLinks.findOne({
+//       where: { InterviewerId: interviewer.id },
+//     });
+//     if (calendly_link == null) return res.sendStatus(404);
 
-    res.status(200).json({
-      calendly_link: calendly_link.calendly_link,
-    });
-  } catch (err) {
-    console.log(err);
-    res.sendStatus(500);
-  }
-});
+//     res.status(200).json({
+//       calendly_link: calendly_link.calendly_link,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//     res.sendStatus(500);
+//   }
+// });
 
 router.post(
   "/interviewer/save-time-slots",
@@ -818,64 +817,40 @@ router.get(
 );
 
 router.post(
-  "/:interview_round_id/send-matching-emails",
+  "/:interview_round_id/send-matching-emails-interviewer",
   checkAdminAuthenticated,
   async (req, res) => {
     try {
+      const email_content = req.body.email_content;
+
       const interview_round = await InterviewRound.findOne({
         where: { id: req.params.interview_round_id },
       });
       if (interview_round == null) return res.sendStatus(404);
 
-      const interviewer = await Interviewer.findOne({
-        where: { email: req.body.interviewer_email },
-      });
+      for (const interviewer_email of req.body.users) {
+        const interviewer = await Interviewer.findOne({
+          where: { email: interviewer_email },
+        });
 
-      const interview_matchings = await InterviewMatching.findAll({
-        where: {
-          InterviewRoundId: req.params.interview_round_id,
-          InterviewerId: interviewer.id,
-        },
-      });
-
-      const interviewer_link = await InterviewerCalendlyLinks.findOne({
-        where: { InterviewerId: interviewer.id },
-      });
-
-      const interviewer_password = (
-        await Interviewer.findOne({
-          where: { email: interviewer.email },
-          attributes: ["password"],
-        })
-      ).password;
-      const interviewer_login_link = `${
-        process.env.SITE_DOMAIN_NAME
-      }/admin/interview/login?email=${
-        interviewer.email
-      }&password=${encodeURIComponent(interviewer_password)}`;
-
-      await queueMail(req.body.interviewer_email, `IEC interview invite`, {
-        heading: "Interview Invitation",
-        inner_text: `Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>`,
-        button_announcer: `Click the button to login to your account<br>`,
-        button_text: "Login",
-        button_link: interviewer_login_link,
-      });
-
-      for (const matching of interview_matchings) {
-        await queueMail(matching.student_email, `IEC interview invite`, {
-          heading: "Interview Invitation",
-          inner_text: `Dear Applicant,
-        Greetings from Institute of Emerging Careers
+        const interviewer_password = (
+          await Interviewer.findOne({
+            where: { email: interviewer.email },
+            attributes: ["password"],
+          })
+        ).password;
+        const interviewer_login_link = `${
+          process.env.SITE_DOMAIN_NAME
+        }/admin/interview/login?email=${
+          interviewer.email
+        }&password=${encodeURIComponent(interviewer_password)}`;
         
-        Congratulations for successfully completing the assessment and qualifying for the Interview Round of the selection process. You have been assigned to ${interviewer.name} for your interview. Click the below given link to book a timeslot with your interviewer. Please check the email and ensure your availability in the giving time slot.  
-        
-        In case you have any questions, you may email your interviewer at ${interviewer.email}. 
-        
-        Kind Regards,
-        Director of Admissions
-        Institute of Emerging Careers
-        `,
+        await queueMail(interviewer_email, `${email_content.subject}`, {
+          heading: email_content.heading,
+          inner_text: email_content.body,
+          button_announcer: email_content.button_pre_text,
+          button_text: email_content.button_label,
+          button_link: interviewer_login_link,
         });
       }
 
@@ -886,6 +861,31 @@ router.post(
     }
   }
 );
+
+router.post("/:interview_round_id/send-matching-emails-student", checkAdminAuthenticated, async (req, res) => {
+  try{
+    const email_content = req.body.email_content;
+
+    const interview_round = await InterviewRound.findOne({where: {id : req.params.interview_round_id}});
+    if (interview_round == null) return res.sendStatus(404);
+    console.log(email_content);
+    for (const student_email of req.body.users) {
+      await queueMail(student_email, `${email_content.subject}`, {
+        heading: email_content.heading,
+        inner_text: email_content.body,
+        button_announcer: email_content.button_pre_text,
+        button_text: email_content.button_label,
+        button_link: email_content.button_url,
+      });
+    }
+
+    res.sendStatus(200);
+    
+  } catch(err){
+    console.log(err);
+    res.sendStatus(500);
+  }
+});
 
 router.post(
   "/:interview_round_id/save-questions",
