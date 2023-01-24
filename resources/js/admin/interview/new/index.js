@@ -1172,7 +1172,7 @@ const Step3 = () => {
 //   );
 // };
 
-const Step6 = () => {
+const Step5 = () => {
     const [students, setStudents] = useState([]);
 
     function download_table_as_csv(table_id, separator = ",") {
@@ -1366,7 +1366,7 @@ const Main = () => {
       {steps[2].active ? <Step3 /> : <div className="hidden"></div>}
       {steps[3].active ? <Step4 /> : <div className="hidden"></div>}
       {/* {steps[4].active ? <Step5 /> : <div className="hidden"></div>} */}
-      {steps[4].active ? <Step6 /> : <div className="hidden"></div>}
+      {steps[4].active ? <Step5 /> : <div className="hidden"></div>}
     </div>
   );
 };

@@ -9,7 +9,7 @@ var Modal = function Modal(props) {
     id: "modal",
     className: "h-min w-full inset-0 fixed z-30 bg-black/60"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "h-min mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2"
+    className: "h-min mt-10 w-1/2 bg-white  translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {
     className: "bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center"
   }, /*#__PURE__*/React.createElement("h3", {

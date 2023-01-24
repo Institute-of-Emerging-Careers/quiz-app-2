@@ -1002,6 +1002,7 @@ router.get(
         })
       );
 
+
       matchings = matchings.map((matching) => {
         return {
           id: matching.id,
@@ -1010,6 +1011,7 @@ router.get(
           lastName: matching.lastName,
           gender: matching.gender,
           cnic: matching.cnic,
+          studentAbsent: matching.student_absent,
           createdAt: matching.createdAt,
           updatedAt: matching.updatedAt,
           StudentId: matching.StudentId,
@@ -1126,8 +1128,6 @@ router.post(
       const score = await InterviewScores.findOne({where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}})
 
       if (score){
-        //update
-
         await InterviewScores.update({
           obtainedScore:  req.body.obtainedMarks,
           totalScore: req.body.totalMarks
@@ -1147,6 +1147,12 @@ router.post(
 					totalScore: req.body.totalMarks,
 				});
       }
+
+      await InterviewMatching.update(
+        {
+          student_absent: false
+        },
+        {where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}});
 
       res.sendStatus(200);
     } catch (err) {
@@ -1171,16 +1177,6 @@ router.get(
         where: { id: req.params.student_id },
       });
       if (student == null) return res.sendStatus(404);
-
-      // const interview_score = await InterviewScores.findOne({
-      //   where: {
-      //     InterviewRoundId: req.params.interview_round_id,
-      //     StudentId: req.params.student_id,
-      //     InterviewerId: req.user.user.id,
-      //   },
-      // });
-      // if (interview_score == null) return res.status(404).json({ message: "No marks entered yet" });
-
 
       const interview_answers = await InterviewAnswers.findAll({
         where: {
@@ -1211,6 +1207,31 @@ router.get(
     }
   }
 );
+
+router.post("/:interview_round_id/student/:student_id/mark-absent", checkInterviewerAuthenticated, async (req, res) => {
+  try{ 
+    const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
+    if (interview_round == null) return res.sendStatus(404);
+
+    const student = await Student.findOne({
+      where: { id: req.params.student_id },
+    });
+    if (student == null) return res.sendStatus(404);
+
+    await InterviewMatching.update(
+      {
+        student_absent: true
+      },
+      {where: {InterviewRoundId: req.params.interview_round_id, StudentId: req.params.student_id, InterviewerId: req.user.user.id}});
+
+    res.sendStatus(200);
+
+    
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(500);
+  }
+})
 
 router.get("/:interview_round_id/get-interview-duration", checkAdminAuthenticated, async (req, res) => {
   try{  
