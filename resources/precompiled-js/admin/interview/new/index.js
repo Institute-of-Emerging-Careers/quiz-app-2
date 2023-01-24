@@ -1187,7 +1187,7 @@ var Step3 = function Step3() {
 // };
 
 
-var Step6 = function Step6() {
+var Step5 = function Step5() {
   var _useState59 = useState([]),
       _useState60 = _slicedToArray(_useState59, 2),
       students = _useState60[0],
@@ -1419,7 +1419,7 @@ var Main = function Main() {
     className: "hidden"
   }), steps[3].active ? /*#__PURE__*/React.createElement(Step4, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
-  }), steps[4].active ? /*#__PURE__*/React.createElement(Step6, null) : /*#__PURE__*/React.createElement("div", {
+  }), steps[4].active ? /*#__PURE__*/React.createElement(Step5, null) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }));
 };

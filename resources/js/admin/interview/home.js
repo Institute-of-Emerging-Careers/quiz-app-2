@@ -70,7 +70,7 @@ const App = () => {
             : "hidden"
         }
       >
-        <div className="mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2">
+        <div className="mt-10 w-1/2 bg-white translate-x-2/4 shadow-xl pb-2">
           <div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
             <h3 className="text-xl col-auto justify-self-start self-center">
               <i className="fas fa-link text-xl text-white"></i> Create New
