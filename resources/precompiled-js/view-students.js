@@ -36,23 +36,21 @@ var StudentsList = function StudentsList() {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            console.log(interview_round_id);
-            _context.next = 3;
+            _context.next = 2;
             return fetch("/admin/interview/".concat(interview_round_id, "/get-assigned-students"));
 
-          case 3:
-            _context.next = 5;
+          case 2:
+            _context.next = 4;
             return _context.sent.json();
 
-          case 5:
+          case 4:
             response = _context.sent;
 
             if (response.matchings.length > 0) {
               setMatchings(response.matchings);
-              console.log(response.matchings);
             }
 
-          case 7:
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -83,6 +81,8 @@ var StudentsList = function StudentsList() {
     className: "border border-gray-200 px-4 py-2"
   }, "Student Gender"), /*#__PURE__*/React.createElement("th", {
     className: "border border-gray-200 px-4 py-2"
+  }, "Status"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2"
   }, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching, index) {
     return /*#__PURE__*/React.createElement("tr", {
       key: matching.id
@@ -97,6 +97,8 @@ var StudentsList = function StudentsList() {
     }, matching.cnic), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, matching.gender), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.studentAbsent === true ? "Absent" : matching.studentAbsent == null ? "Unmarked" : "Marked"), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, /*#__PURE__*/React.createElement("button", {
       className: "text-green-500"

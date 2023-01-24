@@ -125,8 +125,8 @@ InterviewMatching.init(
     //if the student did not show up for the interview and needs resceduling
     student_absent: {
       type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
+      allowNull: true,
+      defaultValue: null
     }
   },
   { sequelize, modelName: "InterviewMatching" }

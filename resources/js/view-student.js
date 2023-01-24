@@ -50,6 +50,19 @@ const ViewStudent = () => {
 		}
 	}, []);
 
+	const markAsAbsent = async () => {
+		const response = await fetch(`/admin/interview/${interview_round_id}/student/${student_id}/mark-absent`, {
+			method: "POST"
+		});
+
+		if (response.status == 200){
+			window.alert("Student marked absent");
+			window.location.href = `/admin/interview/${interview_round_id}/view-students`;
+		}
+
+
+	}
+
 	const addAnswers = async (e) => {
 		e.preventDefault();
 		let answers = [];
@@ -119,8 +132,6 @@ const ViewStudent = () => {
 				}),
 			}
 		);
-			
-		console.log(response);
 
 		if (response.status == 200) {
 			window.alert("Marks added successfully");
@@ -138,15 +149,26 @@ const ViewStudent = () => {
 						</p>
 
 						<div className = "flex flex-col ">
-							<div className="w-full mt-10 bg-iec-blue text-white rounded-md p-4">
+							<div className="w-full mt-10 rounded-md p-4 flex">
+
 								{/* save icon */}
 								<button
 									type="submit"
-									className=" font-bold p-1 flex flex-row"
+									className=" font-bold p-2 flex flex-row bg-iec-blue text-white m-2 items-center justify-center"
 								>
-									<i className="fa fa-save p-1"></i>
+									<i className="fa fa-save p-2"></i>
 
 									Save
+								</button>
+
+								<button
+									onClick = {markAsAbsent}
+									type = "button"
+									className=" font-bold p-2 flex flex-row m-2 bg-iec-blue text-white  items-center justify-center"
+								>
+									<i className="fa fa-user-xmark p-2"></i>
+
+									Student Absent
 								</button>
 							</div>
 						</div>

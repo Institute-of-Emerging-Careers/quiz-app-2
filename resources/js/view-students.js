@@ -7,7 +7,6 @@ const StudentsList = () => {
 	const [matchings, setMatchings] = useState([]);
 
 	useEffect(async () => {
-		console.log(interview_round_id);
 		const response = await (
 			await fetch(
 				`/admin/interview/${interview_round_id}/get-assigned-students`
@@ -16,7 +15,6 @@ const StudentsList = () => {
 
 		if (response.matchings.length > 0) {
 			setMatchings(response.matchings);
-            console.log(response.matchings);
 		}
 	}, []);
 
@@ -37,6 +35,8 @@ const StudentsList = () => {
                                 <th className="border border-gray-200 px-4 py-2">Student Name</th>
                                 <th className="border border-gray-200 px-4 py-2">Student CNIC</th>
                                 <th className="border border-gray-200 px-4 py-2">Student Gender</th>
+                                <th className="border border-gray-200 px-4 py-2">Status</th>
+
                                 <th className="border border-gray-200 px-4 py-2">Actions</th>
                             </tr>
                         </thead>
@@ -48,6 +48,7 @@ const StudentsList = () => {
                                             <td className="border border-gray-200 px-4 py-2">{matching.firstName + " " + matching.lastName}</td>
                                             <td className="border border-gray-200 px-4 py-2">{matching.cnic}</td>
                                             <td className="border border-gray-200 px-4 py-2">{matching.gender}</td>
+                                            <td className="border border-gray-200 px-4 py-2">{matching.studentAbsent === true ? ("Absent") : (matching.studentAbsent == null ? "Unmarked" : "Marked" )}</td>
                                             <td className="border border-gray-200 px-4 py-2">
                                                 <button className="text-green-500">
                                                     <a href={`/admin/interview/${interview_round_id}/student/${matching.StudentId}/enter-marks`}>Enter Marks </a>
