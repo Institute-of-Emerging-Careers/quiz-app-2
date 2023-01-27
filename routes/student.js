@@ -393,12 +393,14 @@ router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
       matching[i].interviewer_name = interviewer.name;
     }
 
+    console.log(matching[1]);
     //check if a slot has already been booked with the interviewer
     for (let i = 0; i < matching.length; i++) {
       const booking = await InterviewBookingSlots.findOne({
         where: {
           InterviewerId: matching[i].InterviewerId,
           StudentId: matching[i].StudentId,
+          InterviewRoundId: matching[i].InterviewRoundId,
           booked : true,
         },
       });
