@@ -119,7 +119,8 @@ const TimeSlotPicker = () => {
 	const bookSlot =  async () => {
 		try{
 			if (selectedTimeSlot) {
-				const response = await (await fetch(`/student/interview/${interview_round_id}/interviewer/${interviewer_id}/book-slot`, {
+				//booking a slot also sends an email
+				let response = await fetch(`/student/interview/${interview_round_id}/interviewer/${interviewer_id}/book-slot`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -127,13 +128,17 @@ const TimeSlotPicker = () => {
 					body: JSON.stringify({
 						booking_slot_id: selectedTimeSlot,
 					}),
-				})).json();
+				});
 
-				if (response.success) {
-					window.alert(response.message);
-					window.location.href = "/student/interview";
+				if (response.status == 200){
+
+					response = await response.json();
+
+					if (response.success) {
+						window.alert(response.message);
+						window.location.href = "/student/interview";
+					}
 				}
-					
 			}
 		} catch (err){
 			console.log(err)
