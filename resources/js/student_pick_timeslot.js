@@ -21,8 +21,8 @@ const DatePill = ({ date, selectedDate, onToggleDate }) => {
 
 const TimeSlotPill = ({ timeSlot, selectedTimeSlot, onToggleTimeSlot, setInterviewTime }) => {
 	//compute the interview time from start_time and end_time
-	const start_time = new Date(new Number(timeSlot.start_time) + 60 * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-	const end_time = new Date(new Number(timeSlot.end_time) + 60 * 1000).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+	const start_time = new Date(new Number(timeSlot.start_time)).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+	const end_time = new Date(new Number(timeSlot.end_time)).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 	return (
 		<div
 			className={`flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ${
@@ -58,27 +58,23 @@ const TimeSlotPicker = () => {
 
 		const timeslots = response.booking_slots;
 
-		//extract all unique dates from timeslots
+		//extract all unique dates from timeslots in the format day, moth, date
+		console.log(timeslots);
 		const dates = new Set(
 			timeslots.map((timeSlots) =>
 				new Date(new Number(timeSlots.start_time))
-					.toDateString()
-					.split(" ")
-					.slice(1)
-					.join(" ")
+					.toLocaleDateString({}, { weekday: "long", month: "long", day: "numeric" })
 			)
 		);
 		//convert dates from set to array
 		setDates(Array.from(dates));
 
-		//group timeslots by date
+		//group timeslots by date hh.mm format
+
 		const timeSlotsByDate = {};
 		timeslots.forEach((timeslot) => {
 			const date = new Date(new Number(timeslot.start_time))
-				.toDateString()
-				.split(" ")
-				.slice(1)
-				.join(" ");
+			.toLocaleDateString({}, { weekday: "long", month: "long", day: "numeric" });
 			if (timeSlotsByDate[date]) {
 				timeSlotsByDate[date].push(timeslot);
 			} else {
