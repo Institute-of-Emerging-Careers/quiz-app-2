@@ -990,7 +990,7 @@ router.get(
           });
 
           const booking = await InterviewBookingSlots.findOne({
-            where : {StudentId: matching.StudentId, InterviewerId: req.user.user.id}
+            where : {StudentId: matching.StudentId, InterviewerId: req.user.user.id, InterviewRoundId: req.params.interview_round_id}
           })
           let booked = false;
           let startTime = null;
@@ -1302,7 +1302,6 @@ router.post('/:interview_round_id/create-booking-slots', checkAdminAuthenticated
     timeslots.map(async (timeslot) => {
       //extract start and end and convert to unix time
       const start_time = new Date(timeslot.dataValues.start).getTime();
-      console.log(new Date(timeslot.dataValues.start));
       const duration = timeslot.dataValues.duration;
       const interview_duration = interview_round.dataValues.interview_duration * 60 * 1000;
 

@@ -41,12 +41,12 @@ var TimeSlotPill = function TimeSlotPill(_ref2) {
       onToggleTimeSlot = _ref2.onToggleTimeSlot,
       setInterviewTime = _ref2.setInterviewTime;
   //compute the interview time from start_time and end_time
-  var start_time = new Date(new Number(timeSlot.start_time) + 60 * 1000).toLocaleTimeString('en-US', {
+  var start_time = new Date(new Number(timeSlot.start_time)).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true
   });
-  var end_time = new Date(new Number(timeSlot.end_time) + 60 * 1000).toLocaleTimeString('en-US', {
+  var end_time = new Date(new Number(timeSlot.end_time)).toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
     hour12: true
@@ -105,17 +105,26 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
           case 4:
             response = _context.sent;
-            timeslots = response.booking_slots; //extract all unique dates from timeslots
+            timeslots = response.booking_slots; //extract all unique dates from timeslots in the format day, moth, date
 
+            console.log(timeslots);
             dates = new Set(timeslots.map(function (timeSlots) {
-              return new Date(new Number(timeSlots.start_time)).toDateString().split(" ").slice(1).join(" ");
+              return new Date(new Number(timeSlots.start_time)).toLocaleDateString({}, {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+              });
             })); //convert dates from set to array
 
-            setDates(Array.from(dates)); //group timeslots by date
+            setDates(Array.from(dates)); //group timeslots by date hh.mm format
 
             timeSlotsByDate = {};
             timeslots.forEach(function (timeslot) {
-              var date = new Date(new Number(timeslot.start_time)).toDateString().split(" ").slice(1).join(" ");
+              var date = new Date(new Number(timeslot.start_time)).toLocaleDateString({}, {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+              });
 
               if (timeSlotsByDate[date]) {
                 timeSlotsByDate[date].push(timeslot);
@@ -132,7 +141,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
             setTimeSlots(timeSlotsByDate);
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }

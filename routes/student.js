@@ -523,7 +523,7 @@ router.post("/interview/:interview_round_id/interviewer/:interviewer_id/book-slo
       await queueMail(student.email, `Interview Slot Booking Confirmation`, {
         heading: "Interview Slot Booking Confirmation",
         inner_text:
-          `Dear Student, <br> You have successfully booked a slot with your interviewer ${interviewer.name} at ${interviewDate} from ${startTime} to ${endTime}. You will receive the email link before the interview time.`,
+          `Dear Student, <br> You have successfully booked a slot with your interviewer ${interviewer.name} at ${interviewDate} from ${startTime} to ${endTime}. You will receive the email link before the interview time.<br>. Please make sure you are on time for the interview. <br> <br> Best Regards, <br> Team Placement Cell`,
         button_announcer: null,
         button_text: null,
         button_link: null,
