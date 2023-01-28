@@ -47,6 +47,7 @@ var StudentsList = function StudentsList() {
             response = _context.sent;
 
             if (response.matchings.length > 0) {
+              console.log(response.matchings);
               setMatchings(response.matchings);
             }
 
@@ -64,28 +65,33 @@ var StudentsList = function StudentsList() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "w-1/2 flex items-center justify-center bg-white rounded-md "
   }, /*#__PURE__*/React.createElement("p", {
-    className: "text-3xl font-bold p-4 w-full"
+    className: "text-3xl font-bold p-4 w-full flex justify-center items-center"
   }, "Assigned students")), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex items-center justify-center mt-10"
   }, matchings.length > 0 ? /*#__PURE__*/React.createElement("table", {
-    className: "table-auto bg-white rounded-md w-1/2"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "table-auto bg-white rounded-md w-3/4"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "bg-gray-700 text-white"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Sr. No"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Email"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Name"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student CNIC"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Gender"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
-  }, "Status"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
+  }, "Booking Status"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
+  }, "Interview Status"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching, index) {
     return /*#__PURE__*/React.createElement("tr", {
-      key: matching.id
+      key: matching.id,
+      className: "bg-gray-300"
     }, /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, index + 1), /*#__PURE__*/React.createElement("td", {
@@ -98,13 +104,21 @@ var StudentsList = function StudentsList() {
       className: "border border-gray-200 px-4 py-2"
     }, matching.gender), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
+    }, matching.booked ? new Date(new Number(matching.startTime)).toDateString() + " , " + new Date(new Number(matching.startTime)).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    }) + " - " + new Date(new Number(matching.endTime)).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
+    }) : "No slot booked"), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
     }, matching.studentAbsent === true ? "Absent" : matching.studentAbsent == null ? "Unmarked" : "Marked"), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, /*#__PURE__*/React.createElement("button", {
       className: "text-green-500"
     }, /*#__PURE__*/React.createElement("a", {
       href: "/admin/interview/".concat(interview_round_id, "/student/").concat(matching.StudentId, "/enter-marks")
-    }, "Enter Marks "))));
+    }, "Enter Marks", " "))));
   }))) : /*#__PURE__*/React.createElement("div", null, "No students have been assigned to you yet"))));
 };
 

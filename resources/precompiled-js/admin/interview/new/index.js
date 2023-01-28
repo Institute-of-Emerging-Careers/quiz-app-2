@@ -1235,7 +1235,8 @@ var Step5 = function Step5() {
       link.click();
       document.body.removeChild(link);
     }
-  }
+  } //fetch the total scores for all interviewees
+
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
     var response;

@@ -988,17 +988,29 @@ router.get(
           const student = await Student.findOne({
             where: { id: matching.StudentId },
           });
+
+          const booking = await InterviewBookingSlots.findOne({
+            where : {StudentId: matching.StudentId, InterviewerId: req.user.user.id}
+          })
+          let booked = false;
+          let startTime = null;
+          let endTime = null;
+
+          if (booking != null) {
+						booked = true;
+						startTime = booking.startTime;
+						endTime = booking.endTime;
+					}
+
           matching.dataValues.cnic = student.cnic;
           matching.dataValues.firstName = student.firstName;
           matching.dataValues.lastName = student.lastName;
           matching.dataValues.gender = student.gender;
-          return {
-            ...matching.dataValues,
-            cnic: student.cnic,
-            firstName: student.firstName,
-            lastName: student.lastName,
-            gender: student.gender,
-          };
+          matching.dataValues.booked = booked;
+          matching.dataValues.startTime = startTime;
+          matching.dataValues.endTime = endTime;
+
+          return matching.dataValues
         })
       );
 
@@ -1012,9 +1024,13 @@ router.get(
           gender: matching.gender,
           cnic: matching.cnic,
           studentAbsent: matching.student_absent,
+          booked: matching.booked,
+          startTime: matching.startTime,
+          endTime: matching.endTime,
           createdAt: matching.createdAt,
           updatedAt: matching.updatedAt,
           StudentId: matching.StudentId,
+
         };
       });
 
