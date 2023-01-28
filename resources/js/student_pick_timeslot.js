@@ -2,6 +2,18 @@ const interview_round_id =
 	document.getElementById("interview_round_id").innerHTML;
 const interviewer_id = document.getElementById("interviewer_id").innerHTML;
 
+function tConvert (time) {
+	// Check correct time format and split into components
+	time = time.toString ().match (/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+  
+	if (time.length > 1) { // If time format correct
+	  time = time.slice (1);  // Remove full string match value
+	  time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+	  time[0] = +time[0] % 12 || 12; // Adjust hours
+	}
+	return time.join (''); // return adjusted time or original string
+}
+
 const DatePill = ({ date, selectedDate, onToggleDate }) => {
 	return (
 		<div
@@ -20,9 +32,9 @@ const DatePill = ({ date, selectedDate, onToggleDate }) => {
 };
 
 const TimeSlotPill = ({ timeSlot, selectedTimeSlot, onToggleTimeSlot, setInterviewTime }) => {
-	//compute the interview time from start_time and end_time
-	const start_time = new Date(new Number(timeSlot.start_time)).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-	const end_time = new Date(new Number(timeSlot.end_time)).toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+	//compute the interview time from start_time and end_time format as hh:mm 12 hour format
+	const start_time = tConvert(new Date(new Number(timeSlot.start_time)).toISOString().slice(11, 16));
+	const end_time = tConvert(new Date(new Number(timeSlot.end_time)).toISOString().slice(11, 16));
 	return (
 		<div
 			className={`flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ${
@@ -63,7 +75,7 @@ const TimeSlotPicker = () => {
 		const dates = new Set(
 			timeslots.map((timeSlots) =>
 				new Date(new Number(timeSlots.start_time))
-					.toLocaleDateString({}, { weekday: "long", month: "long", day: "numeric" })
+					.toDateString({}, { weekday: "long", month: "long", day: "numeric" })
 			)
 		);
 		//convert dates from set to array
@@ -74,7 +86,7 @@ const TimeSlotPicker = () => {
 		const timeSlotsByDate = {};
 		timeslots.forEach((timeslot) => {
 			const date = new Date(new Number(timeslot.start_time))
-			.toLocaleDateString({}, { weekday: "long", month: "long", day: "numeric" });
+			.toDateString({}, { weekday: "long", month: "long", day: "numeric" });
 			if (timeSlotsByDate[date]) {
 				timeSlotsByDate[date].push(timeslot);
 			} else {

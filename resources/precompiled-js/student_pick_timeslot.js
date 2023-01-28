@@ -23,6 +23,22 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var interview_round_id = document.getElementById("interview_round_id").innerHTML;
 var interviewer_id = document.getElementById("interviewer_id").innerHTML;
 
+function tConvert(time) {
+  // Check correct time format and split into components
+  time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  if (time.length > 1) {
+    // If time format correct
+    time = time.slice(1); // Remove full string match value
+
+    time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+
+  return time.join(''); // return adjusted time or original string
+}
+
 var DatePill = function DatePill(_ref) {
   var date = _ref.date,
       selectedDate = _ref.selectedDate,
@@ -40,17 +56,9 @@ var TimeSlotPill = function TimeSlotPill(_ref2) {
       selectedTimeSlot = _ref2.selectedTimeSlot,
       onToggleTimeSlot = _ref2.onToggleTimeSlot,
       setInterviewTime = _ref2.setInterviewTime;
-  //compute the interview time from start_time and end_time
-  var start_time = new Date(new Number(timeSlot.start_time)).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  });
-  var end_time = new Date(new Number(timeSlot.end_time)).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  });
+  //compute the interview time from start_time and end_time format as hh:mm 12 hour format
+  var start_time = tConvert(new Date(new Number(timeSlot.start_time)).toISOString().slice(11, 16));
+  var end_time = tConvert(new Date(new Number(timeSlot.end_time)).toISOString().slice(11, 16));
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ".concat(selectedTimeSlot === timeSlot.id ? "bg-iec-blue text-white border-white" : "text-iec-blue bg-white border-iec-blue"),
     onClick: function onClick() {
@@ -109,7 +117,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
             console.log(timeslots);
             dates = new Set(timeslots.map(function (timeSlots) {
-              return new Date(new Number(timeSlots.start_time)).toLocaleDateString({}, {
+              return new Date(new Number(timeSlots.start_time)).toDateString({}, {
                 weekday: "long",
                 month: "long",
                 day: "numeric"
@@ -120,7 +128,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
             timeSlotsByDate = {};
             timeslots.forEach(function (timeslot) {
-              var date = new Date(new Number(timeslot.start_time)).toLocaleDateString({}, {
+              var date = new Date(new Number(timeslot.start_time)).toDateString({}, {
                 weekday: "long",
                 month: "long",
                 day: "numeric"

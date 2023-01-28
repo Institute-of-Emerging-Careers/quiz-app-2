@@ -3,6 +3,21 @@ const useEffect = React.useEffect;
 const interview_round_id =
 	document.getElementById("interview-round-id").innerHTML;
 
+const tConvert = (time) => {
+	// Check correct time format and split into components
+	time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [
+		time,
+	];
+
+	if (time.length > 1) {
+		// If time format correct
+		time = time.slice(1); // Remove full string match value
+		time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+		time[0] = +time[0] % 12 || 12; // Adjust hours
+	}
+	return time.join(""); // return adjusted time or original string
+};
+
 const StudentsList = () => {
 	const [matchings, setMatchings] = useState([]);
 
@@ -74,9 +89,9 @@ const StudentsList = () => {
 										<td className="border border-gray-200 px-4 py-2">
 											{matching.booked ?
                                                 new Date(new Number(matching.startTime)).toDateString() + " , " +
-												new Date(new Number(matching.startTime)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) +
+												tConvert(new Date(new Number(matching.startTime)).toISOString().slice(11, 16)) +
 												  " - " +
-												  new Date(new Number(matching.endTime)).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+												tConvert(new Date(new Number(matching.endTime)).toISOString().slice(11, 16))
 												: "No slot booked"}
 										</td>
 										<td className="border border-gray-200 px-4 py-2">
