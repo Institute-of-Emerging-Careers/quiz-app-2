@@ -1220,7 +1220,8 @@ const Step5 = () => {
         document.body.removeChild(link);
       }
     }
-
+    
+    //fetch the total scores for all interviewees
     useEffect(async () => {
       try{
         let response = await fetch(`/admin/interview/${interview_round_id}/get-student-scores`);

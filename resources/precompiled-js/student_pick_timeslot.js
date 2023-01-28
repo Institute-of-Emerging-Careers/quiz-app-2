@@ -168,7 +168,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
               _context2.prev = 0;
 
               if (!selectedTimeSlot) {
-                _context2.next = 8;
+                _context2.next = 10;
                 break;
               }
 
@@ -184,10 +184,17 @@ var TimeSlotPicker = function TimeSlotPicker() {
               });
 
             case 4:
-              _context2.next = 6;
-              return _context2.sent.json();
+              _response = _context2.sent;
 
-            case 6:
+              if (!(_response.status == 200)) {
+                _context2.next = 10;
+                break;
+              }
+
+              _context2.next = 8;
+              return _response.json();
+
+            case 8:
               _response = _context2.sent;
 
               if (_response.success) {
@@ -195,23 +202,23 @@ var TimeSlotPicker = function TimeSlotPicker() {
                 window.location.href = "/student/interview";
               }
 
-            case 8:
-              _context2.next = 15;
+            case 10:
+              _context2.next = 17;
               break;
 
-            case 10:
-              _context2.prev = 10;
+            case 12:
+              _context2.prev = 12;
               _context2.t0 = _context2["catch"](0);
               console.log(_context2.t0);
               window.alert(response.message);
               window.location.href = "/student/interview";
 
-            case 15:
+            case 17:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 10]]);
+      }, _callee2, null, [[0, 12]]);
     }));
 
     return function bookSlot() {
