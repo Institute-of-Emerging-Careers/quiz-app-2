@@ -24,6 +24,22 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 var interview_round_id = document.getElementById("interview-round-id").innerHTML;
 
+var tConvert = function tConvert(time) {
+  // Check correct time format and split into components
+  time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  if (time.length > 1) {
+    // If time format correct
+    time = time.slice(1); // Remove full string match value
+
+    time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+
+  return time.join(""); // return adjusted time or original string
+};
+
 var StudentsList = function StudentsList() {
   var _useState = useState([]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -104,13 +120,7 @@ var StudentsList = function StudentsList() {
       className: "border border-gray-200 px-4 py-2"
     }, matching.gender), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
-    }, matching.booked ? new Date(new Number(matching.startTime)).toDateString() + " , " + new Date(new Number(matching.startTime)).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    }) + " - " + new Date(new Number(matching.endTime)).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
-    }) : "No slot booked"), /*#__PURE__*/React.createElement("td", {
+    }, matching.booked ? new Date(new Number(matching.startTime)).toDateString() + " , " + tConvert(new Date(new Number(matching.startTime)).toISOString().slice(11, 16)) + " - " + tConvert(new Date(new Number(matching.endTime)).toISOString().slice(11, 16)) : "No slot booked"), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, matching.studentAbsent === true ? "Absent" : matching.studentAbsent == null ? "Unmarked" : "Marked"), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
