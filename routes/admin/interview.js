@@ -1380,5 +1380,33 @@ router.get("/:interview_round_id/get-student-scores", checkAdminAuthenticated, a
   }
 })
 
+router.post("/:interview_round_id/interviewer-send-email", checkInterviewerAuthenticated, async (req, res) => { 
+  try {
+    const interview_round = await InterviewRound.findOne({where: {id: req.params.interview_round_id}});
+    if (interview_round == null) return res.sendStatus(404);
+
+    const interviewer = await Interviewer.findOne({where: {id: req.user.user.id}});
+    if (interviewer == null) return res.sendStatus(404);
+
+    const email_content = req.body.email_content;
+
+    for (student_email of req.body.users){
+      await queueMail(student_email, `${email_content.subject}`, {
+        heading: email_content.heading,
+        inner_text: email_content.body,
+        button_announcer: email_content.button_pre_text,
+        button_text: email_content.button_label,
+        button_link: email_content.button_url,
+      });    
+    }
+
+    res.sendStatus(200)
+
+	} catch (err) {
+		console.log(err);
+		res.sendStatus(500);
+	}
+});
+
 module.exports = router;
 
