@@ -98,7 +98,7 @@ const StudentsList = () => {
 									"Dear Student,<br>We hope you are well.<br>Please book a time slot from your portal so that your interview may be conducted.<br> Regards,<br>IEC Team",
 								email_button_pre_text: "Portal Link",
 								email_button_label: "Book a slot",
-								email_button_url: "https://apply.iec.org.pk/interview",
+								email_button_url: "https://apply.iec.org.pk/student/interview",
 							}}
 						/>
 					) : (
