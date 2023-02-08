@@ -22,7 +22,7 @@ test("Create Application Round", async ({ page }) => {
   await page.getByRole("link", { name: /Applications/ }).click();
   await expect(page).toHaveTitle("Cohort Applications - Admin Panel");
 
-  await page.getByRole("button", { name: "NEW" }).click();
+  await (await page.getByRole("button", { name: "NEW" })).click();
   const createRoundButton = await page.getByRole("button", {
     name: "Create Application Round",
   });

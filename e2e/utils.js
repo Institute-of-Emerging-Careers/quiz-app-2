@@ -10,8 +10,3 @@ export const logIntoAdminPanel = async (page) => {
   await page.getByRole("button", { name: "Log In" }).click();
   return expect(page).toHaveTitle("Home - Admin Panel");
 };
-
-export const goToApplicationsTab = async (page) => {
-  await page.getByRole("link", { name: /Applications/ }).click();
-  return expect(page).toHaveTitle("Cohort Applications - Admin Panel");
-};
