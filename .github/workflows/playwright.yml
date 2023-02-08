@@ -55,6 +55,8 @@ jobs:
     - run: npm ci
     - run: npm run build:css
     - run: npm run build:babel
+    - name: Start server
+      run: npm start
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
