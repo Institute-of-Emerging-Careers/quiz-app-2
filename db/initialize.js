@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 
 const initializeDatabase = async () => {
   try {
-    let alterandforce = false;
+    let alterandforce = process.env.NODE_ENV === "test";
     // Sync models with database
     await sequelize.sync({
-      alter: false,
+      alter: alterandforce,
       force: alterandforce,
       logging: process.env.NODE_ENV == "test" ? true : false,
     });
