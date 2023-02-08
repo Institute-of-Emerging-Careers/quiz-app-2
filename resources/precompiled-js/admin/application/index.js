@@ -147,9 +147,9 @@ var App = function App() {
     }).then(function (response) {
       if (response.ok) {
         response.json().then(function (parsed_response) {
-          setCourses(function (cur) {
+          if (parsed_response.newlyCreated) setCourses(function (cur) {
             return [].concat(_toConsumableArray(cur), [{
-              id: parsed_response.id,
+              id: parsed_response.course.id,
               title: parsed_response.title,
               checked: false
             }]);

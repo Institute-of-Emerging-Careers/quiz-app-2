@@ -57,8 +57,10 @@ router.get(
 
 router.put("/course/new", checkAdminAuthenticated, async (req, res) => {
   try {
-    const course = await Course.findOrCreate(req.body);
-    res.status(200).json(course);
+    const [course, newlyCreated] = await Course.findOrCreate({
+      where: { title: req.body.title },
+    });
+    res.status(200).json({ course, newlyCreated });
   } catch (err) {
     console.log(err);
     res.sendStatus(501);

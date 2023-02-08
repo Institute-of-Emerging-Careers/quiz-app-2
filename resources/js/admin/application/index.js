@@ -113,14 +113,15 @@ const App = () => {
       .then((response) => {
         if (response.ok) {
           response.json().then((parsed_response) => {
-            setCourses((cur) => [
-              ...cur,
-              {
-                id: parsed_response.id,
-                title: parsed_response.title,
-                checked: false,
-              },
-            ]);
+            if (parsed_response.newlyCreated)
+              setCourses((cur) => [
+                ...cur,
+                {
+                  id: parsed_response.course.id,
+                  title: parsed_response.title,
+                  checked: false,
+                },
+              ]);
             setNewCourseTitle("");
           });
         }
