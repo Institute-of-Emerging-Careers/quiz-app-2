@@ -57,8 +57,8 @@ jobs:
       uses: pustovitDmytro/redis-github-action@v1.0.1
     - run: npm run build:babel
     - name: Start Server
-        uses: BerniWittmann/background-server-action@v1
-        run: npm start
+      uses: BerniWittmann/background-server-action@v1
+      run: npm start
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
