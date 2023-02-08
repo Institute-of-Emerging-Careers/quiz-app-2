@@ -59,10 +59,11 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright Tests
-        uses: BerniWittmann/background-server-action@v1
-        with:
-          command: npx playwright test
-          start: npm start
+      run: |
+      npm start &
+      sleep 10 &&
+      curl http://localhost:4000 &&
+      npx playwright test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
