@@ -58,12 +58,10 @@ jobs:
     - run: npm run build:babel
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - name: Start Server
-      uses: BerniWittmann/background-server-action@v1
+    - name: Run Playwright Tests
+        uses: BerniWittmann/background-server-action@v1
         with:
-          command: npm run tests
+          command: npx playwright test
           start: npm start
     - uses: actions/upload-artifact@v3
       if: always()
