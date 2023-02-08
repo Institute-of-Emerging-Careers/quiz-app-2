@@ -1,4 +1,5 @@
 const { test, expect } = require("@playwright/test");
+require("dotenv").config();
 
 export const logIntoAdminPanel = async (page) => {
   await page.goto(`http://localhost:${process.env.PORT}/admin`);
