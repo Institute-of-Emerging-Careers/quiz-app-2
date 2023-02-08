@@ -56,13 +56,15 @@ jobs:
     - name: Install Redis
       uses: pustovitDmytro/redis-github-action@v1.0.1
     - run: npm run build:babel
-    - name: Start Server
-      uses: BerniWittmann/background-server-action@v1
-      run: npm start
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
       run: npx playwright test
+    - name: Start Server
+      uses: BerniWittmann/background-server-action@v1
+        with:
+          command: npm run tests
+          start: npm start
     - uses: actions/upload-artifact@v3
       if: always()
       with:
