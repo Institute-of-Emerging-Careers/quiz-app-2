@@ -299,6 +299,7 @@ var App = function App() {
       title: "Delete Application Round",
       "data-id": application_round.id,
       "data-index": index,
+      "data-testid": "delete-round-button",
       onClick: function onClick(e) {
         deleteApplicationRound(e.target.dataset.id, e.target.dataset.index);
       }
