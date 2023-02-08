@@ -55,9 +55,9 @@ router.get(
   }
 );
 
-router.post("/course/new", checkAdminAuthenticated, async (req, res) => {
+router.put("/course/new", checkAdminAuthenticated, async (req, res) => {
   try {
-    const course = await Course.create(req.body);
+    const course = await Course.findOrCreate(req.body);
     res.status(200).json(course);
   } catch (err) {
     console.log(err);

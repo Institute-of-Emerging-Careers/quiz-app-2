@@ -104,7 +104,7 @@ const App = () => {
 
   const addNewCourse = () => {
     fetch("/admin/application/course/new", {
-      method: "POST",
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         title: new_course_title,
@@ -190,23 +190,27 @@ const App = () => {
                   Which courses can students apply for?
                 </label>
                 {courses.map((course, index) => (
-                  <div>
-                    <input
-                      type="checkbox"
-                      name="courses"
-                      checked={course.checked}
-                      data-index={index}
-                      onChange={(e) => {
-                        setCourses((cur) => {
-                          let copy = cur.slice();
-                          copy[e.target.dataset.index].checked =
-                            !copy[e.target.dataset.index].checked;
-                          return copy;
-                        });
-                      }}
-                    ></input>
-                    <label>{" " + course.title}</label>
-                  </div>
+                  <ul>
+                    <li>
+                      <label>
+                        <input
+                          type="checkbox"
+                          name="courses"
+                          checked={course.checked}
+                          data-index={index}
+                          onChange={(e) => {
+                            setCourses((cur) => {
+                              let copy = cur.slice();
+                              copy[e.target.dataset.index].checked =
+                                !copy[e.target.dataset.index].checked;
+                              return copy;
+                            });
+                          }}
+                        ></input>
+                        {" " + course.title}
+                      </label>
+                    </li>
+                  </ul>
                 ))}
                 <input type="checkbox" name="courses"></input>
                 <input
@@ -304,9 +308,9 @@ const App = () => {
                   }}
                 >
                   {application_round.open ? (
-                    <i class="fas fa-door-open"></i>
+                    <i className="fas fa-door-open"></i>
                   ) : (
-                    <i class="fas fa-door-closed"></i>
+                    <i className="fas fa-door-closed"></i>
                   )}
                 </a>
                 <a

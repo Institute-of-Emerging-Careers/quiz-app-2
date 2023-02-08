@@ -137,7 +137,7 @@ var App = function App() {
 
   var addNewCourse = function addNewCourse() {
     fetch("/admin/application/course/new", {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json"
       },
@@ -212,7 +212,7 @@ var App = function App() {
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "courses"
   }, "Which courses can students apply for?"), courses.map(function (course, index) {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+    return /*#__PURE__*/React.createElement("ul", null, /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("label", null, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
       name: "courses",
       checked: course.checked,
@@ -224,7 +224,7 @@ var App = function App() {
           return copy;
         });
       }
-    }), /*#__PURE__*/React.createElement("label", null, " " + course.title));
+    }), " " + course.title)));
   }), /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
     name: "courses"
@@ -291,9 +291,9 @@ var App = function App() {
         changeApplicationOpenState(application_round.id, !application_round.open);
       }
     }, application_round.open ? /*#__PURE__*/React.createElement("i", {
-      class: "fas fa-door-open"
+      className: "fas fa-door-open"
     }) : /*#__PURE__*/React.createElement("i", {
-      class: "fas fa-door-closed"
+      className: "fas fa-door-closed"
     })), /*#__PURE__*/React.createElement("a", {
       className: "text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer",
       title: "Delete Application Round",
