@@ -7,3 +7,6 @@ uploads
 downloads
 nginx.conf
 .vscode
+/test-results/
+/playwright-report/
+/playwright/.cache/
