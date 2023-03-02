@@ -1,5 +1,5 @@
-const { DataTypes, Model } = require("sequelize");
-const sequelize = require("../connect");
+const { DataTypes, Model } = require("sequelize")
+const sequelize = require("../connect")
 const {
 	cities,
 	provinces,
@@ -12,9 +12,10 @@ const {
 	age_groups,
 	knows_from_IEC,
 	sources_of_information,
-	reasons_to_join
-} = require("../../db/data_lists");
-const { queueMail } = require("../../bull");
+	reasons_to_join,
+} = require("../../db/data_lists")
+const { sendApplicationReceiptEmail } = require("../../functions/sendEmail")
+const { autoAssignQuiz } = require("../utils")
 
 class ApplicationRound extends Model {}
 
@@ -34,7 +35,7 @@ ApplicationRound.init(
 		sequelize,
 		modelName: "ApplicationRound",
 	}
-);
+)
 
 class Application extends Model {}
 
@@ -232,12 +233,12 @@ Application.init(
 			allowNull: true,
 			defaultValue: "N/A",
 		},
-		year_of_graduation : {
+		year_of_graduation: {
 			type: DataTypes.INTEGER,
 			allowNull: true,
 			defaultValue: 0,
 		},
-		can_share_fa_docs:{
+		can_share_fa_docs: {
 			type: DataTypes.BOOLEAN,
 			allowNull: true,
 		},
@@ -292,13 +293,13 @@ Application.init(
 			allowNull: true,
 			defaultValue: "0",
 			validate: {
-				isIn:{
+				isIn: {
 					args: [income_brackets],
 					msg: "Invalid salary. Please pick one of the provided options.",
 				},
 			},
 		},
-		current_field : {
+		current_field: {
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
@@ -314,8 +315,8 @@ Application.init(
 			validate: {
 				notEmpty: {
 					msg: "How to enroll cannot be empty. Please select an option.",
-				}
-			}
+				},
+			},
 		},
 		salary_expectation: {
 			type: DataTypes.STRING,
@@ -326,7 +327,7 @@ Application.init(
 					args: [income_brackets],
 					msg: "Invalid salary expectation. Please pick one of the provided options.",
 				},
-			}
+			},
 		},
 		on_fa_in_university: {
 			type: DataTypes.BOOLEAN,
@@ -340,8 +341,8 @@ Application.init(
 				isIn: {
 					args: [people_in_household],
 					msg: "Invalid number of people in household. Please pick one of the provided options.",
-				}
-			}
+				},
+			},
 		},
 		people_earning_in_household: {
 			type: DataTypes.STRING,
@@ -351,8 +352,8 @@ Application.init(
 				isIn: {
 					args: [people_in_household],
 					msg: "Invalid number of people earning in household. Please pick one of the provided options.",
-				}
-			}
+				},
+			},
 		},
 		is_married: {
 			type: DataTypes.BOOLEAN,
@@ -410,7 +411,7 @@ Application.init(
 			validate: {
 				isIn: {
 					args: [knows_from_IEC],
-					msg: "Please tell us if you know anyone from IEC."
+					msg: "Please tell us if you know anyone from IEC.",
 				},
 			},
 		},
@@ -490,7 +491,7 @@ Application.init(
 					this.firstPreferenceId == null ||
 					this.firstPreferenceId == undefined
 				) {
-					throw Error("First Preference cannot be empty. Select an option.");
+					throw Error("First Preference cannot be empty. Select an option.")
 				}
 			},
 			secondPreferenceId() {
@@ -498,7 +499,7 @@ Application.init(
 					this.secondPreferenceId == null ||
 					this.secondPreferenceId == undefined
 				) {
-					throw Error("Second Preference cannot be empty. Select an option.");
+					throw Error("Second Preference cannot be empty. Select an option.")
 				}
 			},
 			thirdPreferenceId() {
@@ -506,7 +507,7 @@ Application.init(
 					this.thirdPreferenceId == null ||
 					this.thirdPreferenceId == undefined
 				) {
-					throw Error("Third Preference cannot be empty. Select an option.");
+					throw Error("Third Preference cannot be empty. Select an option.")
 				}
 			},
 		},
@@ -519,17 +520,17 @@ Application.init(
 					[34, "30-34"],
 					[40, "35-40"],
 					[110, "Above 40"],
-				];
-				let age_group = "";
+				]
+				let age_group = ""
 
 				for (let i = 0; i < age_group_cutoffs.length; i++) {
 					if (user.age <= age_group_cutoffs[i][0]) {
-						age_group = age_group_cutoffs[i][1];
-						break;
+						age_group = age_group_cutoffs[i][1]
+						break
 					}
 				}
-				if (age_group == "") age_group = "Above 30";
-				user.age_group = age_group;
+				if (age_group == "") age_group = "Above 30"
+				user.age_group = age_group
 			},
 			// beforeSave: async (user, options) => {
 			// 	let reject = false;
@@ -545,24 +546,24 @@ Application.init(
 			// 			user.rejection_email_sent = true;
 			// 			return queueMail(student.email, `IEC Application Update`, {
 			// 				heading: `Application Not Accepted`,
-			// 				inner_text: `Dear ${student.firstName}, 
- 
-            //   Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).  
-               
-            //   We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
-            //   <ul>
-            //   <li>Are in the age bracket 18-30</li>
-            //   <li>Can commit 30-40 hours per week</li>
-            //   </ul>
-                
-            //   Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.   
-               
-            //   We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947 
-               
-            //   Best Regards, 
-            //   Director Admissions 
-            //   Institute of Emerging Careers 
-            //   http://www.iec.org.pk`
+			// 				inner_text: `Dear ${student.firstName},
+
+			//   Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).
+
+			//   We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
+			//   <ul>
+			//   <li>Are in the age bracket 18-30</li>
+			//   <li>Can commit 30-40 hours per week</li>
+			//   </ul>
+
+			//   Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.
+
+			//   We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947
+
+			//   Best Regards,
+			//   Director Admissions
+			//   Institute of Emerging Careers
+			//   http://www.iec.org.pk`
 			// 			});
 			// 		} catch (err) {
 			// 			console.log(err);
@@ -581,51 +582,21 @@ Application.init(
 
 			afterSave: async (user, options) => {
 				if (!user.rejection_email_sent) {
-					// send application saved confirmation email
-					const student = await user.getStudent({
-						attributes: ["email", "firstName", "cnic"],
-					});
-					return queueMail(student.email, `IEC Application Receipt`, {
-						heading: `Application Received`,
-						inner_text: `Dear ${student.firstName}
-            
-			We have received your application for the IEC Tech Apprenticeship Program by Institute of Emerging Careers (IEC). Your application is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment soon. Please stay tuned! 
-
-			Application Process:
-			<ul>
-				<li>Online Registration (17th Dec-31st Dec, 2022)</li>
-				<li>Online Assessment (2nd & 3rd Jan, 2023)</li>
-				<li>Online Orientation  (7th Jan, 2023)</li>
-				<li>One-on-One Interviews (10th Jan -21st Jan, 2023)</li>
-				<li>Zero Week (6th Feb-10th feb, 2023)</li>
-				<li>Probation Week </li>
-				<li>Course Begins</li>
-			</ul>
-
-			<em>(Note: Dear applicants these dates might change according to unexpected circumstances. However, the procedure will remain as stated above)</em>
-
-            The process is long but we assure you that if you give your best, you can get through it and will be rewarded for all the effort you put in!
-
-            Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:namra.khan@iec.org.pk">namra.khan@iec.org.pk</a> or Whatsapp: 03338800947.
-             
-            Best Regards, 
-            Director Admissions 
-            Institute of Emerging Careers 
-            http://www.iec.org.pk 
-            <a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
-						button_announcer: null,
-						button_text: null,
-						button_link: null,
-					});
+					try {
+						await sendApplicationReceiptEmail(user)
+						return autoAssignQuiz(user, sequelize.models.Assignment)
+					} catch (err) {
+						console.log("Error in Application post-save hook", err)
+					}
 				} else {
 					return new Promise((resolve) => {
-						resolve();
-					});
+						resolve()
+					})
 				}
 			},
 		},
 	}
-);
+)
 
 class Course extends Model {}
 
@@ -640,7 +611,7 @@ Course.init(
 		sequelize,
 		modelName: "Course",
 	}
-);
+)
 
 // junction table for ApplicaitonRound and Course (many-to-many relationship)
 class ApplicationRoundCourseJunction extends Model {}
@@ -654,11 +625,11 @@ ApplicationRoundCourseJunction.init(
 		},
 	},
 	{ sequelize, modelName: "ApplicationRoundCourseJunction" }
-);
+)
 
 module.exports = {
 	Application,
 	ApplicationRound,
 	Course,
 	ApplicationRoundCourseJunction,
-};
+}
