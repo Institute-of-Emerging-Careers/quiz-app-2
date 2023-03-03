@@ -1,8 +1,7 @@
 // This file will initialize all Models so that the models and the database are in sync
 const sequelize = require("./connect")
 const bcrypt = require("bcrypt")
-const { ApplicationRound } = require("./models/application")
-const { Quiz } = require("./models/quizmodel")
+require("./models/relationships")
 
 const initializeDatabase = async () => {
 	try {
@@ -18,8 +17,8 @@ const initializeDatabase = async () => {
 		// await Application.sync({ alter: true, force: false });
 		// await Orientation.sync({ alter: true, force: false });
 		// await OrientationInvite.sync({ alter: true, force: false });
-		await ApplicationRound.sync({ alter: true, force: false })
-		await Quiz.sync({ alter: true, force: false })
+		// await ApplicationRound.sync({ alter: true, force: false })
+		// await Quiz.sync({ alter: true, force: false })
 		// await Interviewer.sync({ alter: false });
 		// await InterviewerInvite.sync({ alter: false });
 		// await InterviewerSlot.sync({ alter: false });
