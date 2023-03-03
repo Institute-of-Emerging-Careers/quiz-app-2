@@ -116,30 +116,38 @@ const sendApplicationReceiptEmail = async (user) => {
 		heading: `Application Received`,
 		inner_text: `Dear ${student.firstName}
     
-We have received your application for the IEC Tech Apprenticeship Program by Institute of Emerging Careers (IEC). Your application is being processed. Please note the following steps during the acquisition process for which we will need your cooperation and patience. You will receive the email for an Online Assessment soon. Please stay tuned! 
+		Thank you for applying to the “Tech Apprenticeship Program Cohort 07” at the Institute of Emerging Careers. 
 
-Application Process:
-<ul>
-<li>Online Registration (17th Dec-31st Dec, 2022)</li>
-<li>Online Assessment (2nd & 3rd Jan, 2023)</li>
-<li>Online Orientation  (7th Jan, 2023)</li>
-<li>One-on-One Interviews (10th Jan -21st Jan, 2023)</li>
-<li>Zero Week (6th Feb-10th feb, 2023)</li>
-<li>Probation Week </li>
-<li>Course Begins</li>
-</ul>
+		Congratulations you have successfully completed your registration.  Please wait for the next email which will include “Assessments”, which you must submit within 48 hours. Please complete your assessment within the stipulated time or you will be disqualified. 
 
-<em>(Note: Dear applicants these dates might change according to unexpected circumstances. However, the procedure will remain as stated above)</em>
+		Also, check your inbox and spam folder regularly so you do not miss any updates. 
 
-    The process is long but we assure you that if you give your best, you can get through it and will be rewarded for all the effort you put in!
+		Courses Offered for Cohort 07:  
+		1. Devops/cloud computing
+		2. Web backend with Next JS
+		3. Mobile application development
+		4. Web frontend with react
 
-    Are you excited to start this journey with us? Stay tuned as our team gets back to you with an update within the next week or soon. For any further questions or concerns, feel free to contact us at <a href="mailto:namra.khan@iec.org.pk">namra.khan@iec.org.pk</a> or Whatsapp: 03338800947.
+		
+		Important Dates and Next Steps:
+
+		<ul>
+		<li>Assessments (to be completed within 48 hours)</li>
+		<li>Interviews (21st - 30th March)</li>
+		<li>e-LEC Agreement Submission (deadline till 30th March)</li>
+		<li>Zero Week (3rd April-7th April)</li>
+		</ul>
+
+		Are you excited to start this journey with us?
+
+		Stay tuned on your email account as you will be receiving successive emails in the coming days. For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
+
      
-    Best Regards, 
-    Director Admissions 
-    Institute of Emerging Careers 
-    http://www.iec.org.pk 
-    <a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
+		Best Regards, 
+		Director Admissions 
+		Institute of Emerging Careers 
+		http://www.iec.org.pk 
+		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | Instagram | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
 		button_announcer: null,
 		button_text: null,
 		button_link: null,
