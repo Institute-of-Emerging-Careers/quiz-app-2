@@ -1,27 +1,5 @@
 const { DataTypes, Model } = require("sequelize")
-const { Quiz, Question, Option, Section } = require("./quizmodel")
 const sequelize = require("../connect")
-const { Orientation, OrientationInvite } = require("./orientation")
-
-const {
-	InterviewRound,
-	Interviewer,
-	InterviewerInvite,
-	InterviewerSlot,
-	StudentInterviewRoundInvite,
-	InterviewMatching,
-	InterviewQuestions,
-	InterviewAnswers,
-	InterviewScores,
-	InterviewBookingSlots,
-} = require("./interview")
-
-const {
-	ApplicationRound,
-	Course,
-	ApplicationRoundCourseJunction,
-	Application,
-} = require("./application")
 
 class User extends Model {}
 
