@@ -4,10 +4,11 @@ var Modal = function Modal(props) {
   var show_modal = props.show_modal,
       setShowModal = props.setShowModal,
       heading = props.heading,
-      content = props.content;
+      content = props.content,
+      children = props.children;
   return /*#__PURE__*/React.createElement("div", null, show_modal === true ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
-    className: "h-min w-full inset-0 fixed z-30 bg-black/60"
+    className: "w-full inset-0 fixed z-30 bg-black/60"
   }, /*#__PURE__*/React.createElement("div", {
     className: "h-min mt-10 w-1/2 bg-white  translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {
@@ -21,5 +22,5 @@ var Modal = function Modal(props) {
     }
   })), /*#__PURE__*/React.createElement("div", {
     className: "p-8 h-min overflow-y-scroll"
-  }, content))) : /*#__PURE__*/React.createElement("div", null));
+  }, content, children))) : /*#__PURE__*/React.createElement("div", null));
 };
