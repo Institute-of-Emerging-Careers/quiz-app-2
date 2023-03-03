@@ -15,10 +15,12 @@ email_bull_queue.process(function (job, done) {
 		job.data.force_send
 	)
 		.then(() => {
+			console.log("abay sent")
 			done()
 		})
 		.catch((err) => {
 			done(err)
+			console.log("Email error: ", err)
 		})
 })
 
