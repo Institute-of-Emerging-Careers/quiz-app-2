@@ -24,11 +24,47 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 var interview_round_id = document.getElementById("interview-round-id").innerHTML;
 
+var tConvert = function tConvert(time) {
+  // Check correct time format and split into components
+  time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  if (time.length > 1) {
+    // If time format correct
+    time = time.slice(1); // Remove full string match value
+
+    time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+
+  return time.join(""); // return adjusted time or original string
+};
+
 var StudentsList = function StudentsList() {
   var _useState = useState([]),
       _useState2 = _slicedToArray(_useState, 2),
       matchings = _useState2[0],
       setMatchings = _useState2[1];
+
+  var _useState3 = useState([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      bookedStudents = _useState4[0],
+      setBookedStudents = _useState4[1];
+
+  var _useState5 = useState([]),
+      _useState6 = _slicedToArray(_useState5, 2),
+      unBookedStudents = _useState6[0],
+      setUnBookedStudents = _useState6[1];
+
+  var _useState7 = useState(false),
+      _useState8 = _slicedToArray(_useState7, 2),
+      sendBookedStudentsEmail = _useState8[0],
+      setSendBookedStudentsEmail = _useState8[1];
+
+  var _useState9 = useState(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      sendUnbookedStudentsEmail = _useState10[0],
+      setSendUnbookedStudentsEmail = _useState10[1];
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
     var response;
@@ -36,23 +72,31 @@ var StudentsList = function StudentsList() {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            console.log(interview_round_id);
-            _context.next = 3;
+            _context.next = 2;
             return fetch("/admin/interview/".concat(interview_round_id, "/get-assigned-students"));
 
-          case 3:
-            _context.next = 5;
+          case 2:
+            _context.next = 4;
             return _context.sent.json();
 
-          case 5:
+          case 4:
             response = _context.sent;
 
             if (response.matchings.length > 0) {
               setMatchings(response.matchings);
-              console.log(response.matchings);
+              setBookedStudents(response.matchings.filter(function (matching) {
+                return matching.booked;
+              }).map(function (matching) {
+                return matching.student_email;
+              }));
+              setUnBookedStudents(response.matchings.filter(function (matching) {
+                return matching.booked == false;
+              }).map(function (matching) {
+                return matching.student_email;
+              }));
             }
 
-          case 7:
+          case 6:
           case "end":
             return _context.stop();
         }
@@ -64,28 +108,85 @@ var StudentsList = function StudentsList() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col items-center justify-center"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "w-1/2 flex items-center justify-center bg-white rounded-md "
+    className: "w-1/2 flex flex-col items-center justify-center bg-white rounded-md "
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-3xl font-bold p-4 w-full flex justify-center items-center"
+  }, "Assigned students")), sendBookedStudentsEmail && (bookedStudents.length > 0 ? /*#__PURE__*/React.createElement(EmailForm, {
+    users: bookedStudents,
+    onFinish: function onFinish() {
+      setSendBookedStudentsEmail(false);
+    },
+    sending_link: "/admin/interview/".concat(interview_round_id, "/interviewer-send-email"),
+    default_values: {
+      email_subject: "IEC Interview Link",
+      email_heading: "IEC Interview Link",
+      email_body: "Dear Student,<br>We hope you are well.<br>Please join the given link for your interview.<br> Regards,<br>IEC Team",
+      email_button_pre_text: null,
+      email_button_label: null,
+      email_button_url: null
+    }
+  }) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center justify-center"
   }, /*#__PURE__*/React.createElement("p", {
-    className: "text-3xl font-bold p-4 w-full"
-  }, "Assigned students")), /*#__PURE__*/React.createElement("div", {
+    className: "text-2xl font-bold p-4 w-full flex justify-center items-center"
+  }, "No assigned students have booked slots"))), sendUnbookedStudentsEmail && (unBookedStudents.length > 0 ? /*#__PURE__*/React.createElement(EmailForm, {
+    users: unBookedStudents,
+    onFinish: function onFinish() {
+      setSendUnbookedStudentsEmail(false);
+    },
+    sending_link: "/admin/interview/".concat(interview_round_id, "/interviewer-send-email"),
+    default_values: {
+      email_subject: "IEC Interview Reminder",
+      email_heading: "IEC Interview Reminder",
+      email_body: "Dear Student,<br>We hope you are well.<br>Please book a time slot from your portal so that your interview may be conducted.<br> Regards,<br>IEC Team",
+      email_button_pre_text: "Portal Link",
+      email_button_label: "Book a slot",
+      email_button_url: "https://apply.iec.org.pk/student/interview"
+    }
+  }) : /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-col items-center justify-center"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-2xl font-bold p-4 w-full flex justify-center items-center"
+  }, "All assigned students have booked slots")))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-2 p-2"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue text-white p-2 rounded-md",
+    onClick: function onClick() {
+      setSendBookedStudentsEmail(true);
+      setSendUnbookedStudentsEmail(false);
+    }
+  }, "Send Email to Booked Students"), /*#__PURE__*/React.createElement("button", {
+    className: "bg-iec-blue text-white p-2 rounded-md m-2",
+    onClick: function onClick() {
+      setSendUnbookedStudentsEmail(true);
+      setSendBookedStudentsEmail(false);
+    }
+  }, "Send Email to Unbooked Students")), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex items-center justify-center mt-10"
   }, matchings.length > 0 ? /*#__PURE__*/React.createElement("table", {
-    className: "table-auto bg-white rounded-md w-1/2"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "table-auto bg-white rounded-md w-3/4"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "bg-gray-700 text-white"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Sr. No"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Email"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Name"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student CNIC"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Student Gender"), /*#__PURE__*/React.createElement("th", {
-    className: "border border-gray-200 px-4 py-2"
+    className: "border border-gray-200 px-4 py-2 m-2"
+  }, "Booking Status"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
+  }, "Interview Status"), /*#__PURE__*/React.createElement("th", {
+    className: "border border-gray-200 px-4 py-2 m-2"
   }, "Actions"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching, index) {
     return /*#__PURE__*/React.createElement("tr", {
-      key: matching.id
+      key: matching.id,
+      className: "bg-gray-300"
     }, /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, index + 1), /*#__PURE__*/React.createElement("td", {
@@ -98,11 +199,15 @@ var StudentsList = function StudentsList() {
       className: "border border-gray-200 px-4 py-2"
     }, matching.gender), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
+    }, matching.booked ? new Date(new Number(matching.startTime)).toDateString() + " , " + tConvert(new Date(new Number(matching.startTime)).toISOString().slice(11, 16)) + " - " + tConvert(new Date(new Number(matching.endTime)).toISOString().slice(11, 16)) : "No slot booked"), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
+    }, matching.studentAbsent === true ? "Absent" : matching.studentAbsent == null ? "Unmarked" : "Marked"), /*#__PURE__*/React.createElement("td", {
+      className: "border border-gray-200 px-4 py-2"
     }, /*#__PURE__*/React.createElement("button", {
       className: "text-green-500"
     }, /*#__PURE__*/React.createElement("a", {
       href: "/admin/interview/".concat(interview_round_id, "/student/").concat(matching.StudentId, "/enter-marks")
-    }, "Enter Marks "))));
+    }, "Enter Marks", " "))));
   }))) : /*#__PURE__*/React.createElement("div", null, "No students have been assigned to you yet"))));
 };
 

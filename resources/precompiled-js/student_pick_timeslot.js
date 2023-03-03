@@ -23,6 +23,22 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 var interview_round_id = document.getElementById("interview_round_id").innerHTML;
 var interviewer_id = document.getElementById("interviewer_id").innerHTML;
 
+function tConvert(time) {
+  // Check correct time format and split into components
+  time = time.toString().match(/^([01]\d|2[0-3])(:)([0-5]\d)(:[0-5]\d)?$/) || [time];
+
+  if (time.length > 1) {
+    // If time format correct
+    time = time.slice(1); // Remove full string match value
+
+    time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
+
+    time[0] = +time[0] % 12 || 12; // Adjust hours
+  }
+
+  return time.join(''); // return adjusted time or original string
+}
+
 var DatePill = function DatePill(_ref) {
   var date = _ref.date,
       selectedDate = _ref.selectedDate,
@@ -40,17 +56,9 @@ var TimeSlotPill = function TimeSlotPill(_ref2) {
       selectedTimeSlot = _ref2.selectedTimeSlot,
       onToggleTimeSlot = _ref2.onToggleTimeSlot,
       setInterviewTime = _ref2.setInterviewTime;
-  //compute the interview time from start_time and end_time
-  var start_time = new Date(new Number(timeSlot.start_time) + 60 * 1000).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  });
-  var end_time = new Date(new Number(timeSlot.end_time) + 60 * 1000).toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true
-  });
+  //compute the interview time from start_time and end_time format as hh:mm 12 hour format
+  var start_time = tConvert(new Date(new Number(timeSlot.start_time)).toISOString().slice(11, 16));
+  var end_time = tConvert(new Date(new Number(timeSlot.end_time)).toISOString().slice(11, 16));
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ".concat(selectedTimeSlot === timeSlot.id ? "bg-iec-blue text-white border-white" : "text-iec-blue bg-white border-iec-blue"),
     onClick: function onClick() {
@@ -105,17 +113,26 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
           case 4:
             response = _context.sent;
-            timeslots = response.booking_slots; //extract all unique dates from timeslots
+            timeslots = response.booking_slots; //extract all unique dates from timeslots in the format day, moth, date
 
+            console.log(timeslots);
             dates = new Set(timeslots.map(function (timeSlots) {
-              return new Date(new Number(timeSlots.start_time)).toDateString().split(" ").slice(1).join(" ");
+              return new Date(new Number(timeSlots.start_time)).toDateString({}, {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+              });
             })); //convert dates from set to array
 
-            setDates(Array.from(dates)); //group timeslots by date
+            setDates(Array.from(dates)); //group timeslots by date hh.mm format
 
             timeSlotsByDate = {};
             timeslots.forEach(function (timeslot) {
-              var date = new Date(new Number(timeslot.start_time)).toDateString().split(" ").slice(1).join(" ");
+              var date = new Date(new Number(timeslot.start_time)).toDateString({}, {
+                weekday: "long",
+                month: "long",
+                day: "numeric"
+              });
 
               if (timeSlotsByDate[date]) {
                 timeSlotsByDate[date].push(timeslot);
@@ -132,7 +149,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
             setTimeSlots(timeSlotsByDate);
 
-          case 12:
+          case 13:
           case "end":
             return _context.stop();
         }
@@ -168,7 +185,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
               _context2.prev = 0;
 
               if (!selectedTimeSlot) {
-                _context2.next = 8;
+                _context2.next = 10;
                 break;
               }
 
@@ -184,10 +201,17 @@ var TimeSlotPicker = function TimeSlotPicker() {
               });
 
             case 4:
-              _context2.next = 6;
-              return _context2.sent.json();
+              _response = _context2.sent;
 
-            case 6:
+              if (!(_response.status == 200)) {
+                _context2.next = 10;
+                break;
+              }
+
+              _context2.next = 8;
+              return _response.json();
+
+            case 8:
               _response = _context2.sent;
 
               if (_response.success) {
@@ -195,23 +219,23 @@ var TimeSlotPicker = function TimeSlotPicker() {
                 window.location.href = "/student/interview";
               }
 
-            case 8:
-              _context2.next = 15;
+            case 10:
+              _context2.next = 17;
               break;
 
-            case 10:
-              _context2.prev = 10;
+            case 12:
+              _context2.prev = 12;
               _context2.t0 = _context2["catch"](0);
               console.log(_context2.t0);
               window.alert(response.message);
               window.location.href = "/student/interview";
 
-            case 15:
+            case 17:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[0, 10]]);
+      }, _callee2, null, [[0, 12]]);
     }));
 
     return function bookSlot() {

@@ -399,6 +399,7 @@ router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
         where: {
           InterviewerId: matching[i].InterviewerId,
           StudentId: matching[i].StudentId,
+          InterviewRoundId: matching[i].InterviewRoundId,
           booked : true,
         },
       });
@@ -510,7 +511,27 @@ router.post("/interview/:interview_round_id/interviewer/:interviewer_id/book-slo
       }
     });
 
+    const interviewDate = new Date(new Number(booking_slot.startTime)).toDateString().split(" ").slice(1).join(" ");
+    const startTime = new Date(new Number(booking_slot.startTime)).toLocaleTimeString();
+    const endTime = new Date(new Number(booking_slot.endTime)).toLocaleTimeString();
 
+
+    // send automated email to student
+    const interviewer = await Interviewer.findOne({where: {id: req.params.interviewer_id}});
+    const student = await Student.findOne({where: {id : req.user.user.id}})
+    try {
+      await queueMail(student.email, `Interview Slot Booking Confirmation`, {
+        heading: "Interview Slot Booking Confirmation",
+        inner_text:
+          `Dear Student, <br> You have successfully booked a slot with your interviewer ${interviewer.name} at ${interviewDate} from ${startTime} to ${endTime}. You will receive the meeting link before the interview time.<br>Please make sure you are on time for the interview. <br> <br> Best Regards, <br> Team Placement Cell`,
+        button_announcer: null,
+        button_text: null,
+        button_link: null,
+      });
+    } catch (err) {
+      console.log("Interview time email sending failed.");
+    }
+    
     if (success) {
       res.status(200).json({
         success: true,

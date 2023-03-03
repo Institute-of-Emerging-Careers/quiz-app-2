@@ -104,6 +104,7 @@ var Question = function Question(_ref3) {
 
   var questions = _ref3.questions,
       setQuestions = _ref3.setQuestions,
+      question = _ref3.question,
       index = _ref3.index;
 
   var onChange = function onChange(property) {

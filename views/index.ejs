@@ -1,39 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IEC LCMS</title>
     <%- include('./templates/global.ejs') %>
 
     <style>
-    body {
-        background-image:url("/img/Artboard 1iec2.jpg");
-    }
+      body {
+        background-image: url("/img/Artboard 1iec2.jpg");
+      }
     </style>
-</head>
-<body class="bg-right-top bg-cover bg-repeat md:bg-no-repeat">
-    <nav class="absolute inset-0 bottom-auto grid grid-cols-2 py-6 px-10 text-white text-md sm:text-lg">
-        <a href="/"><img src="/img/cropped-Frame-3-409x66.png" class="h-6 sm:h-12 col-span-1 justify-self-start"></a>
-        <div class="justify-self-end flex gap-x-2">
-            <a href="/admin/login" class="hover:bg-white hover:bg-opacity-20 rounded-sm px-4 py-2">Admin</a>
-            <a href="/student/login" class="hover:bg-white hover:bg-opacity-20 rounded-sm px-4 py-2">Student Login</a>
-        </div>
+  </head>
+  <body class="bg-right-top bg-cover bg-repeat md:bg-no-repeat">
+    <nav
+      class="absolute inset-0 bottom-auto grid grid-cols-2 py-6 px-10 text-white text-md sm:text-lg"
+    >
+      <a href="/"
+        ><img
+          src="/img/cropped-Frame-3-409x66.png"
+          class="h-6 sm:h-12 col-span-1 justify-self-start"
+      /></a>
+      <div class="justify-self-end flex gap-x-2">
+        <a href="/admin/login" class="hover:bg-white/20 rounded-sm px-4 py-2"
+          >Admin</a
+        >
+        <a href="/student/login" class="hover:bg-white/20 rounded-sm px-4 py-2"
+          >Student Login</a
+        >
+      </div>
     </nav>
 
-    <section id='main-display'>
-        <div style="background-image:url('/img/Untitled.jpg');" class="hidden md:block md:absolute md:h-64 bg-cover bg-right-top md:w-52 lg:h-96 lg:w-80 border-8 filter shadow-2xl rounded-lg border-white top-1/2 left-my1 lg:left-1/2 transform -translate-y-1/3 -translate-x-1/2 z-20" ></div>
-        <div style="background-image:url('/img/glenn-carstens-peters-npxXWgQ33ZQ-unsplash.jpg');" class="hidden md:block md:absolute md:h-44 md:w-44 lg:h-60 lg:w-60 border-8 filter shadow-2xl bg-right-top bg-cover bg-repeat md:bg-no-repeat rounded-lg border-white top-3/4 md:left-3/4 lg:left-1/2 transform -translate-y-1/2 md:-translate-x-1/2 lg:translate-x-0 z-10"></div>
-        <div class="hidden md:block md:absolute z-10 right-12 top-52 lg:right-64 lg:top-1/4 text-white max-w-my1 lg:max-w-xs">
-            <h1 class="text-xl lg:text-3xl font-bold">Build the most in-demand tech skills and rewrite your future.</h1><br>
-            <p class="text-md">Your opportunity to learn technical skills and earn Rs. 50,000/- or more per month</p>
-        </div>
+    <section id="main-display">
+      <div
+        style="background-image: url('/img/Untitled.jpg')"
+        class="hidden md:block md:absolute md:h-64 bg-cover bg-right-top md:w-52 lg:h-96 lg:w-80 border-8 filter shadow-2xl rounded-lg border-white top-1/2 left-my1 lg:left-1/2 transform -translate-y-1/3 -translate-x-1/2 z-20"
+      ></div>
+      <div
+        style="
+          background-image: url('/img/glenn-carstens-peters-npxXWgQ33ZQ-unsplash.jpg');
+        "
+        class="hidden md:block md:absolute md:h-44 md:w-44 lg:h-60 lg:w-60 border-8 filter shadow-2xl bg-right-top bg-cover bg-repeat md:bg-no-repeat rounded-lg border-white top-3/4 md:left-3/4 lg:left-1/2 transform -translate-y-1/2 md:-translate-x-1/2 lg:translate-x-0 z-10"
+      ></div>
+      <div
+        class="hidden md:block md:absolute z-10 right-12 top-52 lg:right-64 lg:top-1/4 text-white max-w-my1 lg:max-w-xs"
+      >
+        <h1 class="text-xl lg:text-3xl font-bold">
+          Build the most in-demand tech skills and rewrite your future.
+        </h1>
+        <br />
+        <p class="text-md">
+          Your opportunity to learn technical skills and earn Rs. 50,000/- or
+          more per month
+        </p>
+      </div>
     </section>
 
     <section class="mt-60 ml-8 lg:ml-16">
-            <h1 class="text-iec-blue text-6xl max-w-xs font-black mix-blend-multiply">WELCOME<br>TO THE<br>IEC LCMS</h1><br>
-            <a href="/student/login"><button class="py-4 px-14 rounded-lg bg-gradient-to-r from-blue-700 to-purple-800 text-white text-xl filter drop-shadow-gradient hover:drop-shadow-little active:drop-shadow-none">Log In <i class="fas fa-arrow-right"></i></button></a>
+      <h1 class="text-iec-blue text-6xl max-w-xs font-black mix-blend-multiply">
+        WELCOME<br />TO THE<br />IEC LCMS
+      </h1>
+      <br />
+      <a href="/student/login"
+        ><button
+          class="py-4 px-14 rounded-lg bg-gradient-to-r from-blue-700 to-purple-800 text-white text-xl filter drop-shadow-gradient hover:drop-shadow-little active:drop-shadow-none"
+        >
+          Log In <i class="fas fa-arrow-right"></i></button
+      ></a>
     </section>
-</body>
+  </body>
 </html>

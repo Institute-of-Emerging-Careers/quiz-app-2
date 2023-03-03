@@ -40,6 +40,7 @@ const ViewStudent = () => {
 			).json();
 
 			if (response.success == "ok") {
+				console.log(response.answers);
 				if (response.answers.length > 0) setAnswers(response.answers);
 				if (response.totalMarks) setTotalMarks(response.totalMarks);
 				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
@@ -49,7 +50,20 @@ const ViewStudent = () => {
 		}
 	}, []);
 
-	const addAnswers = (e) => {
+	const markAsAbsent = async () => {
+		const response = await fetch(`/admin/interview/${interview_round_id}/student/${student_id}/mark-absent`, {
+			method: "POST"
+		});
+
+		if (response.status == 200){
+			window.alert("Student marked absent");
+			window.location.href = `/admin/interview/${interview_round_id}/view-students`;
+		}
+
+
+	}
+
+	const addAnswers = async (e) => {
 		e.preventDefault();
 		let answers = [];
 
@@ -88,7 +102,7 @@ const ViewStudent = () => {
 		//insert answers into Answers table
 		answers.map(async (answer) => {
 			try {
-				const response = await fetch(
+				await fetch(
 					`/admin/interview/${interview_round_id}/student/${student_id}/enter-marks`,
 					{
 						method: "POST",
@@ -98,32 +112,31 @@ const ViewStudent = () => {
 						body: JSON.stringify(answer),
 					}
 				);
-				if (response.status == 200) {
-					//insert total marks and obtained marks into Marks table
-					const response = await fetch(
-						`/admin/interview/${interview_round_id}/student/${student_id}/total-marks`,
-						{
-							method: "POST",
-							headers: {
-								"Content-Type": "application/json",
-							},
-							body: JSON.stringify({
-								totalMarks: totalMarks,
-								obtainedMarks: obtainedMarks,
-							}),
-						}
-					);
 
-					if (response.status == 200) {
-						window.alert("Marks added successfully");
-						window.location.href = `/admin/interview/${interview_round_id}/view-students`;
-					}
-				}
 			} catch (err) {
 				console.log(err);
 				window.alert("An error occured, please refresh the page");
 			}
 		});
+
+		const response = await fetch(
+			`/admin/interview/${interview_round_id}/student/${student_id}/total-marks`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					totalMarks: totalMarks,
+					obtainedMarks: obtainedMarks,
+				}),
+			}
+		);
+
+		if (response.status == 200) {
+			window.alert("Marks added successfully");
+			window.location.href = `/admin/interview/${interview_round_id}/view-students`;
+		}
 	};
 
 	return (
@@ -136,15 +149,26 @@ const ViewStudent = () => {
 						</p>
 
 						<div className = "flex flex-col ">
-							<div className="w-full mt-10 bg-iec-blue text-white rounded-md p-4">
+							<div className="w-full mt-10 rounded-md p-4 flex">
+
 								{/* save icon */}
 								<button
 									type="submit"
-									className=" font-bold p-1 flex flex-row"
+									className=" font-bold p-2 flex flex-row bg-iec-blue text-white m-2 items-center justify-center"
 								>
-									<i className="fa fa-save p-1"></i>
+									<i className="fa fa-save p-2"></i>
 
 									Save
+								</button>
+
+								<button
+									onClick = {markAsAbsent}
+									type = "button"
+									className=" font-bold p-2 flex flex-row m-2 bg-iec-blue text-white  items-center justify-center"
+								>
+									<i className="fa fa-user-xmark p-2"></i>
+
+									Student Absent
 								</button>
 							</div>
 						</div>

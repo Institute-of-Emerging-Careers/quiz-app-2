@@ -65,11 +65,11 @@ const App = () => {
         id="modal"
         className={
           show_modal
-            ? "h-screen w-screen inset-0 absolute z-30 bg-black bg-opacity-60"
+            ? "h-screen w-screen inset-0 absolute z-30 bg-black/60"
             : "hidden"
         }
       >
-        <div className="mx-auto mt-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl pb-2">
+        <div className="mt-10 w-1/2 bg-white translate-x-2/4 shadow-xl pb-2">
           <div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
             <h3 className="text-xl col-auto justify-self-start self-center">
               <i className="fas fa-link text-xl text-white"></i> Create New

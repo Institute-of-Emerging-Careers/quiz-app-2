@@ -21,7 +21,8 @@ const ContextProvider = (props) => {
     { title: "Step 2: Add Interviewers", active: false },
     { title: "Step 3: Create Matching", active: false },
     { title: "Step 4: Create Questions", active: false },
-    { title: "Step 5: Send Emails" },
+    // { title: "Step 5: Send Emails", active: false  },
+    { title: "Step 5: Finalize Students", active: false  },
   ]);
   const [students, setStudents] = useState([]);
 
@@ -572,11 +573,17 @@ const Step3 = () => {
   const [total_interviews_possible, setTotalInterviewsPossible] = useState(0); //total number of interviews possible
   const [total_time_available, setTotalTimeAvailable] = useState(0); //total time available for interviews
   const [total_time_required, setTotalTimeRequired] = useState(0); //total time required for interviews
-  const { students_object, steps_object, matching_object } =
-    useContext(MyContext); //list of students in selected for interview
-  const [loading, setLoading] = useState(false); //loading state
-  const [steps, setSteps] = steps_object; //steps object;
-  const [matching, setMatching] = matching_object; //matching object
+  const { students_object, steps_object } = useContext(MyContext); //list of students in selected for interview
+  const [steps, setSteps] = steps_object;
+  const [numberOfStudents, setNumberOfStudents] = useState(0);
+
+  const [matching, setMatching] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showMatchingModal, setShowMatchingModal] = useState(false);
+  const [recreateMatching, setRecreateMatching] = useState(false);
+  const [showEmailStudents, setShowEmailStudents] = useState(false);
+  const [showEmailInterviewers, setShowEmailInterviewers] = useState(false);
 
   //only keep students with the added flag set to true
 
@@ -591,8 +598,8 @@ const Step3 = () => {
     }
 	}, []);
 
+  //check if a matching already exists
   useEffect(() => {
-    //check if a matching already exists
     fetch(`/admin/interview/${interview_round_id}/matchings`).then((res) =>
       res.json().then((data) => {
         // console.log(data);
@@ -630,15 +637,14 @@ const Step3 = () => {
             //compute the total number of students
             const total_students = Object.keys(students).length;
 
+            setNumberOfStudents(total_students);
             //compute the total time required for all the interviews
             setTotalTimeRequired(total_students * interviewTime); //time required in minutes
             //compute the total time available for all the interviews
-            setTotalTimeAvailable(Duration.fromMillis(time).toFormat("mm"));
+            setTotalTimeAvailable(Duration.fromMillis(time).toFormat("m"));
 
             //compute the total number of interviews that can be conducted
-            setTotalInterviewsPossible(
-              Math.floor(total_time_available / interviewTime)
-            );
+            if (interviewTime > 0) setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
           });
         } else {
           alert("Error in URL. Wrong Interview Round. Please go to home page.");
@@ -653,7 +659,7 @@ const Step3 = () => {
 
     try{
     //set interviewDuration
-    const response = await fetch(`/admin/interview/${interview_round_id}/set-interview-duration`, {
+      await fetch(`/admin/interview/${interview_round_id}/set-interview-duration`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -663,8 +669,6 @@ const Step3 = () => {
       }),
       }
     );
-
-
 
     //for each interviewer, assign students
     //need an object of the format {interviewer_id: [student1, student2, student3]}
@@ -748,13 +752,10 @@ const Step3 = () => {
         }
         return copy;
       });
-
-
       //after creating the matching, we need to create booking slots for each interviewer
       //for each unique interviewer in the matching, create a booking slot
 
       const unique_interviewers = [...new Set(flattened_matching.map(item => item.interviewer_email))];
-      console.log(unique_interviewers);
 
       unique_interviewers.map(async (interviewer_email) => {
         await fetch(`/admin/interview/${interview_round_id}/create-booking-slots`, {
@@ -769,9 +770,6 @@ const Step3 = () => {
 
       });
 
-
-
-
     } else {
       alert("Error in creating Time Slot Assignment, try again");
     }
@@ -783,240 +781,507 @@ const Step3 = () => {
   };
 
   return (
-    <div>
-      <form className="flex flex-col">
-        <h2 className="text-xl font-bold">Add Interview Time</h2>
-        <div className="w-full flex gap-x-4 items-center">
-          <label htmlFor="interview-time" className="min-w-max">
-            Enter the time per interview (including any break time)
-          </label>
-          <input
-            type="text"
-            maxLength="150"
-            name="name"
-            className="w-30 border py-3 px-2 mt-1 hover:shadow-sm"
-            value={interviewTime}
-            autoComplete="off"
-            onChange={(e) => {
-              e.preventDefault();
-              setInterviewTime(e.target.value);
+		<>
+			{matching.length === 0 || recreateMatching == true ? (
+				<div className="flex flex-col mt-20 p-4">
+					<div>
+						{showModal === true ? (
+							<div
+								id="modal"
+								className="min-h-screen w-full inset-0 fixed z-30 bg-black/60 flex justify-center items-center"
+							>
+								<div className="h-min mx-auto mt-10 w-1/2 bg-white  shadow-xl pb-2">
+									<div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
+										<h3 className="text-xl col-auto justify-self-start self-center">
+											Insufficient Time
+										</h3>
+										<i
+											className="fas fa-times text-white cursor-pointer col-auto justify-self-end self-center"
+											onClick={() => {
+												setShowModal(false);
+											}}
+										></i>
+									</div>
+									<div className="p-8 h-min overflow-y-scroll">
+										<p>
+											Insufficient time available to conduct interviews of all
+											students. You can:
+										</p>
+										<p>
+											<br />
+											1. Decrease time per interview
+										</p>
+										<p>2. Ask Interviewers for more time (Go back to Step 2)</p>
+									</div>
+								</div>
+							</div>
+						) : null}
+					</div>
+					<div className="flex flex-row">
+						<form className="flex flex-col w-full">
+							<div className="text-xl font-bold border-l-2 border-b-2 border-iec-blue p-2 justify-self-start w-max">
+								<h2 className="">Set Interview Time</h2>
+							</div>
+							<div className="flex gap-x-4 items-center self-center mt-5 p-4">
+								<label
+									htmlFor="interview-time"
+									className="w-full p-4 mr-5 text-xl"
+								>
+									Set time per interview (including any break time):
+								</label>
+								<input
+									type="text"
+									maxLength="150"
+									name="name"
+									className="bg-gray-300 w-1/5 px-4 h-10"
+									value={interviewTime}
+									onChange={(e) => {
+										e.preventDefault();
+										setInterviewTime(e.target.value);
+									}}
+									// ref={name_field}
+									active="true"
+								></input>
+								<label>minutes</label>
+							</div>
+						</form>
+						<div className="flex flex-col bg-gray-300 rounded-md p-5 m-5 w-full text-lg">
+							<div className="grid grid-cols-2 mt-5">
+								<p className="p-2 m-2 flex justify-end items-start">
+									Total time required:
+								</p>
+								<p className="p-2 m-2 flex justify-start items-start">
+									{" "}
+									{total_time_required > 60
+										? Math.floor(total_time_required / 60) +
+										  " hours " +
+										  (total_time_required % 60) +
+										  " minutes"
+										: total_time_required + " minutes"}
+								</p>
+							</div>
+							<div className="grid grid-cols-2">
+								<p className="p-2 m-2 flex justify-end items-start">
+									Time available:{" "}
+								</p>
+								<div className="flex flex-col">
+									<p className="p-2 m-2 flex justify-start items-start">
+										{total_time_available > 60
+											? Math.floor(total_time_available / 60) +
+											  " hours " +
+											  (total_time_available % 60) +
+											  " minutes"
+											: total_time_available + " minutes"}
+									</p>
+									{total_time_available < total_time_required ? (
+										<label className="text-red-400">(Insufficient time)</label>
+									) : null}
+								</div>
+							</div>
+							<div className="grid grid-cols-2">
+								<p className="p-2 m-2 flex justify-end items-start">
+									Number of Students:
+								</p>
+								<p className="p-2 m-2 flex justify-start items-start">
+									{numberOfStudents}
+								</p>
+							</div>
+							<div className="grid grid-cols-2">
+								<p className="p-2 m-2 flex justify-end items-start">
+									Interviews Possible:
+								</p>
+								<p className="p-2 m-2 flex justify-start items-start">
+									{total_interviews_possible}
+								</p>
+							</div>
+							{total_time_available < total_time_required ? (
+								<div className="p-4 m-4">
+									<p className="font-bold text-black inline">Note:</p>
+									<p className="text-iec-blue inline m-2">
+										You don’t have sufficient time commitment from interviewers
+										to conduct interviews of selected no. of students.
+									</p>
+								</div>
+							) : null}
+						</div>
+					</div>
+					<button
+						className="m-20 w-1/10 self-center justify-self-center bg-iec-blue p-4 text-white rounded-md"
+						onClick={
+							total_time_available >= total_time_required
+								? computeMatching
+								: () => {
+										setShowModal((lastVal) => !lastVal);
+								  }
+						}
+					>
+						Create Matching
+						{loading ? (
+							<i className="fas fa-spinner animate-spin text-lg m-2"></i>
+						) : (
+							<i className="fas fa-save text-lg m-2"></i>
+						)}
+					</button>
+				</div>
+			) : (
+				<div className="flex flex-col gap-y-4 mt-4 p-10">
+					<div className="text-xl font-bold justify-self-start flex w-full">
+						<div className="w-full">
+							<h2 className="border-l-2 border-b-2 border-iec-blue p-2 self-start justify-self-start w-max">
+								Matching Status
+							</h2>
+						</div>
+
+						<button
+							className="self-end justify-self-end w-full p-4 ml-auto text-iec-blue underline"
+							onClick={() => {
+								setShowMatchingModal(true);
+							}}
+						>
+							Recreate matching
+						</button>
+
+						{showMatchingModal === true ? (
+							<div
+								id="modal"
+								className="min-h-screen w-full inset-0 fixed z-30 bg-black/60 flex justify-center items-center"
+							>
+								<div className="h-min mx-auto mt-10 w-1/2 bg-white  shadow-xl pb-2">
+									<div className="bg-green-400 text-white py-3 px-3 grid grid-cols-2 content-center">
+										<h3 className="text-xl col-auto justify-self-start self-center">
+											WARNING
+										</h3>
+										<i
+											className="fas fa-times text-white cursor-pointer col-auto justify-self-end self-center"
+											onClick={() => {
+												setShowMatchingModal(false);
+											}}
+										></i>
+									</div>
+									<div className="p-8 h-min overflow-y-scroll flex flex-col items-center justify-center">
+										<p>
+											Creating new matching will erase the previous matching, if
+											any. Only create matching if you are sure you want to do
+											so. <br /> Do you want to create new matching?
+										</p>
+										<div className="mt-10 flex">
+											<button
+												className="bg-gray-400 py-4 px-8 rounded-md text-white mx-10"
+												onClick={() => {
+													setShowMatchingModal(false);
+												}}
+											>
+												No
+											</button>
+											<button
+												className="bg-iec-blue py-4 px-8 rounded-md text-white mx-10"
+												onClick={() => {
+													setShowMatchingModal(false);
+													setRecreateMatching(true);
+												}}
+											>
+												Yes
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						) : null}
+					</div>
+
+          {showEmailStudents && <EmailForm
+            users={matching.map(match => match.student_email)}
+            onFinish={() => {
+              setShowEmailStudents(false)
             }}
-            // ref={name_field}
-            active="true"
-          ></input>
+            sending_link={`/admin/interview/${interview_round_id}/send-matching-emails-student`}
+            default_values={{
+              email_subject: "IEC Interview Invite",
+              email_heading: "IEC Interview Invite",
+              email_body:
+                "Dear Student<br>We hope you are well.<br>You have been assigned an interviewer, please log into your portal to book an appointment.<br>",
+              email_button_pre_text:
+                "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.",
+              email_button_label: "Log In",
+              email_button_url: "https://apply.iec.org.pk/student/login",
+            }}
+          /> }
 
-          {total_time_required < total_time_available ? (
-            <button
-              className="ml-20 bg-iec-blue p-2 text-white rounded-md"
-              onClick={computeMatching}
-            >
-              Create Matching
-              {loading ? (
-                <i className="fas fa-spinner animate-spin text-lg"></i>
-              ) : (
-                <i className="fas fa-save text-lg"></i>
-              )}
-            </button>
-          ) : (
-            <button className="ml-20 bg-red-500 p-2 text-white" disabled>
-              Create Matching
-            </button>
-          )}
+          {showEmailInterviewers && <EmailForm
+          users={matching.map(match => match.interviewer_email)}
+          onFinish={() => {
+            setShowEmailInterviewers(false)
+          }}
+          sending_link={`/admin/interview/${interview_round_id}/send-matching-emails-interviewer`}
+          
+          default_values={{
+            email_subject: "IEC Interview Invite",
+            email_heading: "IEC Interview Invite",
+            email_body:
+              "Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>",
+            email_button_pre_text:
+              "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to view your assigned students and to record the Interview Scores of the students whom you interview.",
+            email_button_label: "Log In",
+            email_button_url: "This will be automatically set",
+          }}
+          /> }
 
-          <label className="text-red-500 text-xl">
-            Creating a new matching destroys the previous one, if any. ONLY
-            create a matching if you are sure that you want to do so.
-          </label>
-        </div>
-      </form>
+					<div className="flex items-end justify-end mt-10">
+						<button
+							className="bg-iec-blue py-4 px-8 text-white mx-10"
+							onClick={() => {
+                setShowEmailInterviewers(false);
+								setShowEmailStudents(true);
+							}}
+						>
+							Email Students
+						</button>
+						<button
+							className="bg-iec-blue py-4 px-8 text-white mx-10"
+							onClick={() => {
+                setShowEmailStudents(false);
+                setShowEmailInterviewers(true);
+							}}
+						>
+							Email Interviewers
+						</button>
+					</div>
 
-      {total_time_required > total_time_available ? (
-        <div className="flex flex-col gap-y-4 mt-4 p-10">
-          <h2 className="text-lg font-semibold text-red-400">
-            You do not have sufficient time commitment from the interviewers to
-            conduct the interviews of the selected number of students. Please go
-            back to "Step 2" and either increase interviewers or resend emails
-            asking them to increase their times.
-          </h2>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-y-4 text-green-400 mt-4 p-10">
-          <h2 className="text-lg font-semibold">
-            You have sufficient time commitment from the interviewers to conduct
-            the interviews of the selected number of students.
-          </h2>
-          <h2 className="text-lg">
-            You can conduct {total_interviews_possible} interviews.
-          </h2>
-        </div>
-      )}
-
-      <div className="flex flex-col">
-        <h2 className="text-lg">Interview Time Summary</h2>
-        <div className="w-full flex flex-col gap-y-4 items-center">
-          <label
-            htmlFor="interview-time"
-            className="min-w-max font-bold text-2xl"
-          >
-            Total Time Available
-          </label>
-          <p>{total_time_available} Minutes</p>
-          <label
-            htmlFor="interview-time"
-            className="min-w-max font-bold text-2xl"
-          >
-            Total Time Required
-          </label>
-          <p>{total_time_required} Minutes</p>
-          <label
-            htmlFor="interview-time"
-            className="min-w-max font-bold text-2xl"
-          >
-            Total Interviews Possible
-          </label>
-          <p>{total_interviews_possible}</p>
-        </div>
-      </div>
-
-      {matching.length > 0 ? (
-        <div className="flex flex-col gap-y-4 mt-4 p-10">
-          <h2 className="text-lg font-semibold text-red-400">
-            You have created a matching. You can view it below.
-          </h2>
-          <table className="w-full text-left">
-            <thead>
-              <tr>
-                <th className="p-2 border border-black">Index</th>
-                <th className="p-2 border border-black">Interviewer Email</th>
-                <th className="p-2 border border-black">Student Email</th>
-              </tr>
-            </thead>
-            <tbody>
-              {matching.map((match, index) => (
-                <tr key={index}>
-                  <td className="p-2 border border-black">{index + 1}</td>
-                  <td className="p-2 border border-black">
-                    {match.interviewer_email}
-                  </td>
-                  <td className="p-2 border border-black">
-                    {match.student_email}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-y-4 mt-20 p-10">
-          <h2 className="text-lg font-semibold text-red-400">
-            You have not created a matching yet.
-          </h2>
-        </div>
-      )}
-    </div>
-  );
+					<table className="w-full text-left">
+						<thead>
+							<tr className="bg-gray-800 text-white">
+								<th className="p-2 ">Index</th>
+								<th className="p-2 ">Interviewer Email</th>
+								<th className="p-2 ">Student Email</th>
+							</tr>
+						</thead>
+						<tbody>
+							{matching.map((match, index) => (
+								<tr key={index} className="bg-gray-300 p-4 mb-4">
+									<td className="p-4 mt-4">{index + 1}</td>
+									<td className="p-4 mt-4">{match.interviewer_email}</td>
+									<td className="p-4 mt-4">{match.student_email}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			)}
+		</>
+	);
 };
+
+// const Step5 = () => {
+//   const [loading, setLoading] = useState(false);
+//   const { matching_object } = useContext(MyContext);
+//   const [matching, setMatching] = matching_object;
+
+//   const sendEmails = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+//     try {
+//       //extract unique id of interviewers fron matching
+//       const interviewer_emails = [
+//         ...new Set(matching.map((match) => match.interviewer_email)),
+//       ];
+
+//       for (let i = 0; i < interviewer_emails.length; i++) {
+//         const response = await fetch(
+//           `/admin/interview/${interview_round_id}/send-matching-emails`,
+//           {
+//             method: "POST",
+//             headers: {
+//               "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({
+//               interviewer_email: interviewer_emails[i],
+//             }),
+//           }
+//         );
+//         if (response.status == 404) {
+//           window.alert("Some interviewers have not updated calendly links");
+//           setLoading(false);
+//           return;
+//         }
+//         if (response.status == 200) {
+//           window.alert("Emails sent successfully");
+//           setLoading(false);
+//           return;
+//         }
+//       }
+//     } catch (err) {
+//       console.log(err);
+//       window.alert("An error occured, please try again later");
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <div className="flex flex-row mt-4 p-4 w-full">
+//         <label className="p-2 text-xl">
+//           To send emails to both the interviewers and the students, click the
+//           given button.
+//         </label>
+
+//         <button
+//           className="ml-20 bg-green-500 p-2 text-white"
+//           onClick={sendEmails}
+//         >
+//           Send Emails
+//         </button>
+//       </div>
+
+//       <div>
+//         {matching.length > 0 ? (
+//           <div className="flex flex-col gap-y-4 mt-4 p-10">
+//             <h2 className="text-lg font-semibold text-red-400">
+//               You have created a matching. You can view it below.
+//             </h2>
+//             <table className="w-full text-left">
+//               <thead>
+//                 <tr>
+//                   <th className="p-2 border border-black">Index</th>
+//                   <th className="p-2 border border-black">Interviewer Email</th>
+//                   <th className="p-2 border border-black">Student Email</th>
+//                 </tr>
+//               </thead>
+//               <tbody>
+//                 {matching.map((match, index) => (
+//                   <tr key={index}>
+//                     <td className="p-2 border border-black">{index + 1}</td>
+//                     <td className="p-2 border border-black">
+//                       {match.interviewer_email}
+//                     </td>
+//                     <td className="p-2 border border-black">
+//                       {match.student_email}
+//                     </td>
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
+//         ) : (
+//           <div className="flex flex-col gap-y-4 mt-20 p-10">
+//             <h2 className="text-lg font-semibold text-red-400">
+//               You have not created a matching yet.
+//             </h2>
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
 
 const Step5 = () => {
-  const [loading, setLoading] = useState(false);
-  const { matching_object } = useContext(MyContext);
-  const [matching, setMatching] = matching_object;
+    const [students, setStudents] = useState([]);
 
-  const sendEmails = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      //extract unique id of interviewers fron matching
-      const interviewer_emails = [
-        ...new Set(matching.map((match) => match.interviewer_email)),
-      ];
-
-      for (let i = 0; i < interviewer_emails.length; i++) {
-        const response = await fetch(
-          `/admin/interview/${interview_round_id}/send-matching-emails`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              interviewer_email: interviewer_emails[i],
-            }),
+    function download_table_as_csv(table_id, separator = ",") {
+      // Select rows from table_id
+      var rows = document.querySelectorAll("table#" + table_id + " tr");
+      console.log(rows);
+      // Construct csv
+      var csv = [];
+  
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i].style.display != "none") {
+          var row = [],
+            cols = rows[i].querySelectorAll("td, th");
+          for (var j = 0; j < cols.length; j++) {
+            // Clean innertext to remove multiple spaces and jumpline (break csv)
+            var data = cols[j].innerText
+              .replace(/(\r\n|\n|\r)/gm, "")
+              .replace(/(\s\s)/gm, " ");
+            // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+            data = data.replace(/"/g, '""');
+            // Push escaped string
+            row.push('"' + data + '"');
           }
-        );
-        if (response.status == 404) {
-          window.alert("Some interviewers have not updated calendly links");
-          setLoading(false);
-          return;
-        }
-        if (response.status == 200) {
-          window.alert("Emails sent successfully");
-          setLoading(false);
-          return;
+          csv.push(row.join(separator));
         }
       }
-    } catch (err) {
-      console.log(err);
-      window.alert("An error occured, please try again later");
+      if (csv.length == 1) {
+        //the 1 row is the header row
+        alert("Sorry! No rows to export. Change the filters.");
+      } else {
+        var csv_string = csv.join("\n");
+        // Download it
+        var filename =
+          "export_" + table_id + "_" + new Date().toLocaleDateString() + ".csv";
+        var link = document.createElement("a");
+        link.style.display = "none";
+        link.setAttribute("target", "_blank");
+        link.setAttribute(
+          "href",
+          "data:text/csv;charset=utf-8," + encodeURIComponent(csv_string)
+        );
+        link.setAttribute("download", filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
     }
-  };
+    
+    //fetch the total scores for all interviewees
+    useEffect(async () => {
+      try{
+        let response = await fetch(`/admin/interview/${interview_round_id}/get-student-scores`);
 
-  return (
-    <div>
-      <div className="flex flex-row mt-4 p-4 w-full">
-        <label className="p-2 text-xl">
-          To send emails to both the interviewers and the students, click the
-          given button.
-        </label>
+        if (response.status == 200){
+          response = await response.json()
 
-        <button
-          className="ml-20 bg-green-500 p-2 text-white"
-          onClick={sendEmails}
-        >
-          Send Emails
-        </button>
-      </div>
-
-      <div>
-        {matching.length > 0 ? (
-          <div className="flex flex-col gap-y-4 mt-4 p-10">
-            <h2 className="text-lg font-semibold text-red-400">
-              You have created a matching. You can view it below.
-            </h2>
-            <table className="w-full text-left">
-              <thead>
-                <tr>
-                  <th className="p-2 border border-black">Index</th>
-                  <th className="p-2 border border-black">Interviewer Email</th>
-                  <th className="p-2 border border-black">Student Email</th>
-                </tr>
-              </thead>
-              <tbody>
-                {matching.map((match, index) => (
-                  <tr key={index}>
-                    <td className="p-2 border border-black">{index + 1}</td>
-                    <td className="p-2 border border-black">
-                      {match.interviewer_email}
-                    </td>
-                    <td className="p-2 border border-black">
-                      {match.student_email}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-y-4 mt-20 p-10">
-            <h2 className="text-lg font-semibold text-red-400">
-              You have not created a matching yet.
-            </h2>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
+          if(response.success == "ok"){
+            setStudents(response.scores.filter(score => score))
+          }
+        } else {
+          console.log(response);
+          alert("An error occured, please refresh the page");          
+        }
+      
+      } catch (err){
+        console.log(err);
+        alert("An error occured, please refresh the page");
+      }
+    },[]);
+  
+    return (
+			<div className = "flex flex-col justify-center items-center mt-10">
+        {students.length > 0 ? (
+          <>
+          <button className = "bg-iec-blue text-white p-4 px-10 self-end justify-self-end rounded-md" onClick = {() => {
+            download_table_as_csv("interview_results");
+          }}>
+            Download as csv
+          </button>
+				
+					<table className="w-full text-left mt-20" id = "interview_results">
+						<thead>
+							<tr className="bg-gray-800 text-white p-4">
+								<th className="p-2 border">Student Name</th>
+								<th className="p-2 border">Student Email</th>
+								<th className="p-2 border">Student CNIC</th>
+								<th className="p-2 border">Interviewer Name</th>
+								<th className="p-2 border">Marks Obtained</th>
+							</tr>
+						</thead>
+						<tbody className = "m-2 p-4">
+              {students.map((student) => (
+                  <tr className="bg-gray-300 p-4 m-2" key = {student.id} >
+                    <td className = "m-2 p-4">{student.studentFirstName + " " + student.studentLastName}</td>
+                    <td className = "m-2 p-4">{student.studentEmail}</td>
+                    <td className = "m-2 p-4">{student.studentCnic}</td>
+                    <td className = "m-2 p-4">{student.interviewerName}</td>
+                    <td className = "m-2 p-4">{student.obtainedScore + " / " + student.totalScore}</td>
+                  </tr>)
+              )}
+            </tbody>
+					</table>
+          </>
+				) : (
+					<div className = "w-full bg-white flex items-center justify-center text-xl mt-20 rounded-md p-4 ">No Students have been marked yet</div>
+				)}
+			</div>
+		);
+}
 
 const Main = () => {
   const { steps_object } = useContext(MyContext);
@@ -1101,6 +1366,7 @@ const Main = () => {
       {steps[1].active ? <Step2 /> : <div className="hidden"></div>}
       {steps[2].active ? <Step3 /> : <div className="hidden"></div>}
       {steps[3].active ? <Step4 /> : <div className="hidden"></div>}
+      {/* {steps[4].active ? <Step5 /> : <div className="hidden"></div>} */}
       {steps[4].active ? <Step5 /> : <div className="hidden"></div>}
     </div>
   );

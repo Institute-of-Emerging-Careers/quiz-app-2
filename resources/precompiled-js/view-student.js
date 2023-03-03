@@ -113,6 +113,7 @@ var ViewStudent = function ViewStudent() {
             response = _context2.sent;
 
             if (response.success == "ok") {
+              console.log(response.answers);
               if (response.answers.length > 0) setAnswers(response.answers);
               if (response.totalMarks) setTotalMarks(response.totalMarks);
               if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
@@ -134,103 +135,143 @@ var ViewStudent = function ViewStudent() {
     }, _callee2, null, [[0, 9]]);
   })), []);
 
-  var addAnswers = function addAnswers(e) {
-    e.preventDefault();
-    var answers = [];
-    questions.map(function (question) {
-      var value = e.target.elements.namedItem(question.questionID).value;
-      answers = [].concat(_toConsumableArray(answers), [{
-        questionID: question.questionID,
-        questionAnswer: question.questionType == "descriptive" ? value : null,
-        questionScale: question.questionType == "descriptive" ? null : value
-      }]);
-    }); //compute total marks from number scale answers
+  var markAsAbsent = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+      var response;
+      return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              _context3.next = 2;
+              return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/mark-absent"), {
+                method: "POST"
+              });
 
-    var totalMarks = questions.reduce(function (total, question) {
-      if (question.questionType == "number scale") {
-        return total + parseInt(question.questionScale);
-      }
+            case 2:
+              response = _context3.sent;
 
-      return total + 0;
-    }, 0); //compute obtained marks from number scale answers
+              if (response.status == 200) {
+                window.alert("Student marked absent");
+                window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
+              }
 
-    var obtainedMarks = answers.reduce(function (total, answer) {
-      if (answer.questionScale) {
-        return total + parseInt(answer.questionScale);
-      }
-
-      return total + 0;
-    }, 0); //insert answers into Answers table
-
-    answers.map( /*#__PURE__*/function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(answer) {
-        var response, _response;
-
-        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.prev = 0;
-                _context3.next = 3;
-                return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/enter-marks"), {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify(answer)
-                });
-
-              case 3:
-                response = _context3.sent;
-
-                if (!(response.status == 200)) {
-                  _context3.next = 9;
-                  break;
-                }
-
-                _context3.next = 7;
-                return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/total-marks"), {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({
-                    totalMarks: totalMarks,
-                    obtainedMarks: obtainedMarks
-                  })
-                });
-
-              case 7:
-                _response = _context3.sent;
-
-                if (_response.status == 200) {
-                  window.alert("Marks added successfully");
-                  window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
-                }
-
-              case 9:
-                _context3.next = 15;
-                break;
-
-              case 11:
-                _context3.prev = 11;
-                _context3.t0 = _context3["catch"](0);
-                console.log(_context3.t0);
-                window.alert("An error occured, please refresh the page");
-
-              case 15:
-              case "end":
-                return _context3.stop();
-            }
+            case 4:
+            case "end":
+              return _context3.stop();
           }
-        }, _callee3, null, [[0, 11]]);
-      }));
+        }
+      }, _callee3);
+    }));
 
-      return function (_x) {
-        return _ref3.apply(this, arguments);
-      };
-    }());
-  };
+    return function markAsAbsent() {
+      return _ref3.apply(this, arguments);
+    };
+  }();
+
+  var addAnswers = /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee5(e) {
+      var answers, totalMarks, obtainedMarks, response;
+      return _regeneratorRuntime().wrap(function _callee5$(_context5) {
+        while (1) {
+          switch (_context5.prev = _context5.next) {
+            case 0:
+              e.preventDefault();
+              answers = [];
+              questions.map(function (question) {
+                var value = e.target.elements.namedItem(question.questionID).value;
+                answers = [].concat(_toConsumableArray(answers), [{
+                  questionID: question.questionID,
+                  questionAnswer: question.questionType == "descriptive" ? value : null,
+                  questionScale: question.questionType == "descriptive" ? null : value
+                }]);
+              }); //compute total marks from number scale answers
+
+              totalMarks = questions.reduce(function (total, question) {
+                if (question.questionType == "number scale") {
+                  return total + parseInt(question.questionScale);
+                }
+
+                return total + 0;
+              }, 0); //compute obtained marks from number scale answers
+
+              obtainedMarks = answers.reduce(function (total, answer) {
+                if (answer.questionScale) {
+                  return total + parseInt(answer.questionScale);
+                }
+
+                return total + 0;
+              }, 0); //insert answers into Answers table
+
+              answers.map( /*#__PURE__*/function () {
+                var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(answer) {
+                  return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+                    while (1) {
+                      switch (_context4.prev = _context4.next) {
+                        case 0:
+                          _context4.prev = 0;
+                          _context4.next = 3;
+                          return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/enter-marks"), {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json"
+                            },
+                            body: JSON.stringify(answer)
+                          });
+
+                        case 3:
+                          _context4.next = 9;
+                          break;
+
+                        case 5:
+                          _context4.prev = 5;
+                          _context4.t0 = _context4["catch"](0);
+                          console.log(_context4.t0);
+                          window.alert("An error occured, please refresh the page");
+
+                        case 9:
+                        case "end":
+                          return _context4.stop();
+                      }
+                    }
+                  }, _callee4, null, [[0, 5]]);
+                }));
+
+                return function (_x2) {
+                  return _ref5.apply(this, arguments);
+                };
+              }());
+              _context5.next = 8;
+              return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/total-marks"), {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  totalMarks: totalMarks,
+                  obtainedMarks: obtainedMarks
+                })
+              });
+
+            case 8:
+              response = _context5.sent;
+
+              if (response.status == 200) {
+                window.alert("Marks added successfully");
+                window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
+              }
+
+            case 10:
+            case "end":
+              return _context5.stop();
+          }
+        }
+      }, _callee5);
+    }));
+
+    return function addAnswers(_x) {
+      return _ref4.apply(this, arguments);
+    };
+  }();
 
   return /*#__PURE__*/React.createElement("div", {
     className: "mt-36 mx-10"
@@ -245,13 +286,19 @@ var ViewStudent = function ViewStudent() {
   }, "Interview Scores"), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col "
   }, /*#__PURE__*/React.createElement("div", {
-    className: "w-full mt-10 bg-iec-blue text-white rounded-md p-4"
+    className: "w-full mt-10 rounded-md p-4 flex"
   }, /*#__PURE__*/React.createElement("button", {
     type: "submit",
-    className: " font-bold p-1 flex flex-row"
+    className: " font-bold p-2 flex flex-row bg-iec-blue text-white m-2 items-center justify-center"
   }, /*#__PURE__*/React.createElement("i", {
-    className: "fa fa-save p-1"
-  }), "Save")))), /*#__PURE__*/React.createElement("div", {
+    className: "fa fa-save p-2"
+  }), "Save"), /*#__PURE__*/React.createElement("button", {
+    onClick: markAsAbsent,
+    type: "button",
+    className: " font-bold p-2 flex flex-row m-2 bg-iec-blue text-white  items-center justify-center"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa fa-user-xmark p-2"
+  }), "Student Absent")))), /*#__PURE__*/React.createElement("div", {
     className: "mt-10 mx-10 rounded-md flex flex-col p-10 w-full "
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-row items-left justify-left"
