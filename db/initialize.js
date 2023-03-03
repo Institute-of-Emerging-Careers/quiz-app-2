@@ -18,8 +18,8 @@ const initializeDatabase = async () => {
 		// await Application.sync({ alter: true, force: false });
 		// await Orientation.sync({ alter: true, force: false });
 		// await OrientationInvite.sync({ alter: true, force: false });
-		await ApplicationRound.sync({ alter: true, force: false })
-		await Quiz.sync({ alter: true, force: false })
+		// await ApplicationRound.sync({ alter: true, force: false })
+		// await Quiz.sync({ alter: true, force: false })
 		// await Interviewer.sync({ alter: false });
 		// await InterviewerInvite.sync({ alter: false });
 		// await InterviewerSlot.sync({ alter: false });
