@@ -118,13 +118,15 @@ const sendApplicationReceiptEmail = async (user) => {
     
 		Thank you for applying to the “Tech Apprenticeship Program Cohort 07” at the Institute of Emerging Careers. 
 
-		Congratulations you have successfully completed your registration.  Please wait for the next email which will include “Assessments”, which you must submit within 48 hours. Please complete your assessment within the stipulated time or you will be disqualified. 
+		Congratulations you have successfully completed your registration. Our next part of the registration process includes Assessments. This is compulsory to complete within 48 hours of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. Incompletion of the Assessment will lead to disqualification. 
+
+		Please log into your student portal at <a href="https://apply.iec.org.pk/student">https://apply.iec.org.pk/student</a> to solve the assessment.
 
 		Also, check your inbox and spam folder regularly so you do not miss any updates. 
 
 		Courses Offered for Cohort 07:  
 		1. Devops/cloud computing
-		2. Web backend with Next JS
+		2. Node/Next JS
 		3. Mobile application development
 		4. Web frontend with react
 
