@@ -15,7 +15,7 @@ email_bull_queue.process(function (job, done) {
 		job.data.force_send
 	)
 		.then(() => {
-			console.log("abay sent")
+			console.log("Email successfully sent to", job.data.recepient)
 			done()
 		})
 		.catch((err) => {
