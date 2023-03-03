@@ -11,7 +11,6 @@ const {
 	Option,
 	Answer,
 	Attempt,
-	User,
 	Score,
 	PasswordResetLink,
 	Orientation,

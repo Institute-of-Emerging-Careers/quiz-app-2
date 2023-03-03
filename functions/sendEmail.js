@@ -1,5 +1,5 @@
 const ejs = require("ejs")
-const { Student } = require("../db/models/user")
+const sequelize = require("../db/connect")
 var AWS = require("aws-sdk")
 const { queueMail } = require("../bull")
 
@@ -52,7 +52,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 	// if force send, then we send email regardless of student's email receiving preference (e.g. forgot password email)
 	if (process.env.NODE_ENV == "production" && recepient != undefined) {
 		// checking if this student has unsubscribed from emails, and if so, we won't send him/her an email
-		const student = await Student.findOne({
+		const student = await sequelize.models.Student.findOne({
 			where: { email: recepient },
 			attributes: ["hasUnsubscribedFromEmails"],
 		})
