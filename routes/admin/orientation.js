@@ -6,9 +6,13 @@ const checkAdminAuthenticated = require('../../db/check-admin-authenticated')
 const {
 	Orientation,
 	OrientationInvite,
-} = require('../../db/models/orientation')
-const { Student, Assignment, Attempt, Score } = require('../../db/models/user')
-const { Quiz, Section } = require('../../db/models/quizmodel.js')
+	Student,
+	Assignment,
+	Attempt,
+	Score,
+	Quiz,
+	Section,
+} = require('../../db/models')
 const roundToTwoDecimalPlaces = require('../../functions/roundToTwoDecimalPlaces')
 const getQuizTotalScore = require('../../functions/getQuizTotalScore')
 const { queueMail } = require('../../bull')
@@ -122,11 +126,11 @@ router.post(
 			})
 
 			// let's get all students who have already been invited to this Orientation and create a hashmap.
-			const orientation_invites = await OrientationInvite.findAll({
+			let orientation_invites = await OrientationInvite.findAll({
 				where: { OrientationId: req.params.orientation_id },
 			})
 
-			const students_already_invited = new Map()
+			let students_already_invited = new Map()
 			orientation_invites.map((invite) => {
 				students_already_invited.set(invite.StudentId, invite)
 			})
@@ -136,12 +140,12 @@ router.post(
 			await new Promise((resolve, reject) => {
 				req.body.students.map(async (student) => {
 					if (
-						student.added === false &&
+						student.added == false &&
 						students_already_invited.has(student.id)
 					) {
 						students_already_invited.get(student.id).destroy()
 					} else if (
-						student.added === true &&
+						student.added == true &&
 						!students_already_invited.has(student.id)
 					) {
 						const application_id = (
@@ -157,7 +161,7 @@ router.post(
 						})
 					}
 					i++
-					if (i === n) {
+					if (i == n) {
 						resolve()
 					}
 				})
@@ -201,9 +205,9 @@ router.get(
 
 			if (orientation != null && orientation.QuizId != null) {
 				// finding total score of quiz
-				const quiz_total_score = await getQuizTotalScore(orientation.Quiz)
+				let quiz_total_score = await getQuizTotalScore(orientation.Quiz)
 
-				const data = [] // list of students who have solved this quiz and their data
+				let data = [] //list of students who have solved this quiz and their data
 				/*
           [
             {
@@ -219,7 +223,7 @@ router.get(
           ]
         */
 
-				const assignments = orientation.Quiz.Assignments
+				let assignments = orientation.Quiz.Assignments
 
 				if (assignments != null && assignments.length > 0) {
 					await new Promise((resolve) => {
@@ -240,16 +244,15 @@ router.get(
 							})
 							data.push({
 								added:
-									Object.prototype.hasOwnProperty.call(
-										assignment.Student,
-										'Orientations'
-									) &&
+									assignment.Student.hasOwnProperty('Orientations') &&
 									assignment.Student.Orientations.length > 0 &&
 									assignment.Student.Orientations.reduce(
 										(hasThisOrientationId, cur) =>
 											hasThisOrientationId
 												? true
-												: cur.id === req.params.orientation_id,
+												: cur.id == req.params.orientation_id
+												? true
+												: false,
 										false
 									),
 								email_sent:
@@ -264,18 +267,18 @@ router.get(
 								email: assignment.Student.email,
 								age: assignment.Student.age,
 								gender: assignment.Student.gender,
-								total_score_achieved,
+								total_score_achieved: total_score_achieved,
 								assignment_completed_date: assignment.updatedAt,
 								percentage_score: roundToTwoDecimalPlaces(
 									(total_score_achieved / quiz_total_score) * 100
 								),
 							})
 							i++
-							if (i === n) resolve()
+							if (i == n) resolve()
 						})
 					})
 				}
-				res.json({ success: true, data })
+				res.json({ success: true, data: data })
 			} else {
 				console.log('Error: QuizId: or orientation:', orientation, 'is NULL')
 				res.json({ success: false })
@@ -318,7 +321,7 @@ router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 		// let students = req.body.students.filter((student) => student.added);
 		// this will be done before sending the request now to save network bandwidth
 
-		const students = req.body.students
+		let students = req.body.students
 		let promises = students.map((student) => [
 			OrientationInvite.update(
 				{ email_sent: true },
@@ -343,7 +346,7 @@ router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 			.then(() => {
 				res.json({ success: true })
 			})
-			.catch(() => {
+			.catch((err) => {
 				res.json({ success: false })
 			})
 	}

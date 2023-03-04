@@ -10,8 +10,7 @@ const orientationRouter = require('./orientation')
 const interviewRouter = require('./interview')
 const applicationRouter = require('./application')
 const lecRouter = require('./lec')
-const { Quiz } = require('../../db/models/quizmodel.js')
-const { Invite } = require('../../db/models/user')
+const { Quiz, Invite } = require('../../db/models')
 const { email_bull_queue } = require('../../bull')
 
 // middleware that is specific to this router
@@ -37,13 +36,15 @@ router.get('/', checkAdminAuthenticated, async (req, res) => {
 			all_quizzes[i].num_questions = total_questions
 		}
 		const all_invites = await Invite.findAll({ include: [Quiz] })
+		console.log(req.url)
+		console.log(req.user)
 		res.render('admin/index.ejs', {
 			myname: req.user.user?.firstName,
 			user_type: req.user.type,
-			all_quizzes,
-			all_invites,
+			all_quizzes: all_quizzes,
+			all_invites: all_invites,
 			site_domain_name: process.env.SITE_DOMAIN_NAME,
-			moment,
+			moment: moment,
 			query: req.query,
 			current_url: `/admin${req.url}`,
 		})
@@ -81,7 +82,7 @@ router.get('/retry-failed-emails', checkAdminAuthenticated, (req, res) => {
 
 router.get('/view-failed-emails', checkAdminAuthenticated, (req, res) => {
 	email_bull_queue.getFailed().then((failed_jobs) => {
-		res.json({ failed_jobs })
+		res.json({ failed_jobs: failed_jobs })
 	})
 })
 
