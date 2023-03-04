@@ -1,12 +1,12 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
-const { DateTime } = require("luxon")
-const bcrypt = require("bcrypt")
-const randomstring = require("randomstring")
+const { DateTime } = require('luxon')
+const bcrypt = require('bcrypt')
+const randomstring = require('randomstring')
 
 // requirements
-const checkStudentAuthenticated = require("../db/check-student-authenticated")
-const checkStudentAlreadyLoggedIn = require("../db/check-student-already-logged-in")
+const checkStudentAuthenticated = require('../db/check-student-authenticated')
+const checkStudentAlreadyLoggedIn = require('../db/check-student-already-logged-in')
 const {
 	Quiz,
 	Section,
@@ -19,18 +19,18 @@ const {
 	InterviewRound,
 	InterviewMatching,
 	InterviewBookingSlots,
-} = require("../db/models")
+} = require('../db/models')
 
-const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
+const calculateSingleAssessmentStatus = require('../functions/calculateSingleAssessmentStatus')
 
-const { queueMail } = require("../bull")
+const { queueMail } = require('../bull')
 
 // starting cron-jobs
 const {
 	assessment_reminder_mailer_task,
 	score_past_deadline_attempts,
-} = require("../functions/cron-ping")
-const moment = require("moment")
+} = require('../functions/cron-ping')
+const moment = require('moment')
 
 assessment_reminder_mailer_task.start()
 score_past_deadline_attempts.start()
@@ -40,16 +40,16 @@ router.use((req, res, next) => {
 	next()
 })
 
-router.get("/orientation", checkStudentAuthenticated, async (req, res) => {
+router.get('/orientation', checkStudentAuthenticated, async (req, res) => {
 	try {
 		const student = await Student.findOne({ where: { id: req.user.user.id } })
 		const orientations = await student.getOrientations()
 
-		res.render("student/orientation/index.ejs", {
+		res.render('student/orientation/index.ejs', {
 			user_type: req.user.type,
 			query: req.query,
-			DateTime: DateTime,
-			orientations: orientations,
+			DateTime,
+			orientations,
 		})
 	} catch (err) {
 		console.log(err)
@@ -57,32 +57,32 @@ router.get("/orientation", checkStudentAuthenticated, async (req, res) => {
 	}
 })
 
-router.get("/interview", checkStudentAuthenticated, (req, res) => {
-	res.render("student/interview/index.ejs", {
+router.get('/interview', checkStudentAuthenticated, (req, res) => {
+	res.render('student/interview/index.ejs', {
 		user_type: req.user.type,
 		query: req.query,
 	})
 })
 
-router.get("/onboarding", checkStudentAuthenticated, (req, res) => {
-	res.render("student/onboarding/index.ejs", {
+router.get('/onboarding', checkStudentAuthenticated, (req, res) => {
+	res.render('student/onboarding/index.ejs', {
 		user_type: req.user.type,
 		query: req.query,
 	})
 })
 
-router.post("/signup", async (req, res) => {
-	const firstName = req.body.firstName,
-		lastName = req.body.lastName,
-		email = req.body.email,
-		phone = req.body.phone,
-		cnic = req.body.cnic,
-		password = req.body.password,
-		age = req.body.age,
-		gender = req.body.gender,
-		city = req.body.city,
-		address = req.body.address,
-		invite_link = req.body.invite
+router.post('/signup', async (req, res) => {
+	const firstName = req.body.firstName
+	const lastName = req.body.lastName
+	const email = req.body.email
+	const phone = req.body.phone
+	const cnic = req.body.cnic
+	const password = req.body.password
+	const age = req.body.age
+	const gender = req.body.gender
+	const city = req.body.city
+	const address = req.body.address
+	const invite_link = req.body.invite
 
 	try {
 		// to count the number of students who have registered using this particular invite link:
@@ -91,20 +91,20 @@ router.post("/signup", async (req, res) => {
 				link: invite_link,
 			},
 		})
-		invite.increment("registrations")
+		invite.increment('registrations')
 
 		// creating student
 		let student = Student.build({
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
+			firstName,
+			lastName,
+			email,
 			password: await bcrypt.hash(password, 10),
-			phone: phone,
-			cnic: cnic,
-			age: age,
-			gender: gender,
-			city: city,
-			address: address,
+			phone,
+			cnic,
+			age,
+			gender,
+			city,
+			address,
 			InviteId: invite.id,
 		})
 
@@ -120,39 +120,39 @@ router.post("/signup", async (req, res) => {
 
 			// send automated Welcome email to student
 			try {
-				await queueMail(email, `Welcome to IEC LCMS`, {
-					heading: "Welcome to the IEC LCMS",
+				await queueMail(email, 'Welcome to IEC LCMS', {
+					heading: 'Welcome to the IEC LCMS',
 					inner_text:
-						"We have sent you an assessment to solve. You have 72 hours to solve the assessment.",
-					button_announcer: "Click on the button below to solve the Assessment",
-					button_text: "Solve Assessment",
-					button_link: "https://apply.iec.org.pk/student/login",
+						'We have sent you an assessment to solve. You have 72 hours to solve the assessment.',
+					button_announcer: 'Click on the button below to solve the Assessment',
+					button_text: 'Solve Assessment',
+					button_link: 'https://apply.iec.org.pk/student/login',
 				})
 			} catch (err) {
-				console.log("Welcome email sending failed.")
+				console.log('Welcome email sending failed.')
 			}
-			res.redirect("/student/login")
+			res.redirect('/student/login')
 		}
 	} catch (err) {
 		console.log(err)
 		if (err.errors) {
 			res.redirect(
-				"/invite/" +
+				'/invite/' +
 					invite_link +
-					"?error=" +
+					'?error=' +
 					encodeURIComponent(err.errors[0].type) +
-					"&field=" +
+					'&field=' +
 					encodeURIComponent(err.errors[0].path) +
-					"&type=" +
+					'&type=' +
 					encodeURIComponent(err.errors[0].validatorName) +
-					"&message=" +
+					'&message=' +
 					encodeURIComponent(err.errors[0].message)
 			)
-		} else res.redirect("/invite/" + invite_link)
+		} else res.redirect('/invite/' + invite_link)
 	}
 })
 
-router.get("/", checkStudentAuthenticated, async (req, res) => {
+router.get('/', checkStudentAuthenticated, async (req, res) => {
 	// Invite Links are obsolete now. Assignments are created from assign.js
 	// if (req.query.link != undefined) {
 	//   const invite = await Invite.findOne({
@@ -174,9 +174,9 @@ router.get("/", checkStudentAuthenticated, async (req, res) => {
 			if (orientation_exists) return true
 
 			if (
-				DateTime.fromFormat(cur_orientation.date, "MM/dd/yyyy").startOf(
-					"day"
-				) >= DateTime.now().startOf("day")
+				DateTime.fromFormat(cur_orientation.date, 'MM/dd/yyyy').startOf(
+					'day'
+				) >= DateTime.now().startOf('day')
 			)
 				return true
 			else return false
@@ -185,15 +185,15 @@ router.get("/", checkStudentAuthenticated, async (req, res) => {
 	)
 	console.log(orientation_exists)
 
-	res.render("student/index.ejs", {
+	res.render('student/index.ejs', {
 		user_type: req.user.type,
 		query: req.query,
-		orientation_exists: orientation_exists,
+		orientation_exists,
 	})
 })
 
-router.get("/login", checkStudentAlreadyLoggedIn, async (req, res) => {
-	res.render("student/login/index.ejs", {
+router.get('/login', checkStudentAlreadyLoggedIn, async (req, res) => {
+	res.render('student/login/index.ejs', {
 		link: req.query.link,
 		email: req.query.email,
 		cnic: req.query.cnic,
@@ -204,10 +204,10 @@ router.get("/login", checkStudentAlreadyLoggedIn, async (req, res) => {
 
 // render the forgot password page
 router.get(
-	"/forgot-password",
+	'/forgot-password',
 	checkStudentAlreadyLoggedIn,
 	async (req, res) => {
-		res.render("student/login/forgot_password.ejs", {
+		res.render('student/login/forgot_password.ejs', {
 			link: req.query.link,
 			error: req.query.error,
 		})
@@ -215,8 +215,8 @@ router.get(
 )
 
 // set a new password
-router.post("/change-password", async (req, res) => {
-	if (req.body.password1 == req.body.password2) {
+router.post('/change-password', async (req, res) => {
+	if (req.body.password1 === req.body.password2) {
 		try {
 			const password = req.body.password1
 			const password_reset_link = await PasswordResetLink.findOne({
@@ -231,18 +231,18 @@ router.post("/change-password", async (req, res) => {
 				await password_reset_link.Student.update({
 					password: await bcrypt.hash(password, 10),
 				})
-				console.log("password updated for ", password_reset_link.Student.email)
+				console.log('password updated for ', password_reset_link.Student.email)
 
 				await password_reset_link.destroy()
 
-				res.redirect("/student/login?success=password-reset")
+				res.redirect('/student/login?success=password-reset')
 			} else {
-				res.render("templates/error.ejs", {
-					additional_info: "Invalid Link",
+				res.render('templates/error.ejs', {
+					additional_info: 'Invalid Link',
 					error_message:
-						"The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.",
-					action_link: "/student/login",
-					action_link_text: "Student Login Page",
+						'The password reset link is invalid. Please go to the Student Login Page and click on Forgot Password to generate a valid link.',
+					action_link: '/student/login',
+					action_link_text: 'Student Login Page',
 				})
 			}
 		} catch (err) {
@@ -250,20 +250,20 @@ router.post("/change-password", async (req, res) => {
 			res.sendStatus(500)
 		}
 	} else {
-		res.render("student/login/set_new_password.ejs", {
+		res.render('student/login/set_new_password.ejs', {
 			key: req.body.key,
 			student_id: req.body.id,
-			error: "Passwords do not match",
+			error: 'Passwords do not match',
 		})
 	}
 })
 
 // send password reset link in email
 router.post(
-	"/reset-password",
+	'/reset-password',
 	checkStudentAlreadyLoggedIn,
 	async (req, res) => {
-		console.log(req.body.email, " ", req.body.cnic)
+		console.log(req.body.email, ' ', req.body.cnic)
 		const student = await Student.findOne({
 			where: {
 				email: req.body.email,
@@ -273,20 +273,20 @@ router.post(
 		if (student != null) {
 			const key = randomstring.generate(255)
 			PasswordResetLink.create({
-				key: key,
+				key,
 				StudentId: student.id,
 			})
 
 			const reset_link =
-				process.env.SITE_DOMAIN_NAME + "/set-new-password/" + key
+				process.env.SITE_DOMAIN_NAME + '/set-new-password/' + key
 			console.log(reset_link)
 
 			try {
 				await queueMail(
 					student.email,
-					`Reset Password`,
+					'Reset Password',
 					{
-						heading: `Reset Password`,
+						heading: 'Reset Password',
 						inner_text: `Dear Student
             <br>
             This email contains your password reset link. Either copy paste the following link in your browser:
@@ -296,43 +296,43 @@ router.post(
             Sincerely, 
             IEC Admissions Team`,
 						button_announcer:
-							"Or you can click on the following button to change your password",
-						button_text: "Change Password",
+							'Or you can click on the following button to change your password',
+						button_text: 'Change Password',
 						button_link: reset_link,
 					},
 					true
 				)
-				res.render("templates/error.ejs", {
-					additional_info: "Check Your Inbox",
+				res.render('templates/error.ejs', {
+					additional_info: 'Check Your Inbox',
 					error_message:
-						"If your email and CNIC were correct, then we have sent you a Password Reset link at your email address. Please also check your spam folder.",
-					action_link: "/student/login",
-					action_link_text: "Click here to go to the student login page.",
+						'If your email and CNIC were correct, then we have sent you a Password Reset link at your email address. Please also check your spam folder.',
+					action_link: '/student/login',
+					action_link_text: 'Click here to go to the student login page.',
 				})
 			} catch (err) {
-				console.log("Password reset email sending failed.", err)
+				console.log('Password reset email sending failed.', err)
 				res.sendStatus(500)
 			}
 		} else {
-			res.redirect("/student/forgot-password?error=wrong-credentials")
+			res.redirect('/student/forgot-password?error=wrong-credentials')
 		}
 	}
 )
 
-router.get("/feedback", checkStudentAuthenticated, (req, res) => {
-	res.render("student/feedback/index.ejs", {
+router.get('/feedback', checkStudentAuthenticated, (req, res) => {
+	res.render('student/feedback/index.ejs', {
 		user_type: req.user.type,
 	})
 })
 
-router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
+router.get('/assignments', checkStudentAuthenticated, async (req, res) => {
 	try {
-		let assignments = await Assignment.findAll({
+		const assignments = await Assignment.findAll({
 			where: {
 				StudentId: req.user.user.id,
 			},
 			include: { model: Quiz, required: true, include: { model: Section } },
-			order: [["id", "desc"]],
+			order: [['id', 'desc']],
 		})
 
 		let count = 0
@@ -342,9 +342,9 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
 				assignments[i].Quiz.countSections().then(async (num_sections) => {
 					result.push({
 						quiz_id: assignments[i].Quiz.id,
-						num_sections: num_sections,
+						num_sections,
 						quiz_title: assignments[i].Quiz.title,
-						createdAt: moment(assignments[i].createdAt).format("Do MMMM, YYYY"),
+						createdAt: moment(assignments[i].createdAt).format('Do MMMM, YYYY'),
 					})
 					const cur_index = result.length - 1
 
@@ -359,7 +359,7 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
 						num_sections
 					)
 					count++
-					if (count == assignments.length) {
+					if (count === assignments.length) {
 						resolve(result)
 					}
 				})
@@ -372,7 +372,7 @@ router.get("/assignments", checkStudentAuthenticated, async (req, res) => {
 	}
 })
 
-router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
+router.get('/matching/', checkStudentAuthenticated, async (req, res) => {
 	try {
 		const student = await Student.findOne({
 			where: {
@@ -386,7 +386,7 @@ router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
 			},
 		})
 
-		//get interviewer names from their emails in all matchings
+		// get interviewer names from their emails in all matchings
 		for (let i = 0; i < matching.length; i++) {
 			const interviewer = await Interviewer.findOne({
 				where: {
@@ -396,7 +396,7 @@ router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
 			matching[i].interviewer_name = interviewer.name
 		}
 
-		//check if a slot has already been booked with the interviewer
+		// check if a slot has already been booked with the interviewer
 		for (let i = 0; i < matching.length; i++) {
 			const booking = await InterviewBookingSlots.findOne({
 				where: {
@@ -434,10 +434,10 @@ router.get("/matching/", checkStudentAuthenticated, async (req, res) => {
 })
 
 router.get(
-	"/interview/:interview_round_id/pick-timeslot/:interviewer_id",
+	'/interview/:interview_round_id/pick-timeslot/:interviewer_id',
 	checkStudentAuthenticated,
 	async (req, res) => {
-		res.render("student/interview/pick-timeslot.ejs", {
+		res.render('student/interview/pick-timeslot.ejs', {
 			user_type: req.user.type,
 			interviewer_id: req.params.interviewer_id,
 			interview_round_id: req.params.interview_round_id,
@@ -446,7 +446,7 @@ router.get(
 )
 
 router.get(
-	"/interview/:interview_round_id/interviewer/:interviewer_id/booking-slots",
+	'/interview/:interview_round_id/interviewer/:interviewer_id/booking-slots',
 	checkStudentAuthenticated,
 	async (req, res) => {
 		try {
@@ -490,7 +490,7 @@ router.get(
 )
 
 router.post(
-	"/interview/:interview_round_id/interviewer/:interviewer_id/book-slot",
+	'/interview/:interview_round_id/interviewer/:interviewer_id/book-slot',
 	checkStudentAuthenticated,
 	async (req, res) => {
 		try {
@@ -502,7 +502,7 @@ router.post(
 			if (interview_round == null)
 				return res.status(404).json({
 					success: false,
-					message: "Booking slot not found or already booked.",
+					message: 'Booking slot not found or already booked.',
 				})
 
 			const booking_slot = await InterviewBookingSlots.findOne({
@@ -514,7 +514,7 @@ router.post(
 			if (booking_slot == null)
 				return res.status(404).json({
 					success: false,
-					message: "Booking slot not found or already booked.",
+					message: 'Booking slot not found or already booked.',
 				})
 
 			const success = await InterviewBookingSlots.update(
@@ -529,16 +529,16 @@ router.post(
 				}
 			)
 
-			const interviewDate = new Date(new Number(booking_slot.startTime))
+			const interviewDate = new Date(Number(booking_slot.startTime))
 				.toDateString()
-				.split(" ")
+				.split(' ')
 				.slice(1)
-				.join(" ")
+				.join(' ')
 			const startTime = new Date(
-				new Number(booking_slot.startTime)
+				Number(booking_slot.startTime)
 			).toLocaleTimeString()
 			const endTime = new Date(
-				new Number(booking_slot.endTime)
+				Number(booking_slot.endTime)
 			).toLocaleTimeString()
 
 			// send automated email to student
@@ -547,26 +547,26 @@ router.post(
 			})
 			const student = await Student.findOne({ where: { id: req.user.user.id } })
 			try {
-				await queueMail(student.email, `Interview Slot Booking Confirmation`, {
-					heading: "Interview Slot Booking Confirmation",
+				await queueMail(student.email, 'Interview Slot Booking Confirmation', {
+					heading: 'Interview Slot Booking Confirmation',
 					inner_text: `Dear Student, <br> You have successfully booked a slot with your interviewer ${interviewer.name} at ${interviewDate} from ${startTime} to ${endTime}. You will receive the meeting link before the interview time.<br>Please make sure you are on time for the interview. <br> <br> Best Regards, <br> Team Placement Cell`,
 					button_announcer: null,
 					button_text: null,
 					button_link: null,
 				})
 			} catch (err) {
-				console.log("Interview time email sending failed.")
+				console.log('Interview time email sending failed.')
 			}
 
 			if (success) {
 				res.status(200).json({
 					success: true,
-					message: "Interview successfully booked!",
+					message: 'Interview successfully booked!',
 				})
 			} else {
 				res.status(500).json({
 					success: false,
-					message: "Booking slot not found or already booked.",
+					message: 'Booking slot not found or already booked.',
 				})
 			}
 		} catch (err) {
