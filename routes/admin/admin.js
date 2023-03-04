@@ -9,7 +9,6 @@ const checkAdminAlreadyLoggedIn = require('../../db/check-admin-already-logged-i
 const orientationRouter = require('./orientation')
 const interviewRouter = require('./interview')
 const applicationRouter = require('./application')
-const lecRouter = require('./lec')
 const { Quiz, Invite } = require('../../db/models')
 const { email_bull_queue } = require('../../bull')
 
@@ -17,7 +16,6 @@ const { email_bull_queue } = require('../../bull')
 router.use('/application', applicationRouter)
 router.use('/orientation', orientationRouter)
 router.use('/interview', interviewRouter)
-router.use('/lec', lecRouter)
 
 router.use((req, res, next) => {
 	next()

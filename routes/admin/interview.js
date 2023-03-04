@@ -23,12 +23,12 @@ const {
 	Assignment,
 	Student,
 	Attempt,
-} = require("../../db/models")
-const { DateTime } = require("luxon")
-const { queueMail } = require("../../bull")
-const passport = require("passport")
-const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces")
-const { Op } = require("sequelize")
+} = require('../../db/models')
+const { DateTime } = require('luxon')
+const { queueMail } = require('../../bull')
+const passport = require('passport')
+const roundToTwoDecimalPlaces = require('../../functions/roundToTwoDecimalPlaces')
+const { Op } = require('sequelize')
 // middleware that is specific to this router
 router.use((req, res, next) => {
 	next()
@@ -96,7 +96,7 @@ router.patch(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) res.sendStatus(401)
+			if (interview_round == null) res.sendStatus(401)
 			else {
 				await interview_round.update({ title: req.body.title })
 				res.sendStatus(200)
@@ -156,15 +156,9 @@ router.post(
 				{ num_zoom_accounts: req.body.num_zoom_accounts },
 				{ where: { id: req.params.interview_round_id } }
 			)
-			await interview_round.update(
-				{ num_zoom_accounts: req.body.num_zoom_accounts },
-				{ where: { id: req.params.interview_round_id } }
-			)
 
 			const interviewers = await interview_round.getInterviewers()
-			const interviewers = await interview_round.getInterviewers()
 
-			// we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
 			// we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
 
 			const db_interviewers_map = new Map()
@@ -184,6 +178,7 @@ router.post(
 				else {
 					req.body.interviewers.forEach(async (interviewer) => {
 						if (!db_interviewers_map.has(interviewer.email)) {
+							console.log('oye hoy')
 							const new_interviewer = (
 								await Interviewer.findOrCreate({
 									where: { email: interviewer.email },
@@ -209,28 +204,26 @@ router.post(
 				}
 			})
 
-			const promises = []
-			for (const interviewer of db_interviewers_map) {
-				if (!new_interviewers_map.has(interviewer[1].email)) {
-					promises.push(
-						InterviewerInvite.destroy({
-							where: {
-								InterviewerId: interviewer[1].id,
-								InterviewRoundId: req.params.interview_round_id,
-							},
-						})
-					)
+			await new Promise(async (resolve) => {
+				let i = 0
+				const n = db_interviewers_map.size
+				if (n === 0) resolve()
+				else {
+					for (const interviewer of db_interviewers_map) {
+						if (!new_interviewers_map.has(interviewer[1].email)) {
+							await InterviewerInvite.destroy({
+								where: {
+									InterviewerId: interviewer[1].id,
+									InterviewRoundId: req.params.interview_round_id,
+								},
+							})
+						}
+						i++
+						if (i === n) resolve()
+					}
 				}
-			}
-			await Promise.all(promises)
+			})
 
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(501)
-		}
-	}
-)
 			res.sendStatus(200)
 		} catch (err) {
 			console.log(err)
@@ -278,12 +271,6 @@ router.get('/login', async (req, res) => {
 	})
 })
 
-	res.render("interviewer/login/index.ejs", {
-		email: email,
-		password: password,
-	})
-})
-
 router.post(
 	'/login',
 	passport.authenticate('interviewer-login', {
@@ -291,9 +278,11 @@ router.post(
 		failureFlash: true,
 	}),
 	async (req, res) => {
-		if (Object.prototype.hasOwnProperty.call(req, 'user'))
+		if (Object.prototype.hasOwnProperty.call(req, 'user')) {
 			res.redirect('/admin/interview/panel')
-		else res.sendStatus(403)
+		} else {
+			res.sendStatus(403)
+		}
 	}
 )
 
@@ -347,10 +336,9 @@ router.post(
 				InterviewRoundId: req.body.interview_round_id,
 			},
 		})
-		await interviewer_invite.deleteSlots() // custom class instance method I declared in models/interview.js
+		await interviewer_invite.deleteSlots() // custom class instance method I declared in db/models.js
 		const promises = []
 		req.body.time_slots.forEach((time_slot) => {
-			console.log(interviewer_invite.id)
 			promises.push(
 				InterviewerSlot.create({
 					start: time_slot.start,
@@ -388,8 +376,6 @@ router.post('/interviewees/save', checkAdminAuthenticated, async (req, res) => {
 
 		let i = 0
 		const n = req.body.students.length
-		let i = 0
-		const n = req.body.students.length
 
 		await new Promise((resolve, reject) => {
 			req.body.students.map(async (student) => {
@@ -414,12 +400,6 @@ router.post('/interviewees/save', checkAdminAuthenticated, async (req, res) => {
 			})
 		})
 
-		res.json({ success: true })
-	} catch (err) {
-		console.log(err)
-		res.json({ success: false })
-	}
-})
 		res.json({ success: true })
 	} catch (err) {
 		console.log(err)
@@ -490,7 +470,7 @@ router.get(
 
 					let remove_student = false // we remove student from data if student turns out to have an unsolved section (no attempt)
 					assignment.Attempts.forEach((attempt) => {
-						if (attempt === null || attempt.Score === null) {
+						if (attempt == null || attempt.Score == null) {
 							remove_student = true
 						} else {
 							data[cur_index].total_score_achieved += attempt.Score.score
@@ -505,7 +485,6 @@ router.get(
 			}
 			res.json({ success: true, data })
 		} else {
-			// console.log("Error: QuizId: or orientation:", orientation, "is NULL");
 			res.json({ success: false })
 		}
 	}
@@ -547,10 +526,6 @@ router.get(
 				(final_arr, cur_arr) => [...final_arr, ...cur_arr],
 				[]
 			)
-			all_other_time_slots = all_other_time_slots.reduce(
-				(final_arr, cur_arr) => [...final_arr, ...cur_arr],
-				[]
-			)
 
 			res.json({
 				success: true,
@@ -574,7 +549,7 @@ router.get(
 				where: { id: req.params.interview_round_id },
 			})
 
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 			else {
 				const interviewers = await interview_round.getInterviewers({
 					attributes: ['id', 'name', 'email'],
@@ -597,13 +572,6 @@ router.get(
 						})
 					)
 				)
-				const interviewer_slots = await Promise.all(
-					interviewer_invites.map((interviewer_invite) =>
-						InterviewerSlot.findAll({
-							where: { InterviewerInviteId: interviewer_invite.id },
-						})
-					)
-				)
 
 				const data = interviewers.map((interviewer, i) => {
 					return {
@@ -614,17 +582,6 @@ router.get(
 					}
 				})
 
-				res.status(200).json({
-					interviewers: data,
-					num_zoom_accounts: interview_round.num_zoom_accounts,
-				})
-			}
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 				res.status(200).json({
 					interviewers: data,
 					num_zoom_accounts: interview_round.num_zoom_accounts,
@@ -676,7 +633,7 @@ router.post(
 				where: { id: req.params.interview_round_id },
 			})
 
-			if (interview_round === null) res.sendStatus(300)
+			if (interview_round == null) res.sendStatus(300)
 
 			// drop all matchings with the same interview round
 			await InterviewMatching.destroy({
@@ -688,10 +645,6 @@ router.post(
 				...new Set(req.body.matching.map((slot) => slot.interviewer_email)),
 			]
 
-			// get corresponding interviewer ids
-			const interviewers = await Interviewer.findAll({
-				where: { email: interviewer_emails },
-			})
 			// get corresponding interviewer ids
 			const interviewers = await Interviewer.findAll({
 				where: { email: interviewer_emails },
@@ -709,20 +662,9 @@ router.post(
 				delete slot.interviewer_id
 				delete slot.student_id
 			})
-				delete slot.interviewer_id
-				delete slot.student_id
-			})
 
 			await InterviewMatching.bulkCreate(req.body.matching)
-			await InterviewMatching.bulkCreate(req.body.matching)
 
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 			res.sendStatus(200)
 		} catch (err) {
 			console.log(err)
@@ -740,14 +682,8 @@ router.get(
 				where: { id: req.params.interview_round_id },
 			})
 
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
-			const interview_matchings = await InterviewMatching.findAll({
-				where: {
-					InterviewRoundId: req.params.interview_round_id,
-					InterviewerId: req.params.interviewer_id,
-				},
-			})
 			const interview_matchings = await InterviewMatching.findAll({
 				where: {
 					InterviewRoundId: req.params.interview_round_id,
@@ -758,14 +694,9 @@ router.get(
 			const students = await Promise.all(
 				interview_matchings.map((matching) => matching.getStudent())
 			)
-			const students = await Promise.all(
-				interview_matchings.map((matching) => matching.getStudent())
-			)
 
 			console.log(students)
-			console.log(students)
 
-			res.sendStatus(200)
 			res.sendStatus(200)
 
 			res.json({ success: true, interview_matchings })
@@ -784,11 +715,8 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
-			const interview_matchings = await InterviewMatching.findAll({
-				where: { InterviewRoundId: req.params.interview_round_id },
-			})
 			const interview_matchings = await InterviewMatching.findAll({
 				where: { InterviewRoundId: req.params.interview_round_id },
 			})
@@ -811,14 +739,6 @@ router.get(
 		}
 	}
 )
-			res.status(200)
-			res.json({ success: true, interview_matchings: matchings })
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
 router.post(
 	'/:interview_round_id/send-matching-emails-interviewer',
@@ -830,12 +750,8 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
-			for (const interviewer_email of req.body.users) {
-				const interviewer = await Interviewer.findOne({
-					where: { email: interviewer_email },
-				})
 			for (const interviewer_email of req.body.users) {
 				const interviewer = await Interviewer.findOne({
 					where: { email: interviewer_email },
@@ -869,13 +785,6 @@ router.post(
 		}
 	}
 )
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
 router.post(
 	'/:interview_round_id/send-matching-emails-student',
@@ -887,7 +796,7 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 			console.log(email_content)
 			for (const student_email of req.body.users) {
 				await queueMail(student_email, `${email_content.subject}`, {
@@ -906,13 +815,6 @@ router.post(
 		}
 	}
 )
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
 router.post(
 	'/:interview_round_id/save-questions',
@@ -922,7 +824,7 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			await InterviewQuestions.destroy({
 				where: { InterviewRoundId: req.params.interview_round_id },
@@ -949,35 +851,20 @@ router.post(
 		}
 	}
 )
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
 router.get('/:interview_round_id/all-questions', async (req, res) => {
 	try {
 		const interview_round = await InterviewRound.findOne({
 			where: { id: req.params.interview_round_id },
 		})
-		if (interview_round === null) return res.sendStatus(404)
+		if (interview_round == null) return res.sendStatus(404)
 
 		const questions = await InterviewQuestions.findAll({
 			where: { InterviewRoundId: req.params.interview_round_id },
 			order: [['order', 'asc']],
 		})
-		if (questions === null) return res.sendStatus(404)
+		if (questions == null) return res.sendStatus(404)
 
-		const q_response = questions.map((question) => {
-			return {
-				questionID: question.id,
-				question: question.question,
-				questionType: question.questionType,
-				questionScale: question.questionScale,
-			}
-		})
 		const q_response = questions.map((question) => {
 			return {
 				questionID: question.id,
@@ -1014,14 +901,8 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
-			let matchings = await InterviewMatching.findAll({
-				where: {
-					InterviewRoundId: req.params.interview_round_id,
-					InterviewerId: req.user.user.id,
-				},
-			})
 			let matchings = await InterviewMatching.findAll({
 				where: {
 					InterviewRoundId: req.params.interview_round_id,
@@ -1036,11 +917,6 @@ router.get(
 					const student = await Student.findOne({
 						where: { id: matching.StudentId },
 					})
-			matchings = await Promise.all(
-				matchings.map(async (matching) => {
-					const student = await Student.findOne({
-						where: { id: matching.StudentId },
-					})
 
 					const booking = await InterviewBookingSlots.findOne({
 						where: {
@@ -1052,21 +928,7 @@ router.get(
 					let booked = false
 					let startTime = null
 					let endTime = null
-					const booking = await InterviewBookingSlots.findOne({
-						where: {
-							StudentId: matching.StudentId,
-							InterviewerId: req.user.user.id,
-							InterviewRoundId: req.params.interview_round_id,
-						},
-					})
-					let booked = false
-					let startTime = null
-					let endTime = null
 
-					if (booking != null) {
-						booked = true
-						startTime = booking.startTime
-						endTime = booking.endTime
 					if (booking != null) {
 						booked = true
 						startTime = booking.startTime
@@ -1080,38 +942,11 @@ router.get(
 					matching.dataValues.booked = booked
 					matching.dataValues.startTime = startTime
 					matching.dataValues.endTime = endTime
-					matching.dataValues.cnic = student.cnic
-					matching.dataValues.firstName = student.firstName
-					matching.dataValues.lastName = student.lastName
-					matching.dataValues.gender = student.gender
-					matching.dataValues.booked = booked
-					matching.dataValues.startTime = startTime
-					matching.dataValues.endTime = endTime
 
 					return matching.dataValues
 				})
 			)
-					return matching.dataValues
-				})
-			)
 
-			matchings = matchings.map((matching) => {
-				return {
-					id: matching.id,
-					student_email: matching.student_email,
-					firstName: matching.firstName,
-					lastName: matching.lastName,
-					gender: matching.gender,
-					cnic: matching.cnic,
-					studentAbsent: matching.student_absent,
-					booked: matching.booked,
-					startTime: matching.startTime,
-					endTime: matching.endTime,
-					createdAt: matching.createdAt,
-					updatedAt: matching.updatedAt,
-					StudentId: matching.StudentId,
-				}
-			})
 			matchings = matchings.map((matching) => {
 				return {
 					id: matching.id,
@@ -1146,12 +981,12 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const student = await Student.findOne({
 				where: { id: req.params.student_id },
 			})
-			if (student === null) return res.sendStatus(404)
+			if (student == null) return res.sendStatus(404)
 
 			res.status(200).render('interviewer/view-student.ejs', {
 				env: process.env.NODE_ENV,
@@ -1175,12 +1010,12 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const student = await Student.findOne({
 				where: { id: req.params.student_id },
 			})
-			if (student === null) return res.sendStatus(404)
+			if (student == null) return res.sendStatus(404)
 
 			const answer = await InterviewAnswers.findOne({
 				where: {
@@ -1190,16 +1025,8 @@ router.post(
 					InterviewQuestionId: req.body.questionID,
 				},
 			})
-			const answer = await InterviewAnswers.findOne({
-				where: {
-					InterviewRoundId: req.params.interview_round_id,
-					StudentId: req.params.student_id,
-					InterviewerId: req.user.user.id,
-					InterviewQuestionId: req.body.questionID,
-				},
-			})
 
-			if (answer === null) {
+			if (answer == null) {
 				// update if found, create if not found
 				await InterviewAnswers.create({
 					InterviewRoundId: req.params.interview_round_id,
@@ -1233,13 +1060,6 @@ router.post(
 		}
 	}
 )
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
 router.post(
 	'/:interview_round_id/student/:student_id/total-marks',
@@ -1249,20 +1069,13 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const student = await Student.findOne({
 				where: { id: req.params.student_id },
 			})
-			if (student === null) return res.sendStatus(404)
+			if (student == null) return res.sendStatus(404)
 
-			const score = await InterviewScores.findOne({
-				where: {
-					InterviewRoundId: req.params.interview_round_id,
-					StudentId: req.params.student_id,
-					InterviewerId: req.user.user.id,
-				},
-			})
 			const score = await InterviewScores.findOne({
 				where: {
 					InterviewRoundId: req.params.interview_round_id,
@@ -1295,8 +1108,6 @@ router.post(
 					totalScore: req.body.totalMarks,
 				})
 			}
-				})
-			}
 
 			await InterviewMatching.update(
 				{
@@ -1310,26 +1121,7 @@ router.post(
 					},
 				}
 			)
-			await InterviewMatching.update(
-				{
-					student_absent: false,
-				},
-				{
-					where: {
-						InterviewRoundId: req.params.interview_round_id,
-						StudentId: req.params.student_id,
-						InterviewerId: req.user.user.id,
-					},
-				}
-			)
 
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 			res.sendStatus(200)
 		} catch (err) {
 			console.log(err)
@@ -1347,12 +1139,12 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const student = await Student.findOne({
 				where: { id: req.params.student_id },
 			})
-			if (student === null) return res.sendStatus(404)
+			if (student == null) return res.sendStatus(404)
 
 			const interview_answers = await InterviewAnswers.findAll({
 				where: {
@@ -1361,23 +1153,7 @@ router.get(
 					InterviewerId: req.user.user.id,
 				},
 			})
-			const interview_answers = await InterviewAnswers.findAll({
-				where: {
-					InterviewRoundId: req.params.interview_round_id,
-					StudentId: req.params.student_id,
-					InterviewerId: req.user.user.id,
-				},
-			})
 
-			const answers = await Promise.all(
-				interview_answers.map(async (answer) => {
-					return {
-						questionID: answer.InterviewQuestionId,
-						questionAnswer: answer.questionAnswer,
-						questionRating: answer.questionRating,
-					}
-				})
-			)
 			const answers = await Promise.all(
 				interview_answers.map(async (answer) => {
 					return {
@@ -1390,7 +1166,6 @@ router.get(
 
 			res.status(200).json({
 				success: 'ok',
-
 				answers,
 			})
 		} catch (err) {
@@ -1408,25 +1183,13 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const student = await Student.findOne({
 				where: { id: req.params.student_id },
 			})
-			if (student === null) return res.sendStatus(404)
+			if (student == null) return res.sendStatus(404)
 
-			await InterviewMatching.update(
-				{
-					student_absent: true,
-				},
-				{
-					where: {
-						InterviewRoundId: req.params.interview_round_id,
-						StudentId: req.params.student_id,
-						InterviewerId: req.user.user.id,
-					},
-				}
-			)
 			await InterviewMatching.update(
 				{
 					student_absent: true,
@@ -1456,7 +1219,7 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			res.status(200).json({
 				success: 'ok',
@@ -1477,7 +1240,7 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			await interview_round.update({
 				interview_duration: req.body.interview_duration,
@@ -1501,13 +1264,13 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			// we need to fetch each timeslot created by the interviewer in this interview round, and divide it into n slots of duration interview_duration and create a booking slot for each of them
 			const interviewer = await Interviewer.findOne({
 				where: { email: req.body.interviewer_email },
 			})
-			if (interviewer === null) return res.sendStatus(404)
+			if (interviewer == null) return res.sendStatus(404)
 
 			// find slot for an interviewer in an interview round through the interviewer invite table
 			const interviewer_invite = await InterviewerInvite.findOne({
@@ -1552,17 +1315,6 @@ router.post(
 					})
 				}
 			})
-				for (let i = 0; i < n; i++) {
-					await InterviewBookingSlots.create({
-						InterviewRoundId: req.params.interview_round_id,
-						startTime: start_time + i * interview_duration,
-						endTime: start_time + (i + 1) * interview_duration,
-						duration: interview_round.dataValues.interview_duration,
-						InterviewerId: interviewer.id,
-						InterviewerSlotId: timeslot.id,
-					})
-				}
-			})
 
 			res.status(200).json({
 				success: 'ok',
@@ -1583,24 +1335,13 @@ router.get(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const matchings = await InterviewMatching.findAll({
 				where: { InterviewRoundId: req.params.interview_round_id },
 			})
-			if (matchings === null) return res.sendStatus(500)
+			if (matchings == null) return res.sendStatus(500)
 
-			let list = await Promise.all(
-				matchings.map(async (matching, index) => {
-					const student_score = await InterviewScores.findOne({
-						where: {
-							StudentId: matching.StudentId,
-							InterviewRoundId: req.params.interview_round_id,
-						},
-					})
-					return student_score?.dataValues
-				})
-			)
 			let list = await Promise.all(
 				matchings.map(async (matching, index) => {
 					const student_score = await InterviewScores.findOne({
@@ -1626,19 +1367,6 @@ router.get(
 							studentEmail: student.dataValues.email,
 							studentCnic: student.dataValues.cnic,
 						}
-			list = await Promise.all(
-				list.map(async (score) => {
-					if (score) {
-						const student = await Student.findOne({
-							where: { id: score.StudentId },
-						})
-						score = {
-							...score,
-							studentFirstName: student.dataValues.firstName,
-							studentLastName: student.dataValues.lastName,
-							studentEmail: student.dataValues.email,
-							studentCnic: student.dataValues.cnic,
-						}
 
 						const interviewer = await Interviewer.findOne({
 							where: { id: score.InterviewerId },
@@ -1648,19 +1376,7 @@ router.get(
 							interviewerName: interviewer.dataValues.name,
 							interviewerEmail: interviewer.dataValues.email,
 						}
-						const interviewer = await Interviewer.findOne({
-							where: { id: score.InterviewerId },
-						})
-						score = {
-							...score,
-							interviewerName: interviewer.dataValues.name,
-							interviewerEmail: interviewer.dataValues.email,
-						}
 
-						return score
-					}
-				})
-			)
 						return score
 					}
 				})
@@ -1685,14 +1401,13 @@ router.post(
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			if (interview_round === null) return res.sendStatus(404)
+			if (interview_round == null) return res.sendStatus(404)
 
 			const interviewer = await Interviewer.findOne({
 				where: { id: req.user.user.id },
 			})
-			if (interviewer === null) return res.sendStatus(404)
+			if (interviewer == null) return res.sendStatus(404)
 
-			const email_content = req.body.email_content
 			const email_content = req.body.email_content
 
 			for (const student_email of req.body.users) {
@@ -1712,13 +1427,5 @@ router.post(
 		}
 	}
 )
-			res.sendStatus(200)
-		} catch (err) {
-			console.log(err)
-			res.sendStatus(500)
-		}
-	}
-)
 
-module.exports = router
 module.exports = router

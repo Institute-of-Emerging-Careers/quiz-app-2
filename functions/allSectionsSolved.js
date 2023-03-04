@@ -6,17 +6,22 @@ async function allSectionsSolved(quizId, assignment) {
 			resolve(true)
 		})
 	} else {
-		const sections = await Section.findAll({ where: { QuizId: quizId } })
-		const attempts = await Promise.all(
-			sections.map((section) =>
-				Attempt.findOne({
-					where: { AssignmentId: assignment.id, SectionId: section.id },
-				})
+		try {
+			const sections = await Section.findAll({ where: { QuizId: quizId } })
+			const attempts = await Promise.all(
+				sections.map((section) =>
+					Attempt.findOne({
+						where: { AssignmentId: assignment.id, SectionId: section.id },
+					})
+				)
 			)
-		)
-		return attempts.every(
-			(attempt) => attempt !== null && attempt.statusText === 'Completed'
-		)
+			console.log('attempts:', attempts)
+			return attempts.every(
+				(attempt) => attempt !== null && attempt.statusText === 'Completed'
+			)
+		} catch (err) {
+			return new Promise((resolve, reject) => reject(err))
+		}
 	}
 }
 
