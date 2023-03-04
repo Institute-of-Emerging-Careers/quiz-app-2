@@ -20,13 +20,15 @@
     ],
     "rules": {
         "no-undef":"error",
-        "indent": ["error", "tab"],
+        "indent": "off",
         "camelcase":"off",
         "no-tabs": "off",
         "comma-dangle": "off",
         "curly": "off",
         "array-callback-return": "warn",
         "no-async-promise-executor": "warn",
-        "no-multiple-empty-lines": "error"
+        "no-multiple-empty-lines": "error",
+        "space-before-function-paren": "off",
+        "no-mixed-spaces-and-tabs": "off"
     }
 }
