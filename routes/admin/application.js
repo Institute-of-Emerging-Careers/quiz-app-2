@@ -34,7 +34,7 @@ router.get('/rounds/all', checkAdminAuthenticated, async (req, res) => {
 	})
 
 	res.json({
-		application_rounds: application_rounds,
+		application_rounds,
 		courses: await Course.findAll({ attributes: ['id', 'title'] }),
 	})
 })
@@ -174,7 +174,7 @@ router.get(
 				],
 			})
 
-			res.json({ applications: applications })
+			res.json({ applications })
 		} catch (err) {
 			console.log(err)
 			res.sendStatus(500)
