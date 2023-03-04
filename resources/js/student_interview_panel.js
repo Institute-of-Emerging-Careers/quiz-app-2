@@ -1,19 +1,19 @@
-const useState = React.useState;
-const useEffect = React.useEffect;
+const useState = React.useState
+const useEffect = React.useEffect
 
 const StudentInterviewPanel = (props) => {
-	const [matchings, setMatchings] = useState(null);
+	const [matchings, setMatchings] = useState(null)
 
 	useEffect(() => {
-		fetch("/student/matching")
+		fetch('/student/matching')
 			.then((response) => response.json())
 			.then((data) => {
-				console.log("data.length", data.length)
+				console.log('data.length', data.length)
 				if (data.length > 0) {
-					setMatchings(data);
+					setMatchings(data)
 				}
-			});
-	}, []);
+			})
+	}, [])
 
 	return (
 		<div className="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
@@ -22,7 +22,10 @@ const StudentInterviewPanel = (props) => {
 					className="p-2 w-full md:w-7/8 mx-auto mr-0 md:mt-16"
 					id="main-section"
 				>
-					<div id="assessments-box" className="bg-white w-7/8 rounded-lg m-auto">
+					<div
+						id="assessments-box"
+						className="bg-white w-7/8 rounded-lg m-auto"
+					>
 						<div
 							id="assessments-title-box"
 							className="bg-iec-blue text-white font-light px-4 py-3 rounded-t-lg"
@@ -35,7 +38,8 @@ const StudentInterviewPanel = (props) => {
 						>
 							{matchings == null ? (
 								<p>
-									Sorry, you have not received an invitation for the interview yet.
+									Sorry, you have not received an invitation for the interview
+									yet.
 								</p>
 							) : (
 								<table className="w-full text-left mytable">
@@ -48,22 +52,31 @@ const StudentInterviewPanel = (props) => {
 										</tr>
 									</thead>
 									<tbody>
-                                            {matchings.map((matching) => (
-                                                <tr>
-													<td>{matching.interviewer_name}</td>
-													<td>{matching.interviewer_email}</td>
-													<td>{(new Date(matching.createdAt)).toLocaleDateString()}</td>
-													<td>
-														<a href={`/student/interview/${matching.interview_round_id}/pick-timeslot/${matching.interviewer_id}`}>
-															<button className= {`text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ${matching.booked ? "bg-gray-300" : "bg-iec-blue"}`} disabled = {matching.booked? true : false} 
-															>
-																{matching.booked ? "Already Booked" : "PICK A TIME SLOT"}
-															</button>
-														</a>
-													</td>
-                                                </tr>
-												
-                                            ))}
+										{matchings.map((matching) => (
+											<tr key={matching.id}>
+												<td>{matching.interviewer_name}</td>
+												<td>{matching.interviewer_email}</td>
+												<td>
+													{new Date(matching.createdAt).toLocaleDateString()}
+												</td>
+												<td>
+													<a
+														href={`/student/interview/${matching.interview_round_id}/pick-timeslot/${matching.interviewer_id}`}
+													>
+														<button
+															className={`text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ${
+																matching.booked ? 'bg-gray-300' : 'bg-iec-blue'
+															}`}
+															disabled={matching.booked}
+														>
+															{matching.booked
+																? 'Already Booked'
+																: 'PICK A TIME SLOT'}
+														</button>
+													</a>
+												</td>
+											</tr>
+										))}
 									</tbody>
 								</table>
 							)}
@@ -72,7 +85,7 @@ const StudentInterviewPanel = (props) => {
 				</section>
 			</div>
 		</div>
-	);
-};
+	)
+}
 
-ReactDOM.render(<StudentInterviewPanel />, document.getElementById("app"));
+ReactDOM.render(<StudentInterviewPanel />, document.getElementById('app'))

@@ -35,5 +35,5 @@
         "react/jsx-no-undef": "off",
         "multiline-ternary": "off"
     },
-    "ignorePatterns": ["**/precompiled-js/**", "**/jquery-ui-1.13.1/**", "luxon.js"]
+    "ignorePatterns": ["**/precompiled-js/**", "**/jquery-ui-1.13.1/**", "luxon.js", "react-dom.development-17.0.2.js", "react.development-17.js"]
 }
