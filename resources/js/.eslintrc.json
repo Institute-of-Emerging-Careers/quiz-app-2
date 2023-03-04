@@ -35,5 +35,5 @@
         "react/jsx-no-undef": "off",
         "multiline-ternary": "off"
     },
-    "ignorePatterns": ["**/precompiled-js/**"]
+    "ignorePatterns": ["**/precompiled-js/**", "**/jquery-ui-1.13.1/**"]
 }
