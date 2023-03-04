@@ -23,6 +23,9 @@
         "indent": ["error", "tab"],
         "camelcase":"off",
         "no-tabs": "off",
-        "comma-dangle": "off"
+        "comma-dangle": "off",
+        "curly": "off",
+        "array-callback-return": "warn",
+        "no-async-promise-executor": "warn"
     }
 }

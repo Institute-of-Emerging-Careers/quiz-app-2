@@ -1,24 +1,24 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
 const {
 	ApplicationRound,
 	Course,
 	ApplicationRoundCourseJunction,
 	Application,
-} = require("../../db/models/application")
-const { Quiz } = require("../../db/models/quizmodel")
+} = require('../../db/models/application')
+const { Quiz } = require('../../db/models/quizmodel')
 
-const { Student, Assignment } = require("../../db/models/user")
+const { Student } = require('../../db/models/user')
 
-const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
+const checkAdminAuthenticated = require('../../db/check-admin-authenticated')
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
 	next()
 })
 
-router.get("/", checkAdminAuthenticated, (req, res) => {
-	res.render("admin/application/index.ejs", {
+router.get('/', checkAdminAuthenticated, (req, res) => {
+	res.render('admin/application/index.ejs', {
 		env: process.env.NODE_ENV,
 		myname: req.user.firstName,
 		user_type: req.user.type,
@@ -27,20 +27,20 @@ router.get("/", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.get("/rounds/all", checkAdminAuthenticated, async (req, res) => {
+router.get('/rounds/all', checkAdminAuthenticated, async (req, res) => {
 	const application_rounds = await ApplicationRound.findAll({
-		include: [{ model: Application, attributes: ["id"] }],
-		order: [["id", "desc"]],
+		include: [{ model: Application, attributes: ['id'] }],
+		order: [['id', 'desc']],
 	})
 
 	res.json({
 		application_rounds: application_rounds,
-		courses: await Course.findAll({ attributes: ["id", "title"] }),
+		courses: await Course.findAll({ attributes: ['id', 'title'] }),
 	})
 })
 
 router.get(
-	"/round/change-open-state/:application_round_id/:new_val",
+	'/round/change-open-state/:application_round_id/:new_val',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		ApplicationRound.update(
@@ -57,7 +57,7 @@ router.get(
 	}
 )
 
-router.post("/course/new", checkAdminAuthenticated, async (req, res) => {
+router.post('/course/new', checkAdminAuthenticated, async (req, res) => {
 	try {
 		const course = await Course.create(req.body)
 		res.status(200).json(course)
@@ -67,7 +67,7 @@ router.post("/course/new", checkAdminAuthenticated, async (req, res) => {
 	}
 })
 
-router.post("/rounds/new", checkAdminAuthenticated, async (req, res) => {
+router.post('/rounds/new', checkAdminAuthenticated, async (req, res) => {
 	const new_application_round = await ApplicationRound.create({
 		title: req.body.title,
 	})
@@ -92,7 +92,7 @@ router.post("/rounds/new", checkAdminAuthenticated, async (req, res) => {
 })
 
 router.delete(
-	"/rounds/delete/:application_round_id",
+	'/rounds/delete/:application_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -108,7 +108,7 @@ router.delete(
 )
 
 router.get(
-	"/view/:application_round_id",
+	'/view/:application_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -116,20 +116,20 @@ router.get(
 				where: { id: req.params.application_round_id },
 			})
 			if (application_round == null) {
-				res.status(404).render("templates/error.ejs", {
+				res.status(404).render('templates/error.ejs', {
 					additional_info:
-						"https://" +
+						'https://' +
 						process.env.SITE_DOMAIN_NAME +
-						"/application/view/" +
+						'/application/view/' +
 						req.params.application_round_id,
-					error_message: "The above link is invalid.",
-					action_link: "/admin/application",
-					action_link_text: "Click here to go to the Applications home page.",
+					error_message: 'The above link is invalid.',
+					action_link: '/admin/application',
+					action_link_text: 'Click here to go to the Applications home page.',
 				})
 				return
 			}
 
-			res.render("admin/application/view_round.ejs", {
+			res.render('admin/application/view_round.ejs', {
 				application_round_id: req.params.application_round_id,
 				myname: req.user.user?.firstName,
 				user_type: req.user.type,
@@ -144,7 +144,7 @@ router.get(
 )
 
 router.get(
-	"/all-applicants/:application_round_id",
+	'/all-applicants/:application_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -160,17 +160,17 @@ router.get(
 					{
 						model: Student,
 						attributes: [
-							"id",
-							"firstName",
-							"lastName",
-							"cnic",
-							"email",
-							"gender",
+							'id',
+							'firstName',
+							'lastName',
+							'cnic',
+							'email',
+							'gender',
 						],
 					},
-					"first preference",
-					"second preference",
-					"third preference",
+					'first preference',
+					'second preference',
+					'third preference',
 				],
 			})
 
@@ -184,7 +184,7 @@ router.get(
 
 // the following request responds with a list of applications corresponding to a specified ApplicationRoundId. For each application/student, it also returns a boolean "added" property specifying whether or not this student has already been assigned a specified Quiz
 router.get(
-	"/all-applicants-and-quiz-assignments",
+	'/all-applicants-and-quiz-assignments',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -195,32 +195,32 @@ router.get(
 				res.sendStatus(404)
 				return
 			}
-			let applications = await application_round.getApplications({
+			const applications = await application_round.getApplications({
 				include: [
 					{
 						model: Student,
 						attributes: [
-							"id",
-							"firstName",
-							"lastName",
-							"cnic",
-							"email",
-							"gender",
+							'id',
+							'firstName',
+							'lastName',
+							'cnic',
+							'email',
+							'gender',
 						],
 					},
-					"first preference",
-					"second preference",
-					"third preference",
+					'first preference',
+					'second preference',
+					'third preference',
 				],
 			})
 
-			let data = []
+			const data = []
 
 			// set "added" property of Student to true if student has already been assigned this quiz
 			await new Promise(async (resolve) => {
 				let x = 0
 				const n = applications.length
-				if (n == 0) resolve()
+				if (n === 0) resolve()
 				for (let i = 0; i < n; i++) {
 					const cur_index = data.push({}) - 1
 					data[cur_index] = JSON.parse(JSON.stringify(applications[i]))
@@ -234,7 +234,7 @@ router.get(
 						data[cur_index].Student.already_added = false
 					}
 					x++
-					if (x == n) resolve(data)
+					if (x === n) resolve(data)
 				}
 			})
 
@@ -247,7 +247,7 @@ router.get(
 )
 
 router.get(
-	"/courses/:application_round_id",
+	'/courses/:application_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -269,7 +269,7 @@ router.get(
 	}
 )
 
-router.get("/delete/:application_id", checkAdminAuthenticated, (req, res) => {
+router.get('/delete/:application_id', checkAdminAuthenticated, (req, res) => {
 	Application.destroy({ where: { id: req.params.application_id } })
 		.then(() => {
 			res.sendStatus(200)
@@ -281,7 +281,7 @@ router.get("/delete/:application_id", checkAdminAuthenticated, (req, res) => {
 })
 
 router.post(
-	"/rounds/set-auto-assign-quiz/:applicationRoundId/:quizId",
+	'/rounds/set-auto-assign-quiz/:applicationRoundId/:quizId',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -293,7 +293,7 @@ router.post(
 				res.sendStatus(401)
 				return
 			}
-			console.log("alskjdalsd", round, quiz)
+			console.log('alskjdalsd', round, quiz)
 			await round.update({ auto_assigned_quiz_id: req.params.quizId })
 
 			res.sendStatus(201)
