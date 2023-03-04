@@ -1,143 +1,144 @@
-const useState = React.useState;
-const useEffect = React.useEffect;
+const useState = React.useState
+const useEffect = React.useEffect
 const interview_round_id =
-	document.getElementById("interview-round-id").innerHTML;
-const student_id = document.getElementById("student-id").innerHTML;
+	document.getElementById('interview-round-id').innerHTML
+const student_id = document.getElementById('student-id').innerHTML
 
 // need to fetch all questions for this interview round
 // then take input for all those questions
 // insert the answers into the Answers table
 
 const ViewStudent = () => {
-	const [questions, setQuestions] = useState([]);
-	const [answers, setAnswers] = useState([]);
-	const [totalMarks, setTotalMarks] = useState(0);
-	const [obtainedMarks, setObtainedMarks] = useState(0);
+	const [questions, setQuestions] = useState([])
+	const [answers, setAnswers] = useState([])
+	const [, setTotalMarks] = useState(0)
+	const [, setObtainedMarks] = useState(0)
 
-	//fetch questions for this cohort on mount
+	// fetch questions for this cohort on mount
 	useEffect(async () => {
 		try {
 			const response = await (
 				await fetch(`/admin/interview/${interview_round_id}/all-questions`)
-			).json();
+			).json()
 
 			if (response.questions.length > 0) {
-				setQuestions(response.questions);
+				setQuestions(response.questions)
 			}
 		} catch (err) {
-			console.log(err);
-			window.alert("An error occured, please refresh the page");
+			console.log(err)
+			window.alert('An error occured, please refresh the page')
 		}
-	}, []);
+	}, [])
 
-	//fetch answers to those questions for this student
+	// fetch answers to those questions for this student
 	useEffect(async () => {
 		try {
 			const response = await (
 				await fetch(
 					`/admin/interview/${interview_round_id}/student/${student_id}/view-marks`
 				)
-			).json();
+			).json()
 
-			if (response.success == "ok") {
-				console.log(response.answers);
-				if (response.answers.length > 0) setAnswers(response.answers);
-				if (response.totalMarks) setTotalMarks(response.totalMarks);
-				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks);
+			if (response.success === 'ok') {
+				console.log(response.answers)
+				if (response.answers.length > 0) setAnswers(response.answers)
+				if (response.totalMarks) setTotalMarks(response.totalMarks)
+				if (response.obtainedMarks) setObtainedMarks(response.obtainedMarks)
 			}
 		} catch (err) {
-			console.log(err);
+			console.log(err)
 		}
-	}, []);
+	}, [])
 
 	const markAsAbsent = async () => {
-		const response = await fetch(`/admin/interview/${interview_round_id}/student/${student_id}/mark-absent`, {
-			method: "POST"
-		});
+		const response = await fetch(
+			`/admin/interview/${interview_round_id}/student/${student_id}/mark-absent`,
+			{
+				method: 'POST',
+			}
+		)
 
-		if (response.status == 200){
-			window.alert("Student marked absent");
-			window.location.href = `/admin/interview/${interview_round_id}/view-students`;
+		if (response.status === 200) {
+			window.alert('Student marked absent')
+			window.location.href = `/admin/interview/${interview_round_id}/view-students`
 		}
-
-
 	}
 
 	const addAnswers = async (e) => {
-		e.preventDefault();
-		let answers = [];
+		e.preventDefault()
+		let answers = []
 
 		questions.map((question) => {
-			const value = e.target.elements.namedItem(question.questionID).value;
+			const value = e.target.elements.namedItem(question.questionID).value
 			answers = [
 				...answers,
 				{
 					questionID: question.questionID,
-					questionAnswer: question.questionType == "descriptive" ? value : null,
-					questionScale: question.questionType == "descriptive" ? null : value,
+					questionAnswer:
+						question.questionType === 'descriptive' ? value : null,
+					questionScale: question.questionType === 'descriptive' ? null : value,
 				},
-			];
-		});
+			]
+		})
 
-		//compute total marks from number scale answers
+		// compute total marks from number scale answers
 
 		const totalMarks = questions.reduce((total, question) => {
-			if (question.questionType == "number scale") {
-				return total + parseInt(question.questionScale);
+			if (question.questionType === 'number scale') {
+				return total + parseInt(question.questionScale)
 			}
 
-			return total + 0;
-		}, 0);
+			return total + 0
+		}, 0)
 
-		//compute obtained marks from number scale answers
+		// compute obtained marks from number scale answers
 
 		const obtainedMarks = answers.reduce((total, answer) => {
 			if (answer.questionScale) {
-				return total + parseInt(answer.questionScale);
+				return total + parseInt(answer.questionScale)
 			}
 
-			return total + 0;
-		}, 0);
+			return total + 0
+		}, 0)
 
-		//insert answers into Answers table
+		// insert answers into Answers table
 		answers.map(async (answer) => {
 			try {
 				await fetch(
 					`/admin/interview/${interview_round_id}/student/${student_id}/enter-marks`,
 					{
-						method: "POST",
+						method: 'POST',
 						headers: {
-							"Content-Type": "application/json",
+							'Content-Type': 'application/json',
 						},
 						body: JSON.stringify(answer),
 					}
-				);
-
+				)
 			} catch (err) {
-				console.log(err);
-				window.alert("An error occured, please refresh the page");
+				console.log(err)
+				window.alert('An error occured, please refresh the page')
 			}
-		});
+		})
 
 		const response = await fetch(
 			`/admin/interview/${interview_round_id}/student/${student_id}/total-marks`,
 			{
-				method: "POST",
+				method: 'POST',
 				headers: {
-					"Content-Type": "application/json",
+					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					totalMarks: totalMarks,
-					obtainedMarks: obtainedMarks,
+					totalMarks,
+					obtainedMarks,
 				}),
 			}
-		);
+		)
 
-		if (response.status == 200) {
-			window.alert("Marks added successfully");
-			window.location.href = `/admin/interview/${interview_round_id}/view-students`;
+		if (response.status === 200) {
+			window.alert('Marks added successfully')
+			window.location.href = `/admin/interview/${interview_round_id}/view-students`
 		}
-	};
+	}
 
 	return (
 		<div className="mt-36 mx-10">
@@ -148,72 +149,78 @@ const ViewStudent = () => {
 							Interview Scores
 						</p>
 
-						<div className = "flex flex-col ">
+						<div className="flex flex-col ">
 							<div className="w-full mt-10 rounded-md p-4 flex">
-
 								{/* save icon */}
 								<button
 									type="submit"
 									className=" font-bold p-2 flex flex-row bg-iec-blue text-white m-2 items-center justify-center"
 								>
 									<i className="fa fa-save p-2"></i>
-
 									Save
 								</button>
 
 								<button
-									onClick = {markAsAbsent}
-									type = "button"
+									onClick={markAsAbsent}
+									type="button"
 									className=" font-bold p-2 flex flex-row m-2 bg-iec-blue text-white  items-center justify-center"
 								>
 									<i className="fa fa-user-xmark p-2"></i>
-
 									Student Absent
 								</button>
 							</div>
 						</div>
-
 					</div>
 					{/* numeric questions */}
 					<div className="mt-10 mx-10 rounded-md flex flex-col p-10 w-full ">
 						<div className="flex flex-row items-left justify-left">
-							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">Numeric Questions</p>
+							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">
+								Numeric Questions
+							</p>
 						</div>
 						{questions.length > 0 ? (
 							<>
-								{questions.map((question) => (
-									question.questionType == "number scale" && (
-									<div className="flex flex-row items-left justify-left mt-10">
-											<div className="flex items-left justify-left w-3/4">
-												<p className="text-2xl font-bold">{question.question}</p>
-											</div>
-											<div className="flex items-left justify-left w-1/4">
-												<div className="flex flex-row items-left justify-left">
-													<div className="flex items-left justify-left">
-														<input
-															className="w-20 h-10 border-b-2 border-iec-blue bg-transparent p-2 outline-none appearance-none"
-															type="number"
-															name={question.questionID}
-															max={question.questionScale}
-															defaultValue={
-																answers.length > 0
-																	? answers.find(
-																			(answer) =>
-																				answer.questionID == question.questionID
-																	  ).questionRating
-																	: null
-															}
-														></input>
-													</div>
-													<div className="flex items-left justify-left">
-														<p className="ml-2 text-xl font-bold">
-															/ {question.questionScale}
-														</p>
+								{questions.map(
+									(question) =>
+										question.questionType === 'number scale' && (
+											<div
+												className="flex flex-row items-left justify-left mt-10"
+												key={question.id}
+											>
+												<div className="flex items-left justify-left w-3/4">
+													<p className="text-2xl font-bold">
+														{question.question}
+													</p>
+												</div>
+												<div className="flex items-left justify-left w-1/4">
+													<div className="flex flex-row items-left justify-left">
+														<div className="flex items-left justify-left">
+															<input
+																className="w-20 h-10 border-b-2 border-iec-blue bg-transparent p-2 outline-none appearance-none"
+																type="number"
+																name={question.questionID}
+																max={question.questionScale}
+																defaultValue={
+																	answers.length > 0
+																		? answers.find(
+																				(answer) =>
+																					answer.questionID ===
+																					question.questionID
+																		  ).questionRating
+																		: null
+																}
+															></input>
+														</div>
+														<div className="flex items-left justify-left">
+															<p className="ml-2 text-xl font-bold">
+																/ {question.questionScale}
+															</p>
+														</div>
 													</div>
 												</div>
 											</div>
-									</div>
-								)))}
+										)
+								)}
 							</>
 						) : null}
 					</div>
@@ -221,41 +228,49 @@ const ViewStudent = () => {
 
 					<div className="mt-10 mx-10 rounded-md flex flex-col p-10 w-full ">
 						<div className="flex flex-row items-left justify-left">
-							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">Descriptive Questions</p>
+							<p className="text-2xl font-bold border-b-2 p-2 border-iec-blue">
+								Descriptive Questions
+							</p>
 						</div>
 
-					{questions.length > 0
-						? questions.map((question) => (
-								question.questionType == "descriptive" &&
-								<div className="flex flex-col items-left justify-left mt-10">
-									<div className="w-full flex items-left justify-left">
-										<p className="text-2xl font-bold">{question.question}</p>
-									</div>
-									<div className="w-full flex items-left justify-left mt-4">
-										<textarea
-											className="w-full h-40 bg-gray-300 rounded-md p-10 outline-none appearance-none"
-											name={question.questionID}
-											type="text"
-											placeholder="Enter answer here"
-											defaultValue={
-												answers.length > 0
-													? answers.find(
-															(answer) =>
-																answer.questionID == question.questionID
-													  ).questionAnswer
-													: null
-											}
-										></textarea>
-									</div>
-								</div>
-						  ))
-						: null}
-
+						{questions.length > 0
+							? questions.map(
+									(question) =>
+										question.questionType === 'descriptive' && (
+											<div
+												className="flex flex-col items-left justify-left mt-10"
+												key={question.id}
+											>
+												<div className="w-full flex items-left justify-left">
+													<p className="text-2xl font-bold">
+														{question.question}
+													</p>
+												</div>
+												<div className="w-full flex items-left justify-left mt-4">
+													<textarea
+														className="w-full h-40 bg-gray-300 rounded-md p-10 outline-none appearance-none"
+														name={question.questionID}
+														type="text"
+														placeholder="Enter answer here"
+														defaultValue={
+															answers.length > 0
+																? answers.find(
+																		(answer) =>
+																			answer.questionID === question.questionID
+																  ).questionAnswer
+																: null
+														}
+													></textarea>
+												</div>
+											</div>
+										)
+							  )
+							: null}
 					</div>
 				</div>
 			</form>
 		</div>
-	);
-};
+	)
+}
 
-ReactDOM.render(<ViewStudent />, document.getElementById("app"));
+ReactDOM.render(<ViewStudent />, document.getElementById('app'))
