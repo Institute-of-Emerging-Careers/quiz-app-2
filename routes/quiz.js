@@ -13,15 +13,14 @@ const {
 	Question,
 	Option,
 	Passage,
-} = require("../db/models/quizmodel.js")
-const {
 	Student,
 	Invite,
 	Assignment,
 	Answer,
 	Attempt,
 	Score,
-} = require("../db/models/user")
+	Application,
+} = require("../db/models")
 const { saveNewQuiz } = require("../functions/saveNewQuiz.js")
 const { saveExistingQuiz } = require("../functions/saveExistingQuiz.js")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
@@ -49,7 +48,6 @@ const {
 } = require("../functions/utilities.js")
 const allSectionsSolved = require("../functions/allSectionsSolved.js")
 const { queueMail } = require("../bull")
-const { Application } = require("../db/models/application")
 const { Op } = require("sequelize")
 const emailStudentOnSectionCompletion = require("../functions/emailStudentOnSectionCompletion")
 

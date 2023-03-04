@@ -1,21 +1,21 @@
-const { Interviewer } = require("./models/interview");
+const { Interviewer } = require("./models")
 
 const getInterviewerByEmail = async (inputemail) => {
-  try {
-    return (
-      await Interviewer.findAll({
-        where: {
-          email: inputemail,
-        },
-        limit: 1,
-      })
-    )[0].dataValues;
-  } catch (err) {
-    if (process.env.DEBUG == true) {
-      console.log(err);
-    }
-    return null;
-  }
-};
+	try {
+		return (
+			await Interviewer.findAll({
+				where: {
+					email: inputemail,
+				},
+				limit: 1,
+			})
+		)[0].dataValues
+	} catch (err) {
+		if (process.env.DEBUG == true) {
+			console.log(err)
+		}
+		return null
+	}
+}
 
-module.exports = getInterviewerByEmail;
+module.exports = getInterviewerByEmail

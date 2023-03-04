@@ -5,11 +5,10 @@ const {
 	Course,
 	ApplicationRoundCourseJunction,
 	Application,
-} = require("../../db/models/application")
-const { Quiz } = require("../../db/models/quizmodel")
-
-const { Student, Assignment } = require("../../db/models/user")
-
+	Quiz,
+	Student,
+	Assignment,
+} = require("../../db/models")
 const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
 
 // middleware that is specific to this router
