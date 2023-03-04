@@ -1,39 +1,38 @@
-const useState = React.useState;
-const useEffect = React.useEffect;
+const useState = React.useState
+const useEffect = React.useEffect
 const CalendlyUpload = () => {
-	const [link, setLink] = useState("");
+	const [link, setLink] = useState('')
 
 	useEffect(async () => {
-		const response = await fetch("/admin/interview/get-link");
-	  
-	},[])
+		await fetch('/admin/interview/get-link')
+	}, [])
 
 	const uploadLink = (e) => {
-		e.preventDefault();
+		e.preventDefault()
 
-		console.log(link);
+		console.log(link)
 
-		fetch("/admin/interview/upload-link", {
-			method: "POST",
+		fetch('/admin/interview/upload-link', {
+			method: 'POST',
 			headers: {
-				"Content-Type": "application/json",
+				'Content-Type': 'application/json',
 			},
 			body: JSON.stringify({
 				calendly_link: link,
 			}),
 		}).then((res) => {
 			if (res.status === 200) {
-				window.alert("Link uploaded successfully!");
+				window.alert('Link uploaded successfully!')
 			}
-		});
-	};
+		})
+	}
 
 	return (
 		<div>
 			<h1 className="text-2xl">Please enter your Calendly link</h1>
 			<form onSubmit={uploadLink}>
 				<input
-					className = "bg-white h-10 rounded-md border-black border"
+					className="bg-white h-10 rounded-md border-black border"
 					type="text"
 					name="calendly_link"
 					id="calendly_link"
@@ -44,10 +43,10 @@ const CalendlyUpload = () => {
 				<button type="submit">Upload</button>
 			</form>
 		</div>
-	);
-};
+	)
+}
 
 ReactDOM.render(
 	<CalendlyUpload></CalendlyUpload>,
-	document.getElementById("app")
-);
+	document.getElementById('app')
+)
