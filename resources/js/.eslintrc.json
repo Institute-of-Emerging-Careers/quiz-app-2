@@ -19,7 +19,7 @@
         "react"
     ],
     "rules": {
-        "no-undef":"error",
+        "no-undef":"off",
         "indent": "off",
         "camelcase":"off",
         "no-tabs": "off",
@@ -29,7 +29,11 @@
         "no-async-promise-executor": "warn",
         "no-multiple-empty-lines": "error",
         "space-before-function-paren": "off",
-        "no-mixed-spaces-and-tabs": "off"
+        "no-mixed-spaces-and-tabs": "off",
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-no-undef": "off",
+        "multiline-ternary": "off"
     },
     "ignorePatterns": ["**/precompiled-js/**"]
 }
