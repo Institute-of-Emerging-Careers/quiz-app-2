@@ -25,7 +25,6 @@ router.use((req, res, next) => {
 })
 
 router.get('/', checkAdminAuthenticated, (req, res) => {
-	console.log(`/admin/orientation${req.url}`)
 	res.render('admin/orientation/index.ejs', {
 		env: process.env.NODE_ENV,
 		myname: req.user.user?.firstName,
@@ -126,11 +125,11 @@ router.post(
 			})
 
 			// let's get all students who have already been invited to this Orientation and create a hashmap.
-			let orientation_invites = await OrientationInvite.findAll({
+			const orientation_invites = await OrientationInvite.findAll({
 				where: { OrientationId: req.params.orientation_id },
 			})
 
-			let students_already_invited = new Map()
+			const students_already_invited = new Map()
 			orientation_invites.map((invite) => {
 				students_already_invited.set(invite.StudentId, invite)
 			})
@@ -140,12 +139,12 @@ router.post(
 			await new Promise((resolve, reject) => {
 				req.body.students.map(async (student) => {
 					if (
-						student.added == false &&
+						student.added === false &&
 						students_already_invited.has(student.id)
 					) {
 						students_already_invited.get(student.id).destroy()
 					} else if (
-						student.added == true &&
+						student.added === true &&
 						!students_already_invited.has(student.id)
 					) {
 						const application_id = (
@@ -161,7 +160,7 @@ router.post(
 						})
 					}
 					i++
-					if (i == n) {
+					if (i === n) {
 						resolve()
 					}
 				})
@@ -205,9 +204,9 @@ router.get(
 
 			if (orientation != null && orientation.QuizId != null) {
 				// finding total score of quiz
-				let quiz_total_score = await getQuizTotalScore(orientation.Quiz)
+				const quiz_total_score = await getQuizTotalScore(orientation.Quiz)
 
-				let data = [] //list of students who have solved this quiz and their data
+				const data = [] // list of students who have solved this quiz and their data
 				/*
           [
             {
@@ -223,7 +222,7 @@ router.get(
           ]
         */
 
-				let assignments = orientation.Quiz.Assignments
+				const assignments = orientation.Quiz.Assignments
 
 				if (assignments != null && assignments.length > 0) {
 					await new Promise((resolve) => {
@@ -244,15 +243,16 @@ router.get(
 							})
 							data.push({
 								added:
-									assignment.Student.hasOwnProperty('Orientations') &&
+									Object.prototype.hasOwnProperty.call(
+										assignment.Student,
+										'Orientations'
+									) &&
 									assignment.Student.Orientations.length > 0 &&
 									assignment.Student.Orientations.reduce(
 										(hasThisOrientationId, cur) =>
 											hasThisOrientationId
 												? true
-												: cur.id == req.params.orientation_id
-												? true
-												: false,
+												: cur.id === req.params.orientation_id,
 										false
 									),
 								email_sent:
@@ -267,18 +267,18 @@ router.get(
 								email: assignment.Student.email,
 								age: assignment.Student.age,
 								gender: assignment.Student.gender,
-								total_score_achieved: total_score_achieved,
+								total_score_achieved,
 								assignment_completed_date: assignment.updatedAt,
 								percentage_score: roundToTwoDecimalPlaces(
 									(total_score_achieved / quiz_total_score) * 100
 								),
 							})
 							i++
-							if (i == n) resolve()
+							if (i === n) resolve()
 						})
 					})
 				}
-				res.json({ success: true, data: data })
+				res.json({ success: true, data })
 			} else {
 				console.log('Error: QuizId: or orientation:', orientation, 'is NULL')
 				res.json({ success: false })
@@ -321,7 +321,7 @@ router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 		// let students = req.body.students.filter((student) => student.added);
 		// this will be done before sending the request now to save network bandwidth
 
-		let students = req.body.students
+		const students = req.body.students
 		let promises = students.map((student) => [
 			OrientationInvite.update(
 				{ email_sent: true },
@@ -346,7 +346,7 @@ router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 			.then(() => {
 				res.json({ success: true })
 			})
-			.catch((err) => {
+			.catch(() => {
 				res.json({ success: false })
 			})
 	}
