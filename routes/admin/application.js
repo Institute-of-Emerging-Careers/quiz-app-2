@@ -7,7 +7,6 @@ const {
 	Application,
 } = require('../../db/models/application')
 const { Quiz } = require('../../db/models/quizmodel')
-
 const { Student } = require('../../db/models/user')
 
 const checkAdminAuthenticated = require('../../db/check-admin-authenticated')

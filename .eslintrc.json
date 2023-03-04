@@ -26,6 +26,7 @@
         "comma-dangle": "off",
         "curly": "off",
         "array-callback-return": "warn",
-        "no-async-promise-executor": "warn"
+        "no-async-promise-executor": "warn",
+        "no-multiple-empty-lines": "error"
     }
 }
