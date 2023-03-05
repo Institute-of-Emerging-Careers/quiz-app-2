@@ -1,23 +1,28 @@
-process.env.NODE_ENV = "test";
+process.env.NODE_ENV = "test"
 
-let sequelize = require("../db/connect");
+let sequelize = require("../db/connect")
 //Require the dev-dependencies
-let chai = require("chai");
-let chaiHttp = require("chai-http");
-let server = require("../server_config");
-const bcrypt = require("bcrypt");
+let chai = require("chai")
+let chaiHttp = require("chai-http")
+let server = require("../server_config")
+const bcrypt = require("bcrypt")
 const {
-  ApplicationRound,
-  Application,
-  Course,
-} = require("../db/models/application");
-const { Student, Assignment } = require("../db/models/user");
-const {education_levels, degree_choice, income_brackets}  = require("../db/data_lists")
+	ApplicationRound,
+	Application,
+	Course,
+	Student,
+	Assignment,
+} = require("../db/models")
+const {
+	education_levels,
+	degree_choice,
+	income_brackets,
+} = require("../db/data_lists")
 
-let expect = chai.expect;
+let expect = chai.expect
 
-chai.use(chaiHttp);
-const agent = chai.request.agent(server);
+chai.use(chaiHttp)
+const agent = chai.request.agent(server)
 
 //Our parent block
 // describe("Applications", () => {
@@ -249,7 +254,7 @@ const agent = chai.request.agent(server);
 //           Course.create({ title: "Test Course 3" }),
 //         ]);
 //         await agent.post(`/application/submit/${application_round.id}`).send({
-          
+
 //           firstName: "Test",
 //           lastName: "User",
 //           password: "test",
@@ -295,11 +300,11 @@ const agent = chai.request.agent(server);
 //           degree_choice: degree_choice[0],
 //           how_to_enroll: "N/A",
 //           LEC_acknowledgement: true,
-//         });  
+//         });
 //       } catch(err) {
 //         reject(err);
 //       }
-      
+
 //       chai
 //         .request(server)
 //         .post(`/application/check-if-user-exists`)

@@ -1,15 +1,23 @@
-const { User, Student, Invite, Assignment, Answer } = require("./models/user");
-const { Quiz, Section, Question, Option } = require("./models/quizmodel.js");
-
+const {
+	User,
+	Student,
+	Invite,
+	Assignment,
+	Answer,
+	Quiz,
+	Section,
+	Question,
+	Option,
+} = require("./models")
 
 const getAssignment = (studentId, quizId, includes) => {
-    return Assignment.findOne({
-        where: {
-        StudentId: studentId,
-        QuizId: quizId,
-        },
-        include: includes,
-    });
+	return Assignment.findOne({
+		where: {
+			StudentId: studentId,
+			QuizId: quizId,
+		},
+		include: includes,
+	})
 }
 
 module.exports = getAssignment

@@ -1,7 +1,7 @@
 // This file will initialize all Models so that the models and the database are in sync
 const sequelize = require("./connect")
 const bcrypt = require("bcrypt")
-require("./models/relationships")
+const { User } = require("./models")
 
 const initializeDatabase = async () => {
 	try {
@@ -27,7 +27,7 @@ const initializeDatabase = async () => {
 		if (alterandforce) {
 			// Add a single admin user
 			const hashedPwd = await bcrypt.hash("examplepassword", 10)
-			const adminUser = await sequelize.models.User.create({
+			const adminUser = await User.create({
 				firstName: "Danish",
 				lastName: "Khan",
 				email: "admin@iec.org.pk",
