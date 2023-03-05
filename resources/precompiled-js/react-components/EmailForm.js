@@ -12,6 +12,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+// eslint-disable-next-line
 var EmailForm = function EmailForm(props) {
   var users = props.users;
   var default_values = props.default_values;
@@ -22,9 +23,9 @@ var EmailForm = function EmailForm(props) {
       email_subject = _useState2[0],
       setEmailSubject = _useState2[1];
 
-  var onFinish = props.hasOwnProperty("onFinish") ? props.onFinish : function () {};
+  var onFinish = Object.prototype.hasOwnProperty.call(props, 'onFinish') ? props.onFinish : function () {};
   var applications = null;
-  if (props.hasOwnProperty("applications")) applications = props.applications;
+  if (Object.prototype.hasOwnProperty.call(props, 'applications')) applications = props.applications;
 
   var _useState3 = useState(default_values.email_heading),
       _useState4 = _slicedToArray(_useState3, 2),
@@ -47,9 +48,8 @@ var EmailForm = function EmailForm(props) {
       setEmailButtonLabel = _useState10[1];
 
   var _useState11 = useState(default_values.email_button_url),
-      _useState12 = _slicedToArray(_useState11, 2),
-      email_button_url = _useState12[0],
-      setEmailButtonUrl = _useState12[1];
+      _useState12 = _slicedToArray(_useState11, 1),
+      email_button_url = _useState12[0];
 
   var _useState13 = useState(false),
       _useState14 = _slicedToArray(_useState13, 2),
@@ -59,9 +59,9 @@ var EmailForm = function EmailForm(props) {
   var sendEmails = function sendEmails() {
     setLoading(true);
     fetch(sending_link, {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         users: applications == null ? users : applications,
@@ -77,13 +77,13 @@ var EmailForm = function EmailForm(props) {
       })
     }).then(function (response) {
       if (response.ok) {
-        alert("Emails sent successfully.");
+        alert('Emails sent successfully.');
       } else {
-        alert("There was an error while sending emails. Error code 01.");
+        alert('There was an error while sending emails. Error code 01.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("There was a problem while sending the request to the server. Please check your internet connection. Error code 02.");
+      alert('There was a problem while sending the request to the server. Please check your internet connection. Error code 02.');
     }).finally(function () {
       setLoading(false);
       onFinish();
@@ -105,7 +105,7 @@ var EmailForm = function EmailForm(props) {
     maxLength: "100",
     name: "recepients",
     className: "border bg-gray-200 w-full py-3 px-4 mt-1 hover:shadow-sm",
-    value: applications == null ? users.length > 0 ? "".concat(users[0].email, ", and ").concat(users.length - 1, " others") : "No recipients" : applications.length > 0 ? "".concat(applications[0].Student.email, ", and ").concat(applications.length - 1, " others") : "No recipients"
+    value: applications == null ? users.length > 0 ? "".concat(users[0].email, ", and ").concat(users.length - 1, " others") : 'No recipients' : applications.length > 0 ? "".concat(applications[0].Student.email, ", and ").concat(applications.length - 1, " others") : 'No recipients'
   }), /*#__PURE__*/React.createElement("label", null, "Subject: "), /*#__PURE__*/React.createElement("input", {
     type: "text",
     id: "subject",
@@ -186,5 +186,5 @@ var EmailForm = function EmailForm(props) {
     className: "fas fa-spinner animate-spin self-center"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "far fa-paper-plane"
-  }), " ", "Send Email(s)"))));
+  }), ' ', "Send Email(s)"))));
 };

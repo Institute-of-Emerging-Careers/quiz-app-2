@@ -31,7 +31,7 @@ var ContextProvider = function ContextProvider(props) {
   var _useState5 = useState(-1),
       _useState6 = _slicedToArray(_useState5, 2),
       show_modal = _useState6[0],
-      setShowModal = _useState6[1]; //value is set to the array index of the application whose details are to be shown by the modal
+      setShowModal = _useState6[1]; // value is set to the array index of the application whose details are to be shown by the modal
 
 
   return /*#__PURE__*/React.createElement(MyContext.Provider, {
@@ -46,16 +46,10 @@ var ContextProvider = function ContextProvider(props) {
 var App = function App() {
   var _useContext = useContext(MyContext),
       applications_object = _useContext.applications_object,
-      modal_object = _useContext.modal_object,
       reload_object = _useContext.reload_object;
 
-  var _modal_object = _slicedToArray(modal_object, 2),
-      show_modal = _modal_object[0],
-      setShowModal = _modal_object[1];
-
-  var _reload_object = _slicedToArray(reload_object, 2),
-      reload_applications = _reload_object[0],
-      setReloadApplications = _reload_object[1];
+  var _reload_object = _slicedToArray(reload_object, 1),
+      reload_applications = _reload_object[0];
 
   var _applications_object = _slicedToArray(applications_object, 2),
       applications = _applications_object[0],
@@ -76,25 +70,25 @@ var App = function App() {
     });
   }, [applications]);
   useEffect(function () {
-    fetch("/admin/application/all-applicants/".concat(document.getElementById("application-round-id-field").value)).then(function (raw_response) {
+    fetch("/admin/application/all-applicants/".concat(document.getElementById('application-round-id-field').value)).then(function (raw_response) {
       if (raw_response.ok) {
         raw_response.json().then(function (response) {
           setApplications(response.applications);
         });
       } else {
-        alert("Something went wrong. Code 01.");
+        alert('Something went wrong. Code 01.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went wrong. Code 02.");
+      alert('Something went wrong. Code 02.');
     });
   }, [reload_applications]);
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm"
   }, /*#__PURE__*/React.createElement(ApplicantDetailsModal, null), /*#__PURE__*/React.createElement(ApplicationsList, {
-    application_round_id: document.getElementById("application-round-id-field").value,
+    application_round_id: document.getElementById('application-round-id-field').value,
     application_id_to_array_index_map: application_id_to_array_index_map
   })));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(App, null)), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(App, null)), document.getElementById('app'));

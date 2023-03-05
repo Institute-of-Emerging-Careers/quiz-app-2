@@ -12,6 +12,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+// eslint-disable-next-line
 var NewStudentAdder = function NewStudentAdder(props) {
   var _props$students_objec = _slicedToArray(props.students_object, 2),
       students = _props$students_objec[0],
@@ -29,12 +30,12 @@ var NewStudentAdder = function NewStudentAdder(props) {
 
   var _useState5 = useState(DateTime.now().minus({
     months: 1
-  }).toFormat("yyyy-MM-dd")),
+  }).toFormat('yyyy-MM-dd')),
       _useState6 = _slicedToArray(_useState5, 2),
       filter_date = _useState6[0],
       setFilterDate = _useState6[1];
 
-  var _useState7 = useState("all"),
+  var _useState7 = useState('all'),
       _useState8 = _slicedToArray(_useState7, 2),
       orientation_status_filter = _useState8[0],
       setOrientationStatusFilter = _useState8[1];
@@ -66,7 +67,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
   }, [students]);
   useEffect(function () {
     setFilteredStudents(students.filter(function (student) {
-      return student.percentage_score >= filter_min_score && DateTime.fromISO(student.assignment_completed_date).startOf("day").ts >= DateTime.fromFormat(filter_date, "yyyy-MM-dd").startOf("day").ts && (student.added && (orientation_status_filter == "all" || orientation_status_filter == "added") || !student.added && (orientation_status_filter == "all" || orientation_status_filter == "not-added"));
+      return student.percentage_score >= filter_min_score && DateTime.fromISO(student.assignment_completed_date).startOf('day').ts >= DateTime.fromFormat(filter_date, 'yyyy-MM-dd').startOf('day').ts && (student.added && (orientation_status_filter === 'all' || orientation_status_filter === 'added') || !student.added && (orientation_status_filter === 'all' || orientation_status_filter === 'not-added'));
     }));
   }, [filter_min_score, filter_date, orientation_status_filter]);
   useEffect(function () {
@@ -80,10 +81,10 @@ var NewStudentAdder = function NewStudentAdder(props) {
 
           setStudents(response.data);
         } else {
-          alert("Something went wrong while getting a list of candidates. Error code 01.");
+          alert('Something went wrong while getting a list of candidates. Error code 01.');
         }
-      }).catch(function (err) {
-        alert("Something went wrong while getting a list of candidates. Error code 02.");
+      }).catch(function () {
+        alert('Something went wrong while getting a list of candidates. Error code 02.');
       }).finally(function () {
         setLoading(false);
       });
@@ -119,7 +120,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
     className: "py-2 px-4 bg-iec-blue hover:bg-iec-blue-hover text-white"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-arrow-up"
-  }), " Add Selected Candidates to", " ", props.title, " List"), /*#__PURE__*/React.createElement("div", {
+  }), " Add Selected Candidates to", ' ', props.title, " List"), /*#__PURE__*/React.createElement("div", {
     ref: section2
   }, /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-6 items-center"
@@ -131,7 +132,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
     type: "number",
     min: "0",
     max: "100",
-    increment: "1",
+    step: "1",
     value: filter_min_score,
     name: "filter_min_score",
     onChange: function onChange(e) {
@@ -142,7 +143,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
     className: "col-span-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "filter_min_score"
-  }, "Filter by Latest Submission Date: "), /*#__PURE__*/React.createElement("input", {
+  }, "Filter by Latest Submission Date:", ' '), /*#__PURE__*/React.createElement("input", {
     type: "date",
     min: "0",
     max: DateTime.now(),
@@ -150,14 +151,14 @@ var NewStudentAdder = function NewStudentAdder(props) {
     name: "filter_date",
     onChange: function onChange(e) {
       setFilterDate(e.target.value);
-      console.log("Filter Date: ", e.target.value);
+      console.log('Filter Date: ', e.target.value);
     },
     className: "ml-2 p-2 w-72 border"
   }), "%"), /*#__PURE__*/React.createElement("div", {
     className: "col-span-2"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "filter_min_score"
-  }, "Filter by ", props.title, " Status:", " "), /*#__PURE__*/React.createElement("select", {
+  }, "Filter by ", props.title, " Status:", ' '), /*#__PURE__*/React.createElement("select", {
     value: orientation_status_filter,
     onChange: function onChange(e) {
       setOrientationStatusFilter(e.target.value);
@@ -212,7 +213,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
       className: "border px-4 py-2"
     }, student.gender), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
-    }, DateTime.fromISO(student.assignment_completed_date).toFormat("dd LLL yyyy")), /*#__PURE__*/React.createElement("td", {
+    }, DateTime.fromISO(student.assignment_completed_date).toFormat('dd LLL yyyy')), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
     }, student.percentage_score));
   })))));

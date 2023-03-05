@@ -32,35 +32,33 @@ var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
 var useContext = React.useContext;
-var useCallback = React.useCallback;
 var useRef = React.useRef;
-var useMemo = React.useMemo;
 var _luxon = luxon,
     DateTime = _luxon.DateTime,
     Duration = _luxon.Duration;
-var interview_round_id = document.getElementById("interview-round-id-field").value;
-var url = window.location.href.split("/");
+var interview_round_id = document.getElementById('interview-round-id-field').value;
+var url = window.location.href.split('/');
 
-if (url[url.length - 2] == "new") {
-  window.location = "/admin/interview/edit/" + interview_round_id;
+if (url[url.length - 2] === 'new') {
+  window.location = '/admin/interview/edit/' + interview_round_id;
 }
 
 var ContextProvider = function ContextProvider(props) {
   var _useState = useState([{
-    title: "Step 1: Add Interviewees (Students)",
+    title: 'Step 1: Add Interviewees (Students)',
     active: true
   }, {
-    title: "Step 2: Add Interviewers",
+    title: 'Step 2: Add Interviewers',
     active: false
   }, {
-    title: "Step 3: Create Matching",
+    title: 'Step 3: Create Matching',
     active: false
   }, {
-    title: "Step 4: Create Questions",
+    title: 'Step 4: Create Questions',
     active: false
   }, // { title: "Step 5: Send Emails", active: false  },
   {
-    title: "Step 5: Finalize Students",
+    title: 'Step 5: Finalize Students',
     active: false
   }]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -100,7 +98,7 @@ var StepMenu = function StepMenu() {
       var copy = cur.slice();
 
       for (var i = 0; i < copy.length; i++) {
-        if (i == e.target.id) copy[i].active = true;else copy[i].active = false;
+        if (i === e.target.id) copy[i].active = true;else copy[i].active = false;
       }
 
       return copy;
@@ -130,9 +128,8 @@ var Step1 = function Step1() {
   var _useContext2 = useContext(MyContext),
       students_object = _useContext2.students_object;
 
-  var _students_object = _slicedToArray(students_object, 2),
-      students = _students_object[0],
-      setStudents = _students_object[1];
+  var _students_object = _slicedToArray(students_object, 1),
+      students = _students_object[0];
 
   var _useState7 = useState(false),
       _useState8 = _slicedToArray(_useState7, 2),
@@ -141,10 +138,10 @@ var Step1 = function Step1() {
 
   var saveData = function saveData() {
     setLoading(true);
-    fetch("/admin/interview/interviewees/save", {
-      method: "POST",
+    fetch('/admin/interview/interviewees/save', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         students: students,
@@ -158,18 +155,18 @@ var Step1 = function Step1() {
           console.log(parsed_response);
 
           if (parsed_response.success) {
-            alert("Saved successfully.");
+            alert('Saved successfully.');
           }
         }).catch(function (err) {
           console.log(err);
-          alert("Something went wrong. Error code 02.");
+          alert('Something went wrong. Error code 02.');
         });
       } else {
-        alert("Could not save interviewees.");
+        alert('Could not save interviewees.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went wrong. Error code 01. Check your internet connection.");
+      alert('Something went wrong. Error code 01. Check your internet connection.');
     }).finally(function () {
       setLoading(false);
     });
@@ -190,15 +187,15 @@ var Step1 = function Step1() {
     key: "".concat(students.id, "-tr"),
     students: students,
     title: "Interview",
-    fields: [, {
-      title: "Name",
-      name: ["name"]
+    fields: [{
+      title: 'Name',
+      name: ['name']
     }, {
-      title: "Email",
-      name: ["email"]
+      title: 'Email',
+      name: ['email']
     }, {
-      title: "Percentage Score",
-      name: ["percentage_score"]
+      title: 'Percentage Score',
+      name: ['percentage_score']
     }]
   })), /*#__PURE__*/React.createElement("div", {
     className: "p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm"
@@ -215,12 +212,12 @@ var Step2 = function Step2() {
       interviewers = _useState10[0],
       setInterviewers = _useState10[1];
 
-  var _useState11 = useState(""),
+  var _useState11 = useState(''),
       _useState12 = _slicedToArray(_useState11, 2),
       new_interviewer_name = _useState12[0],
       setNewInterviewerName = _useState12[1];
 
-  var _useState13 = useState(""),
+  var _useState13 = useState(''),
       _useState14 = _slicedToArray(_useState13, 2),
       new_interviewer_email = _useState14[0],
       setNewInterviewerEmail = _useState14[1];
@@ -280,7 +277,7 @@ var Step2 = function Step2() {
           setOriginalNumZoomAccounts(response.num_zoom_accounts);
         });
       } else {
-        alert("Error in URL. Wrong Interview Round. Please go to home page.");
+        alert('Error in URL. Wrong Interview Round. Please go to home page.');
       }
     });
   }, [reload]);
@@ -301,9 +298,9 @@ var Step2 = function Step2() {
   var saveData = function saveData() {
     setSaving(true);
     fetch("/admin/interview/update-interviewer-list/".concat(interview_round_id), {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         interviewers: interviewers,
@@ -311,11 +308,11 @@ var Step2 = function Step2() {
       })
     }).then(function (response) {
       if (!response.ok) {
-        alert("Error while saving.");
+        alert('Error while saving.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went wrong. Check your internet connection.");
+      alert('Something went wrong. Check your internet connection.');
     }).finally(function () {
       setSaving(false);
     });
@@ -323,24 +320,24 @@ var Step2 = function Step2() {
 
   var deleteSlot = function deleteSlot(time_slot_id) {
     fetch("/admin/interview/interviewer/time-slot/delete/".concat(time_slot_id), {
-      method: "DELETE"
+      method: 'DELETE'
     }).then(function (res) {
       if (res.ok) {
         setReload(function (cur) {
           return !cur;
         });
       } else {
-        alert("Could not delete time slot. Some error occured at the server.");
+        alert('Could not delete time slot. Some error occured at the server.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Error while deleting time slot. Are you sure your internet connection is working fine?");
+      alert('Error while deleting time slot. Are you sure your internet connection is working fine?');
     });
   };
 
   return /*#__PURE__*/React.createElement("div", {
     className: "p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm"
-  }, /*#__PURE__*/React.createElement("label", null, "Maximum number of interviewers that can select a particular time slot (aka number of zoom accounts):", " "), /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("label", null, "Maximum number of interviewers that can select a particular time slot (aka number of zoom accounts):", ' '), /*#__PURE__*/React.createElement("input", {
     type: "number",
     min: original_num_zoom_accounts,
     max: "500",
@@ -367,7 +364,7 @@ var Step2 = function Step2() {
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "new-interviewer",
     className: "min-w-max"
-  }, "Full Name:", " "), /*#__PURE__*/React.createElement("input", {
+  }, "Full Name:", ' '), /*#__PURE__*/React.createElement("input", {
     type: "text",
     maxLength: "150",
     name: "name",
@@ -376,12 +373,11 @@ var Step2 = function Step2() {
     onChange: function onChange(e) {
       setNewInterviewerName(e.target.value);
     },
-    ref: name_field,
-    active: "true"
+    ref: name_field
   }), /*#__PURE__*/React.createElement("label", {
     htmlFor: "new-interviewer",
     className: "min-w-max"
-  }, "Email:", " "), /*#__PURE__*/React.createElement("input", {
+  }, "Email:", ' '), /*#__PURE__*/React.createElement("input", {
     type: "email",
     maxLength: "200",
     name: "email",
@@ -405,9 +401,9 @@ var Step2 = function Step2() {
         });
         return copy;
       });
-      setNewInterviewerName("");
-      setNewInterviewerEmail("");
-      ReactDOM.findDOMNode(name_field.current).focus();
+      setNewInterviewerName('');
+      setNewInterviewerEmail('');
+      name_field.current.focus();
     }
   }, "Add"))), /*#__PURE__*/React.createElement("hr", {
     className: "mt-4"
@@ -418,12 +414,12 @@ var Step2 = function Step2() {
     },
     sending_link: "/admin/interview/send-emails",
     default_values: {
-      email_subject: "IEC Interview Time Slots",
-      email_heading: "IEC Interview Time Slots",
-      email_body: "Dear Team Member<br>We hope you are well.<br>Please let us know when you are free to conduct some interviews. You can do so below.<br>",
-      email_button_pre_text: "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.",
-      email_button_label: "Log In",
-      email_button_url: "Will be automatically set for each user"
+      email_subject: 'IEC Interview Time Slots',
+      email_heading: 'IEC Interview Time Slots',
+      email_body: 'Dear Team Member<br>We hope you are well.<br>Please let us know when you are free to conduct some interviews. You can do so below.<br>',
+      email_button_pre_text: 'Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.',
+      email_button_label: 'Log In',
+      email_button_url: 'Will be automatically set for each user'
     }
   }) : /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", {
     className: "flex mt-4 mb-4 justify-between items-center"
@@ -457,7 +453,7 @@ var Step2 = function Step2() {
     className: "fas fa-spinner animate-spin self-center"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-save"
-  }), " ", "Save Data"))), /*#__PURE__*/React.createElement("p", null, "Number of Zoom Accounts: ", num_zoom_accounts), selected_interviewer_index >= 0 ? /*#__PURE__*/React.createElement(Modal, {
+  }), ' ', "Save Data"))), /*#__PURE__*/React.createElement("p", null, "Number of Zoom Accounts: ", num_zoom_accounts), selected_interviewer_index >= 0 ? /*#__PURE__*/React.createElement(Modal, {
     show_modal: show_modal,
     setShowModal: setShowModal,
     heading: "View Time Slots of ".concat(interviewers[selected_interviewer_index].name),
@@ -481,19 +477,19 @@ var Step2 = function Step2() {
       }, index + 1), /*#__PURE__*/React.createElement("td", {
         className: "p-2 border"
       }, DateTime.fromISO(time_slot.start).toLocaleString({
-        weekday: "short",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit"
+        weekday: 'short',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
       })), /*#__PURE__*/React.createElement("td", {
         className: "p-2 border"
       }, DateTime.fromISO(time_slot.end).toLocaleString({
-        weekday: "short",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit"
+        weekday: 'short',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit'
       })), /*#__PURE__*/React.createElement("td", {
         className: "p-2 border"
       }, Duration.fromMillis(time_slot.duration).toFormat("hh 'hours' mm 'minutes'")), /*#__PURE__*/React.createElement("td", {
@@ -517,7 +513,7 @@ var Step2 = function Step2() {
       className: "border px-4 py-2"
     }, interviewer.email), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
-    }, interviewer.time_declared ? "Yes" : "No"), /*#__PURE__*/React.createElement("td", {
+    }, interviewer.time_declared ? 'Yes' : 'No'), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
     }, Duration.fromMillis(interviewer.time_slots.reduce(function (total_time, cur_slot) {
       return total_time += cur_slot.duration;
@@ -533,7 +529,7 @@ var Step2 = function Step2() {
       }
     }, /*#__PURE__*/React.createElement("i", {
       className: "far fa-eye"
-    }), " View Time Slots"), "|", " ", /*#__PURE__*/React.createElement("a", {
+    }), " View Time Slots"), "|", ' ', /*#__PURE__*/React.createElement("a", {
       className: "cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover",
       onClick: function onClick() {
         setShowModal(function (cur) {
@@ -543,7 +539,7 @@ var Step2 = function Step2() {
       }
     }, /*#__PURE__*/React.createElement("i", {
       className: "fas fa-trash-alt"
-    }), " Delete Slots"), " ", "|", " ", /*#__PURE__*/React.createElement("a", {
+    }), " Delete Slots"), ' ', "|", ' ', /*#__PURE__*/React.createElement("a", {
       className: "cursor-pointer underline text-iec-blue hover:no-underline hover:text-iec-blue-hover",
       onClick: function onClick() {
         setSpecificInterviewersToEmail([interviewer]);
@@ -551,7 +547,7 @@ var Step2 = function Step2() {
       }
     }, /*#__PURE__*/React.createElement("i", {
       className: "far fa-paper-plane"
-    }), " Send Email asking", " ", interviewer.name, " to Declare Time Slots")));
+    }), " Send Email asking", ' ', interviewer.name, " to Declare Time Slots")));
   }))));
 };
 
@@ -564,40 +560,39 @@ var Step3 = function Step3() {
   var _useState33 = useState(0),
       _useState34 = _slicedToArray(_useState33, 2),
       interviewTime = _useState34[0],
-      setInterviewTime = _useState34[1]; //time per interview (including buffer time)
+      setInterviewTime = _useState34[1]; // time per interview (including buffer time)
 
 
   var _useState35 = useState([]),
       _useState36 = _slicedToArray(_useState35, 2),
       interviewers = _useState36[0],
-      setInterviewers = _useState36[1]; //list of interviewers
+      setInterviewers = _useState36[1]; // list of interviewers
 
 
   var _useState37 = useState(0),
       _useState38 = _slicedToArray(_useState37, 2),
       total_interviews_possible = _useState38[0],
-      setTotalInterviewsPossible = _useState38[1]; //total number of interviews possible
+      setTotalInterviewsPossible = _useState38[1]; // total number of interviews possible
 
 
   var _useState39 = useState(0),
       _useState40 = _slicedToArray(_useState39, 2),
       total_time_available = _useState40[0],
-      setTotalTimeAvailable = _useState40[1]; //total time available for interviews
+      setTotalTimeAvailable = _useState40[1]; // total time available for interviews
 
 
   var _useState41 = useState(0),
       _useState42 = _slicedToArray(_useState41, 2),
       total_time_required = _useState42[0],
-      setTotalTimeRequired = _useState42[1]; //total time required for interviews
+      setTotalTimeRequired = _useState42[1]; // total time required for interviews
 
 
   var _useContext3 = useContext(MyContext),
       students_object = _useContext3.students_object,
-      steps_object = _useContext3.steps_object; //list of students in selected for interview
+      steps_object = _useContext3.steps_object; // list of students in selected for interview
 
 
   var _steps_object2 = _slicedToArray(steps_object, 2),
-      steps = _steps_object2[0],
       setSteps = _steps_object2[1];
 
   var _useState43 = useState(0),
@@ -638,8 +633,8 @@ var Step3 = function Step3() {
   var _useState57 = useState(false),
       _useState58 = _slicedToArray(_useState57, 2),
       showEmailInterviewers = _useState58[0],
-      setShowEmailInterviewers = _useState58[1]; //only keep students with the added flag set to true
-  //check if interview-duration has previously been set
+      setShowEmailInterviewers = _useState58[1]; // only keep students with the added flag set to true
+  // check if interview-duration has previously been set
 
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -668,7 +663,7 @@ var Step3 = function Step3() {
         }
       }
     }, _callee);
-  })), []); //check if a matching already exists
+  })), []); // check if a matching already exists
 
   useEffect(function () {
     fetch("/admin/interview/".concat(interview_round_id, "/matchings")).then(function (res) {
@@ -684,36 +679,36 @@ var Step3 = function Step3() {
     fetch("/admin/interview/interviewers/all/".concat(interview_round_id)).then(function (raw_response) {
       if (raw_response.ok) {
         raw_response.json().then(function (response) {
-          //filter interviewers to include only those who have declared time
+          // filter interviewers to include only those who have declared time
           var interviewers_with_time = response.interviewers.filter(function (interviewer) {
             return interviewer.time_declared;
           });
           setInterviewers(interviewers_with_time);
           var students = Object.values(students_object[0]).filter(function (student) {
             return student.added;
-          }); //only students that have been selected for the interview round
+          }); // only students that have been selected for the interview round
 
-          var time = 0; //compute the sum of all the time slots of all the interviewers
+          var time = 0; // compute the sum of all the time slots of all the interviewers
 
           interviewers.map(function (interviewer) {
             return interviewer.time_slots.reduce(function (total_time, cur_slot) {
               time += cur_slot.duration;
               return total_time += cur_slot.duration;
             }, 0);
-          }); //compute the total number of students
+          }); // compute the total number of students
 
           var total_students = Object.keys(students).length;
-          setNumberOfStudents(total_students); //compute the total time required for all the interviews
+          setNumberOfStudents(total_students); // compute the total time required for all the interviews
 
-          setTotalTimeRequired(total_students * interviewTime); //time required in minutes
-          //compute the total time available for all the interviews
+          setTotalTimeRequired(total_students * interviewTime); // time required in minutes
+          // compute the total time available for all the interviews
 
-          setTotalTimeAvailable(Duration.fromMillis(time).toFormat("m")); //compute the total number of interviews that can be conducted
+          setTotalTimeAvailable(Duration.fromMillis(time).toFormat('m')); // compute the total number of interviews that can be conducted
 
           if (interviewTime > 0) setTotalInterviewsPossible(Math.floor(total_time_available / interviewTime));
         });
       } else {
-        alert("Error in URL. Wrong Interview Round. Please go to home page.");
+        alert('Error in URL. Wrong Interview Round. Please go to home page.');
       }
     });
   }, [interviewTime]);
@@ -731,9 +726,9 @@ var Step3 = function Step3() {
               _context3.prev = 2;
               _context3.next = 5;
               return fetch("/admin/interview/".concat(interview_round_id, "/set-interview-duration"), {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json"
+                  'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                   interview_duration: interviewTime
@@ -741,25 +736,25 @@ var Step3 = function Step3() {
               });
 
             case 5:
-              //for each interviewer, assign students
-              //need an object of the format {interviewer_id: [student1, student2, student3]}
+              // for each interviewer, assign students
+              // need an object of the format {interviewer_id: [student1, student2, student3]}
               students = Object.values(students_object[0]).filter(function (student) {
                 return student.added;
-              }); //only students that have been selected for the interview round
+              }); // only students that have been selected for the interview round
 
               for (i = 0; i < interviewers.length; i++) {
-                //calculate the number of students per interviewer (different for all)
-                //for each interviewer
-                interviewer = interviewers[i]; //calculate sum of durations for this interviwer
+                // calculate the number of students per interviewer (different for all)
+                // for each interviewer
+                interviewer = interviewers[i]; // calculate sum of durations for this interviwer
 
                 total_time = interviewer.time_slots.reduce(function (total_time, cur_slot) {
                   return total_time += cur_slot.duration;
                 }, 0);
-                interviewer.num_interviews = Math.floor(Duration.fromMillis(total_time).toFormat("mm") / interviewTime);
+                interviewer.num_interviews = Math.floor(Duration.fromMillis(total_time).toFormat('mm') / interviewTime);
                 interviewer.students = [];
               }
 
-              counter = 0; //to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
+              counter = 0; // to ensure equal distribution of interviewees among interviewers, we will assign students to interviewers in a round robin fashion
 
             case 8:
               if (!true) {
@@ -768,7 +763,7 @@ var Step3 = function Step3() {
               }
 
               if (interviewers[counter % interviewers.length].students.length < interviewers[counter % interviewers.length].num_interviews) {
-                //check if the interviewer has space for another interview
+                // check if the interviewer has space for another interview
                 student = students.pop(0);
                 interviewers[counter % interviewers.length].students.push({
                   id: student.id,
@@ -790,7 +785,7 @@ var Step3 = function Step3() {
               break;
 
             case 15:
-              //extract matching in the format {interviewer_email, student_id}
+              // extract matching in the format {interviewer_email, student_id}
               _matching = interviewers.map(function (interviewer) {
                 return interviewer.students.map(function (student) {
                   return {
@@ -800,13 +795,13 @@ var Step3 = function Step3() {
                   };
                 });
               });
-              flattened_matching = _matching.flat(); //now we have the matching. We need to send this to the backend to create the matching
+              flattened_matching = _matching.flat(); // now we have the matching. We need to send this to the backend to create the matching
 
               _context3.next = 19;
               return fetch("/admin/interview/".concat(interview_round_id, "/create-matching"), {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json"
+                  'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                   matching: flattened_matching
@@ -817,19 +812,19 @@ var Step3 = function Step3() {
               res = _context3.sent;
 
               if (res.ok) {
-                alert("Matching Created Successfully");
+                alert('Matching Created Successfully');
                 setLoading(false);
                 setMatching(flattened_matching);
                 setSteps(function (cur) {
                   var copy = cur.slice();
 
                   for (var _i2 = 0; _i2 < copy.length; _i2++) {
-                    if (_i2 == 3) copy[_i2].active = true;else copy[_i2].active = false;
+                    if (_i2 === 3) copy[_i2].active = true;else copy[_i2].active = false;
                   }
 
                   return copy;
-                }); //after creating the matching, we need to create booking slots for each interviewer
-                //for each unique interviewer in the matching, create a booking slot
+                }); // after creating the matching, we need to create booking slots for each interviewer
+                // for each unique interviewer in the matching, create a booking slot
 
                 unique_interviewers = _toConsumableArray(new Set(flattened_matching.map(function (item) {
                   return item.interviewer_email;
@@ -842,9 +837,9 @@ var Step3 = function Step3() {
                           case 0:
                             _context2.next = 2;
                             return fetch("/admin/interview/".concat(interview_round_id, "/create-booking-slots"), {
-                              method: "POST",
+                              method: 'POST',
                               headers: {
-                                "Content-Type": "application/json"
+                                'Content-Type': 'application/json'
                               },
                               body: JSON.stringify({
                                 interviewer_email: interviewer_email
@@ -864,7 +859,7 @@ var Step3 = function Step3() {
                   };
                 }());
               } else {
-                alert("Error in creating Time Slot Assignment, try again");
+                alert('Error in creating Time Slot Assignment, try again');
               }
 
               _context3.next = 28;
@@ -875,7 +870,7 @@ var Step3 = function Step3() {
               _context3.t0 = _context3["catch"](2);
               console.log(_context3.t0);
               setLoading(false);
-              alert("Something went wrong, please try again");
+              alert('Something went wrong, please try again');
 
             case 28:
             case "end":
@@ -890,7 +885,7 @@ var Step3 = function Step3() {
     };
   }();
 
-  return /*#__PURE__*/React.createElement(React.Fragment, null, matching.length === 0 || recreateMatching == true ? /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement(React.Fragment, null, matching.length === 0 || recreateMatching === true ? /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col mt-20 p-4"
   }, /*#__PURE__*/React.createElement("div", null, showModal === true ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
@@ -930,9 +925,7 @@ var Step3 = function Step3() {
     onChange: function onChange(e) {
       e.preventDefault();
       setInterviewTime(e.target.value);
-    } // ref={name_field}
-    ,
-    active: "true"
+    }
   }), /*#__PURE__*/React.createElement("label", null, "minutes"))), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col bg-gray-300 rounded-md p-5 m-5 w-full text-lg"
   }, /*#__PURE__*/React.createElement("div", {
@@ -941,15 +934,15 @@ var Step3 = function Step3() {
     className: "p-2 m-2 flex justify-end items-start"
   }, "Total time required:"), /*#__PURE__*/React.createElement("p", {
     className: "p-2 m-2 flex justify-start items-start"
-  }, " ", total_time_required > 60 ? Math.floor(total_time_required / 60) + " hours " + total_time_required % 60 + " minutes" : total_time_required + " minutes")), /*#__PURE__*/React.createElement("div", {
+  }, ' ', total_time_required > 60 ? Math.floor(total_time_required / 60) + ' hours ' + total_time_required % 60 + ' minutes' : total_time_required + ' minutes')), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2"
   }, /*#__PURE__*/React.createElement("p", {
     className: "p-2 m-2 flex justify-end items-start"
-  }, "Time available:", " "), /*#__PURE__*/React.createElement("div", {
+  }, "Time available:", ' '), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col"
   }, /*#__PURE__*/React.createElement("p", {
     className: "p-2 m-2 flex justify-start items-start"
-  }, total_time_available > 60 ? Math.floor(total_time_available / 60) + " hours " + total_time_available % 60 + " minutes" : total_time_available + " minutes"), total_time_available < total_time_required ? /*#__PURE__*/React.createElement("label", {
+  }, total_time_available > 60 ? Math.floor(total_time_available / 60) + ' hours ' + total_time_available % 60 + ' minutes' : total_time_available + ' minutes'), total_time_available < total_time_required ? /*#__PURE__*/React.createElement("label", {
     className: "text-red-400"
   }, "(Insufficient time)") : null)), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2"
@@ -1031,12 +1024,12 @@ var Step3 = function Step3() {
     },
     sending_link: "/admin/interview/".concat(interview_round_id, "/send-matching-emails-student"),
     default_values: {
-      email_subject: "IEC Interview Invite",
-      email_heading: "IEC Interview Invite",
-      email_body: "Dear Student<br>We hope you are well.<br>You have been assigned an interviewer, please log into your portal to book an appointment.<br>",
-      email_button_pre_text: "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.",
-      email_button_label: "Log In",
-      email_button_url: "https://apply.iec.org.pk/student/login"
+      email_subject: 'IEC Interview Invite',
+      email_heading: 'IEC Interview Invite',
+      email_body: 'Dear Student<br>We hope you are well.<br>You have been assigned an interviewer, please log into your portal to book an appointment.<br>',
+      email_button_pre_text: 'Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to declare your interview time slots, to find your Zoom credentials, and to record the Interview Scores of the students whom you interview.',
+      email_button_label: 'Log In',
+      email_button_url: 'https://apply.iec.org.pk/student/login'
     }
   }), showEmailInterviewers && /*#__PURE__*/React.createElement(EmailForm, {
     users: matching.map(function (match) {
@@ -1047,12 +1040,12 @@ var Step3 = function Step3() {
     },
     sending_link: "/admin/interview/".concat(interview_round_id, "/send-matching-emails-interviewer"),
     default_values: {
-      email_subject: "IEC Interview Invite",
-      email_heading: "IEC Interview Invite",
-      email_body: "Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>",
-      email_button_pre_text: "Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to view your assigned students and to record the Interview Scores of the students whom you interview.",
-      email_button_label: "Log In",
-      email_button_url: "This will be automatically set"
+      email_subject: 'IEC Interview Invite',
+      email_heading: 'IEC Interview Invite',
+      email_body: 'Dear Member,<br>We hope you are well.<br>You have been assigned students to interview. Kindly login to your portal and check your assigned students<br>',
+      email_button_pre_text: 'Click the following button to log into your Interview Portal. <br>You will use the Interview Portal to view your assigned students and to record the Interview Scores of the students whom you interview.',
+      email_button_label: 'Log In',
+      email_button_url: 'This will be automatically set'
     }
   }), /*#__PURE__*/React.createElement("div", {
     className: "flex items-end justify-end mt-10"
@@ -1090,102 +1083,7 @@ var Step3 = function Step3() {
       className: "p-4 mt-4"
     }, match.student_email));
   })))));
-}; // const Step5 = () => {
-//   const [loading, setLoading] = useState(false);
-//   const { matching_object } = useContext(MyContext);
-//   const [matching, setMatching] = matching_object;
-//   const sendEmails = async (e) => {
-//     e.preventDefault();
-//     setLoading(true);
-//     try {
-//       //extract unique id of interviewers fron matching
-//       const interviewer_emails = [
-//         ...new Set(matching.map((match) => match.interviewer_email)),
-//       ];
-//       for (let i = 0; i < interviewer_emails.length; i++) {
-//         const response = await fetch(
-//           `/admin/interview/${interview_round_id}/send-matching-emails`,
-//           {
-//             method: "POST",
-//             headers: {
-//               "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({
-//               interviewer_email: interviewer_emails[i],
-//             }),
-//           }
-//         );
-//         if (response.status == 404) {
-//           window.alert("Some interviewers have not updated calendly links");
-//           setLoading(false);
-//           return;
-//         }
-//         if (response.status == 200) {
-//           window.alert("Emails sent successfully");
-//           setLoading(false);
-//           return;
-//         }
-//       }
-//     } catch (err) {
-//       console.log(err);
-//       window.alert("An error occured, please try again later");
-//     }
-//   };
-//   return (
-//     <div>
-//       <div className="flex flex-row mt-4 p-4 w-full">
-//         <label className="p-2 text-xl">
-//           To send emails to both the interviewers and the students, click the
-//           given button.
-//         </label>
-//         <button
-//           className="ml-20 bg-green-500 p-2 text-white"
-//           onClick={sendEmails}
-//         >
-//           Send Emails
-//         </button>
-//       </div>
-//       <div>
-//         {matching.length > 0 ? (
-//           <div className="flex flex-col gap-y-4 mt-4 p-10">
-//             <h2 className="text-lg font-semibold text-red-400">
-//               You have created a matching. You can view it below.
-//             </h2>
-//             <table className="w-full text-left">
-//               <thead>
-//                 <tr>
-//                   <th className="p-2 border border-black">Index</th>
-//                   <th className="p-2 border border-black">Interviewer Email</th>
-//                   <th className="p-2 border border-black">Student Email</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {matching.map((match, index) => (
-//                   <tr key={index}>
-//                     <td className="p-2 border border-black">{index + 1}</td>
-//                     <td className="p-2 border border-black">
-//                       {match.interviewer_email}
-//                     </td>
-//                     <td className="p-2 border border-black">
-//                       {match.student_email}
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           </div>
-//         ) : (
-//           <div className="flex flex-col gap-y-4 mt-20 p-10">
-//             <h2 className="text-lg font-semibold text-red-400">
-//               You have not created a matching yet.
-//             </h2>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// };
-
+};
 
 var Step5 = function Step5() {
   var _useState59 = useState([]),
@@ -1194,21 +1092,21 @@ var Step5 = function Step5() {
       setStudents = _useState60[1];
 
   function download_table_as_csv(table_id) {
-    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ",";
+    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ',';
     // Select rows from table_id
-    var rows = document.querySelectorAll("table#" + table_id + " tr");
+    var rows = document.querySelectorAll('table#' + table_id + ' tr');
     console.log(rows); // Construct csv
 
     var csv = [];
 
     for (var i = 0; i < rows.length; i++) {
-      if (rows[i].style.display != "none") {
-        var row = [],
-            cols = rows[i].querySelectorAll("td, th");
+      if (rows[i].style.display !== 'none') {
+        var row = [];
+        var cols = rows[i].querySelectorAll('td, th');
 
         for (var j = 0; j < cols.length; j++) {
           // Clean innertext to remove multiple spaces and jumpline (break csv)
-          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " "); // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' '); // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
 
           data = data.replace(/"/g, '""'); // Push escaped string
 
@@ -1219,23 +1117,23 @@ var Step5 = function Step5() {
       }
     }
 
-    if (csv.length == 1) {
-      //the 1 row is the header row
-      alert("Sorry! No rows to export. Change the filters.");
+    if (csv.length === 1) {
+      // the 1 row is the header row
+      alert('Sorry! No rows to export. Change the filters.');
     } else {
-      var csv_string = csv.join("\n"); // Download it
+      var csv_string = csv.join('\n'); // Download it
 
-      var filename = "export_" + table_id + "_" + new Date().toLocaleDateString() + ".csv";
-      var link = document.createElement("a");
-      link.style.display = "none";
-      link.setAttribute("target", "_blank");
-      link.setAttribute("href", "data:text/csv;charset=utf-8," + encodeURIComponent(csv_string));
-      link.setAttribute("download", filename);
+      var filename = 'export_' + table_id + '_' + new Date().toLocaleDateString() + '.csv';
+      var link = document.createElement('a');
+      link.style.display = 'none';
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
-  } //fetch the total scores for all interviewees
+  } // fetch the total scores for all interviewees
 
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
@@ -1251,7 +1149,7 @@ var Step5 = function Step5() {
           case 3:
             response = _context4.sent;
 
-            if (!(response.status == 200)) {
+            if (!(response.status === 200)) {
               _context4.next = 11;
               break;
             }
@@ -1262,7 +1160,7 @@ var Step5 = function Step5() {
           case 7:
             response = _context4.sent;
 
-            if (response.success == "ok") {
+            if (response.success === 'ok') {
               setStudents(response.scores.filter(function (score) {
                 return score;
               }));
@@ -1273,7 +1171,7 @@ var Step5 = function Step5() {
 
           case 11:
             console.log(response);
-            alert("An error occured, please refresh the page");
+            alert('An error occured, please refresh the page');
 
           case 13:
             _context4.next = 19;
@@ -1283,7 +1181,7 @@ var Step5 = function Step5() {
             _context4.prev = 15;
             _context4.t0 = _context4["catch"](0);
             console.log(_context4.t0);
-            alert("An error occured, please refresh the page");
+            alert('An error occured, please refresh the page');
 
           case 19:
           case "end":
@@ -1297,7 +1195,7 @@ var Step5 = function Step5() {
   }, students.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("button", {
     className: "bg-iec-blue text-white p-4 px-10 self-end justify-self-end rounded-md",
     onClick: function onClick() {
-      download_table_as_csv("interview_results");
+      download_table_as_csv('interview_results');
     }
   }, "Download as csv"), /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mt-20",
@@ -1322,7 +1220,7 @@ var Step5 = function Step5() {
       key: student.id
     }, /*#__PURE__*/React.createElement("td", {
       className: "m-2 p-4"
-    }, student.studentFirstName + " " + student.studentLastName), /*#__PURE__*/React.createElement("td", {
+    }, student.studentFirstName + ' ' + student.studentLastName), /*#__PURE__*/React.createElement("td", {
       className: "m-2 p-4"
     }, student.studentEmail), /*#__PURE__*/React.createElement("td", {
       className: "m-2 p-4"
@@ -1330,7 +1228,7 @@ var Step5 = function Step5() {
       className: "m-2 p-4"
     }, student.interviewerName), /*#__PURE__*/React.createElement("td", {
       className: "m-2 p-4"
-    }, student.obtainedScore + " / " + student.totalScore));
+    }, student.obtainedScore + ' / ' + student.totalScore));
   })))) : /*#__PURE__*/React.createElement("div", {
     className: "w-full bg-white flex items-center justify-center text-xl mt-20 rounded-md p-4 "
   }, "No Students have been marked yet"));
@@ -1340,16 +1238,15 @@ var Main = function Main() {
   var _useContext4 = useContext(MyContext),
       steps_object = _useContext4.steps_object;
 
-  var _steps_object3 = _slicedToArray(steps_object, 2),
-      steps = _steps_object3[0],
-      setSteps = _steps_object3[1];
+  var _steps_object3 = _slicedToArray(steps_object, 1),
+      steps = _steps_object3[0];
 
   var _useState61 = useState(false),
       _useState62 = _slicedToArray(_useState61, 2),
       editInterviewRoundTitle = _useState62[0],
       setEditInterviewRoundTitle = _useState62[1];
 
-  var _useState63 = useState(document.getElementById("interview-round-name-field").value),
+  var _useState63 = useState(document.getElementById('interview-round-name-field').value),
       _useState64 = _slicedToArray(_useState63, 2),
       interviewRoundTitle = _useState64[0],
       setInterviewRoundTitle = _useState64[1];
@@ -1362,10 +1259,10 @@ var Main = function Main() {
   var updateInterviewRoundTitle = function updateInterviewRoundTitle(e) {
     e.preventDefault();
     setLoadingName(true);
-    fetch("/admin/interview/update-round-title/".concat(document.getElementById("interview-round-id-field").value), {
-      method: "PATCH",
+    fetch("/admin/interview/update-round-title/".concat(document.getElementById('interview-round-id-field').value), {
+      method: 'PATCH',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         title: interviewRoundTitle
@@ -1378,7 +1275,7 @@ var Main = function Main() {
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went worng. Make sure you have a working internet connection or contact IT. Error code 02.");
+      alert('Something went worng. Make sure you have a working internet connection or contact IT. Error code 02.');
     }).finally(function () {
       setLoadingName(false);
     });
@@ -1402,7 +1299,7 @@ var Main = function Main() {
   }), /*#__PURE__*/React.createElement("input", {
     type: "submit",
     className: "p-2 bg-green-400 text-white cursor-pointer",
-    value: loading_name ? "Saving..." : "Save"
+    value: loading_name ? 'Saving...' : 'Save'
   })) : /*#__PURE__*/React.createElement("h1", {
     className: "text-2xl"
   }, "".concat(interviewRoundTitle, " "), /*#__PURE__*/React.createElement("i", {
@@ -1429,4 +1326,4 @@ var App = function App() {
   return /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(Main, null));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

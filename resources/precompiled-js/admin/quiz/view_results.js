@@ -24,7 +24,7 @@ var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
 var useContext = React.useContext;
-var quiz_id = document.getElementById("quiz-id-field").value;
+var quiz_id = document.getElementById('quiz-id-field').value;
 
 var ContextProvider = function ContextProvider(props) {
   var _useState = useState([]),
@@ -75,7 +75,7 @@ var StudentsList = function StudentsList() {
       show_student_personal_details = _useState8[0],
       setShowStudentPersonalDetails = _useState8[1];
 
-  var _useState9 = useState("all"),
+  var _useState9 = useState('all'),
       _useState10 = _slicedToArray(_useState9, 2),
       assignmentStatusFilter = _useState10[0],
       setAssignmentStatusFilter = _useState10[1];
@@ -127,161 +127,161 @@ var StudentsList = function StudentsList() {
 
   var application_fields = [{
     is_preference_field: false,
-    name: "phone",
-    text: "Phone Number"
+    name: 'phone',
+    text: 'Phone Number'
   }, {
     is_preference_field: false,
-    name: "gender",
-    text: "Gender"
+    name: 'gender',
+    text: 'Gender'
   }, {
     is_preference_field: false,
-    name: "age",
-    text: "Age"
+    name: 'age',
+    text: 'Age'
   }, {
     is_preference_field: false,
-    name: "city",
-    text: "City"
+    name: 'city',
+    text: 'City'
   }, {
     is_preference_field: false,
-    name: "province",
-    text: "Province"
+    name: 'province',
+    text: 'Province'
   }, {
     is_preference_field: false,
-    name: "country",
-    text: "Country"
+    name: 'country',
+    text: 'Country'
   }, {
     is_preference_field: false,
-    name: "address",
-    text: "Home Address"
+    name: 'address',
+    text: 'Home Address'
   }, {
     is_preference_field: false,
-    name: "father_name",
-    text: "Father Name"
+    name: 'father_name',
+    text: 'Father Name'
   }, {
     is_preference_field: false,
-    name: "current_address",
-    text: "Current Address"
+    name: 'current_address',
+    text: 'Current Address'
   }, {
     is_preference_field: false,
-    name: "belongs_to_flood_area",
-    text: "Belongs to flood area"
+    name: 'belongs_to_flood_area',
+    text: 'Belongs to flood area'
   }, {
     is_preference_field: false,
-    name: "can_pay_2000",
-    text: "Can pay 2000"
+    name: 'can_pay_2000',
+    text: 'Can pay 2000'
   }, {
     is_preference_field: false,
-    name: "how_to_enroll",
-    text: "How will you enroll in the course (Standard/FA)"
+    name: 'how_to_enroll',
+    text: 'How will you enroll in the course (Standard/FA)'
   }, {
     is_preference_field: false,
-    name: "education_completed",
-    text: "Education Completed"
+    name: 'education_completed',
+    text: 'Education Completed'
   }, {
     is_preference_field: false,
-    name: "education_completed_major",
-    text: "Education Completed Major"
+    name: 'education_completed_major',
+    text: 'Education Completed Major'
   }, {
     is_preference_field: false,
-    name: "education_ongoing",
-    text: "Ongoing Education"
+    name: 'education_ongoing',
+    text: 'Ongoing Education'
   }, {
     is_preference_field: false,
-    name: "education_ongoing_major",
-    text: "Ongoing Education Major"
+    name: 'education_ongoing_major',
+    text: 'Ongoing Education Major'
   }, {
     is_preference_field: false,
-    name: "has_completed_ba",
+    name: 'has_completed_ba',
     text: "Has completed Bachelor's"
   }, {
     is_preference_field: false,
-    name: "has_completed_diploma",
-    text: "Has completed Diploma"
+    name: 'has_completed_diploma',
+    text: 'Has completed Diploma'
   }, {
     is_preference_field: false,
-    name: "inst_degree_dip",
-    text: "Institute of Degree/Diploma"
+    name: 'inst_degree_dip',
+    text: 'Institute of Degree/Diploma'
   }, {
     is_preference_field: false,
-    name: "monthly_family_income",
-    text: "Monthly Family Income"
+    name: 'monthly_family_income',
+    text: 'Monthly Family Income'
   }, {
     is_preference_field: false,
-    name: "computer_and_internet_access",
-    text: "Computer and Internet Access"
+    name: 'computer_and_internet_access',
+    text: 'Computer and Internet Access'
   }, {
     is_preference_field: false,
-    name: "internet_facility_in_area",
-    text: "Internet Facility in Area"
+    name: 'internet_facility_in_area',
+    text: 'Internet Facility in Area'
   }, {
     is_preference_field: false,
-    name: "time_commitment",
-    text: "30-40 hours commitment"
+    name: 'time_commitment',
+    text: '30-40 hours commitment'
   }, {
     is_preference_field: false,
-    name: "is_employed",
-    text: "Is employed or not"
+    name: 'is_employed',
+    text: 'Is employed or not'
   }, {
     is_preference_field: false,
-    name: "type_of_employment",
-    text: "Type of Employment"
+    name: 'type_of_employment',
+    text: 'Type of Employment'
   }, {
     is_preference_field: false,
-    name: "salary",
-    text: "Salary"
+    name: 'salary',
+    text: 'Salary'
   }, {
     is_preference_field: false,
-    name: "will_leave_job",
-    text: "Will leave job if asked to or not"
+    name: 'will_leave_job',
+    text: 'Will leave job if asked to or not'
   }, {
     is_preference_field: false,
-    name: "has_applied_before",
-    text: "Has applied to IEC before or not"
+    name: 'has_applied_before',
+    text: 'Has applied to IEC before or not'
   }, {
-    name: "firstPreferenceId",
-    text: "First Preference",
+    name: 'firstPreferenceId',
+    text: 'First Preference',
     is_preference_field: true
   }, {
-    name: "secondPreferenceId",
-    text: "Second Preference",
+    name: 'secondPreferenceId',
+    text: 'Second Preference',
     is_preference_field: true
   }, {
-    name: "thirdPreferenceId",
-    text: "Third Preference",
+    name: 'thirdPreferenceId',
+    text: 'Third Preference',
     is_preference_field: true
   }, {
     is_preference_field: false,
-    name: "preference_reason",
-    text: "Preference Reason"
+    name: 'preference_reason',
+    text: 'Preference Reason'
   }, {
     is_preference_field: false,
-    name: "is_comp_sci_grad",
-    text: "Is a Computer Science Graduate"
+    name: 'is_comp_sci_grad',
+    text: 'Is a Computer Science Graduate'
   }, {
     is_preference_field: false,
-    name: "how_heard_about_iec",
-    text: "How did the applicant hear about IEC"
+    name: 'how_heard_about_iec',
+    text: 'How did the applicant hear about IEC'
   }, {
     is_preference_field: false,
-    name: "will_work_full_time",
-    text: "Will the applicant work full time after graduating from IEC"
+    name: 'will_work_full_time',
+    text: 'Will the applicant work full time after graduating from IEC'
   }, {
     is_preference_field: false,
-    name: "acknowledge_online",
-    text: "Acknowledge that Program is online"
+    name: 'acknowledge_online',
+    text: 'Acknowledge that Program is online'
   }, {
-    name: "rejection_email_sent",
-    text: "Was the Applicant auto-rejected"
+    name: 'rejection_email_sent',
+    text: 'Was the Applicant auto-rejected'
   }, {
     is_preference_field: false,
-    name: "assessment_email_sent",
-    text: "Was the Applicant emailed the Assessment"
+    name: 'assessment_email_sent',
+    text: 'Was the Applicant emailed the Assessment'
   }];
   useEffect(function () {
     setFilters([{
-      title: "Gender",
-      name: "gender",
-      filter_type: "fixed_values",
+      title: 'Gender',
+      name: 'gender',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: genders.map(function (val) {
         return {
@@ -291,9 +291,9 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "Age Group",
-      name: "age_group",
-      filter_type: "fixed_values",
+      title: 'Age Group',
+      name: 'age_group',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: age_groups.map(function (val) {
         return {
@@ -303,9 +303,9 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "City of Residence",
-      name: "city",
-      filter_type: "fixed_values",
+      title: 'City of Residence',
+      name: 'city',
+      filter_type: 'fixed_values',
       possible_values: cities.map(function (val) {
         return {
           value: val,
@@ -315,9 +315,9 @@ var StudentsList = function StudentsList() {
       discrepancy_between_value_and_text: false,
       expand_possible_values: false
     }, {
-      title: "Province of Residence",
-      name: "province",
-      filter_type: "fixed_values",
+      title: 'Province of Residence',
+      name: 'province',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: provinces.map(function (val) {
         return {
@@ -327,9 +327,9 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "Country of Residence",
-      name: "country",
-      filter_type: "fixed_values",
+      title: 'Country of Residence',
+      name: 'country',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: cities.map(function (val) {
         return {
@@ -339,82 +339,82 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "From flood affected areas",
-      name: "belongs_to_flood_area",
-      filter_type: "fixed_values",
+      title: 'From flood affected areas',
+      name: 'belongs_to_flood_area',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }],
       expand_possible_values: false
     }, {
-      title: "Can pay 2000",
-      name: "can_pay_2000",
-      filter_type: "fixed_values",
+      title: 'Can pay 2000',
+      name: 'can_pay_2000',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }],
       expand_possible_values: false
     }, {
-      title: "How will you enroll (Standard/FA)?",
-      name: "how_to_enroll",
-      filter_type: "fixed_values",
+      title: 'How will you enroll (Standard/FA)?',
+      name: 'how_to_enroll',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Standard",
+        text: 'Standard',
         value: 1,
         checked: false
       }, {
-        text: "Financial Aid",
+        text: 'Financial Aid',
         value: 0,
         checked: false
       }],
       expand_possible_values: false
     }, {
       title: "Have you completed a bachelor's degree?",
-      name: "has_completed_ba",
-      filter_type: "fixed_values",
+      name: 'has_completed_ba',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Have you completed a Diploma?",
-      name: "has_completed_diploma",
-      filter_type: "fixed_values",
+      title: 'Have you completed a Diploma?',
+      name: 'has_completed_diploma',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Education Completed",
-      name: "education_completed",
-      filter_type: "fixed_values",
+      title: 'Education Completed',
+      name: 'education_completed',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: education_levels.map(function (val) {
         return {
@@ -424,9 +424,9 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "Degree choice influence",
-      name: "education_completed",
-      filter_type: "fixed_values",
+      title: 'Degree choice influence',
+      name: 'education_completed',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: education_levels.map(function (val) {
         return {
@@ -436,83 +436,83 @@ var StudentsList = function StudentsList() {
       }),
       expand_possible_values: false
     }, {
-      title: "Minimum Monthly Family Income",
-      name: "monthly_family_income",
-      filter_type: "integer_value",
+      title: 'Minimum Monthly Family Income',
+      name: 'monthly_family_income',
+      filter_type: 'integer_value',
       min: 0,
       max: 200000,
       increment: 5000,
       value: 0,
-      unit: "PKR"
+      unit: 'PKR'
     }, {
-      title: "Minimum Current salary",
-      name: "salary",
-      filter_type: "integer_value",
+      title: 'Minimum Current salary',
+      name: 'salary',
+      filter_type: 'integer_value',
       min: 0,
       max: 200000,
       increment: 5000,
       value: 0,
-      unit: "PKR"
+      unit: 'PKR'
     }, {
-      title: "Do you have computer and internet access?",
-      name: "computer_and_internet_access",
-      filter_type: "fixed_values",
+      title: 'Do you have computer and internet access?',
+      name: 'computer_and_internet_access',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Is there reliable internet facility in your area?",
-      name: "internet_facility_in_area",
-      filter_type: "fixed_values",
+      title: 'Is there reliable internet facility in your area?',
+      name: 'internet_facility_in_area',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Can you spend 30 to 40 hours a week on the program?",
-      name: "time_commitment",
-      filter_type: "fixed_values",
+      title: 'Can you spend 30 to 40 hours a week on the program?',
+      name: 'time_commitment',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Are you currently employed?",
-      name: "is_employed",
-      filter_type: "fixed_values",
+      title: 'Are you currently employed?',
+      name: 'is_employed',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Employment type",
-      name: "type_of_employment",
-      filter_type: "fixed_values",
+      title: 'Employment type',
+      name: 'type_of_employment',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: type_of_employment.map(function (val) {
         return {
@@ -521,86 +521,86 @@ var StudentsList = function StudentsList() {
         };
       })
     }, {
-      title: "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-      name: "will_leave_job",
-      filter_type: "fixed_values",
+      title: 'Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?',
+      name: 'will_leave_job',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Have you applied to IEC before?",
-      name: "has_applied_before",
-      filter_type: "fixed_values",
+      title: 'Have you applied to IEC before?',
+      name: 'has_applied_before',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Are you a graduate in computer science or any related field?",
-      name: "is_comp_sci_grad",
-      filter_type: "fixed_values",
+      title: 'Are you a graduate in computer science or any related field?',
+      name: 'is_comp_sci_grad',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
-      name: "will_work_full_time",
-      filter_type: "fixed_values",
+      title: 'After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?',
+      name: 'will_work_full_time',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "The program is entirely online. Do you acknowledge that?",
-      name: "acknowledge_online",
-      filter_type: "fixed_values",
+      title: 'The program is entirely online. Do you acknowledge that?',
+      name: 'acknowledge_online',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Applicant automatically rejected and rejection email sent",
-      name: "rejection_email_sent",
-      filter_type: "fixed_values",
+      title: 'Applicant automatically rejected and rejection email sent',
+      name: 'rejection_email_sent',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
@@ -620,14 +620,14 @@ var StudentsList = function StudentsList() {
           setLoading(false);
         }).catch(function (err) {
           console.log(err);
-          alert("Server returned invalid results. Contact IT Team.");
+          alert('Server returned invalid results. Contact IT Team.');
         });
       } else {
-        console.log("Server returned not ok status. Contact IT Team.");
+        console.log('Server returned not ok status. Contact IT Team.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went wrong. Contact IT Team.");
+      alert('Something went wrong. Contact IT Team.');
     });
   }, [reload_results]);
   useEffect(function () {
@@ -647,21 +647,21 @@ var StudentsList = function StudentsList() {
 
   useEffect(function () {
     setFilteredStudents(students.filter(function (student) {
-      var show_this_application = student.percentage_total < min_score ? false : assignmentStatusFilter == "all" ? true : assignmentStatusFilter == "completed-only" && student.completed ? true : assignmentStatusFilter == "not-completed-only" && !student.completed ? true : assignmentStatusFilter == "started-only" && (student.started || student.completed) ? true : assignmentStatusFilter == "started-not-completed-only" && student.started && !student.completed ? true : assignmentStatusFilter == "not-started-only" && !student.started ? true : false;
+      var show_this_application = student.percentage_total < min_score ? false : assignmentStatusFilter === 'all' ? true : assignmentStatusFilter === 'completed-only' && student.completed ? true : assignmentStatusFilter === 'not-completed-only' && !student.completed ? true : assignmentStatusFilter === 'started-only' && (student.started || student.completed) ? true : assignmentStatusFilter === 'started-not-completed-only' && student.started && !student.completed ? true : assignmentStatusFilter === 'not-started-only' && !student.started;
       if (!show_this_application) return false;
 
       var _loop = function _loop(i) {
         var filter = filters[i];
 
-        if (filter.filter_type == "integer_value" && student[filter.name] < filter.value) {
+        if (filter.filter_type === 'integer_value' && student[filter.name] < filter.value) {
           show_this_application = false;
           return "break";
-        } else if (filter.filter_type == "fixed_values" && filter.possible_values.length > 0 && filter.possible_values.reduce(function (prev, cur) {
+        } else if (filter.filter_type === 'fixed_values' && filter.possible_values.length > 0 && filter.possible_values.reduce(function (prev, cur) {
           if (prev) return prev;
           if (cur.checked) return true;else return false;
         }, false) && filter.possible_values.reduce(function (prev, cur) {
-          if (prev) return prev;else if (cur.checked && cur.value == student[filter.name]) return true;else return false;
-        }, false) == false) {
+          if (prev) return prev;else if (cur.checked && cur.value === student[filter.name]) return true;else return false;
+        }, false) === false) {
           show_this_application = false;
           return "break";
         }
@@ -679,21 +679,21 @@ var StudentsList = function StudentsList() {
   }, [filters, assignmentStatusFilter, min_score]);
 
   function download_table_as_csv(table_id) {
-    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ",";
+    var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ',';
     // Select rows from table_id
-    var rows = document.querySelectorAll("table#" + table_id + " tr");
+    var rows = document.querySelectorAll('table#' + table_id + ' tr');
     console.log(rows); // Construct csv
 
     var csv = [];
 
     for (var i = 0; i < rows.length; i++) {
-      if (rows[i].style.display != "none") {
-        var row = [],
-            cols = rows[i].querySelectorAll("td, th");
+      if (rows[i].style.display !== 'none') {
+        var row = [];
+        var cols = rows[i].querySelectorAll('td, th');
 
         for (var j = 0; j < cols.length; j++) {
           // Clean innertext to remove multiple spaces and jumpline (break csv)
-          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, "").replace(/(\s\s)/gm, " "); // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
+          var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '').replace(/(\s\s)/gm, ' '); // Escape double-quote with double-double-quote (see https://stackoverflow.com/questions/17808511/properly-escape-a-double-quote-in-csv)
 
           data = data.replace(/"/g, '""'); // Push escaped string
 
@@ -704,18 +704,18 @@ var StudentsList = function StudentsList() {
       }
     }
 
-    if (csv.length == 1) {
-      //the 1 row is the header row
-      alert("Sorry! No rows to export. Change the filters.");
+    if (csv.length === 1) {
+      // the 1 row is the header row
+      alert('Sorry! No rows to export. Change the filters.');
     } else {
-      var csv_string = csv.join("\n"); // Download it
+      var csv_string = csv.join('\n'); // Download it
 
-      var filename = "export_" + table_id + "_" + new Date().toLocaleDateString() + ".csv";
-      var link = document.createElement("a");
-      link.style.display = "none";
-      link.setAttribute("target", "_blank");
-      link.setAttribute("href", "data:text/csv;charset=utf-8," + encodeURIComponent(csv_string));
-      link.setAttribute("download", filename);
+      var filename = 'export_' + table_id + '_' + new Date().toLocaleDateString() + '.csv';
+      var link = document.createElement('a');
+      link.style.display = 'none';
+      link.setAttribute('target', '_blank');
+      link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+      link.setAttribute('download', filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -723,37 +723,37 @@ var StudentsList = function StudentsList() {
   }
 
   function resetStudentAssignment(e) {
-    var x = prompt("Are you sure? Enter \"yes\" or \"no\".");
+    var x = prompt('Are you sure? Enter "yes" or "no".');
 
-    if (x == "yes") {
+    if (x === 'yes') {
       fetch("/reset-assignment/student/".concat(e.target.dataset.student_id, "/quiz/").concat(quiz_id)).then(function (res) {
         if (res.ok) {
-          alert("Successfully reset assignment. Reloading page now.");
+          alert('Successfully reset assignment. Reloading page now.');
           setReloadResults(function (cur) {
             return !cur;
           });
         } else {
-          alert("Error. Could not reset assignment. Reloading page now.");
+          alert('Error. Could not reset assignment. Reloading page now.');
         }
       });
     }
   }
 
   function resetOneSection(student_id, quiz_id) {
-    var prompt_text = "Which of the following sections do you want to delete?\n";
+    var prompt_text = 'Which of the following sections do you want to delete?\n';
     prompt_text += sections.reduce(function (final, cur, index) {
       return "".concat(final, "Press ").concat(index, " to delete \"").concat(cur.section_title, "\"\n");
-    }, "");
+    }, '');
     var choice = prompt(prompt_text);
     fetch("/quiz/reset-section-attempt/".concat(student_id, "/").concat(sections[choice].section_id)).then(function (res) {
       if (res.ok) {
-        alert("Section reset");
+        alert('Section reset');
         setReloadResults(function (cur) {
           return !cur;
         });
-      } else alert("Error. Could not reset section. Reloading page now.");
+      } else alert('Error. Could not reset section. Reloading page now.');
     }).catch(function (err) {
-      alert("Error. Could not reset section.");
+      alert('Error. Could not reset section.');
       console.log(err);
     });
   }
@@ -770,8 +770,9 @@ var StudentsList = function StudentsList() {
   }), " Hide Filters") : /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("i", {
     className: "far fa-eye"
   }), " Show Application Data Filters")), show_filters ? filters.map(function (filter, index) {
-    return filter.filter_type == "integer_value" ? /*#__PURE__*/React.createElement("div", {
-      className: "w-full grid grid-cols-10 align-middle mb-2"
+    return filter.filter_type === 'integer_value' ? /*#__PURE__*/React.createElement("div", {
+      className: "w-full grid grid-cols-10 align-middle mb-2",
+      key: index
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-2"
     }, filter.title, ":"), /*#__PURE__*/React.createElement("input", {
@@ -785,13 +786,13 @@ var StudentsList = function StudentsList() {
       onChange: function onChange(e) {
         setFilters(function (cur) {
           var copy = cur.slice();
-          copy[e.target.dataset.index]["value"] = e.target.value;
+          copy[e.target.dataset.index].value = e.target.value;
           return copy;
         });
       }
     }), /*#__PURE__*/React.createElement("label", {
       className: "pl-2 col-span-1"
-    }, filter.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"), " ", filter.unit)) : filter.filter_type == "fixed_values" && filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
+    }, filter.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,'), ' ', filter.unit)) : filter.filter_type === 'fixed_values' && filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-4"
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-1"
@@ -803,14 +804,16 @@ var StudentsList = function StudentsList() {
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, true);
       }
-    }, "Check All"), " ", /*#__PURE__*/React.createElement("a", {
+    }, "Check All"), ' ', /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer",
       "data-filter_index": index,
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, false);
       }
     }, "Uncheck All"), filter.possible_values.map(function (possible_value_obj, i2) {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i2
+      }, /*#__PURE__*/React.createElement("input", {
         type: "checkbox",
         name: filter.name,
         "data-filter_index": index,
@@ -820,7 +823,7 @@ var StudentsList = function StudentsList() {
         onChange: function onChange(e) {
           setFilters(function (cur) {
             var copy = cur.slice();
-            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"] = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"];
+            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked;
             return copy;
           });
         }
@@ -836,7 +839,7 @@ var StudentsList = function StudentsList() {
           return copy;
         });
       }
-    }, "Click here to show all possible value filters"))) : filter.filter_type == "fixed_values" && !filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
+    }, "Click here to show all possible value filters"))) : filter.filter_type === 'fixed_values' && !filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-4"
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-1"
@@ -861,14 +864,16 @@ var StudentsList = function StudentsList() {
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, true);
       }
-    }, "Check All"), /*#__PURE__*/React.createElement("a", {
+    }, 'Check All'), /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer",
       "data-filter_index": index,
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, false);
       }
-    }, "Uncheck All")), filter.possible_values.map(function (possible_value_obj, i2) {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+    }, 'Uncheck All')), filter.possible_values.map(function (possible_value_obj, i2) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i2
+      }, /*#__PURE__*/React.createElement("input", {
         type: "checkbox",
         name: filter.name,
         "data-filter_index": index,
@@ -878,7 +883,7 @@ var StudentsList = function StudentsList() {
         onChange: function onChange(e) {
           setFilters(function (cur) {
             var copy = cur.slice();
-            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"] = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"];
+            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked;
             return copy;
           });
         }
@@ -919,7 +924,7 @@ var StudentsList = function StudentsList() {
     className: "bg-gray-100 px-4 py-2"
   })), loading ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin text-3xl"
-  }) : filtered_students.length == 0 ? /*#__PURE__*/React.createElement("p", null, "No students to show.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+  }) : filtered_students.length === 0 ? /*#__PURE__*/React.createElement("p", null, "No students to show.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "mb-2 text-md grid gap-y-2 grid-cols-2 md:grid-cols-8 w-full justify-between justify-items-center items-center text-xs"
   }, /*#__PURE__*/React.createElement("div", {
     className: "col-span-2 justify-self-center"
@@ -929,7 +934,7 @@ var StudentsList = function StudentsList() {
     onChange: function onChange(e) {
       setShowStudentPersonalDetails(e.target.checked);
     }
-  }), " ", /*#__PURE__*/React.createElement("label", null, "Show Student's Personal Details (email, cnic, gender)")), /*#__PURE__*/React.createElement("div", {
+  }), ' ', /*#__PURE__*/React.createElement("label", null, "Show Student's Personal Details (email, cnic, gender)")), /*#__PURE__*/React.createElement("div", {
     className: "col-span-2 justify-self-center"
   }, /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
@@ -937,9 +942,9 @@ var StudentsList = function StudentsList() {
     onChange: function onChange(e) {
       setShowSectionDetails(e.target.checked);
     }
-  }), " ", /*#__PURE__*/React.createElement("label", null, "Show each section's details (time of submission, exact marks, duration)")), /*#__PURE__*/React.createElement("div", {
+  }), ' ', /*#__PURE__*/React.createElement("label", null, "Show each section's details (time of submission, exact marks, duration)")), /*#__PURE__*/React.createElement("div", {
     className: "col-span-2 justify-self-center"
-  }, /*#__PURE__*/React.createElement("label", null, "How many rows to display in table below:"), " ", /*#__PURE__*/React.createElement("input", {
+  }, /*#__PURE__*/React.createElement("label", null, "How many rows to display in table below:"), ' ', /*#__PURE__*/React.createElement("input", {
     type: "number",
     value: num_rows_shown,
     onChange: function onChange(e) {
@@ -954,27 +959,28 @@ var StudentsList = function StudentsList() {
   }, "Show All")), /*#__PURE__*/React.createElement("a", {
     href: "/quiz/".concat(quiz_id, "/analysis"),
     className: "self-end text-blue-600 mb-2 mr-4 col-span-1",
-    target: "_blank"
+    target: "_blank",
+    rel: "noreferrer"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-chart-bar"
-  }), " ", /*#__PURE__*/React.createElement("span", {
+  }), ' ', /*#__PURE__*/React.createElement("span", {
     className: "underline hover:no-underline"
   }, "View Analysis")), /*#__PURE__*/React.createElement("a", {
     href: "#",
     onClick: function onClick() {
       setShowStudentPersonalDetails(true);
       setTimeout(function () {
-        download_table_as_csv("results_table");
+        download_table_as_csv('results_table');
       }, 500);
     },
     className: "self-end text-blue-600 mb-2 mr-4 col-span-1"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-download"
-  }), " ", /*#__PURE__*/React.createElement("span", {
+  }), ' ', /*#__PURE__*/React.createElement("span", {
     className: "underline hover:no-underline"
   }, "Download as CSV"))), /*#__PURE__*/React.createElement("div", {
     className: "w-full flex justify-between text-xs"
-  }, /*#__PURE__*/React.createElement("p", null, "Number of Students in Filtered Results:", " ", /*#__PURE__*/React.createElement("b", null, filtered_students.length)), /*#__PURE__*/React.createElement("p", null, "Percentage of Students in Filtered Results:", " ", /*#__PURE__*/React.createElement("b", null, roundToTwoDecimalPlaces(filtered_students.length / students.length * 100), "%")), /*#__PURE__*/React.createElement("p", null, "Number of rows being displayed: ", /*#__PURE__*/React.createElement("b", null, num_rows_shown))), /*#__PURE__*/React.createElement("table", {
+  }, /*#__PURE__*/React.createElement("p", null, "Number of Students in Filtered Results:", ' ', /*#__PURE__*/React.createElement("b", null, filtered_students.length)), /*#__PURE__*/React.createElement("p", null, "Percentage of Students in Filtered Results:", ' ', /*#__PURE__*/React.createElement("b", null, roundToTwoDecimalPlaces(filtered_students.length / students.length * 100), "%")), /*#__PURE__*/React.createElement("p", null, "Number of rows being displayed: ", /*#__PURE__*/React.createElement("b", null, num_rows_shown))), /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left mx-auto mt-2 overflow-auto",
     id: "results_table"
   }, /*#__PURE__*/React.createElement("thead", {
@@ -986,26 +992,33 @@ var StudentsList = function StudentsList() {
   }, "Student Name"), /*#__PURE__*/React.createElement("th", {
     className: "py-3 px-6"
   }, "Student Email"), show_student_personal_details ? [/*#__PURE__*/React.createElement("th", {
-    className: "py-3 px-6"
-  }, "Student CNIC")].concat(_toConsumableArray(application_fields.map(function (field) {
+    className: "py-3 px-6",
+    key: 'a'
+  }, "Student CNIC")].concat(_toConsumableArray(application_fields.map(function (field, index) {
     return /*#__PURE__*/React.createElement("th", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: index
     }, field.text);
   }))) : [], sections.map(function (section) {
     return show_section_details ? [/*#__PURE__*/React.createElement("th", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "a")
     }, "Percentage Marks in ", section.section_title), /*#__PURE__*/React.createElement("th", {
       className: "py-3 px-6",
-      key: section.id
+      key: "".concat(section.id, "b")
     }, section.section_title, " Student Score", /*#__PURE__*/React.createElement("br", null), "(out of ", section.maximum_score, ")"), /*#__PURE__*/React.createElement("th", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "c")
     }, section.section_title, " Time Taken", /*#__PURE__*/React.createElement("br", null), section.maximum_time), /*#__PURE__*/React.createElement("th", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "d")
     }, section.section_title, " Submission Time (KHI)")] : [/*#__PURE__*/React.createElement("th", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "e")
     }, "Percentage Marks in ", section.section_title)];
   }), show_section_details ? [/*#__PURE__*/React.createElement("th", {
-    className: "py-3 px-6"
+    className: "py-3 px-6",
+    key: "".concat(section.id, "f")
   }, "Student Total Score (out of ", quiz_total_score, ")")] : [], /*#__PURE__*/React.createElement("th", {
     className: "py-3 px-6"
   }, "Percentage Total Score"), /*#__PURE__*/React.createElement("th", null, "Action"))), /*#__PURE__*/React.createElement("tbody", {
@@ -1013,41 +1026,53 @@ var StudentsList = function StudentsList() {
   }, filtered_students.slice(0, num_rows_shown).map(function (student) {
     return /*#__PURE__*/React.createElement("tr", {
       key: student.id,
-      className: student.completed ? "bg-green-100" : ""
+      className: student.completed ? 'bg-green-100' : ''
     }, /*#__PURE__*/React.createElement("td", {
       className: "py-3 px-6"
     }, student.student_name), /*#__PURE__*/React.createElement("td", {
       className: "py-3 px-6"
     }, student.student_email), show_student_personal_details ? [/*#__PURE__*/React.createElement("td", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "g")
     }, student.student_cnic)].concat(_toConsumableArray(application_fields.map(function (field) {
-      return student.hasOwnProperty(field.name) ? student[field.name] === true ? /*#__PURE__*/React.createElement("td", null, "Yes") : student[field.name] === false ? /*#__PURE__*/React.createElement("td", null, "No") : /*#__PURE__*/React.createElement("td", {
+      return Object.prototype.hasOwnProperty.call(student, field.name) ? student[field.name] === true ? /*#__PURE__*/React.createElement("td", null, "Yes") : student[field.name] === false ? /*#__PURE__*/React.createElement("td", null, "No") : /*#__PURE__*/React.createElement("td", {
         className: "py-3 px-6"
-      }, field.is_preference_field ? courses[student[field.name]] : student[field.name]) : /*#__PURE__*/React.createElement("td", null, "N/A");
+      }, field.is_preference_field ? courses[student[field.name]] : student[field.name]) : /*#__PURE__*/React.createElement("td", {
+        key: "".concat(section.id, "h")
+      }, "N/A");
     }))) : [], student.sections.map(function (section) {
-      return show_section_details ? section.status == "Attempted" ? [/*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+      return show_section_details ? section.status === 'Attempted' ? [/*#__PURE__*/React.createElement("td", {
+        className: "py-3 px-6",
+        key: "".concat(section.id, "i")
       }, section.percentage_score), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "j")
       }, section.section_score), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "k")
       }, section.duration), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "l")
       }, section.end_time)] : [/*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "m")
       }, "Not Attempted"), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "n")
       }, "Not Attempted"), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6"
+        className: "py-3 px-6",
+        key: "".concat(section.id, "n")
       }, "N/A"), /*#__PURE__*/React.createElement("td", {
-        className: "py-3 px-6 endtime"
-      }, "0")] : section.status == "Attempted" ? /*#__PURE__*/React.createElement("td", {
+        className: "py-3 px-6 endtime",
+        key: "".concat(section.id, "o")
+      }, "0")] : section.status === 'Attempted' ? /*#__PURE__*/React.createElement("td", {
         className: "py-3 px-6"
       }, section.percentage_score) : /*#__PURE__*/React.createElement("td", {
         className: "py-3 px-6"
       }, "Not Attempted");
     }), show_section_details ? [/*#__PURE__*/React.createElement("td", {
-      className: "py-3 px-6"
+      className: "py-3 px-6",
+      key: "".concat(section.id, "p")
     }, student.total_score)] : [], /*#__PURE__*/React.createElement("td", {
       className: "py-3 px-6"
     }, student.percentage_total), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
@@ -1055,7 +1080,7 @@ var StudentsList = function StudentsList() {
       "data-student_id": student.student_id,
       onClick: resetStudentAssignment,
       target: "_blank"
-    }, "Reset Assignment"), " | ", /*#__PURE__*/React.createElement("a", {
+    }, "Reset Assignment"), ' | ', /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer",
       "data-student_id": student.student_id,
       "data-quiz_id": quiz_id,
@@ -1069,7 +1094,7 @@ var StudentsList = function StudentsList() {
     onClick: function onClick() {
       setNumRowsShown(num_rows_shown * 10 > filtered_students.length ? filtered_students.length : num_rows_shown * 10);
     }
-  }, "Show", " ", num_rows_shown * 10 > filtered_students.length ? "all" : num_rows_shown * 10, " ", "rows")));
+  }, "Show", ' ', num_rows_shown * 10 > filtered_students.length ? 'all' : num_rows_shown * 10, ' ', "rows")));
 };
 
 var Main = function Main() {
@@ -1082,4 +1107,4 @@ var App = function App() {
   return /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(Main, null));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

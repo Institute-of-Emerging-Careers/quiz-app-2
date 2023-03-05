@@ -12,12 +12,8 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
-var useContext = React.useContext;
-var useRef = React.useRef;
-var useMemo = React.useMemo;
 
 var App = function App() {
   var _useState = useState([]),
@@ -41,16 +37,16 @@ var App = function App() {
       setReload = _useState8[1];
 
   useEffect(function () {
-    fetch("/admin/interview/all").then(function (raw_response) {
+    fetch('/admin/interview/all').then(function (raw_response) {
       raw_response.json().then(function (response) {
-        if (response.success) setInterviewRounds(response.interview_rounds);else alert("Something went wrong while getting interview rounds. Error code 01.");
-      }).catch(function (err) {
-        alert("Error while understanding the server's response. Error code 02.");
+        if (response.success) setInterviewRounds(response.interview_rounds);else alert('Something went wrong while getting interview rounds. Error code 01.');
+      }).catch(function () {
+        return alert("Error while understanding the server's response. Error code 02.");
       });
-    }).catch(function (err) {
-      alert("Please check your internet connection and try again. Error code 03.");
+    }).catch(function () {
+      alert('Please check your internet connection and try again. Error code 03.');
     });
-    fetch("/quiz/all-titles-and-num-attempts").then(function (response) {
+    fetch('/quiz/all-titles-and-num-attempts').then(function (response) {
       response.json().then(function (parsed_response) {
         setAllAssessments(parsed_response);
       });
@@ -65,16 +61,16 @@ var App = function App() {
     fetch("/admin/interview/round/delete/".concat(interview_round_id)).then(function (res) {
       if (res.ok) setReload(function (cur) {
         return !cur;
-      });else alert("Error on server while deleting interview round.");
+      });else alert('Error on server while deleting interview round.');
     }).catch(function (err) {
       console.log(err);
-      alert("Error deleting interview round. Check your internet connection.");
+      alert('Error deleting interview round. Check your internet connection.');
     });
   };
 
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     id: "modal",
-    className: show_modal ? "h-screen w-screen inset-0 absolute z-30 bg-black/60" : "hidden"
+    className: show_modal ? 'h-screen w-screen inset-0 absolute z-30 bg-black/60' : 'hidden'
   }, /*#__PURE__*/React.createElement("div", {
     className: "mt-10 w-1/2 bg-white translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {
@@ -102,7 +98,7 @@ var App = function App() {
       className: "p-2",
       value: assessment.id,
       key: assessment.id
-    }, assessment.title, " | ", assessment.num_assignments, " Assignments", " ");
+    }, assessment.title, " | ", assessment.num_assignments, " Assignments", ' ');
   }))))), /*#__PURE__*/React.createElement("h2", {
     className: "text-xl mt-6 mb-4 font-bold"
   }, "Interview Rounds", /*#__PURE__*/React.createElement("button", {
@@ -148,4 +144,4 @@ var App = function App() {
   })));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

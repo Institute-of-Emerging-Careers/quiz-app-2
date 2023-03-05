@@ -16,7 +16,6 @@ var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
 var useContext = React.useContext;
-var useRef = React.useRef;
 
 var ContextProvider = function ContextProvider(props) {
   var _useState = useState([]),
@@ -27,7 +26,7 @@ var ContextProvider = function ContextProvider(props) {
   var _useState3 = useState(-1),
       _useState4 = _slicedToArray(_useState3, 2),
       show_modal = _useState4[0],
-      setShowModal = _useState4[1]; //value is set to the array index of the application whose details are to be shown by the modal
+      setShowModal = _useState4[1]; // value is set to the array index of the application whose details are to be shown by the modal
 
 
   return /*#__PURE__*/React.createElement(MyContext.Provider, {
@@ -40,21 +39,15 @@ var ContextProvider = function ContextProvider(props) {
 
 var App = function App() {
   var _useContext = useContext(MyContext),
-      applications_object = _useContext.applications_object,
-      modal_object = _useContext.modal_object;
+      applications_object = _useContext.applications_object;
 
   var _applications_object = _slicedToArray(applications_object, 2),
-      applications = _applications_object[0],
       setApplications = _applications_object[1];
 
   var _useState5 = useState([]),
       _useState6 = _slicedToArray(_useState5, 2),
       application_rounds = _useState6[0],
       setApplicationRounds = _useState6[1];
-
-  var _modal_object = _slicedToArray(modal_object, 2),
-      show_modal = _modal_object[0],
-      setShowModal = _modal_object[1];
 
   var _useState7 = useState([]),
       _useState8 = _slicedToArray(_useState7, 2),
@@ -72,9 +65,9 @@ var App = function App() {
       setLoading = _useState12[1];
 
   useEffect(function () {
-    fetch("/admin/application/rounds/all").then(function (raw_response) {
+    fetch('/admin/application/rounds/all').then(function (raw_response) {
       if (!raw_response.ok) {
-        alert("Something went wrong while getting application rounds. Error code 01.");
+        alert('Something went wrong while getting application rounds. Error code 01.');
       } else {
         raw_response.json().then(function (response) {
           setApplicationRounds(response.application_rounds);
@@ -84,14 +77,14 @@ var App = function App() {
         });
       }
     }).catch(function (err) {
-      alert("Please check your internet connection and try again. Error code 03.");
+      alert('Please check your internet connection and try again. Error code 03.');
       console.log(err);
     });
   }, []);
   useEffect(function () {
-    fetch("/quiz/all-assignees/".concat(document.getElementById("quiz-id-field").value)).then(function (raw_response) {
+    fetch("/quiz/all-assignees/".concat(document.getElementById('quiz-id-field').value)).then(function (raw_response) {
       if (!raw_response.ok) {
-        alert("Something went wrong while getting current list of students to whom this quiz is assigned. Error code 01.");
+        alert('Something went wrong while getting current list of students to whom this quiz is assigned. Error code 01.');
       } else {
         raw_response.json().then(function (response) {
           setAssignedStudents(response);
@@ -101,7 +94,7 @@ var App = function App() {
         });
       }
     }).catch(function (err) {
-      alert("Please check your internet connection and try again. Error code 03.");
+      alert('Please check your internet connection and try again. Error code 03.');
       console.log(err);
     });
   }, [load_again]);
@@ -109,18 +102,18 @@ var App = function App() {
   var displayApplicationRoundStudents = function displayApplicationRoundStudents(e) {
     setLoading(true);
     var application_round_id = e.target.value;
-    console.log("hi");
-    fetch("/admin/application/all-applicants-and-quiz-assignments?application_round_id=".concat(application_round_id, "&quiz_id=").concat(document.getElementById("quiz-id-field").value)).then(function (raw_response) {
+    console.log('hi');
+    fetch("/admin/application/all-applicants-and-quiz-assignments?application_round_id=".concat(application_round_id, "&quiz_id=").concat(document.getElementById('quiz-id-field').value)).then(function (raw_response) {
       if (raw_response.ok) {
         raw_response.json().then(function (response) {
           setApplications(response.applications);
         });
       } else {
-        alert("Something went wrong. Code 01.");
+        alert('Something went wrong. Code 01.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Something went wrong. Code 02.");
+      alert('Something went wrong. Code 02.');
     }).finally(function () {
       setLoading(false);
     });
@@ -131,22 +124,22 @@ var App = function App() {
   }, /*#__PURE__*/React.createElement(StudentsList, {
     students: assigned_students,
     title: "List of Students to whom this Quiz is currently Assigned",
-    fields: [, {
-      title: "Name",
-      name: ["Student.firstName", "Student.lastName"]
+    fields: [{
+      title: 'Name',
+      name: ['Student.firstName', 'Student.lastName']
     }, {
-      title: "Email",
-      name: ["Student.email"]
+      title: 'Email',
+      name: ['Student.email']
     }, {
-      title: "CNIC",
-      name: ["Student.cnic"]
+      title: 'CNIC',
+      name: ['Student.cnic']
     }]
   })), /*#__PURE__*/React.createElement("div", {
     className: "p-8 bg-white rounded-md w-full mx-auto mt-8 text-sm"
   }, /*#__PURE__*/React.createElement("section", null, /*#__PURE__*/React.createElement("h2", {
     className: "text-bold text-xl mb-2"
   }, "Assign Quiz to more Students"), /*#__PURE__*/React.createElement("label", null, "Select an Application Round: "), /*#__PURE__*/React.createElement("select", {
-    value: "",
+    value: '',
     onChange: displayApplicationRoundStudents,
     className: "py-2 px-3"
   }, /*#__PURE__*/React.createElement("option", {
@@ -163,9 +156,9 @@ var App = function App() {
   }) : /*#__PURE__*/React.createElement("i", null)), /*#__PURE__*/React.createElement("section", {
     className: "mt-6"
   }, /*#__PURE__*/React.createElement(ApplicantDetailsModal, null), /*#__PURE__*/React.createElement(ApplicationsListStudentsAdder, {
-    quiz_id: document.getElementById("quiz-id-field").value,
+    quiz_id: document.getElementById('quiz-id-field').value,
     setLoadAgain: setLoadAgain
   }))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(App, null)), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(App, null)), document.getElementById('app'));

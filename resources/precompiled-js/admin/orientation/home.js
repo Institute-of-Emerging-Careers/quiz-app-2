@@ -12,12 +12,8 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
-var useContext = React.useContext;
-var useRef = React.useRef;
-var useMemo = React.useMemo;
 
 var App = function App() {
   var _useState = useState([]),
@@ -41,14 +37,14 @@ var App = function App() {
       setUpdateAllOrientations = _useState8[1];
 
   useEffect(function () {
-    fetch("/admin/orientation/all").then(function (response) {
+    fetch('/admin/orientation/all').then(function (response) {
       response.json().then(function (parsed_response) {
         if (parsed_response.success) {
           setOrientations(parsed_response.data);
-        } else alert("There was a problem while getting the orientations. Contact IT.");
+        } else alert('There was a problem while getting the orientations. Contact IT.');
       });
     });
-    fetch("/quiz/all-titles-and-num-attempts").then(function (response) {
+    fetch('/quiz/all-titles-and-num-attempts').then(function (response) {
       response.json().then(function (parsed_response) {
         console.log(parsed_response);
         setAllAssessments(parsed_response);
@@ -64,24 +60,24 @@ var App = function App() {
     fetch("/admin/orientation/delete/".concat(orientation_id)).then(function (raw_response) {
       raw_response.json().then(function (response) {
         if (response.success) {
-          alert("Orientation deleted successfully.");
+          alert('Orientation deleted successfully.');
           setUpdateAllOrientations(function (cur) {
             return cur + 1;
           });
         } else {
-          alert("Orientation could not be deleted due to an error. Code 01.");
+          alert('Orientation could not be deleted due to an error. Code 01.');
         }
-      }).catch(function (err) {
-        alert("Orientation could not be deleted due to an error. Code 02.");
+      }).catch(function () {
+        alert('Orientation could not be deleted due to an error. Code 02.');
       });
-    }).catch(function (err) {
-      alert("Orientation could not be deleted due to an error. Code 03.");
+    }).catch(function () {
+      alert('Orientation could not be deleted due to an error. Code 03.');
     });
   };
 
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     id: "modal",
-    className: show_modal ? "h-screen w-screen inset-0 absolute z-30 bg-black/60" : "hidden"
+    className: show_modal ? 'h-screen w-screen inset-0 absolute z-30 bg-black/60' : 'hidden'
   }, /*#__PURE__*/React.createElement("div", {
     className: "mt-10 w-1/2 bg-white translate-x-2/4 shadow-xl pb-2"
   }, /*#__PURE__*/React.createElement("div", {
@@ -110,10 +106,10 @@ var App = function App() {
       className: "p-2",
       value: assessment.id,
       key: assessment.id
-    }, assessment.title, " | ", assessment.num_assignments, " Assignments", " ");
+    }, assessment.title, " | ", assessment.num_assignments, " Assignments", ' ');
   }))))), /*#__PURE__*/React.createElement("h2", {
     className: "text-xl mt-6 mb-4 font-bold"
-  }, "Orientations", " ", /*#__PURE__*/React.createElement("button", {
+  }, "Orientations", ' ', /*#__PURE__*/React.createElement("button", {
     onClick: function onClick() {
       setShowModal(function (cur) {
         return !cur;
@@ -156,4 +152,4 @@ var App = function App() {
   }) : /*#__PURE__*/React.createElement("p", null, "No orientations found.")));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

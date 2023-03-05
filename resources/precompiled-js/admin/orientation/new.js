@@ -23,11 +23,7 @@ var useEffect = React.useEffect;
 var useState = React.useState;
 var useContext = React.useContext;
 var useRef = React.useRef;
-var _luxon = luxon,
-    DateTime = _luxon.DateTime,
-    Duration = _luxon.Duration;
-var useMemo = React.useMemo;
-var orientation_id_value = document.getElementById("orientation-id-field").value;
+var orientation_id_value = document.getElementById('orientation-id-field').value;
 
 var ContextProvider = function ContextProvider(props) {
   var _useState = useState(-1),
@@ -35,15 +31,15 @@ var ContextProvider = function ContextProvider(props) {
       orientation_id = _useState2[0],
       setOrientationId = _useState2[1];
 
-  var _useState3 = useState(""),
+  var _useState3 = useState(''),
       _useState4 = _slicedToArray(_useState3, 2),
       orientation_name = _useState4[0],
       setOrientationName = _useState4[1];
 
   var _useState5 = useState({
-    date: "",
-    time: "11",
-    zoom_link: ""
+    date: '',
+    time: '11',
+    zoom_link: ''
   }),
       _useState6 = _slicedToArray(_useState5, 2),
       meeting_data = _useState6[0],
@@ -68,43 +64,40 @@ var ContextProvider = function ContextProvider(props) {
 var EmailForm = function EmailForm() {
   var _useContext = useContext(MyContext),
       orientation_id_object = _useContext.orientation_id_object,
-      orientation_name_object = _useContext.orientation_name_object,
       students_object = _useContext.students_object;
 
-  var _orientation_id_objec = _slicedToArray(orientation_id_object, 2),
-      orientation_id = _orientation_id_objec[0],
-      setOrientationId = _orientation_id_objec[1];
+  var _orientation_id_objec = _slicedToArray(orientation_id_object, 1),
+      orientation_id = _orientation_id_objec[0];
 
-  var _students_object = _slicedToArray(students_object, 2),
-      students = _students_object[0],
-      setStudents = _students_object[1];
+  var _students_object = _slicedToArray(students_object, 1),
+      students = _students_object[0];
 
-  var _useState9 = useState(""),
+  var _useState9 = useState(''),
       _useState10 = _slicedToArray(_useState9, 2),
       email_subject = _useState10[0],
       setEmailSubject = _useState10[1];
 
-  var _useState11 = useState(""),
+  var _useState11 = useState(''),
       _useState12 = _slicedToArray(_useState11, 2),
       email_heading = _useState12[0],
       setEmailHeading = _useState12[1];
 
-  var _useState13 = useState(""),
+  var _useState13 = useState(''),
       _useState14 = _slicedToArray(_useState13, 2),
       email_body = _useState14[0],
       setEmailBody = _useState14[1];
 
-  var _useState15 = useState(""),
+  var _useState15 = useState(''),
       _useState16 = _slicedToArray(_useState15, 2),
       email_button_pre_text = _useState16[0],
       setEmailButtonPreText = _useState16[1];
 
-  var _useState17 = useState(""),
+  var _useState17 = useState(''),
       _useState18 = _slicedToArray(_useState17, 2),
       email_button_label = _useState18[0],
       setEmailButtonLabel = _useState18[1];
 
-  var _useState19 = useState(""),
+  var _useState19 = useState(''),
       _useState20 = _slicedToArray(_useState19, 2),
       email_button_url = _useState20[0],
       setEmailButtonUrl = _useState20[1];
@@ -122,10 +115,10 @@ var EmailForm = function EmailForm() {
   }, [students]);
 
   var sendEmails = function sendEmails() {
-    fetch("/admin/orientation/send-emails", {
-      method: "POST",
+    fetch('/admin/orientation/send-emails', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         students: students.filter(function (student) {
@@ -144,15 +137,15 @@ var EmailForm = function EmailForm() {
     }).then(function (raw_response) {
       raw_response.json().then(function (response) {
         if (response.success) {
-          alert("Emails queued successfully and will be sent at the rate of 14 emails per second.");
+          alert('Emails queued successfully and will be sent at the rate of 14 emails per second.');
         } else {
-          alert("There was an error while sending emails. Error code 01.");
+          alert('There was an error while sending emails. Error code 01.');
         }
-      }).catch(function (err) {
-        alert("There was an error while sending emails. Error code 02.");
+      }).catch(function () {
+        alert('There was an error while sending emails. Error code 02.');
       });
-    }).catch(function (err) {
-      alert("There was a problem while sending the request to the server. Please check your internet connection. Error code 03.");
+    }).catch(function () {
+      alert('There was a problem while sending the request to the server. Please check your internet connection. Error code 03.');
     });
   };
 
@@ -171,7 +164,7 @@ var EmailForm = function EmailForm() {
     id: "recipients",
     name: "recipients",
     className: "border w-full py-3 px-4 mt-1 hover:shadow-sm",
-    value: recipients.length > 0 ? "Sending to ".concat(recipients[0].email, ", and ").concat(recipients.length - 1, " others") : "No recipients",
+    value: recipients.length > 0 ? "Sending to ".concat(recipients[0].email, ", and ").concat(recipients.length - 1, " others") : 'No recipients',
     onChange: function onChange(e) {
       setEmailSubject(e.target.value);
     },
@@ -266,21 +259,18 @@ var NameForm = function NameForm() {
       meeting_data_object = _useContext2.meeting_data_object,
       students_object = _useContext2.students_object;
 
-  var _meeting_data_object = _slicedToArray(meeting_data_object, 2),
-      meeting_data = _meeting_data_object[0],
-      setMeetingData = _meeting_data_object[1];
+  var _meeting_data_object = _slicedToArray(meeting_data_object, 1),
+      meeting_data = _meeting_data_object[0];
 
   var _orientation_id_objec2 = _slicedToArray(orientation_id_object, 2),
-      orientation_id = _orientation_id_objec2[0],
       setOrientationId = _orientation_id_objec2[1];
 
   var _orientation_name_obj = _slicedToArray(orientation_name_object, 2),
       orientation_name = _orientation_name_obj[0],
       setOrientationName = _orientation_name_obj[1];
 
-  var _students_object2 = _slicedToArray(students_object, 2),
-      students = _students_object2[0],
-      setStudents = _students_object2[1];
+  var _students_object2 = _slicedToArray(students_object, 1),
+      students = _students_object2[0];
 
   var _useState23 = useState(false),
       _useState24 = _slicedToArray(_useState23, 2),
@@ -293,11 +283,11 @@ var NameForm = function NameForm() {
       setLoading = _useState26[1];
 
   useEffect(function () {
-    if (window.location.href.split("/")[window.location.href.split("/").length - 2] == "new") {
-      window.location = "/admin/orientation/edit/".concat(document.getElementById("orientation-id-field").value);
+    if (window.location.href.split('/')[window.location.href.split('/').length - 2] === 'new') {
+      window.location = "/admin/orientation/edit/".concat(document.getElementById('orientation-id-field').value);
     } else {
-      setOrientationId(parseInt(document.getElementById("orientation-id-field").value));
-      setOrientationName(document.getElementById("orientation-name-field").value);
+      setOrientationId(parseInt(document.getElementById('orientation-id-field').value));
+      setOrientationName(document.getElementById('orientation-name-field').value);
     }
   }, []);
 
@@ -306,10 +296,10 @@ var NameForm = function NameForm() {
     e.stopPropagation();
     setLoading(true);
     console.log(orientation_name);
-    fetch("/admin/orientation/save/".concat(document.getElementById("orientation-id-field").value), {
-      method: "POST",
+    fetch("/admin/orientation/save/".concat(document.getElementById('orientation-id-field').value), {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         orientation_name: orientation_name,
@@ -322,14 +312,14 @@ var NameForm = function NameForm() {
           setLoading(false);
         }
       });
-    }).catch(function (err) {
+    }).catch(function () {
       setLoading(false);
-      alert("Something went wrong. Error code 01. Check your internet connection.");
+      alert('Something went wrong. Error code 01. Check your internet connection.');
     });
   };
 
   return /*#__PURE__*/React.createElement("div", {
-    className: show_email_form ? "" : "flex"
+    className: show_email_form ? '' : 'flex'
   }, /*#__PURE__*/React.createElement("form", {
     onSubmit: saveData,
     autoFocus: true
@@ -375,16 +365,16 @@ var OrientationDetailsForm = function OrientationDetailsForm() {
           setMeetingData(response.meeting_data);
         }).catch(function (err) {
           console.log(err);
-          alert("Error getting meeting data such as zoom link, time, and date. Server sent wrongly formatted information. Contact IT.");
+          alert('Error getting meeting data such as zoom link, time, and date. Server sent wrongly formatted information. Contact IT.');
         });
       } else {
-        alert("Error getting meeting data such as zoom link, time, and date.");
+        alert('Error getting meeting data such as zoom link, time, and date.');
       }
     });
   }, []);
   useEffect(function () {
-    $("#date-picker").datepicker({
-      showOn: "both",
+    $('#date-picker').datepicker({
+      showOn: 'both',
       onSelect: function onSelect(date) {
         setMeetingData(function (cur) {
           return _objectSpread(_objectSpread({}, cur), {}, {
@@ -393,20 +383,20 @@ var OrientationDetailsForm = function OrientationDetailsForm() {
         });
       }
     });
-    $("#time-picker").timepicker({
-      timeFormat: "h:mm p",
+    $('#time-picker').timepicker({
+      timeFormat: 'h:mm p',
       interval: 15,
-      minTime: "08",
-      maxTime: "11:00pm",
-      defaultTime: "11",
-      startTime: "08:00",
+      minTime: '08',
+      maxTime: '11:00pm',
+      defaultTime: '11',
+      startTime: '08:00',
       dynamic: false,
       dropdown: true,
       scrollbar: true,
       change: function change(time) {
         setMeetingData(function (cur) {
           return _objectSpread(_objectSpread({}, cur), {}, {
-            time: $("#time-picker").timepicker().format(time)
+            time: $('#time-picker').timepicker().format(time)
           });
         });
       }
@@ -426,7 +416,6 @@ var OrientationDetailsForm = function OrientationDetailsForm() {
           zoom_link: e.target.value
         });
 
-        console.log(copy);
         return copy;
       });
     }
@@ -448,26 +437,25 @@ var StudentsListWrapper = function StudentsListWrapper() {
   var _useContext4 = useContext(MyContext),
       students_object = _useContext4.students_object;
 
-  var _students_object3 = _slicedToArray(students_object, 2),
-      students = _students_object3[0],
-      setStudents = _students_object3[1];
+  var _students_object3 = _slicedToArray(students_object, 1),
+      students = _students_object3[0];
 
   return /*#__PURE__*/React.createElement(StudentsList, {
     students: students,
     title: "Orientation",
     field_to_show_green_if_true: {
-      field: "email_sent",
-      text: "orientation email was sent"
+      field: 'email_sent',
+      text: 'orientation email was sent'
     },
     fields: [{
-      title: "Name",
-      name: ["name"]
+      title: 'Name',
+      name: ['name']
     }, {
-      title: "Email",
-      name: ["email"]
+      title: 'Email',
+      name: ['email']
     }, {
-      title: "Percentage Score",
-      name: ["percentage_score"]
+      title: 'Percentage Score',
+      name: ['percentage_score']
     }]
   });
 };
@@ -495,4 +483,4 @@ var App = function App() {
   }, /*#__PURE__*/React.createElement(NewStudentsAdderWrapper, null)));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

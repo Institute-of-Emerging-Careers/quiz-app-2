@@ -12,14 +12,14 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
+// eslint-disable-next-line
 var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props) {
   var _useContext = useContext(MyContext),
       applications_object = _useContext.applications_object,
       modal_object = _useContext.modal_object;
 
-  var _applications_object = _slicedToArray(applications_object, 2),
-      applications = _applications_object[0],
-      setApplications = _applications_object[1];
+  var _applications_object = _slicedToArray(applications_object, 1),
+      applications = _applications_object[0];
 
   var _useState = useState([]),
       _useState2 = _slicedToArray(_useState, 2),
@@ -27,63 +27,62 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       setFilteredApplications = _useState2[1];
 
   var _modal_object = _slicedToArray(modal_object, 2),
-      show_modal = _modal_object[0],
       setShowModal = _modal_object[1];
 
   var _useState3 = useState([{
-    type: "Filter by whether or not this quiz is assigned to this student",
+    type: 'Filter by whether or not this quiz is assigned to this student',
     selected: 0,
     modes: [{
-      text: "No filter",
-      field: ["Student", "already_added"],
+      text: 'No filter',
+      field: ['Student', 'already_added'],
       expected_field_values: [false, true]
     }, {
-      text: "Show only those who were assigned this quiz",
+      text: 'Show only those who were assigned this quiz',
       selected: false,
-      field: ["Student", "already_added"],
+      field: ['Student', 'already_added'],
       expected_field_values: [true]
     }, {
-      text: "Show only not those who were not assigned this quiz",
+      text: 'Show only not those who were not assigned this quiz',
       selected: false,
-      field: ["Student", "already_added"],
+      field: ['Student', 'already_added'],
       expected_field_values: [false]
     }]
   }, {
     type: "Filter by whether or not this student's application was auto-rejected",
     selected: 0,
     modes: [{
-      text: "No filter",
+      text: 'No filter',
       selected: true,
-      field: ["rejection_email_sent"],
+      field: ['rejection_email_sent'],
       expected_field_values: [false, true]
     }, {
-      text: "Show only those who were auto rejected",
+      text: 'Show only those who were auto rejected',
       selected: false,
-      field: ["rejection_email_sent"],
+      field: ['rejection_email_sent'],
       expected_field_values: [true]
     }, {
-      text: "Show only not those who were not auto rejected",
+      text: 'Show only not those who were not auto rejected',
       selected: false,
-      field: ["rejection_email_sent"],
+      field: ['rejection_email_sent'],
       expected_field_values: [false]
     }]
   }, {
-    type: "Filter by whether or not this student was emailed about the assessment",
+    type: 'Filter by whether or not this student was emailed about the assessment',
     selected: 0,
     modes: [{
-      text: "No filter",
+      text: 'No filter',
       selected: true,
-      field: ["assessment_email_sent"],
+      field: ['assessment_email_sent'],
       expected_field_values: [false, true]
     }, {
-      text: "Show only those who were emailed about assessment",
+      text: 'Show only those who were emailed about assessment',
       selected: false,
-      field: ["assessment_email_sent"],
+      field: ['assessment_email_sent'],
       expected_field_values: [true]
     }, {
-      text: "Show only not those who were not emailed about assessment",
+      text: 'Show only not those who were not emailed about assessment',
       selected: false,
-      field: ["assessment_email_sent"],
+      field: ['assessment_email_sent'],
       expected_field_values: [false]
     }]
   }]),
@@ -132,7 +131,7 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       var show = true;
 
       for (var i = 0; i < filters.length; i++) {
-        if (filters[i].selected != 0 && filters[i].modes[filters[i].selected].expected_field_values.indexOf(getValue(application, filters[i].modes[filters[i].selected].field)) == -1) {
+        if (filters[i].selected !== 0 && filters[i].modes[filters[i].selected].expected_field_values.indexOf(getValue(application, filters[i].modes[filters[i].selected].field)) === -1) {
           show = false;
         }
       }
@@ -149,16 +148,16 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       return [application.Student.id, application.id];
     });
 
-    if (list_of_student_ids_to_be_added.length == 0) {
+    if (list_of_student_ids_to_be_added.length === 0) {
       setLoading(false);
-      alert("You have not selected any new students.");
+      alert('You have not selected any new students.');
       return;
     }
 
     fetch("/quiz/assign/".concat(props.quiz_id), {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         list_of_student_ids_to_be_added: list_of_student_ids_to_be_added
@@ -175,7 +174,7 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Quiz could not be assigned to Students due to an unknown error.");
+      alert('Quiz could not be assigned to Students due to an unknown error.');
     }).finally(function () {
       setLoading(false);
     });
@@ -184,18 +183,18 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-2 mb-4"
   }, /*#__PURE__*/React.createElement("button", {
-    className: saved_success ? "col-span-1 p-3 float-right bg-green-500 hover:bg-green-600 text-white cursor-pointer border-r border-white" : applications.length > 0 ? "col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white" : "col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white",
+    className: saved_success ? 'col-span-1 p-3 float-right bg-green-500 hover:bg-green-600 text-white cursor-pointer border-r border-white' : applications.length > 0 ? 'col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white' : 'col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white',
     onClick: assignQuizToSelectedStudents,
     ref: assignmentButton,
-    disabled: filtered_applications.length > 0 ? false : true
+    disabled: filtered_applications.length > 0
   }, loading ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin"
   }) : !saved_success ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-save"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-check"
-  }), " ", "Step 1: Assign Quiz to Selected Students"), /*#__PURE__*/React.createElement("button", {
-    className: applications.length > 0 ? "col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white" : "col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white",
+  }), ' ', "Step 1: Assign Quiz to Selected Students"), /*#__PURE__*/React.createElement("button", {
+    className: applications.length > 0 ? 'col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white' : 'col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white',
     onClick: function onClick() {
       if (filtered_applications.map(function (application) {
         return application.Student;
@@ -205,12 +204,12 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
         return !cur;
       });else alert("You haven't selected any new students.");
     },
-    disabled: applications.length > 0 ? false : true
+    disabled: applications.length > 0
   }, show_email_composer ? /*#__PURE__*/React.createElement("i", {
     className: "far fa-paper-plane"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-paper-plane"
-  }), "  ", "Step 2: Send Emails to Selected Students")), show_email_composer ? /*#__PURE__*/React.createElement("div", {
+  }), '  ', "Step 2: Send Emails to Selected Students")), show_email_composer ? /*#__PURE__*/React.createElement("div", {
     className: "mb-4"
   }, /*#__PURE__*/React.createElement("p", null, "Please make sure you assign this quiz to selected students first, by clicking on the ", /*#__PURE__*/React.createElement("i", {
     className: "fas fa-save"
@@ -225,29 +224,31 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       return application.Student.added;
     }),
     default_values: {
-      email_subject: "IEC Assessment",
-      email_heading: "IEC Assessment",
-      email_body: "Dear Student<br>You are receiving this email because you applied for the next cohort of the Institute of Emerging Careers.<br>Congratulations, your application has been shortlisted.<br>The next step is for you to solve a timed assessment. You have 3 days (72 hours) to solve this assessment.",
-      email_button_pre_text: "Click the following button to solve the assessment.",
-      email_button_label: "Solve Assessment",
-      email_button_url: "Will be automatically set for each user"
+      email_subject: 'IEC Assessment',
+      email_heading: 'IEC Assessment',
+      email_body: 'Dear Student<br>You are receiving this email because you applied for the next cohort of the Institute of Emerging Careers.<br>Congratulations, your application has been shortlisted.<br>The next step is for you to solve a timed assessment. You have 3 days (72 hours) to solve this assessment.',
+      email_button_pre_text: 'Click the following button to solve the assessment.',
+      email_button_label: 'Solve Assessment',
+      email_button_url: 'Will be automatically set for each user'
     }
   })) : /*#__PURE__*/React.createElement("i", null), /*#__PURE__*/React.createElement("h2", {
     className: "text-base text-center mb-4"
-  }, /*#__PURE__*/React.createElement("b", null, "List of Applicants of this Round to whom you can assign the Quiz")), applications.length == 0 ? /*#__PURE__*/React.createElement("p", null, "No applicants in this application round.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  }, /*#__PURE__*/React.createElement("b", null, "List of Applicants of this Round to whom you can assign the Quiz")), applications.length === 0 ? /*#__PURE__*/React.createElement("p", null, "No applicants in this application round.") : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
     className: "mb-3 p-2"
   }, /*#__PURE__*/React.createElement("span", {
     className: "bg-green-400"
-  }, "The green rows are students to whom you have already sent the assessment email."), " ", /*#__PURE__*/React.createElement("span", {
+  }, "The green rows are students to whom you have already sent the assessment email."), ' ', /*#__PURE__*/React.createElement("span", {
     className: "bg-gray-200"
-  }, "The gray rows are students that have already been assigned to this quiz."), " ", /*#__PURE__*/React.createElement("span", {
+  }, "The gray rows are students that have already been assigned to this quiz."), ' ', /*#__PURE__*/React.createElement("span", {
     className: "bg-red-300"
-  }, "The red rows are the applicants who were rejected due to the auto-rejection criteria such as age."), " ", /*#__PURE__*/React.createElement("span", {
+  }, "The red rows are the applicants who were rejected due to the auto-rejection criteria such as age."), ' ', /*#__PURE__*/React.createElement("span", {
     className: "bg-yellow-300"
   }, "The yellow rows are students who were rejected due to auto-rejection but also assigned this quiz for some reason.")), /*#__PURE__*/React.createElement("label", null, "Filters: "), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-x-2"
   }, filters.map(function (filter, filter_index) {
-    return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", null, filter.type), /*#__PURE__*/React.createElement("select", {
+    return /*#__PURE__*/React.createElement("div", {
+      key: filter_index
+    }, /*#__PURE__*/React.createElement("label", null, filter.type), /*#__PURE__*/React.createElement("select", {
       value: filters[filter_index].selected,
       "data-filter_index": filter_index,
       onChange: function onChange(e) {
@@ -261,7 +262,8 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
       className: "p-2"
     }, filter.modes.map(function (filter_mode, filter_mode_index) {
       return [/*#__PURE__*/React.createElement("option", {
-        value: filter_mode_index
+        value: filter_mode_index,
+        key: filter_mode_index
       }, filter_mode.text)];
     })));
   })), /*#__PURE__*/React.createElement("p", null, filtered_applications.length, " rows"), /*#__PURE__*/React.createElement("table", {
@@ -276,15 +278,15 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
         });
       });
     }
-  }), " ", filtered_applications.reduce(function (final, app) {
-    if (final == false) return final;
+  }), ' ', filtered_applications.reduce(function (final, app) {
+    if (final === false) return final;
     if (!app.Student.added) return false;
-  }, true) == false ? "Select All" : "Unselect All"), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Gender"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Phone"), /*#__PURE__*/React.createElement("th", null, "CNIC"), /*#__PURE__*/React.createElement("th", null, "Action"))), /*#__PURE__*/React.createElement("tbody", null, filtered_applications.map(function (application, index) {
+  }, true) === false ? 'Select All' : 'Unselect All'), /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Gender"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Phone"), /*#__PURE__*/React.createElement("th", null, "CNIC"), /*#__PURE__*/React.createElement("th", null, "Action"))), /*#__PURE__*/React.createElement("tbody", null, filtered_applications.map(function (application, index) {
     return /*#__PURE__*/React.createElement("tr", {
       key: application.id,
-      className: application.assessment_email_sent ? "bg-green-400" : application.Student.already_added && application.rejection_email_sent ? "bg-yellow-300" : application.Student.already_added ? "bg-gray-200" : application.rejection_email_sent ? " bg-red-300" : ""
+      className: application.assessment_email_sent ? 'bg-green-400' : application.Student.already_added && application.rejection_email_sent ? 'bg-yellow-300' : application.Student.already_added ? 'bg-gray-200' : application.rejection_email_sent ? ' bg-red-300' : ''
     }, /*#__PURE__*/React.createElement("td", {
-      className: "border px-4 py-2"
+      className: 'border px-4 py-2'
     }, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
       "data-id": application.Student.id,
