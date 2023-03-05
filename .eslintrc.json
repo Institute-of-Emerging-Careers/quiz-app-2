@@ -29,7 +29,8 @@
         "no-async-promise-executor": "warn",
         "no-multiple-empty-lines": "error",
         "space-before-function-paren": "off",
-        "no-mixed-spaces-and-tabs": "off"
+        "no-mixed-spaces-and-tabs": "off",
+        "promise/param-names": "warn"
     },
     "ignorePatterns": ["**/precompiled-js/**"]
 }
