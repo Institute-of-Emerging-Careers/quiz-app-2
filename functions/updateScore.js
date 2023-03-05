@@ -1,9 +1,9 @@
-const { Attempt, Score } = require("../db/models")
+const { Attempt, Score } = require('../db/models')
 
 async function updateScore(sectionId, assignment_id, score) {
 	let section_attempt = await Attempt.findOne({
 		where: { SectionId: sectionId, AssignmentId: assignment_id },
-		attributes: ["id"],
+		attributes: ['id'],
 	})
 	if (section_attempt == null) {
 		// this happens when student didn't attempt the assessment within the deadline, so an Attempt does not exist.
@@ -13,17 +13,17 @@ async function updateScore(sectionId, assignment_id, score) {
 			AssignmentId: assignment_id,
 			startTime: Date.now(),
 			endTime: Date.now(),
-			statusText: "Completed",
+			statusText: 'Completed',
 		})
 	}
-	let scoreObject = await Score.findOne({
+	const scoreObject = await Score.findOne({
 		where: { AttemptId: section_attempt.id },
 	})
 
 	if (scoreObject == null) {
-		return Score.create({ AttemptId: section_attempt.id, score: score })
+		return Score.create({ AttemptId: section_attempt.id, score })
 	} else {
-		scoreObject.set({ score: score })
+		scoreObject.set({ score })
 		return scoreObject.save()
 	}
 }

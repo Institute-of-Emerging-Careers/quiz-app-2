@@ -1,12 +1,12 @@
-const { Question, Passage } = require("../db/models")
+const { Question, Passage } = require('../db/models')
 
 function getQuestionIdsFromArrayOfAnswers(answers) {
 	// the problem is that a single MCQ-M question can have multiple Answers
-	let question_ids = []
+	const question_ids = []
 	for (let i = 0; i < answers.length; i++) {
-		if (answers[i].Question.type == "MCQ-S")
+		if (answers[i].Question.type === 'MCQ-S')
 			question_ids.push(answers[i].Question.id)
-		else if (answers[i].Question.type == "MCQ-M") {
+		else if (answers[i].Question.type === 'MCQ-M') {
 			if (question_ids.indexOf(answers[i].Question.id) === -1) {
 				question_ids.push(answers[i].Question.id)
 			}
@@ -17,15 +17,15 @@ function getQuestionIdsFromArrayOfAnswers(answers) {
 
 function getQuestionObjectsFromArrayOfQuestionIds(question_ids) {
 	return new Promise((resolve) => {
-		let result = []
+		const result = []
 		let i = 0
-		let n = question_ids.length
+		const n = question_ids.length
 		question_ids.forEach((question_id) => {
 			Question.findOne({ where: { id: question_id }, include: [Passage] }).then(
 				(question) => {
 					result.push(question)
 					i++
-					if (i == n) resolve(result)
+					if (i === n) resolve(result)
 				}
 			)
 		})
