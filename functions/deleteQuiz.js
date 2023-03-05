@@ -1,5 +1,5 @@
-const { Quiz } = require("../db/models")
-const { removeEverythingInQuiz } = require("./saveExistingQuiz")
+const { Quiz } = require('../db/models')
+const { removeEverythingInQuiz } = require('./saveExistingQuiz')
 
 async function deleteQuiz(id, t) {
 	return new Promise(async (resolve, reject) => {
@@ -8,7 +8,7 @@ async function deleteQuiz(id, t) {
 			the_quiz = await Quiz.findOne(
 				{
 					where: {
-						id: id,
+						id,
 					},
 				},
 				{ transaction: t }
@@ -19,7 +19,7 @@ async function deleteQuiz(id, t) {
 						Quiz.destroy(
 							{
 								where: {
-									id: id,
+									id,
 								},
 							},
 							{ transaction: t }
@@ -40,7 +40,7 @@ async function deleteQuiz(id, t) {
 				return Quiz.destroy(
 					{
 						where: {
-							id: id,
+							id,
 						},
 					},
 					{ transaction: t }

@@ -1,22 +1,14 @@
-const cron = require("node-cron")
-const {
-	Student,
-	Invite,
-	Assignment,
-	Answer,
-	Attempt,
-	PasswordResetLink,
-} = require("../db/models")
-const scoreAssignmentsWhoseDeadlineHasPassed = require("./scoreAssignmentsWhoseDeadlineHasPassed")
+const cron = require('node-cron')
+const scoreAssignmentsWhoseDeadlineHasPassed = require('./scoreAssignmentsWhoseDeadlineHasPassed')
 const {
 	scoreAttemptsWhoseTimerHasEnded,
-} = require("./scoreAttemptsWhoseTimerHasEnded")
-const sendReminderEmails = require("./sendReminderEmails")
+} = require('./scoreAttemptsWhoseTimerHasEnded')
+const sendReminderEmails = require('./sendReminderEmails')
 
 const assessment_reminder_mailer_task = cron.schedule(
-	"0 0 */3 * * *",
+	'0 0 */3 * * *',
 	() => {
-		console.log("Running 3-hourly reminder email.")
+		console.log('Running 3-hourly reminder email.')
 		sendReminderEmails()
 	},
 	{
@@ -25,11 +17,11 @@ const assessment_reminder_mailer_task = cron.schedule(
 )
 
 const score_past_deadline_attempts = cron.schedule(
-	"0 */3 * * * *",
+	'0 */3 * * * *',
 	async () => {
 		try {
 			console.log(
-				"Running 3-minutely script to score past-timer and past-deadline assignments"
+				'Running 3-minutely script to score past-timer and past-deadline assignments'
 			)
 			await scoreAttemptsWhoseTimerHasEnded()
 			await scoreAssignmentsWhoseDeadlineHasPassed()
