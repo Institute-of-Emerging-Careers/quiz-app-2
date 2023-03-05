@@ -1,3 +1,4 @@
+const useRef = React.useRef
 // eslint-disable-next-line
 const ApplicationsListStudentsAdder = (props) => {
 	const { applications_object, modal_object } = useContext(MyContext)
@@ -122,6 +123,7 @@ const ApplicationsListStudentsAdder = (props) => {
 	}, [filters])
 
 	const assignQuizToSelectedStudents = () => {
+		console.log('1')
 		setLoading(true)
 		const list_of_student_ids_to_be_added = filtered_applications
 			.filter(
@@ -174,7 +176,7 @@ const ApplicationsListStudentsAdder = (props) => {
 					}
 					onClick={assignQuizToSelectedStudents}
 					ref={assignmentButton}
-					disabled={filtered_applications.length > 0}
+					disabled={filtered_applications.length === 0}
 				>
 					{loading ? (
 						<i className="fas fa-spinner animate-spin"></i>
@@ -201,7 +203,7 @@ const ApplicationsListStudentsAdder = (props) => {
 							setShowEmailComposer((cur) => !cur)
 						else alert("You haven't selected any new students.")
 					}}
-					disabled={applications.length > 0}
+					disabled={applications.length === 0}
 				>
 					{show_email_composer ? (
 						<i className="far fa-paper-plane"></i>
@@ -282,7 +284,6 @@ const ApplicationsListStudentsAdder = (props) => {
 											copy[e.target.dataset.filter_index].selected = parseInt(
 												e.target.value
 											)
-											console.log(copy)
 											return copy
 										})
 									}}

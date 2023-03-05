@@ -62,9 +62,10 @@ const MCQSOption = (props) => {
 						copy[props.questionIndex].answer = e.target.value
 						return copy
 					})
-					console.log('MCQ-S', e.target.value)
 				}}
-				checked={questions[props.questionIndex].answer === props.option.id}
+				checked={
+					Number(questions[props.questionIndex].answer) === props.option.id
+				}
 			/>{' '}
 			<label>
 				{props.option.statement}

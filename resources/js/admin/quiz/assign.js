@@ -90,7 +90,6 @@ const App = () => {
 	const displayApplicationRoundStudents = (e) => {
 		setLoading(true)
 		const application_round_id = e.target.value
-		console.log('hi')
 		fetch(
 			`/admin/application/all-applicants-and-quiz-assignments?application_round_id=${application_round_id}&quiz_id=${
 				document.getElementById('quiz-id-field').value

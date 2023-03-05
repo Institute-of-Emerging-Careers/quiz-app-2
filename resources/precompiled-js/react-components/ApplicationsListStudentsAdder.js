@@ -12,7 +12,8 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-// eslint-disable-next-line
+var useRef = React.useRef; // eslint-disable-next-line
+
 var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props) {
   var _useContext = useContext(MyContext),
       applications_object = _useContext.applications_object,
@@ -141,6 +142,7 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
   }, [filters]);
 
   var assignQuizToSelectedStudents = function assignQuizToSelectedStudents() {
+    console.log('1');
     setLoading(true);
     var list_of_student_ids_to_be_added = filtered_applications.filter(function (application) {
       return !application.Student.already_added && application.Student.added;
@@ -186,7 +188,7 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
     className: saved_success ? 'col-span-1 p-3 float-right bg-green-500 hover:bg-green-600 text-white cursor-pointer border-r border-white' : applications.length > 0 ? 'col-span-1 p-3 float-right bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer border-r border-white' : 'col-span-1 p-3 float-right bg-gray-600 text-white cursor-not-allowed border-r border-white',
     onClick: assignQuizToSelectedStudents,
     ref: assignmentButton,
-    disabled: filtered_applications.length > 0
+    disabled: filtered_applications.length === 0
   }, loading ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin"
   }) : !saved_success ? /*#__PURE__*/React.createElement("i", {
@@ -204,7 +206,7 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
         return !cur;
       });else alert("You haven't selected any new students.");
     },
-    disabled: applications.length > 0
+    disabled: applications.length === 0
   }, show_email_composer ? /*#__PURE__*/React.createElement("i", {
     className: "far fa-paper-plane"
   }) : /*#__PURE__*/React.createElement("i", {
@@ -255,7 +257,6 @@ var ApplicationsListStudentsAdder = function ApplicationsListStudentsAdder(props
         setFilters(function (cur) {
           var copy = cur.slice();
           copy[e.target.dataset.filter_index].selected = parseInt(e.target.value);
-          console.log(copy);
           return copy;
         });
       },

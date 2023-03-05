@@ -80,9 +80,8 @@ var MCQSOption = function MCQSOption(props) {
         copy[props.questionIndex].answer = e.target.value;
         return copy;
       });
-      console.log('MCQ-S', e.target.value);
     },
-    checked: questions[props.questionIndex].answer === props.option.id
+    checked: Number(questions[props.questionIndex].answer) === props.option.id
   }), ' ', /*#__PURE__*/React.createElement("label", null, props.option.statement, props.option.image != null ? /*#__PURE__*/React.createElement("img", {
     src: props.option.image,
     className: "max-h-48 max-w-full h-auto w-auto py-4"

@@ -102,7 +102,6 @@ var App = function App() {
   var displayApplicationRoundStudents = function displayApplicationRoundStudents(e) {
     setLoading(true);
     var application_round_id = e.target.value;
-    console.log('hi');
     fetch("/admin/application/all-applicants-and-quiz-assignments?application_round_id=".concat(application_round_id, "&quiz_id=").concat(document.getElementById('quiz-id-field').value)).then(function (raw_response) {
       if (raw_response.ok) {
         raw_response.json().then(function (response) {
