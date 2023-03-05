@@ -1,13 +1,13 @@
-const { Quiz, Section, Question, Option, Passage } = require("../db/models")
-const sequelize = require("../db/connect")
+const { Quiz, Section, Question, Option, Passage } = require('../db/models')
+const sequelize = require('../db/connect')
 
 async function saveEverythingInQuiz(newquiz, req, t) {
 	return new Promise(async (resolve, reject) => {
 		try {
 			await new Promise((resolve) => {
 				let count_passages = 0
-				let total_passages = req.body.passages.length
-				if (total_passages == 0) resolve()
+				const total_passages = req.body.passages.length
+				if (total_passages === 0) resolve()
 				else
 					req.body.passages.forEach(async (passage, passage_index) => {
 						const passage_object = await Passage.create({
@@ -16,7 +16,7 @@ async function saveEverythingInQuiz(newquiz, req, t) {
 						})
 						req.body.passages[passage_index].passage_object = passage_object
 						count_passages++
-						if (count_passages == total_passages) resolve()
+						if (count_passages === total_passages) resolve()
 					})
 			})
 
@@ -92,20 +92,20 @@ const saveNewQuiz = async (req, res) => {
 				await t.commit()
 				res.json({
 					status: true,
-					message: "Quiz Saved Successfully",
+					message: 'Quiz Saved Successfully',
 					quizId: newquiz.id,
 				})
 			})
 			.catch(async (err) => {
 				await t.rollback()
-				console.log("Error 02", err)
-				res.json({ status: false, message: "Error02" })
+				console.log('Error 02', err)
+				res.json({ status: false, message: 'Error02' })
 			})
 	} catch (err) {
 		t.rollback().then(() => {
-			console.log("Something went wrong\n\n\n")
+			console.log('Something went wrong\n\n\n')
 			console.log(err)
-			res.json({ status: false, message: "Quiz Not Saved" })
+			res.json({ status: false, message: 'Quiz Not Saved' })
 		})
 	}
 }

@@ -1,5 +1,4 @@
-const { response } = require("express")
-const { Answer } = require("../db/models")
+const { Answer } = require('../db/models')
 
 function saveQuizProgress(answers, req) {
 	// for async
@@ -8,11 +7,11 @@ function saveQuizProgress(answers, req) {
 	return new Promise((resolve, reject) => {
 		try {
 			answers.forEach(async (answer) => {
-				if (answer.questionType == "MCQ-S") {
-					if (answer.answerOptionId == null || answer.answerOptionId == -1) {
+				if (answer.questionType === 'MCQ-S') {
+					if (answer.answerOptionId == null || answer.answerOptionId === -1) {
 						// if the user chose no answer for this question
 						count_questions++
-						if (count_questions == answers.length) {
+						if (count_questions === answers.length) {
 							resolve()
 						}
 					} else {
@@ -31,13 +30,13 @@ function saveQuizProgress(answers, req) {
 								QuestionId: answer.questionId,
 								OptionId: answer.answerOptionId,
 							})
-						} else if (old_answer.OptionId != answer.answerOptionId) {
+						} else if (old_answer.OptionId !== answer.answerOptionId) {
 							// if the student had given an answer to this question before and (s)he has now changed it
 							mypromise = old_answer.update({ OptionId: answer.answerOptionId })
 						} else {
 							// if student had given an answer to this question before but (s)he hasn't changed it, then do nothing to database
 							count_questions++
-							if (count_questions == answers.length) {
+							if (count_questions === answers.length) {
 								resolve()
 							}
 						}
@@ -45,7 +44,7 @@ function saveQuizProgress(answers, req) {
 							mypromise
 								.then(() => {
 									count_questions++
-									if (count_questions == answers.length) {
+									if (count_questions === answers.length) {
 										resolve()
 									}
 								})
@@ -55,14 +54,14 @@ function saveQuizProgress(answers, req) {
 								})
 						}
 					}
-				} else if (answer.questionType == "MCQ-M") {
+				} else if (answer.questionType === 'MCQ-M') {
 					// for async
 					let count_answers = 0
 
 					// the following will come out to be true if there is nothing in the answer.answerOptionId array
-					if (count_answers == answer.answerOptionId.length) {
+					if (count_answers === answer.answerOptionId.length) {
 						count_questions++
-						if (count_questions == answers.length) {
+						if (count_questions === answers.length) {
 							resolve()
 						}
 					}
@@ -83,9 +82,9 @@ function saveQuizProgress(answers, req) {
 						})
 							.then(() => {
 								count_answers++
-								if (count_answers == answer.answerOptionId.length) {
+								if (count_answers === answer.answerOptionId.length) {
 									count_questions++
-									if (count_questions == answers.length) {
+									if (count_questions === answers.length) {
 										resolve()
 									}
 								}
@@ -96,8 +95,7 @@ function saveQuizProgress(answers, req) {
 							})
 					})
 				} else {
-					console.log("WTF")
-					reject(null)
+					reject(new Error(null))
 				}
 			})
 		} catch (err) {

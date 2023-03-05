@@ -1,5 +1,5 @@
-const { Quiz, Assignment, Attempt } = require("../db/models")
-const scoreSection = require("./scoreSectionAndSendEmail")
+const { Quiz, Assignment, Attempt } = require('../db/models')
+const scoreSection = require('./scoreSectionAndSendEmail')
 
 async function rescoreAssignments(quiz_id) {
 	try {
@@ -28,7 +28,7 @@ async function rescoreAssignments(quiz_id) {
 			)
 		)
 	} catch (err) {
-		console.log("err0r")
+		console.log('err0r')
 		console.log(err)
 	}
 }

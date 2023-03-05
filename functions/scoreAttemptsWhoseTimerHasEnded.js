@@ -1,19 +1,19 @@
-const { Section, Attempt, Assignment, Score } = require("../db/models")
-const { Op } = require("sequelize")
-const scoreSection = require("./scoreSectionAndSendEmail")
+const { Section, Attempt, Assignment, Score } = require('../db/models')
+const { Op } = require('sequelize')
+const scoreSection = require('./scoreSectionAndSendEmail')
 
 function filterTimerEndedAttempts(attempts) {
 	return attempts.filter((attempt) => attempt.endTime - Date.now() <= 100)
 }
 
 async function scoreAttemptsWhoseTimerHasEnded() {
-	console.log("scoreAttemptsWhoseTimerHasEnded")
+	console.log('scoreAttemptsWhoseTimerHasEnded')
 	let attempts
 	try {
 		attempts = await Attempt.findAll({
 			where: {
 				statusText: {
-					[Op.ne]: "Completed",
+					[Op.ne]: 'Completed',
 				},
 				AssignmentId: {
 					[Op.ne]: null,
@@ -23,11 +23,11 @@ async function scoreAttemptsWhoseTimerHasEnded() {
 				},
 			},
 			include: [
-				{ model: Assignment, attributes: ["StudentId"] },
-				{ model: Section, attributes: ["id"] },
-				{ model: Score, attributes: ["id"] },
+				{ model: Assignment, attributes: ['StudentId'] },
+				{ model: Section, attributes: ['id'] },
+				{ model: Score, attributes: ['id'] },
 			],
-			attributes: ["endTime", "AssignmentId"],
+			attributes: ['endTime', 'AssignmentId'],
 		})
 
 		return Promise.all(

@@ -1,4 +1,4 @@
-const { Op } = require("sequelize")
+const { Op } = require('sequelize')
 const {
 	Section,
 	Quiz,
@@ -6,12 +6,12 @@ const {
 	Attempt,
 	Assignment,
 	Answer,
-} = require("../db/models")
+} = require('../db/models')
 
 async function deleteAllAttempts(student_id, quiz_id, t) {
 	const assignment = await Assignment.findOne({
 		where: { QuizId: quiz_id, StudentId: student_id },
-		attributes: ["id"],
+		attributes: ['id'],
 	})
 
 	await assignment.update({ completed: false })
@@ -26,7 +26,7 @@ async function deleteAllAttempts(student_id, quiz_id, t) {
 		attempts.forEach(async (attempt) => {
 			await attempt.destroy({ transaction: t })
 			i++
-			if (i == n) resolve()
+			if (i === n) resolve()
 		})
 	})
 }
@@ -37,11 +37,11 @@ async function deleteAllAnswers(student_id, quiz_id, t) {
 		include: [
 			{
 				model: Section,
-				include: [{ model: Question, attributes: ["id"] }],
-				attributes: ["id"],
+				include: [{ model: Question, attributes: ['id'] }],
+				attributes: ['id'],
 			},
 		],
-		attributes: ["id"],
+		attributes: ['id'],
 	})
 
 	return new Promise((main_resolve, main_reject) => {
@@ -59,7 +59,7 @@ async function deleteAllAnswers(student_id, quiz_id, t) {
 				})
 
 				num_sections_done++
-				if (num_sections_done == total_sections) main_resolve()
+				if (num_sections_done === total_sections) main_resolve()
 			})
 		} catch (err) {
 			main_reject(err)
