@@ -56,11 +56,10 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
     return /*#__PURE__*/React.createElement("tr", {
       key: matching.id
     }, /*#__PURE__*/React.createElement("td", null, matching.interviewer_name), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
-      href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id)
-    }, /*#__PURE__*/React.createElement("button", {
-      className: "text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ".concat(matching.booked ? 'bg-gray-300' : 'bg-iec-blue'),
+      href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id),
+      className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline ".concat(matching.booked ? 'cursor-not-allowed' : 'cursor-pointer'),
       disabled: matching.booked
-    }, matching.booked ? 'Already Booked' : 'PICK A TIME SLOT'))));
+    }, matching.booked ? 'Already Booked' : 'Pick a Time Slot')));
   }))))))));
 };
 

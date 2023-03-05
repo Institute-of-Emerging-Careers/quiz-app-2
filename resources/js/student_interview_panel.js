@@ -62,17 +62,16 @@ const StudentInterviewPanel = (props) => {
 												<td>
 													<a
 														href={`/student/interview/${matching.interview_round_id}/pick-timeslot/${matching.interviewer_id}`}
+														className={`text-iec-blue hover:text-iec-blue-hover underline hover:no-underline ${
+															matching.booked
+																? 'cursor-not-allowed'
+																: 'cursor-pointer'
+														}`}
+														disabled={matching.booked}
 													>
-														<button
-															className={`text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ${
-																matching.booked ? 'bg-gray-300' : 'bg-iec-blue'
-															}`}
-															disabled={matching.booked}
-														>
-															{matching.booked
-																? 'Already Booked'
-																: 'PICK A TIME SLOT'}
-														</button>
+														{matching.booked
+															? 'Already Booked'
+															: 'Pick a Time Slot'}
 													</a>
 												</td>
 											</tr>
