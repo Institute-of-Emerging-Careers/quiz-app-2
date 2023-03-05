@@ -22,10 +22,10 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
       setMatchings = _useState2[1];
 
   useEffect(function () {
-    fetch("/student/matching").then(function (response) {
+    fetch('/student/matching').then(function (response) {
       return response.json();
     }).then(function (data) {
-      console.log("data.length", data.length);
+      console.log('data.length', data.length);
 
       if (data.length > 0) {
         setMatchings(data);
@@ -53,13 +53,14 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
   }, /*#__PURE__*/React.createElement("thead", {
     className: "bg-gray-200"
   }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Interviewer Name"), /*#__PURE__*/React.createElement("th", null, "Interviewer Email"), /*#__PURE__*/React.createElement("th", null, "Invitation sent to pick a time "), /*#__PURE__*/React.createElement("th", null, "Interview Time"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching) {
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.interviewer_name), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
-      href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id)
-    }, /*#__PURE__*/React.createElement("button", {
-      className: "text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ".concat(matching.booked ? "bg-gray-300" : "bg-iec-blue"),
-      disabled: matching.booked ? true : false
-    }, matching.booked ? "Already Booked" : "PICK A TIME SLOT"))));
+    return /*#__PURE__*/React.createElement("tr", {
+      key: matching.id
+    }, /*#__PURE__*/React.createElement("td", null, matching.interviewer_name), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
+      href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id),
+      className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline ".concat(matching.booked ? 'cursor-not-allowed' : 'cursor-pointer'),
+      disabled: matching.booked
+    }, matching.booked ? 'Already Booked' : 'Pick a Time Slot')));
   }))))))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(StudentInterviewPanel, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(StudentInterviewPanel, null), document.getElementById('app'));

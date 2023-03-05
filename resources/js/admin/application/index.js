@@ -1,4 +1,3 @@
-const MyContext = React.createContext()
 const useEffect = React.useEffect
 const useState = React.useState
 
@@ -8,17 +7,18 @@ const createApplicationRound = (
 	setUpdateData,
 	setShowNewRoundModal
 ) => {
-	if (new_round_title == "") alert("Please give the Application Round a title.")
+	if (new_round_title === '')
+		alert('Please give the Application Round a title.')
 	else if (
 		courses.reduce((num_false, cur) => {
 			num_false += cur.checked
 		}, 0) < 3
 	)
-		alert("Please select at least 3 courses.")
+		alert('Please select at least 3 courses.')
 	else {
-		fetch("/admin/application/rounds/new", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
+		fetch('/admin/application/rounds/new', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
 				title: new_round_title,
 				courses: courses.filter((cur) => cur.checked),
@@ -27,7 +27,7 @@ const createApplicationRound = (
 			if (response.ok) {
 				setShowNewRoundModal(false)
 				setUpdateData((cur) => cur + 1)
-			} else alert("Could not create application round.")
+			} else alert('Could not create application round.')
 		})
 	}
 }
@@ -40,29 +40,29 @@ const deleteApplicationRound = (
 	const confirmation = prompt(
 		"Are you sure you wish to delete this application round? All applications will be deleted. Type 'yes' if you do."
 	)
-	if (confirmation == "yes") {
+	if (confirmation === 'yes') {
 		setDeletingApplicationRound(true)
 		fetch(`/admin/application/rounds/delete/${application_round_id}`, {
-			method: "DELETE",
+			method: 'DELETE',
 		})
 			.then((response) => {
 				setDeletingApplicationRound(false)
 				if (response.ok) {
 					setUpdateData((cur) => cur + 1)
 				} else
-					alert("Could not delete application round due to an error. Code 01.")
+					alert('Could not delete application round due to an error. Code 01.')
 			})
 			.catch((err) => {
 				console.log(err)
-				alert("Could not delete application round due to an error. Code 02.")
+				alert('Could not delete application round due to an error. Code 02.')
 			})
 	}
 }
 
 const addNewCourse = (new_course_title, setNewCourseTitle, setCourses) => {
-	fetch("/admin/application/course/new", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
+	fetch('/admin/application/course/new', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({
 			title: new_course_title,
 		}),
@@ -78,13 +78,13 @@ const addNewCourse = (new_course_title, setNewCourseTitle, setCourses) => {
 							checked: false,
 						},
 					])
-					setNewCourseTitle("")
+					setNewCourseTitle('')
 				})
 			}
 		})
 		.catch((err) => {
 			console.log(err)
-			alert("Something went wrong while adding a new course.")
+			alert('Something went wrong while adding a new course.')
 		})
 }
 
@@ -94,8 +94,8 @@ const NewApplicationModal = ({
 	setUpdateData,
 	setShowNewRoundModal,
 }) => {
-	const [new_round_title, setNewRoundTitle] = useState("")
-	const [new_course_title, setNewCourseTitle] = useState("")
+	const [new_round_title, setNewRoundTitle] = useState('')
+	const [new_course_title, setNewCourseTitle] = useState('')
 
 	return (
 		<div
@@ -156,14 +156,14 @@ const NewApplicationModal = ({
 										data-index={index}
 										onChange={(e) => {
 											setCourses((cur) => {
-												let copy = cur.slice()
+												const copy = cur.slice()
 												copy[e.target.dataset.index].checked =
 													!copy[e.target.dataset.index].checked
 												return copy
 											})
 										}}
 									></input>
-									<label>{" " + course.title}</label>
+									<label>{' ' + course.title}</label>
 								</div>
 							))}
 							<input type="checkbox" name="courses"></input>
@@ -212,7 +212,7 @@ const openQuizSelectionModal = (
 const saveAutoAssignQuiz = (applicationRoundId, quizId) =>
 	fetch(
 		`/admin/application/rounds/set-auto-assign-quiz/${applicationRoundId}/${quizId}`,
-		{ method: "POST" }
+		{ method: 'POST' }
 	)
 
 const QuizSelectionModal = ({
@@ -225,7 +225,7 @@ const QuizSelectionModal = ({
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
-		fetch("/quiz/all-titles").then((response) => {
+		fetch('/quiz/all-titles').then((response) => {
 			response.json().then((parsed_response) => {
 				setQuizzes(parsed_response)
 			})
@@ -266,7 +266,7 @@ const QuizSelectionModal = ({
 					try {
 						await saveAutoAssignQuiz(activeApplicationRound, selectedQuizId)
 					} catch (err) {
-						alert("Something went wrong.")
+						alert('Something went wrong.')
 					}
 					setLoading(false)
 				}}
@@ -298,16 +298,16 @@ const App = () => {
 	useEffect(async () => {
 		let raw_response
 		try {
-			raw_response = await fetch("/admin/application/rounds/all")
+			raw_response = await fetch('/admin/application/rounds/all')
 		} catch (err) {
 			alert(
-				"Please check your internet connection and try again. Error code 03."
+				'Please check your internet connection and try again. Error code 03.'
 			)
 			return
 		}
 		if (!raw_response.ok) {
 			alert(
-				"Something went wrong while getting application rounds. Error code 01."
+				'Something went wrong while getting application rounds. Error code 01.'
 			)
 			return
 		}
@@ -333,7 +333,7 @@ const App = () => {
 			if (res.ok) {
 				setUpdateData((cur) => cur + 1)
 			} else {
-				alert("Could not change state of application round.")
+				alert('Could not change state of application round.')
 			}
 		})
 	}
@@ -372,7 +372,7 @@ const App = () => {
 				<span></span>
 			)}
 			<div className="flex flex-wrap justify-start gap-y-10 gap-x-10">
-				{application_rounds.length == 0 ? (
+				{application_rounds.length === 0 ? (
 					<p>No application rounds to show.</p>
 				) : (
 					application_rounds.map((application_round, index) => (
@@ -405,8 +405,8 @@ const App = () => {
 									className="text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer"
 									title={
 										application_round.open
-											? "Close Applications"
-											: "Open Applications"
+											? 'Close Applications'
+											: 'Open Applications'
 									}
 									onClick={() => {
 										changeApplicationOpenState(
@@ -476,4 +476,4 @@ const App = () => {
 	)
 }
 
-ReactDOM.render(<App />, document.getElementById("app"))
+ReactDOM.render(<App />, document.getElementById('app'))

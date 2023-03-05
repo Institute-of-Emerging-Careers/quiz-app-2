@@ -1,5 +1,6 @@
 "use strict";
 
+// eslint-disable-next-line
 var Modal = function Modal(props) {
   var show_modal = props.show_modal,
       setShowModal = props.setShowModal,

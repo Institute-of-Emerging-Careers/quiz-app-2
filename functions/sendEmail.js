@@ -1,7 +1,8 @@
-const ejs = require("ejs")
-const sequelize = require("../db/connect")
-var AWS = require("aws-sdk")
-const { queueMail } = require("../bull")
+const ejs = require('ejs')
+const sequelize = require('../db/connect')
+const path = require('path')
+const AWS = require('aws-sdk')
+const { queueMail } = require('../bull')
 
 const AWSSendEmail = (html, mailOptions) => {
 	// Set the region
@@ -12,7 +13,7 @@ const AWSSendEmail = (html, mailOptions) => {
 	})
 
 	// Create sendEmail params
-	var params = {
+	const params = {
 		Destination: {
 			/* required */
 			CcAddresses: [],
@@ -23,12 +24,12 @@ const AWSSendEmail = (html, mailOptions) => {
 			Body: {
 				/* required */
 				Html: {
-					Charset: "UTF-8",
+					Charset: 'UTF-8',
 					Data: html,
 				},
 			},
 			Subject: {
-				Charset: "UTF-8",
+				Charset: 'UTF-8',
 				Data: mailOptions.subject,
 			},
 		},
@@ -40,7 +41,7 @@ const AWSSendEmail = (html, mailOptions) => {
 	}
 
 	// Create the promise and SES service object
-	var promise = new AWS.SES({ apiVersion: "2010-12-01" })
+	const promise = new AWS.SES({ apiVersion: '2010-12-01' })
 		.sendEmail(params)
 		.promise()
 
@@ -50,43 +51,45 @@ const AWSSendEmail = (html, mailOptions) => {
 
 async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 	// if force send, then we send email regardless of student's email receiving preference (e.g. forgot password email)
-	if (process.env.NODE_ENV == "production" && recepient != undefined) {
+	if (process.env.NODE_ENV === 'production' && recepient !== undefined) {
 		// checking if this student has unsubscribed from emails, and if so, we won't send him/her an email
 		const student = await sequelize.models.Student.findOne({
 			where: { email: recepient },
-			attributes: ["hasUnsubscribedFromEmails"],
+			attributes: ['hasUnsubscribedFromEmails'],
 		})
 		if (
 			(student != null && (force_send || !student.hasUnsubscribedFromEmails)) ||
 			student == null
 		) {
 			// sending email
-			console.log("Sending email to ", recepient, "about '", subject, "'")
+			console.log('Sending email to ', recepient, "about '", subject, "'")
 			const html = await ejs.renderFile(
-				__dirname + "/../views/templates/mail-template-1.ejs",
+				path.join(__dirname, '/../views/templates/mail-template-1.ejs'),
 				ejs_obj
 			)
 
-			var mailOptions = {
-				from: "IEC Mail <mail@iec.org.pk>",
+			const mailOptions = {
+				from: 'IEC Mail <mail@iec.org.pk>',
 				to: recepient,
-				subject: subject,
-				html: html,
+				subject,
+				html,
 			}
 
 			return AWSSendEmail(html, mailOptions)
-			/*promise.then(function (data) {
-        console.log(data.MessageId);
-        res.sendStatus(200);
-      })
-      .catch(function (err) {
-        console.error(err, err.stack);
-        res.sendStatus(500);
-      });*/
+			/*
+			promise.then(function (data) {
+				console.log(data.MessageId);
+				res.sendStatus(200);
+			})
+			.catch(function (err) {
+				console.error(err, err.stack);
+				res.sendStatus(500);
+			});
+			*/
 		} else {
 			console.log(
 				recepient,
-				"email does not exist in database or has unsubscribed."
+				'email does not exist in database or has unsubscribed.'
 			)
 			return new Promise((resolve) => {
 				resolve()
@@ -94,11 +97,11 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 		}
 	} else {
 		console.log(
-			"Dummy email sent to: ",
+			'Dummy email sent to: ',
 			recepient,
-			"Subject: ",
+			'Subject: ',
 			subject,
-			"Link: ",
+			'Link: ',
 			ejs_obj.button_link
 		)
 		return new Promise((resolve) => {
@@ -110,10 +113,10 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 const sendApplicationReceiptEmail = async (user) => {
 	// send application saved confirmation email
 	const student = await user.getStudent({
-		attributes: ["email", "firstName", "cnic"],
+		attributes: ['email', 'firstName', 'cnic'],
 	})
-	return queueMail(student.email, `IEC Application Receipt`, {
-		heading: `Application Received`,
+	return queueMail(student.email, 'IEC Application Receipt', {
+		heading: 'Application Received',
 		inner_text: `Dear ${student.firstName}
     
 		Thank you for applying to the “Tech Apprenticeship Program Cohort 07” at the Institute of Emerging Careers. 

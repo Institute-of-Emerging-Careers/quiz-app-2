@@ -30,12 +30,11 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 var useContext = React.useContext;
 var useRef = React.useRef;
-var useMemo = React.useMemo;
-var demoDiv = document.getElementById("demo");
-var quizIdField = document.getElementById("quizIdField");
+var demoDiv = document.getElementById('demo');
+var quizIdField = document.getElementById('quizIdField');
 var globalQuizId;
 
-if (quizIdField.innerText == "") {
+if (quizIdField.innerText === '') {
   globalQuizId = null;
 } else {
   globalQuizId = parseInt(quizIdField.innerText);
@@ -58,19 +57,19 @@ var ContextProvider = function ContextProvider(props) {
 };
 
 var ErrorDisplay = function ErrorDisplay(props) {
-  return props.error == "" ? /*#__PURE__*/React.createElement("p", null) : /*#__PURE__*/React.createElement("p", {
-    className: props.errorColor + "text-sm leading-8 pb-2"
+  return props.error === '' ? /*#__PURE__*/React.createElement("p", null) : /*#__PURE__*/React.createElement("p", {
+    className: props.errorColor + 'text-sm leading-8 pb-2'
   }, /*#__PURE__*/React.createElement("i", {
-    className: "fas " + props.errorIcon + " " + props.errorColor
-  }), " ", /*#__PURE__*/React.createElement("span", {
+    className: 'fas ' + props.errorIcon + ' ' + props.errorColor
+  }), ' ', /*#__PURE__*/React.createElement("span", {
     className: props.errorColor
   }, props.error));
 };
 
 var Select = function Select(props) {
-  var correct = "";
+  var correct = '';
   props.options.forEach(function (option) {
-    if (option.correct == true) {
+    if (option.correct === true) {
       correct = option.value;
     }
   });
@@ -89,15 +88,9 @@ var Select = function Select(props) {
 };
 
 var SelectMultiple = function SelectMultiple(props) {
-  var _useContext = useContext(MyContext),
-      _useContext2 = _slicedToArray(_useContext, 2),
-      state = _useContext2[0],
-      setState = _useContext2[1];
-
-  var _useState3 = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]),
-      _useState4 = _slicedToArray(_useState3, 2),
-      alphabets = _useState4[0],
-      setAlphabets = _useState4[1];
+  var _useState3 = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']),
+      _useState4 = _slicedToArray(_useState3, 1),
+      alphabets = _useState4[0];
 
   return /*#__PURE__*/React.createElement("ul", {
     className: "ml-2"
@@ -119,17 +112,17 @@ var SelectMultiple = function SelectMultiple(props) {
 };
 
 var Option = function Option(props) {
-  var _useContext3 = useContext(MyContext),
-      _useContext4 = _slicedToArray(_useContext3, 2),
-      state = _useContext4[0],
-      setState = _useContext4[1];
+  var _useContext = useContext(MyContext),
+      _useContext2 = _slicedToArray(_useContext, 2),
+      state = _useContext2[0],
+      setState = _useContext2[1];
 
-  var _useState5 = useState(""),
+  var _useState5 = useState(''),
       _useState6 = _slicedToArray(_useState5, 2),
       optionStatement = _useState6[0],
       setOptionStatement = _useState6[1];
 
-  var _useState7 = useState(""),
+  var _useState7 = useState(''),
       _useState8 = _slicedToArray(_useState7, 2),
       error = _useState8[0],
       setError = _useState8[1];
@@ -140,7 +133,7 @@ var Option = function Option(props) {
       setUploading = _useState10[1];
 
   var fileUploadForm = useRef();
-  var alphabets = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+  var alphabets = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
   var setOption = function setOption(e) {
     e.preventDefault();
@@ -153,7 +146,7 @@ var Option = function Option(props) {
         var copy = obj.mcqs.slice(); // change state so that a question also stores the index of its correct option
         // if this is a new option being set, do this
 
-        if (copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].optionStatement == null) {
+        if (copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].optionStatement === null) {
           copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex] = {
             optionStatement: optionStatement,
             correct: false,
@@ -168,7 +161,7 @@ var Option = function Option(props) {
             image: null,
             edit: true
           });
-        } else if (copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit == true) {
+        } else if (copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit === true) {
           // if this is an old option being edited
           copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].optionStatement = optionStatement;
           copy[props.sectionIndex].questions[props.questionIndex].options[props.optionIndex].edit = false;
@@ -178,7 +171,7 @@ var Option = function Option(props) {
         return obj;
       });
     } else {
-      setError("Cannot add more options. Alphabets exhausted.");
+      setError('Cannot add more options. Alphabets exhausted.');
     }
   };
 
@@ -214,16 +207,16 @@ var Option = function Option(props) {
   }
 
   function uploadFile(e) {
-    var data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
+    var data = new FormData(fileUploadForm.current);
     setUploading(true); // data.append("file", e.target.files[0]);
 
-    fetch("/upload", {
-      method: "POST",
+    fetch('/upload', {
+      method: 'POST',
       body: data
     }).then(function (response) {
-      if (response.status == 200) {
+      if (response.status === 200) {
         response.json().then(function (finalResponse) {
-          if (finalResponse.status == true) {
+          if (finalResponse.status === true) {
             setState(function (cur) {
               var obj = _objectSpread({}, cur);
 
@@ -252,20 +245,20 @@ var Option = function Option(props) {
   }
 
   var option = props.opt;
-  return option.edit == false ? /*#__PURE__*/React.createElement("li", {
+  return option.edit === false ? /*#__PURE__*/React.createElement("li", {
     className: "py-1"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex gap-4"
   }, /*#__PURE__*/React.createElement("input", {
-    type: props.type == "MCQ-S" ? "radio" : "checkbox",
+    type: props.type === 'MCQ-S' ? 'radio' : 'checkbox',
     name: "option",
     value: option.optionStatement,
     className: "self-center"
   }), /*#__PURE__*/React.createElement("label", {
     className: "self-center"
-  }, " ", /*#__PURE__*/React.createElement("span", {
+  }, ' ', /*#__PURE__*/React.createElement("span", {
     className: "text-gray-600 self-center"
-  }, alphabets[props.optionIndex], ":"), " ", option.optionStatement), /*#__PURE__*/React.createElement("div", {
+  }, alphabets[props.optionIndex], ":"), ' ', option.optionStatement), /*#__PURE__*/React.createElement("div", {
     className: "flex gap-4 ml-4 self-center"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-pen text-gray-300 hover:text-gray-500 cursor-pointer text-md self-center",
@@ -280,14 +273,14 @@ var Option = function Option(props) {
     ref: fileUploadForm,
     className: "self-center"
   }, /*#__PURE__*/React.createElement("label", {
-    htmlFor: "image-upload-" + props.sectionIndex.toString() + props.optionIndex.toString() + props.questionIndex.toString(),
+    htmlFor: 'image-upload-' + props.sectionIndex.toString() + props.optionIndex.toString() + props.questionIndex.toString(),
     className: "relative cursor-pointer text-gray-300 hover:text-gray-500 max-h-4 text-xl"
-  }, uploading == false ? /*#__PURE__*/React.createElement("i", {
+  }, uploading === false ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-image self-center"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin self-center"
   }), /*#__PURE__*/React.createElement("input", {
-    id: "image-upload-" + props.sectionIndex.toString() + props.optionIndex.toString() + props.questionIndex.toString(),
+    id: 'image-upload-' + props.sectionIndex.toString() + props.optionIndex.toString() + props.questionIndex.toString(),
     type: "file",
     accept: "image/png, image/jpeg",
     name: "file",
@@ -324,10 +317,10 @@ var Option = function Option(props) {
 };
 
 var ImageOrAudio = function ImageOrAudio(props) {
-  var _useContext5 = useContext(MyContext),
-      _useContext6 = _slicedToArray(_useContext5, 2),
-      state = _useContext6[0],
-      setState = _useContext6[1];
+  var _useContext3 = useContext(MyContext),
+      _useContext4 = _slicedToArray(_useContext3, 2),
+      state = _useContext4[0],
+      setState = _useContext4[1];
 
   function deleteQuestionImage(e) {
     setState(function (cur) {
@@ -340,7 +333,7 @@ var ImageOrAudio = function ImageOrAudio(props) {
     });
   }
 
-  if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf("img/") !== -1) {
+  if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf('img/') !== -1) {
     return /*#__PURE__*/React.createElement("div", {
       className: "relative w-max"
     }, /*#__PURE__*/React.createElement("img", {
@@ -351,7 +344,7 @@ var ImageOrAudio = function ImageOrAudio(props) {
       className: "fas fa-trash p-2 absolute top-0 right-0 bg-white text-red-500 shadow-md cursor-pointer",
       onClick: deleteQuestionImage
     }));
-  } else if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf("audio/") !== -1) {
+  } else if (state.mcqs[props.sectionIndex].questions[props.questionIndex].image.indexOf('audio/') !== -1) {
     return /*#__PURE__*/React.createElement("div", {
       className: "w-max flex items-center"
     }, /*#__PURE__*/React.createElement("audio", {
@@ -369,35 +362,32 @@ var ImageOrAudio = function ImageOrAudio(props) {
 };
 
 var MCQ = function MCQ(props) {
-  var _useContext7 = useContext(MyContext),
-      _useContext8 = _slicedToArray(_useContext7, 2),
-      state = _useContext8[0],
-      setState = _useContext8[1];
+  var _useContext5 = useContext(MyContext),
+      _useContext6 = _slicedToArray(_useContext5, 2),
+      state = _useContext6[0],
+      setState = _useContext6[1];
 
-  var _useState11 = useState(""),
-      _useState12 = _slicedToArray(_useState11, 2),
-      correctOption = _useState12[0],
-      setCorrectOption = _useState12[1];
+  var _useState11 = useState(''),
+      _useState12 = _slicedToArray(_useState11, 1),
+      correctOption = _useState12[0];
 
-  var _useState13 = useState(["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]),
-      _useState14 = _slicedToArray(_useState13, 2),
-      alphabets = _useState14[0],
-      setAlphabets = _useState14[1];
+  var _useState13 = useState(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']),
+      _useState14 = _slicedToArray(_useState13, 1),
+      alphabets = _useState14[0];
 
-  var _useState15 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].statement == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].statement),
+  var _useState15 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].statement == null ? '' : state.mcqs[props.sectionIndex].questions[props.questionIndex].statement),
       _useState16 = _slicedToArray(_useState15, 2),
       statement = _useState16[0],
       setStatement = _useState16[1];
 
-  var _useState17 = useState(statement == null ? true : false),
+  var _useState17 = useState(statement === null),
       _useState18 = _slicedToArray(_useState17, 2),
       editing_statement = _useState18[0],
       setEditingStatement = _useState18[1];
 
-  var _useState19 = useState(""),
-      _useState20 = _slicedToArray(_useState19, 2),
-      error = _useState20[0],
-      setError = _useState20[1];
+  var _useState19 = useState(''),
+      _useState20 = _slicedToArray(_useState19, 1),
+      error = _useState20[0];
 
   var _useState21 = useState(false),
       _useState22 = _slicedToArray(_useState21, 2),
@@ -409,12 +399,12 @@ var MCQ = function MCQ(props) {
       linkModal = _useState24[0],
       setLinkModal = _useState24[1];
 
-  var _useState25 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url),
+  var _useState25 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url == null ? '' : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url),
       _useState26 = _slicedToArray(_useState25, 2),
       linkUrl = _useState26[0],
       setLinkUrl = _useState26[1];
 
-  var _useState27 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text == null ? "" : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text),
+  var _useState27 = useState(state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text == null ? '' : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text),
       _useState28 = _slicedToArray(_useState27, 2),
       linkText = _useState28[0],
       setLinkText = _useState28[1];
@@ -446,10 +436,10 @@ var MCQ = function MCQ(props) {
       var copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions[props.questionIndex].options[e.target.value].correct = true;
 
-      if (copy[props.sectionIndex].questions[props.questionIndex].type == "MCQ-S") {
+      if (copy[props.sectionIndex].questions[props.questionIndex].type === 'MCQ-S') {
         // set all other previously true-set options to false
         for (var i = 0; i < copy[props.sectionIndex].questions[props.questionIndex].options.length; i++) {
-          if (i != e.target.value) copy[props.sectionIndex].questions[props.questionIndex].options[i].correct = false;
+          if (i !== e.target.value) copy[props.sectionIndex].questions[props.questionIndex].options[i].correct = false;
         }
       }
 
@@ -516,15 +506,15 @@ var MCQ = function MCQ(props) {
   }
 
   function uploadFile(e) {
-    var data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
+    var data = new FormData(fileUploadForm.current);
     setUploading(true);
-    fetch("/upload", {
-      method: "POST",
+    fetch('/upload', {
+      method: 'POST',
       body: data
     }).then(function (response) {
-      if (response.status == 200) {
+      if (response.status === 200) {
         response.json().then(function (finalResponse) {
-          if (finalResponse.status == true) {
+          if (finalResponse.status === true) {
             setState(function (cur) {
               var obj = _objectSpread({}, cur);
 
@@ -551,7 +541,7 @@ var MCQ = function MCQ(props) {
       var passageIndex = mcqs_copy[props.sectionIndex].questions[props.questionIndex].passage;
       mcqs_copy[props.sectionIndex].questions.forEach(function (question, questionIndex) {
         // if any question (other than this one that we are about to delete) is found such that it has the same passage, we set found to true and don't delete the passage
-        if (question.passage == passageIndex && questionIndex != props.questionIndex) found = true;
+        if (question.passage === passageIndex && questionIndex !== props.questionIndex) found = true;
       });
       if (!found) passages_copy.splice(passageIndex, 1); // deleting the question and ensure continunity of questionOrder attribute
 
@@ -596,7 +586,7 @@ var MCQ = function MCQ(props) {
     });
   }
 
-  return /*#__PURE__*/React.createElement("div", null, linkModal == true ? /*#__PURE__*/React.createElement("div", {
+  return /*#__PURE__*/React.createElement("div", null, linkModal === true ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
     className: "absolute z-10 w-1/2 bg-white left-1/4 translate-x-2/4 shadow-xl py-2 px-2"
   }, /*#__PURE__*/React.createElement("i", {
@@ -611,7 +601,7 @@ var MCQ = function MCQ(props) {
   }, /*#__PURE__*/React.createElement("label", null, "URL: "), /*#__PURE__*/React.createElement("input", {
     type: "url",
     name: "url",
-    plaeholder: "e.g. https://www.google.com",
+    placeholder: "e.g. https://www.google.com",
     className: "mt-2 px-4 py-2 border-2 border-r-0 border-gray-100",
     value: linkUrl,
     onChange: function onChange(e) {
@@ -621,7 +611,7 @@ var MCQ = function MCQ(props) {
   }), /*#__PURE__*/React.createElement("label", null, "Text: "), /*#__PURE__*/React.createElement("input", {
     type: "text",
     name: "text",
-    plaeholder: "e.g. Click Here",
+    placeholder: "e.g. Click Here",
     className: "px-4 py-2 border-2 border-r-0 border-gray-100",
     value: linkText,
     onChange: function onChange(e) {
@@ -676,10 +666,10 @@ var MCQ = function MCQ(props) {
       });
     },
     style: {
-      flexBasis: "10%"
+      flexBasis: '10%'
     }
   }, /*#__PURE__*/React.createElement("i", {
-    className: editing_statement ? "fa-save fas text-green-500 col-span-1 justify-self-center self-center" : "fa-pen fas text-green-500 col-span-1 justify-self-center self-center"
+    className: editing_statement ? 'fa-save fas text-green-500 col-span-1 justify-self-center self-center' : 'fa-pen fas text-green-500 col-span-1 justify-self-center self-center'
   })), /*#__PURE__*/React.createElement("form", {
     method: "POST",
     encType: "multipart/form-data",
@@ -687,12 +677,12 @@ var MCQ = function MCQ(props) {
     ref: fileUploadForm,
     className: "col-span-1 relative cursor-pointer",
     style: {
-      flexBasis: "10%"
+      flexBasis: '10%'
     },
     title: "Upload Image or Audio"
   }, /*#__PURE__*/React.createElement("div", {
     className: "absolute text-3xl w-full h-full grid grid-cols-1 border-gray-300 border-4 cursor-pointer"
-  }, uploading == false ? /*#__PURE__*/React.createElement("i", {
+  }, uploading === false ? /*#__PURE__*/React.createElement("i", {
     className: "far fa-file col-span-1 justify-self-center self-center text-gray-300"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner text-gray-300 justify-self-center self-center col-span-1 animate-spin"
@@ -706,7 +696,7 @@ var MCQ = function MCQ(props) {
     className: "border-gray-300 border-4 cursor-pointer text-3xl col-span-1 h-full grid grid-cols-1 py-6 px-4",
     onClick: toggleLinkModal,
     style: {
-      flexBasis: "10%"
+      flexBasis: '10%'
     }
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-link text-gray-300 col-span-1 justify-self-center self-center"
@@ -715,8 +705,9 @@ var MCQ = function MCQ(props) {
   }) : /*#__PURE__*/React.createElement("a", {
     href: state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url,
     target: "_blank",
-    className: "text-blue-700 underline ml-8 hover:text-blue-500"
-  }, state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text == "" ? state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text), state.mcqs[props.sectionIndex].questions[props.questionIndex].image == null ? /*#__PURE__*/React.createElement("div", {
+    className: "text-blue-700 underline ml-8 hover:text-blue-500",
+    rel: "noreferrer"
+  }, state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text === '' ? state.mcqs[props.sectionIndex].questions[props.questionIndex].link.url : state.mcqs[props.sectionIndex].questions[props.questionIndex].link.text), state.mcqs[props.sectionIndex].questions[props.questionIndex].image == null ? /*#__PURE__*/React.createElement("div", {
     className: "hidden"
   }) : /*#__PURE__*/React.createElement(ImageOrAudio, {
     sectionIndex: props.sectionIndex,
@@ -736,7 +727,7 @@ var MCQ = function MCQ(props) {
     className: "border-2 mb-4 mt-10"
   }), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-5"
-  }, props.type == "MCQ-S" ? /*#__PURE__*/React.createElement(Select, {
+  }, props.type === 'MCQ-S' ? /*#__PURE__*/React.createElement(Select, {
     options: optionsArray,
     value: correctOption,
     onChange: setCorrectOptionInState,
@@ -773,31 +764,32 @@ var MCQ = function MCQ(props) {
 };
 
 var PassageQuestionSelector = function PassageQuestionSelector(props) {
-  var _useContext9 = useContext(MyContext),
-      _useContext10 = _slicedToArray(_useContext9, 2),
-      state = _useContext10[0],
-      setState = _useContext10[1];
+  var _useContext7 = useContext(MyContext),
+      _useContext8 = _slicedToArray(_useContext7, 1),
+      state = _useContext8[0];
 
   return /*#__PURE__*/React.createElement("ul", {
     className: "ml-2"
   }, state.mcqs[props.sectionIndex].questions.map(function (question, questionIndex) {
-    return /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("input", {
+    return /*#__PURE__*/React.createElement("li", {
+      key: question.id
+    }, /*#__PURE__*/React.createElement("input", {
       type: "checkbox",
       value: questionIndex,
-      name: "questionSelector" + props.sectionIndex,
-      checked: state.mcqs[props.sectionIndex].questions[questionIndex].passage == props.passageIndex,
+      name: 'questionSelector' + props.sectionIndex,
+      checked: state.mcqs[props.sectionIndex].questions[questionIndex].passage === props.passageIndex,
       onChange: props.onCheckboxChange
     }), /*#__PURE__*/React.createElement("label", {
-      htmlFor: "questionSelector" + props.sectionIndex
-    }, " ", "Q" + (parseInt(questionIndex) + 1)));
+      htmlFor: 'questionSelector' + props.sectionIndex
+    }, ' ', 'Q' + (parseInt(questionIndex) + 1)));
   }));
 };
 
 var Passage = function Passage(props) {
-  var _useContext11 = useContext(MyContext),
-      _useContext12 = _slicedToArray(_useContext11, 2),
-      state = _useContext12[0],
-      setState = _useContext12[1];
+  var _useContext9 = useContext(MyContext),
+      _useContext10 = _slicedToArray(_useContext9, 2),
+      state = _useContext10[0],
+      setState = _useContext10[1];
 
   var deletePassage = function deletePassage() {
     setState(function (cur) {
@@ -805,7 +797,7 @@ var Passage = function Passage(props) {
 
       var copy = obj.mcqs.slice();
       copy[props.sectionIndex].questions.forEach(function (question, index) {
-        if (question.passage == props.passageIndex) {
+        if (question.passage === props.passageIndex) {
           copy[props.sectionIndex].questions[index].passage = null;
         }
       });
@@ -829,12 +821,12 @@ var Passage = function Passage(props) {
       var mcqs_copy = obj.mcqs.slice();
       var passages_copy = obj.passages.slice(); // if this question has no passage or has a different passage, then assign the current passage to it
 
-      if (mcqs_copy[props.sectionIndex].questions[e.target.value].passage === null || mcqs_copy[props.sectionIndex].questions[e.target.value].passage != props.passageIndex) mcqs_copy[props.sectionIndex].questions[e.target.value].passage = props.passageIndex; // if this question already had this passage, then assign its passage to null because checkbox has been unchecked
+      if (mcqs_copy[props.sectionIndex].questions[e.target.value].passage === null || mcqs_copy[props.sectionIndex].questions[e.target.value].passage !== props.passageIndex) mcqs_copy[props.sectionIndex].questions[e.target.value].passage = props.passageIndex; // if this question already had this passage, then assign its passage to null because checkbox has been unchecked
       else mcqs_copy[props.sectionIndex].questions[e.target.value].passage = null; // checking to see if passage has no questions associated with it, in which case it will be deleted
 
       var found = false;
       mcqs_copy[props.sectionIndex].questions.forEach(function (question) {
-        if (question.passage == props.passageIndex) found = true;
+        if (question.passage === props.passageIndex) found = true;
       }); // if no such question is found, delete the passage
 
       if (!found) {
@@ -862,7 +854,7 @@ var Passage = function Passage(props) {
     className: "py-4 px-8"
   }, /*#__PURE__*/React.createElement("textarea", {
     placeholder: "Enter Comprehension Passage Text",
-    value: state.passages[props.passageIndex].statement == null ? "" : state.passages[props.passageIndex].statement,
+    value: state.passages[props.passageIndex].statement == null ? '' : state.passages[props.passageIndex].statement,
     onChange: function onChange(e) {
       setState(function (cur) {
         var obj = _objectSpread({}, cur);
@@ -887,18 +879,18 @@ var Passage = function Passage(props) {
 };
 
 var Section = function Section(props) {
-  var _useContext13 = useContext(MyContext),
-      _useContext14 = _slicedToArray(_useContext13, 2),
-      state = _useContext14[0],
-      setState = _useContext14[1];
+  var _useContext11 = useContext(MyContext),
+      _useContext12 = _slicedToArray(_useContext11, 2),
+      state = _useContext12[0],
+      setState = _useContext12[1];
 
-  var _useState29 = useState(state.mcqs[props.sectionIndex].poolCount == state.mcqs[props.sectionIndex].questions.length ? true : false),
+  var _useState29 = useState(state.mcqs[props.sectionIndex].poolCount === state.mcqs[props.sectionIndex].questions.length),
       _useState30 = _slicedToArray(_useState29, 2),
       autoPoolCount = _useState30[0],
       setAutoPoolCount = _useState30[1];
 
   useEffect(function () {
-    if (autoPoolCount && state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
+    if (autoPoolCount && state.mcqs[props.sectionIndex].poolCount !== state.mcqs[props.sectionIndex].questions.length) {
       setState(function (cur) {
         var obj = _objectSpread({}, cur);
 
@@ -926,7 +918,7 @@ var Section = function Section(props) {
     sectionNumber: props.sectionNumber,
     sectionIndex: props.sectionNumber - 1,
     totalSections: props.totalSections,
-    key: state.mcqs[props.sectionNumber - 1].id + "a",
+    key: state.mcqs[props.sectionNumber - 1].id + 'a',
     autoPoolCount: autoPoolCount,
     setAutoPoolCount: setAutoPoolCount
   }), /*#__PURE__*/React.createElement("div", null, state.mcqs[props.sectionIndex].questions.map(function (question, index) {
@@ -950,24 +942,24 @@ var Section = function Section(props) {
     sectionNumber: props.sectionNumber,
     sectionIndex: props.sectionNumber - 1,
     totalSections: props.totalSections,
-    key: state.mcqs[props.sectionNumber - 1].id + "b",
+    key: state.mcqs[props.sectionNumber - 1].id + 'b',
     autoPoolCount: autoPoolCount,
     setAutoPoolCount: setAutoPoolCount
   }));
 };
 
 var SectionHeader = function SectionHeader(props) {
-  var _useContext15 = useContext(MyContext),
-      _useContext16 = _slicedToArray(_useContext15, 2),
-      state = _useContext16[0],
-      setState = _useContext16[1];
+  var _useContext13 = useContext(MyContext),
+      _useContext14 = _slicedToArray(_useContext13, 2),
+      state = _useContext14[0],
+      setState = _useContext14[1];
 
   var _useState31 = useState(state.mcqs[props.sectionIndex].time),
       _useState32 = _slicedToArray(_useState31, 2),
       time = _useState32[0],
       setTime = _useState32[1];
 
-  var _useState33 = useState(state.mcqs[props.sectionIndex].time == 0 ? false : true),
+  var _useState33 = useState(state.mcqs[props.sectionIndex].time === 0),
       _useState34 = _slicedToArray(_useState33, 2),
       timeOrNot = _useState34[0],
       setTimeOrNot = _useState34[1];
@@ -977,7 +969,7 @@ var SectionHeader = function SectionHeader(props) {
   var setAutoPoolCount = props.setAutoPoolCount;
   useEffect(function () {
     if (autoPoolCount) {
-      if (state.mcqs[props.sectionIndex].poolCount != state.mcqs[props.sectionIndex].questions.length) {
+      if (state.mcqs[props.sectionIndex].poolCount !== state.mcqs[props.sectionIndex].questions.length) {
         setState(function (cur) {
           var obj = _objectSpread({}, cur);
 
@@ -991,8 +983,8 @@ var SectionHeader = function SectionHeader(props) {
   }, [state.mcqs]);
 
   var closeDropdown = function closeDropdown() {
-    var el = ReactDOM.findDOMNode(toggle.current);
-    el.classList.toggle("hidden");
+    var el = toggle.current;
+    el.classList.toggle('hidden');
   };
 
   var addNewMCQ = function addNewMCQ(type) {
@@ -1026,12 +1018,12 @@ var SectionHeader = function SectionHeader(props) {
 
   var addNewMCQSingle = function addNewMCQSingle() {
     closeDropdown();
-    addNewMCQ("MCQ-S");
+    addNewMCQ('MCQ-S');
   };
 
   var addNewMCQMultiple = function addNewMCQMultiple() {
     closeDropdown();
-    addNewMCQ("MCQ-M");
+    addNewMCQ('MCQ-M');
   };
 
   var addNewComprehensionPassage = function addNewComprehensionPassage() {
@@ -1043,11 +1035,11 @@ var SectionHeader = function SectionHeader(props) {
       index_of_newly_created_passage = copy.push({
         id: null,
         statement: null,
-        place_after_question: state.mcqs[props.sectionIndex].questions.length - 1 //which question to place this passage after. This is used to inform the PassageQuestionSelector which question numbers to show. If the passage was added when the quiz already had 4 questions, then the passage can be assigned to questions 5 onwards.
+        place_after_question: state.mcqs[props.sectionIndex].questions.length - 1 // which question to place this passage after. This is used to inform the PassageQuestionSelector which question numbers to show. If the passage was added when the quiz already had 4 questions, then the passage can be assigned to questions 5 onwards.
 
       });
       index_of_newly_created_passage--;
-      console.log("index_of_newly_created_passage2:", index_of_newly_created_passage);
+      console.log('index_of_newly_created_passage2:', index_of_newly_created_passage);
       obj.passages = copy;
       copy = obj.mcqs.slice(); // now creating a new MCQ-S
 
@@ -1055,7 +1047,7 @@ var SectionHeader = function SectionHeader(props) {
         passage: index_of_newly_created_passage,
         statement: null,
         questionOrder: null,
-        type: "MCQ-S",
+        type: 'MCQ-S',
         image: null,
         marks: 1,
         link: {
@@ -1092,7 +1084,7 @@ var SectionHeader = function SectionHeader(props) {
     className: "bg-green-500 text-white px-4 flex justify-between items-center"
   }, /*#__PURE__*/React.createElement("h1", {
     className: "text-lg"
-  }, "Section ", props.sectionNumber, " of ", props.totalSections, ":", " ", props.sectionTitle), /*#__PURE__*/React.createElement("i", {
+  }, "Section ", props.sectionNumber, " of ", props.totalSections, ":", ' ', props.sectionTitle), /*#__PURE__*/React.createElement("i", {
     className: "fas fa-trash-alt text-xl p-2 cursor-pointer hover:bg-white hover:text-green-500 active:bg-white/0 hover:gray-100",
     onClick: deleteSection
   })), /*#__PURE__*/React.createElement("div", {
@@ -1103,8 +1095,8 @@ var SectionHeader = function SectionHeader(props) {
     className: "bg-green-500 hover:bg-green-600 text-white px-8 py-4",
     id: "add_question",
     onClick: function onClick(e) {
-      var el = ReactDOM.findDOMNode(toggle.current);
-      el.classList.toggle("hidden");
+      var el = toggle.current;
+      el.classList.toggle('hidden');
     }
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-plus"
@@ -1139,7 +1131,7 @@ var SectionHeader = function SectionHeader(props) {
     className: ""
   }, /*#__PURE__*/React.createElement("label", {
     className: "px-4 py-3"
-  }, "No. of Questions to be Randomly Selected:", " "), /*#__PURE__*/React.createElement("input", {
+  }, "No. of Questions to be Randomly Selected:", ' '), /*#__PURE__*/React.createElement("input", {
     type: "number",
     className: "h-12 w-16 bg-gray-100 text-center",
     min: "0",
@@ -1191,17 +1183,17 @@ var SectionHeader = function SectionHeader(props) {
 };
 
 var Main = function Main() {
-  var _useContext17 = useContext(MyContext),
-      _useContext18 = _slicedToArray(_useContext17, 2),
-      state = _useContext18[0],
-      setState = _useContext18[1];
+  var _useContext15 = useContext(MyContext),
+      _useContext16 = _slicedToArray(_useContext15, 2),
+      state = _useContext16[0],
+      setState = _useContext16[1];
 
-  var _useState35 = useState(""),
+  var _useState35 = useState(''),
       _useState36 = _slicedToArray(_useState35, 2),
       sectionInput = _useState36[0],
       setSectionInput = _useState36[1];
 
-  var _useState37 = useState(""),
+  var _useState37 = useState(''),
       _useState38 = _slicedToArray(_useState37, 2),
       quizTitle = _useState38[0],
       setQuizTitle = _useState38[1];
@@ -1211,22 +1203,22 @@ var Main = function Main() {
       quizId = _useState40[0],
       setQuizId = _useState40[1];
 
-  var _useState41 = useState(""),
+  var _useState41 = useState(''),
       _useState42 = _slicedToArray(_useState41, 2),
       error = _useState42[0],
       setError = _useState42[1];
 
-  var _useState43 = useState("text-red-600"),
+  var _useState43 = useState('text-red-600'),
       _useState44 = _slicedToArray(_useState43, 2),
       errorColor = _useState44[0],
       setErrorColor = _useState44[1];
 
-  var _useState45 = useState("fa-exclamation-triangle"),
+  var _useState45 = useState('fa-exclamation-triangle'),
       _useState46 = _slicedToArray(_useState45, 2),
       errorIcon = _useState46[0],
       setErrorIcon = _useState46[1];
 
-  var _useState47 = useState(""),
+  var _useState47 = useState(''),
       _useState48 = _slicedToArray(_useState47, 2),
       savedStatus = _useState48[0],
       setSavedStatus = _useState48[1];
@@ -1256,7 +1248,7 @@ var Main = function Main() {
             }
 
             _context.next = 3;
-            return fetch("/quiz/state/" + globalQuizId.toString());
+            return fetch('/quiz/state/' + globalQuizId.toString());
 
           case 3:
             response = _context.sent;
@@ -1266,7 +1258,7 @@ var Main = function Main() {
           case 6:
             finalResponse = _context.sent;
 
-            if (finalResponse.success == true) {
+            if (finalResponse.success === true) {
               _state = finalResponse.stateObject;
               title = finalResponse.quizTitle;
               passages_object = finalResponse.passages_object;
@@ -1278,7 +1270,7 @@ var Main = function Main() {
               mcqs: _state,
               passages: passages_object
             });
-            console.log("state.mcqs: ", _state, "\npassages: ", passages_object);
+            console.log('state.mcqs: ', _state, '\npassages: ', passages_object);
             setQuizTitle(title);
 
           case 11:
@@ -1312,32 +1304,32 @@ var Main = function Main() {
   function saveDataInDatabase() {
     // data validation before saving
     setUploading2(true);
-    setError("");
-    console.log("Saving: ", state.mcqs);
+    setError('');
+    console.log('Saving: ', state.mcqs);
     var anyErrors = false;
 
-    if (quizTitle == "") {
-      setError("Please enter a quiz title.");
+    if (quizTitle === '') {
+      setError('Please enter a quiz title.');
       anyErrors = true;
     } else {
-      if (state.mcqs.length == 0) {
-        setError("Please add at least one section.");
+      if (state.mcqs.length === 0) {
+        setError('Please add at least one section.');
         anyErrors = true;
       } else {
         state.mcqs.forEach(function (section) {
-          if (section.questions.length == 0) {
-            setError("Empty sections cannot exist. Every section must have at least one question.");
+          if (section.questions.length === 0) {
+            setError('Empty sections cannot exist. Every section must have at least one question.');
             anyErrors = true;
-          } else if (section.poolCount == 0) {
-            setError("You set section " + section.sectionTitle + "'s pool count to 0. Please pick a number greater than 0 otherwise this section will show up empty to the students.");
+          } else if (section.poolCount === 0) {
+            setError('You set section ' + section.sectionTitle + "'s pool count to 0. Please pick a number greater than 0 otherwise this section will show up empty to the students.");
             anyErrors = true;
           } else {
             section.questions.forEach(function (question) {
-              if (question.statement == null || question.statement == "") {
-                setError("Please do not leave a question statement empty.");
+              if (question.statement == null || question.statement === '') {
+                setError('Please do not leave a question statement empty.');
                 anyErrors = true;
-              } else if (question.options.length == 1 && question.options[0].optionStatement == null || question.options.length == 2 && question.options[1] == null) {
-                setError("Every question must have at least 2 options.");
+              } else if (question.options.length === 1 && question.options[0].optionStatement == null || question.options.length === 2 && question.options[1] == null) {
+                setError('Every question must have at least 2 options.');
                 anyErrors = true;
               } // add a check for no correct option selected
 
@@ -1348,13 +1340,13 @@ var Main = function Main() {
     }
 
     if (!anyErrors) {
-      fetch("/quiz/save", {
-        method: "POST",
-        mode: "same-origin",
-        cache: "no-cache",
-        credentials: "same-origin",
+      fetch('/quiz/save', {
+        method: 'POST',
+        mode: 'same-origin',
+        cache: 'no-cache',
+        credentials: 'same-origin',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           quizTitle: quizTitle,
@@ -1365,27 +1357,27 @@ var Main = function Main() {
       }).then(function (response) {
         console.log(response);
         response.json().then(function (finalResponse) {
-          console.log("finalResponse.status: ", finalResponse.status);
+          console.log('finalResponse.status: ', finalResponse.status);
 
-          if (finalResponse.status == true) {
+          if (finalResponse.status === true) {
             setSavedStatus( /*#__PURE__*/React.createElement("i", {
               className: "fas fa-check-circle text-green-400 text-xl"
             }));
-            setErrorColor("text-green-400");
-            setErrorIcon("fa-check-circle");
+            setErrorColor('text-green-400');
+            setErrorIcon('fa-check-circle');
             setQuizId(finalResponse.quizId);
           } else {
             setSavedStatus( /*#__PURE__*/React.createElement("i", {
               className: "fas fa-exclamation-triangle text-red-600"
             }));
-            setErrorColor("text-red-600");
-            setErrorIcon("fa-exclamation-triangle");
+            setErrorColor('text-red-600');
+            setErrorIcon('fa-exclamation-triangle');
           }
 
           setError(finalResponse.message);
           setUploading2(false);
           setTimeout(function () {
-            setSavedStatus("");
+            setSavedStatus('');
           }, 6000);
         });
       }).catch(function (err) {
@@ -1393,39 +1385,39 @@ var Main = function Main() {
         setSavedStatus( /*#__PURE__*/React.createElement("i", {
           className: "fas fa-exclamation-triangle text-red-600"
         }));
-        setErrorColor("text-red-600");
-        setErrorIcon("fa-exclamation-triangle");
+        setErrorColor('text-red-600');
+        setErrorIcon('fa-exclamation-triangle');
       });
     } else {
       setSavedStatus( /*#__PURE__*/React.createElement("i", {
         className: "fas fa-exclamation-triangle text-red-600"
       }));
-      setErrorColor("text-red-600");
-      setErrorIcon("fa-exclamation-triangle");
+      setErrorColor('text-red-600');
+      setErrorIcon('fa-exclamation-triangle');
       setUploading2(false);
       setTimeout(function () {
-        setSavedStatus("");
+        setSavedStatus('');
       }, 10000);
     }
   }
 
   function downloadCSV(e) {
-    fetch("/state-to-csv", {
-      method: "POST",
-      mode: "same-origin",
-      cache: "no-cache",
-      credentials: "same-origin",
+    fetch('/state-to-csv', {
+      method: 'POST',
+      mode: 'same-origin',
+      cache: 'no-cache',
+      credentials: 'same-origin',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify([state.mcqs, state.passages])
     }).then(function (response) {
       response.json().then(function (finalResponse) {
         console.log(finalResponse);
 
-        if (finalResponse.status == true) {
+        if (finalResponse.status === true) {
           window.location = finalResponse.file_link;
-        } else console.log("Error");
+        } else console.log('Error');
       });
     }).catch(function (err) {
       console.log(err);
@@ -1433,17 +1425,17 @@ var Main = function Main() {
   }
 
   function uploadCSV(e) {
-    var data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
+    var data = new FormData(fileUploadForm.current);
     setUploading(true);
-    fetch("/upload/quiz/csv", {
-      method: "POST",
+    fetch('/upload/quiz/csv', {
+      method: 'POST',
       body: data
     }).then(function (response) {
       setUploading(false);
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         response.json().then(function (finalResponse) {
-          if (finalResponse.status == true) {
+          if (finalResponse.status === true) {
             console.log(finalResponse);
             setState(function (cur) {
               var obj = _objectSpread({}, cur);
@@ -1455,15 +1447,15 @@ var Main = function Main() {
             console.log(finalResponse.state);
           }
         });
-      } else if (response.status == 401) {
-        setErrorColor("text-red-600");
-        setErrorIcon("fa-exclamation-triangle");
-        setError("CSV Format is wrong. Please contact IT Team.");
+      } else if (response.status === 401) {
+        setErrorColor('text-red-600');
+        setErrorIcon('fa-exclamation-triangle');
+        setError('CSV Format is wrong. Please contact IT Team.');
         setTimeout(function () {
-          setError("");
+          setError('');
         }, 10000);
       } else {
-        console.log("error uploading csv file");
+        console.log('error uploading csv file');
       }
     }).catch(function (err) {
       console.log(err);
@@ -1511,7 +1503,7 @@ var Main = function Main() {
     className: "bg-green-400 hover:bg-green-500 text-white px-8 py-4 active:shadow-inner cursor-pointer"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-save"
-  }), " Save Quiz"), /*#__PURE__*/React.createElement("p", null, uploading2 == true ? /*#__PURE__*/React.createElement("i", {
+  }), " Save Quiz"), /*#__PURE__*/React.createElement("p", null, uploading2 === true ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin self-center"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "hidden"
@@ -1527,14 +1519,14 @@ var Main = function Main() {
     className: "inline-block px-4 py-4 cursor-pointer bg-gray-400 hover:bg-gray-500 text-white"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-file-upload"
-  }), " Upload from CSV File", " ", /*#__PURE__*/React.createElement("input", {
+  }), " Upload from CSV File", ' ', /*#__PURE__*/React.createElement("input", {
     id: "csv-upload",
     type: "file",
     accept: ".csv",
     name: "file",
     onChange: uploadCSV,
     className: "hidden"
-  }), " ", uploading == true ? /*#__PURE__*/React.createElement("i", {
+  }), ' ', uploading === true ? /*#__PURE__*/React.createElement("i", {
     className: "fas fa-spinner animate-spin self-center"
   }) : /*#__PURE__*/React.createElement("div", {
     className: "hidden"

@@ -1,4 +1,4 @@
-const { Attempt } = require("../db/models")
+const { Attempt } = require('../db/models')
 
 async function setSectionStatusToComplete(assignment_id, sectionId) {
 	const attempt = await Attempt.findOne({
@@ -7,7 +7,7 @@ async function setSectionStatusToComplete(assignment_id, sectionId) {
 	return attempt.update({
 		endTime: Date.now(),
 		duration: Date.now() - attempt.startTime,
-		statusText: "Completed",
+		statusText: 'Completed',
 	})
 }
 

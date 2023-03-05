@@ -1,15 +1,15 @@
-const { Question, Answer } = require("../db/models")
+const { Question, Answer } = require('../db/models')
 const {
 	getQuestionIdsFromArrayOfAnswers,
 	getQuestionObjectsFromArrayOfQuestionIds,
-} = require("./utilities")
-const { Sequelize } = require("sequelize")
+} = require('./utilities')
+const { Sequelize } = require('sequelize')
 
 async function getQuestionsOfStudent(sectionId, studentId) {
 	// first getting the list of question IDs of all questions in this section
 	const all_questions = await Question.findAll({
 		where: { SectionId: sectionId },
-		attributes: ["id"],
+		attributes: ['id'],
 	})
 	const all_question_ids = all_questions.map((question) => question.id)
 
@@ -21,7 +21,7 @@ async function getQuestionsOfStudent(sectionId, studentId) {
 		},
 		include: [Question],
 	})
-	if (answers.length == 0) {
+	if (answers.length === 0) {
 		return new Promise((resolve) => {
 			resolve([])
 		})

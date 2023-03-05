@@ -1,30 +1,27 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
 
-// Load the AWS SDK for Node.js
-var AWS = require("aws-sdk")
-
 // My requirements
-const checkAdminAuthenticated = require("../db/check-admin-authenticated")
-const checkStudentAuthenticated = require("../db/check-student-authenticated")
-const { Email } = require("../db/models")
-const { queueMail } = require("../bull")
+const checkAdminAuthenticated = require('../db/check-admin-authenticated')
+const checkStudentAuthenticated = require('../db/check-student-authenticated')
+const { Email, Student } = require('../db/models')
+const { queueMail } = require('../bull')
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
 	next()
 })
 
-router.get("/compose", checkAdminAuthenticated, async (req, res) => {
-	const emails = await Email.findAll({ limit: 10, order: [["id", "desc"]] })
-	res.render("admin/email/compose.ejs", {
+router.get('/compose', checkAdminAuthenticated, async (req, res) => {
+	const emails = await Email.findAll({ limit: 10, order: [['id', 'desc']] })
+	res.render('admin/email/compose.ejs', {
 		user_type: req.user.type,
-		emails: emails,
+		emails,
 	})
 })
 
-router.post("/preview", checkAdminAuthenticated, (req, res) => {
-	res.render("templates/mail-template-1.ejs", {
+router.post('/preview', checkAdminAuthenticated, (req, res) => {
+	res.render('templates/mail-template-1.ejs', {
 		heading: req.body.heading,
 		inner_text: req.body.body,
 		button_announcer: req.body.button_announcer,
@@ -33,7 +30,7 @@ router.post("/preview", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.post("/send/batch", checkAdminAuthenticated, async (req, res) => {
+router.post('/send/batch', checkAdminAuthenticated, async (req, res) => {
 	try {
 		// saving this email to Email history model
 		await Email.create({
@@ -46,7 +43,7 @@ router.post("/send/batch", checkAdminAuthenticated, async (req, res) => {
 		})
 		await new Promise((resolve) => {
 			let num_emails = 0
-			let target_num_emails = req.body.email_addresses.length
+			const target_num_emails = req.body.email_addresses.length
 			req.body.email_addresses.forEach(async (email) => {
 				try {
 					await queueMail(email, req.body.email_content.subject, {
@@ -57,11 +54,11 @@ router.post("/send/batch", checkAdminAuthenticated, async (req, res) => {
 						button_link: req.body.email_content.button_link,
 					})
 					num_emails++
-					if (num_emails == target_num_emails) resolve()
+					if (num_emails === target_num_emails) resolve()
 				} catch (err) {
-					console.log("Email sending failed.", err)
+					console.log('Email sending failed.', err)
 					num_emails++
-					if (num_emails == target_num_emails) resolve()
+					if (num_emails === target_num_emails) resolve()
 				}
 			})
 		})
@@ -73,33 +70,33 @@ router.post("/send/batch", checkAdminAuthenticated, async (req, res) => {
 	}
 })
 
-router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
+router.get('/unsubscribe', checkStudentAuthenticated, async (req, res) => {
 	try {
 		const student = await Student.findOne({ where: { id: req.user.user.id } })
 		if (student != null) {
 			student.hasUnsubscribedFromEmails = true
 			await student.save()
-			res.render("templates/error.ejs", {
-				additional_info: "Successfully Unsubscribed",
+			res.render('templates/error.ejs', {
+				additional_info: 'Successfully Unsubscribed',
 				error_message:
-					"You will not receive any more similar automated emails from the IEC LCMS.",
-				action_link: "/",
-				action_link_text: "Click here to go to the IEC LCMS home page.",
+					'You will not receive any more similar automated emails from the IEC LCMS.',
+				action_link: '/',
+				action_link_text: 'Click here to go to the IEC LCMS home page.',
 			})
 		}
 	} catch (err) {
-		res.render("templates/error.ejs", {
-			additional_info: "Failed",
+		res.render('templates/error.ejs', {
+			additional_info: 'Failed',
 			error_message:
-				"We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at mail@iec.org.pk for assistance.",
-			action_link: "/",
-			action_link_text: "Click here to go to the IEC LCMS home page.",
+				'We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at mail@iec.org.pk for assistance.',
+			action_link: '/',
+			action_link_text: 'Click here to go to the IEC LCMS home page.',
 		})
 	}
 })
 
-router.get("/test", checkAdminAuthenticated, async (req, res) => {
-	res.render("admin/email/test.ejs")
+router.get('/test', checkAdminAuthenticated, async (req, res) => {
+	res.render('admin/email/test.ejs')
 })
 
 module.exports = router

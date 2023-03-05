@@ -38,8 +38,8 @@ var deleteQuestion = function deleteQuestion(setQuestions, index) {
 };
 
 var QUESTION_TYPE = {
-  NUMERIC: "number scale",
-  TEXTUAL: "descriptive"
+  NUMERIC: 'number scale',
+  TEXTUAL: 'descriptive'
 };
 var EMPTY_NUMERIC_QUESTION = {
   question: null,
@@ -62,9 +62,9 @@ var saveQuestions = /*#__PURE__*/function () {
             _context.prev = 0;
             _context.next = 3;
             return fetch("/admin/interview/".concat(interview_round_id, "/save-questions"), {
-              method: "POST",
+              method: 'POST',
               headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
               },
               body: JSON.stringify({
                 questions: [].concat(_toConsumableArray(numericQuestions), _toConsumableArray(textualQuestions)).filter(function (_ref2) {
@@ -76,7 +76,7 @@ var saveQuestions = /*#__PURE__*/function () {
 
           case 3:
             response = _context.sent;
-            if (response.ok) setShowModal(true);else alert("Error occured. Contact IT.");
+            if (response.ok) setShowModal(true);else alert('Error occured. Contact IT.');
             _context.next = 11;
             break;
 
@@ -84,7 +84,7 @@ var saveQuestions = /*#__PURE__*/function () {
             _context.prev = 7;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
-            alert("Something went wrong. Contact IT.");
+            alert('Something went wrong. Contact IT.');
 
           case 11:
           case "end":
@@ -127,28 +127,29 @@ var Question = function Question(_ref3) {
     className: "w-full p-2 pr-10 bg-transparent h-min my-0 border-b-2 border-solid border-gray-400",
     rows: "1",
     placeholder: "Enter text here",
-    value: (_questions$index$ques = (_questions$index = questions[index]) === null || _questions$index === void 0 ? void 0 : _questions$index.question) !== null && _questions$index$ques !== void 0 ? _questions$index$ques : "",
-    onChange: onChange("question")
+    value: (_questions$index$ques = (_questions$index = questions[index]) === null || _questions$index === void 0 ? void 0 : _questions$index.question) !== null && _questions$index$ques !== void 0 ? _questions$index$ques : '',
+    onChange: onChange('question')
   }), /*#__PURE__*/React.createElement("i", {
-    class: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
+    className: "fa-trash-can absolute right-4 top-3 fa-regular text-lg cursor-pointer",
     onClick: function onClick() {
       return deleteQuestion(setQuestions, index);
     }
   })), ((_questions$index2 = questions[index]) === null || _questions$index2 === void 0 ? void 0 : _questions$index2.questionScale) !== null && /*#__PURE__*/React.createElement("input", {
     type: "number",
-    value: (_questions$index$ques2 = (_questions$index3 = questions[index]) === null || _questions$index3 === void 0 ? void 0 : _questions$index3.questionScale) !== null && _questions$index$ques2 !== void 0 ? _questions$index$ques2 : "0",
-    onChange: onChange("questionScale"),
+    value: (_questions$index$ques2 = (_questions$index3 = questions[index]) === null || _questions$index3 === void 0 ? void 0 : _questions$index3.questionScale) !== null && _questions$index$ques2 !== void 0 ? _questions$index$ques2 : '0',
+    onChange: onChange('questionScale'),
     className: "text-center p-2 bg-transparent justify-self-center border-b-2 border-solid border-gray-700",
     style: {
-      width: "80px"
+      width: '80px'
     }
   }));
-};
+}; // eslint-disable-next-line
+
 
 var Step4 = function Step4() {
-  //need to take number of questions as input
-  //need to take question type as input (descriptive or number scale)
-  //need to take question as input
+  // need to take number of questions as input
+  // need to take question type as input (descriptive or number scale)
+  // need to take question as input
   var _useState = useState(false),
       _useState2 = _slicedToArray(_useState, 2),
       show_modal = _useState2[0],
@@ -162,8 +163,8 @@ var Step4 = function Step4() {
   var _useState5 = useState([]),
       _useState6 = _slicedToArray(_useState5, 2),
       textualQuestions = _useState6[0],
-      setTextualQuestions = _useState6[1]; //first we need to check if questions have already been set for this interview round
-  //if yes, then we need to display them
+      setTextualQuestions = _useState6[1]; // first we need to check if questions have already been set for this interview round
+  // if yes, then we need to display them
 
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
@@ -174,16 +175,16 @@ var Step4 = function Step4() {
           case 0:
             _context2.next = 2;
             return fetch("/admin/interview/".concat(interview_round_id, "/all-questions"), {
-              method: "GET",
+              method: 'GET',
               headers: {
-                "Content-Type": "application/json"
+                'Content-Type': 'application/json'
               }
             });
 
           case 2:
             response = _context2.sent;
 
-            if (!(response.status == 200)) {
+            if (!(response.status === 200)) {
               _context2.next = 13;
               break;
             }
@@ -207,7 +208,7 @@ var Step4 = function Step4() {
             break;
 
           case 13:
-            alert("Could not load questions from server. Contact IT.");
+            alert('Could not load questions from server. Contact IT.');
 
           case 14:
           case "end":
@@ -217,13 +218,13 @@ var Step4 = function Step4() {
     }, _callee2);
   })), []);
   var addNumericQuestion = useCallback(function () {
-    if (numericQuestions[numericQuestions.length - 1].question === "") return;
+    if (numericQuestions[numericQuestions.length - 1].question === '') return;
     setNumericQuestions(function (cur) {
       return [].concat(_toConsumableArray(cur), [EMPTY_NUMERIC_QUESTION]);
     });
   }, [numericQuestions]);
   var addTextualQuestion = useCallback(function () {
-    if (textualQuestions[textualQuestions.length - 1].question === "") return;
+    if (textualQuestions[textualQuestions.length - 1].question === '') return;
     setTextualQuestions(function (cur) {
       return [].concat(_toConsumableArray(cur), [EMPTY_TEXTUAL_QUESTION]);
     });
@@ -263,7 +264,7 @@ var Step4 = function Step4() {
     onClick: addNumericQuestion
   }, /*#__PURE__*/React.createElement("i", {
     className: "fa-solid fa-plus"
-  }), " Add Question"), /*#__PURE__*/React.createElement("p", null, "Total Marks:", " ", numericQuestions.reduce(function (prev, cur) {
+  }), " Add Question"), /*#__PURE__*/React.createElement("p", null, "Total Marks:", ' ', numericQuestions.reduce(function (prev, cur) {
     return prev += parseInt(cur.questionScale);
   }, 0)))), /*#__PURE__*/React.createElement("section", {
     id: "textual",

@@ -1,8 +1,8 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
-const { DateTime } = require("luxon")
+const { DateTime } = require('luxon')
 // My requirements
-const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
+const checkAdminAuthenticated = require('../../db/check-admin-authenticated')
 const {
 	Orientation,
 	OrientationInvite,
@@ -12,21 +12,20 @@ const {
 	Score,
 	Quiz,
 	Section,
-} = require("../../db/models")
-const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces")
-const getQuizTotalScore = require("../../functions/getQuizTotalScore")
-const { queueMail } = require("../../bull")
+} = require('../../db/models')
+const roundToTwoDecimalPlaces = require('../../functions/roundToTwoDecimalPlaces')
+const getQuizTotalScore = require('../../functions/getQuizTotalScore')
+const { queueMail } = require('../../bull')
 
-//this file deals with /admin/orientation/...
+// this file deals with /admin/orientation/...
 
 // middleware that is specific to this router
 router.use((req, res, next) => {
 	next()
 })
 
-router.get("/", checkAdminAuthenticated, (req, res) => {
-	console.log(`/admin/orientation${req.url}`)
-	res.render("admin/orientation/index.ejs", {
+router.get('/', checkAdminAuthenticated, (req, res) => {
+	res.render('admin/orientation/index.ejs', {
 		env: process.env.NODE_ENV,
 		myname: req.user.user?.firstName,
 		user_type: req.user.type,
@@ -35,25 +34,25 @@ router.get("/", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.get("/summary", checkAdminAuthenticated, (req, res) => {
-	res.render("admin/orientation/summary.ejs", {
+router.get('/summary', checkAdminAuthenticated, (req, res) => {
+	res.render('admin/orientation/summary.ejs', {
 		myname: req.user.user?.firstName,
 		user_type: req.user.type,
 		site_domain_name: process.env.SITE_DOMAIN_NAME,
 	})
 })
 
-router.get("/all", checkAdminAuthenticated, (req, res) => {
+router.get('/all', checkAdminAuthenticated, (req, res) => {
 	Orientation.findAll({
-		attributes: ["id", "title"],
-		order: [["id", "desc"]],
+		attributes: ['id', 'title'],
+		order: [['id', 'desc']],
 	}).then((response) => {
 		res.json({ success: true, data: response })
 	})
 })
 
 router.get(
-	"/delete/:orientation_id",
+	'/delete/:orientation_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -65,15 +64,15 @@ router.get(
 	}
 )
 
-router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
+router.get('/new/:quiz_id', checkAdminAuthenticated, (req, res) => {
 	const new_orientation_name = `Orientation ${DateTime.now().toFormat(
-		"hh:mm:ss-yyyy-LLL-dd"
+		'hh:mm:ss-yyyy-LLL-dd'
 	)}`
 	Orientation.create({
 		title: new_orientation_name,
 		QuizId: req.params.quiz_id,
 	}).then((orientation) => {
-		res.render("admin/orientation/new.ejs", {
+		res.render('admin/orientation/new.ejs', {
 			orientation_name: new_orientation_name,
 			orientation_id: orientation.id,
 			env: process.env.NODE_ENV,
@@ -83,33 +82,33 @@ router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
 })
 
 router.get(
-	"/edit/:orientation_id",
+	'/edit/:orientation_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		const orientation = await Orientation.findOne({
 			where: { id: req.params.orientation_id },
-			attributes: ["id", "title"],
+			attributes: ['id', 'title'],
 		})
 		if (orientation != null) {
-			res.render("admin/orientation/new.ejs", {
+			res.render('admin/orientation/new.ejs', {
 				orientation_id: orientation.id,
 				orientation_name: orientation.title,
 				env: process.env.NODE_ENV,
 				user_type: req.user.type,
 			})
 		} else {
-			res.render("templates/error.ejs", {
-				additional_info: "Invalid Orientation",
+			res.render('templates/error.ejs', {
+				additional_info: 'Invalid Orientation',
 				error_message: "The orientation you're trying to edit does not exist.",
-				action_link: "/orientation",
-				action_link_text: "Click here to go to the orientations page.",
+				action_link: '/orientation',
+				action_link_text: 'Click here to go to the orientations page.',
 			})
 		}
 	}
 )
 
 router.post(
-	"/save/:orientation_id",
+	'/save/:orientation_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -126,11 +125,11 @@ router.post(
 			})
 
 			// let's get all students who have already been invited to this Orientation and create a hashmap.
-			let orientation_invites = await OrientationInvite.findAll({
+			const orientation_invites = await OrientationInvite.findAll({
 				where: { OrientationId: req.params.orientation_id },
 			})
 
-			let students_already_invited = new Map()
+			const students_already_invited = new Map()
 			orientation_invites.map((invite) => {
 				students_already_invited.set(invite.StudentId, invite)
 			})
@@ -140,18 +139,18 @@ router.post(
 			await new Promise((resolve, reject) => {
 				req.body.students.map(async (student) => {
 					if (
-						student.added == false &&
+						student.added === false &&
 						students_already_invited.has(student.id)
 					) {
 						students_already_invited.get(student.id).destroy()
 					} else if (
-						student.added == true &&
+						student.added === true &&
 						!students_already_invited.has(student.id)
 					) {
 						const application_id = (
 							await Assignment.findOne({
 								where: { QuizId: orientation.Quiz.id, StudentId: student.id },
-								attributes: ["ApplicationId"],
+								attributes: ['ApplicationId'],
 							})
 						).ApplicationId
 						await OrientationInvite.create({
@@ -161,7 +160,7 @@ router.post(
 						})
 					}
 					i++
-					if (i == n) {
+					if (i === n) {
 						resolve()
 					}
 				})
@@ -175,13 +174,13 @@ router.post(
 )
 
 router.get(
-	"/all-students/:orientation_id",
+	'/all-students/:orientation_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
 			const orientation = await Orientation.findOne({
 				where: { id: req.params.orientation_id },
-				attributes: ["id", "QuizId"],
+				attributes: ['id', 'QuizId'],
 				include: [
 					{
 						model: Quiz,
@@ -205,9 +204,9 @@ router.get(
 
 			if (orientation != null && orientation.QuizId != null) {
 				// finding total score of quiz
-				let quiz_total_score = await getQuizTotalScore(orientation.Quiz)
+				const quiz_total_score = await getQuizTotalScore(orientation.Quiz)
 
-				let data = [] //list of students who have solved this quiz and their data
+				const data = [] // list of students who have solved this quiz and their data
 				/*
           [
             {
@@ -223,7 +222,7 @@ router.get(
           ]
         */
 
-				let assignments = orientation.Quiz.Assignments
+				const assignments = orientation.Quiz.Assignments
 
 				if (assignments != null && assignments.length > 0) {
 					await new Promise((resolve) => {
@@ -244,15 +243,16 @@ router.get(
 							})
 							data.push({
 								added:
-									assignment.Student.hasOwnProperty("Orientations") &&
+									Object.prototype.hasOwnProperty.call(
+										assignment.Student,
+										'Orientations'
+									) &&
 									assignment.Student.Orientations.length > 0 &&
 									assignment.Student.Orientations.reduce(
 										(hasThisOrientationId, cur) =>
 											hasThisOrientationId
 												? true
-												: cur.id == req.params.orientation_id
-												? true
-												: false,
+												: cur.id === req.params.orientation_id,
 										false
 									),
 								email_sent:
@@ -262,25 +262,25 @@ router.get(
 								id: assignment.Student.id,
 								name:
 									assignment.Student.firstName +
-									" " +
+									' ' +
 									assignment.Student.lastName,
 								email: assignment.Student.email,
 								age: assignment.Student.age,
 								gender: assignment.Student.gender,
-								total_score_achieved: total_score_achieved,
+								total_score_achieved,
 								assignment_completed_date: assignment.updatedAt,
 								percentage_score: roundToTwoDecimalPlaces(
 									(total_score_achieved / quiz_total_score) * 100
 								),
 							})
 							i++
-							if (i == n) resolve()
+							if (i === n) resolve()
 						})
 					})
 				}
-				res.json({ success: true, data: data })
+				res.json({ success: true, data })
 			} else {
-				console.log("Error: QuizId: or orientation:", orientation, "is NULL")
+				console.log('Error: QuizId: or orientation:', orientation, 'is NULL')
 				res.json({ success: false })
 			}
 		} catch (err) {
@@ -291,7 +291,7 @@ router.get(
 )
 
 router.get(
-	"/get-meeting-data/:orientation_id",
+	'/get-meeting-data/:orientation_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -301,10 +301,10 @@ router.get(
 			console.log(orientation)
 			res.json({
 				meeting_data: {
-					date: orientation.date == null ? "" : orientation.date,
-					time: orientation.time == null ? "" : orientation.time,
+					date: orientation.date == null ? '' : orientation.date,
+					time: orientation.time == null ? '' : orientation.time,
 					zoom_link:
-						orientation.meeting_link == null ? "" : orientation.meeting_link,
+						orientation.meeting_link == null ? '' : orientation.meeting_link,
 				},
 			})
 		} catch (err) {
@@ -314,14 +314,14 @@ router.get(
 	}
 )
 
-router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
+router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 	if (req.body.students != null && req.body.students.length > 0) {
 		const email_content = req.body.email_content
 
 		// let students = req.body.students.filter((student) => student.added);
 		// this will be done before sending the request now to save network bandwidth
 
-		let students = req.body.students
+		const students = req.body.students
 		let promises = students.map((student) => [
 			OrientationInvite.update(
 				{ email_sent: true },
@@ -346,7 +346,7 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
 			.then(() => {
 				res.json({ success: true })
 			})
-			.catch((err) => {
+			.catch(() => {
 				res.json({ success: false })
 			})
 	}

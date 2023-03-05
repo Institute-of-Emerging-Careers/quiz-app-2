@@ -1,31 +1,29 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
-const passport = require("passport")
-const moment = require("moment")
+const passport = require('passport')
+const moment = require('moment')
 
 // requirements
-const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
-const checkAdminAlreadyLoggedIn = require("../../db/check-admin-already-logged-in")
-const orientationRouter = require("./orientation")
-const interviewRouter = require("./interview")
-const applicationRouter = require("./application")
-const lecRouter = require("./lec")
-const { Quiz, Invite } = require("../../db/models")
-const { email_bull_queue } = require("../../bull")
+const checkAdminAuthenticated = require('../../db/check-admin-authenticated')
+const checkAdminAlreadyLoggedIn = require('../../db/check-admin-already-logged-in')
+const orientationRouter = require('./orientation')
+const interviewRouter = require('./interview')
+const applicationRouter = require('./application')
+const { Quiz, Invite } = require('../../db/models')
+const { email_bull_queue } = require('../../bull')
 
 // middleware that is specific to this router
-router.use("/application", applicationRouter)
-router.use("/orientation", orientationRouter)
-router.use("/interview", interviewRouter)
-router.use("/lec", lecRouter)
+router.use('/application', applicationRouter)
+router.use('/orientation', orientationRouter)
+router.use('/interview', interviewRouter)
 
 router.use((req, res, next) => {
 	next()
 })
 
-router.get("/", checkAdminAuthenticated, async (req, res) => {
+router.get('/', checkAdminAuthenticated, async (req, res) => {
 	try {
-		const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] })
+		const all_quizzes = await Quiz.findAll({ order: [['id', 'desc']] })
 		for (let i = 0; i < all_quizzes.length; i++) {
 			all_quizzes[i].num_sections = await all_quizzes[i].countSections()
 			const all_sections = await all_quizzes[i].getSections()
@@ -38,7 +36,7 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
 		const all_invites = await Invite.findAll({ include: [Quiz] })
 		console.log(req.url)
 		console.log(req.user)
-		res.render("admin/index.ejs", {
+		res.render('admin/index.ejs', {
 			myname: req.user.user?.firstName,
 			user_type: req.user.type,
 			all_quizzes: all_quizzes,
@@ -54,20 +52,20 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
 	}
 })
 
-router.get("/login", checkAdminAlreadyLoggedIn, (req, res) => {
-	res.render("admin/login/index.ejs")
+router.get('/login', checkAdminAlreadyLoggedIn, (req, res) => {
+	res.render('admin/login/index.ejs')
 })
 
 router.post(
-	"/login",
-	passport.authenticate("admin-login", {
-		successRedirect: "/admin",
-		failureRedirect: "/admin/login",
+	'/login',
+	passport.authenticate('admin-login', {
+		successRedirect: '/admin',
+		failureRedirect: '/admin/login',
 		failureFlash: true,
 	})
 )
 
-router.get("/retry-failed-emails", checkAdminAuthenticated, (req, res) => {
+router.get('/retry-failed-emails', checkAdminAuthenticated, (req, res) => {
 	email_bull_queue.getFailed().then((failed_jobs) => {
 		Promise.all(failed_jobs.map((failed_job) => failed_job.retry()))
 			.then(() => {
@@ -80,7 +78,7 @@ router.get("/retry-failed-emails", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.get("/view-failed-emails", checkAdminAuthenticated, (req, res) => {
+router.get('/view-failed-emails', checkAdminAuthenticated, (req, res) => {
 	email_bull_queue.getFailed().then((failed_jobs) => {
 		res.json({ failed_jobs: failed_jobs })
 	})

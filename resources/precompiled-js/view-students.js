@@ -22,7 +22,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var useState = React.useState;
 var useEffect = React.useEffect;
-var interview_round_id = document.getElementById("interview-round-id").innerHTML;
+var interview_round_id = document.getElementById('interview-round-id').innerHTML;
 
 var tConvert = function tConvert(time) {
   // Check correct time format and split into components
@@ -32,12 +32,12 @@ var tConvert = function tConvert(time) {
     // If time format correct
     time = time.slice(1); // Remove full string match value
 
-    time[5] = +time[0] < 12 ? "AM" : "PM"; // Set AM/PM
+    time[5] = +time[0] < 12 ? 'AM' : 'PM'; // Set AM/PM
 
     time[0] = +time[0] % 12 || 12; // Adjust hours
   }
 
-  return time.join(""); // return adjusted time or original string
+  return time.join(''); // return adjusted time or original string
 };
 
 var StudentsList = function StudentsList() {
@@ -90,7 +90,7 @@ var StudentsList = function StudentsList() {
                 return matching.student_email;
               }));
               setUnBookedStudents(response.matchings.filter(function (matching) {
-                return matching.booked == false;
+                return matching.booked === false;
               }).map(function (matching) {
                 return matching.student_email;
               }));
@@ -118,9 +118,9 @@ var StudentsList = function StudentsList() {
     },
     sending_link: "/admin/interview/".concat(interview_round_id, "/interviewer-send-email"),
     default_values: {
-      email_subject: "IEC Interview Link",
-      email_heading: "IEC Interview Link",
-      email_body: "Dear Student,<br>We hope you are well.<br>Please join the given link for your interview.<br> Regards,<br>IEC Team",
+      email_subject: 'IEC Interview Link',
+      email_heading: 'IEC Interview Link',
+      email_body: 'Dear Student,<br>We hope you are well.<br>Please join the given link for your interview.<br> Regards,<br>IEC Team',
       email_button_pre_text: null,
       email_button_label: null,
       email_button_url: null
@@ -136,12 +136,12 @@ var StudentsList = function StudentsList() {
     },
     sending_link: "/admin/interview/".concat(interview_round_id, "/interviewer-send-email"),
     default_values: {
-      email_subject: "IEC Interview Reminder",
-      email_heading: "IEC Interview Reminder",
-      email_body: "Dear Student,<br>We hope you are well.<br>Please book a time slot from your portal so that your interview may be conducted.<br> Regards,<br>IEC Team",
-      email_button_pre_text: "Portal Link",
-      email_button_label: "Book a slot",
-      email_button_url: "https://apply.iec.org.pk/student/interview"
+      email_subject: 'IEC Interview Reminder',
+      email_heading: 'IEC Interview Reminder',
+      email_body: 'Dear Student,<br>We hope you are well.<br>Please book a time slot from your portal so that your interview may be conducted.<br> Regards,<br>IEC Team',
+      email_button_pre_text: 'Portal Link',
+      email_button_label: 'Book a slot',
+      email_button_url: 'https://apply.iec.org.pk/student/interview'
     }
   }) : /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col items-center justify-center"
@@ -193,22 +193,22 @@ var StudentsList = function StudentsList() {
       className: "border border-gray-200 px-4 py-2"
     }, matching.student_email), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
-    }, matching.firstName + " " + matching.lastName), /*#__PURE__*/React.createElement("td", {
+    }, matching.firstName + ' ' + matching.lastName), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, matching.cnic), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, matching.gender), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
-    }, matching.booked ? new Date(new Number(matching.startTime)).toDateString() + " , " + tConvert(new Date(new Number(matching.startTime)).toISOString().slice(11, 16)) + " - " + tConvert(new Date(new Number(matching.endTime)).toISOString().slice(11, 16)) : "No slot booked"), /*#__PURE__*/React.createElement("td", {
+    }, matching.booked ? new Date(Number(matching.startTime)).toDateString() + ' , ' + tConvert(new Date(Number(matching.startTime)).toISOString().slice(11, 16)) + ' - ' + tConvert(new Date(Number(matching.endTime)).toISOString().slice(11, 16)) : 'No slot booked'), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
-    }, matching.studentAbsent === true ? "Absent" : matching.studentAbsent == null ? "Unmarked" : "Marked"), /*#__PURE__*/React.createElement("td", {
+    }, matching.studentAbsent === true ? 'Absent' : matching.studentAbsent == null ? 'Unmarked' : 'Marked'), /*#__PURE__*/React.createElement("td", {
       className: "border border-gray-200 px-4 py-2"
     }, /*#__PURE__*/React.createElement("button", {
       className: "text-green-500"
     }, /*#__PURE__*/React.createElement("a", {
       href: "/admin/interview/".concat(interview_round_id, "/student/").concat(matching.StudentId, "/enter-marks")
-    }, "Enter Marks", " "))));
+    }, "Enter Marks", ' '))));
   }))) : /*#__PURE__*/React.createElement("div", null, "No students have been assigned to you yet"))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(StudentsList, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(StudentsList, null), document.getElementById('app'));

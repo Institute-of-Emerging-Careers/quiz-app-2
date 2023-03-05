@@ -50,7 +50,7 @@ var App = function App() {
 
 
   var _useState9 = useState(DateTime.local({
-    zone: "Asia/Karachi"
+    zone: 'Asia/Karachi'
   }).toISO({
     includeOffset: false,
     suppressMilliseconds: true,
@@ -61,7 +61,7 @@ var App = function App() {
       setPeriodStart = _useState10[1];
 
   var _useState11 = useState(DateTime.local({
-    zone: "Asia/Karachi"
+    zone: 'Asia/Karachi'
   }).toISO({
     includeOffset: false,
     suppressMilliseconds: true,
@@ -98,7 +98,7 @@ var App = function App() {
 
 
   useEffect(function () {
-    fetch("/admin/interview/interviewer/time-slots/".concat(document.getElementById("interview-round-id").value)).then(function (raw_response) {
+    fetch("/admin/interview/interviewer/time-slots/".concat(document.getElementById('interview-round-id').value)).then(function (raw_response) {
       if (raw_response.ok) {
         raw_response.json().then(function (response) {
           if (response.success) {
@@ -107,20 +107,20 @@ var App = function App() {
             var formatted_other_time_slots = response.all_other_time_slots.map(function (slot) {
               return {
                 start: DateTime.fromISO(slot.start, {
-                  zone: "Asia/Karachi"
+                  zone: 'Asia/Karachi'
                 }),
                 end: DateTime.fromISO(slot.end, {
-                  zone: "Asia/Karachi"
+                  zone: 'Asia/Karachi'
                 })
               };
             });
             setAllOtherTimeSlots(formatted_other_time_slots);
             setNumZoomAccounts(response.num_zoom_accounts);
-          } else alert("Something went wrong. Error code 03.");
-        }).catch(function (err) {
-          alert("Something went wrong. Error code 02.");
+          } else alert('Something went wrong. Error code 03.');
+        }).catch(function () {
+          alert('Something went wrong. Error code 02.');
         });
-      } else alert("Something went wrong. Please check your internet connection and try again. Error Code 01.");
+      } else alert('Something went wrong. Please check your internet connection and try again. Error Code 01.');
     });
   }, []);
   useEffect(function () {
@@ -135,9 +135,7 @@ var App = function App() {
     var end = DateTime.fromISO(period_end);
     e.preventDefault();
     var diff = new Date(period_end).getTime() - new Date(period_start).getTime();
-    if (diff < 0) alert("Error: The time period must start BEFORE it ends.");else if (diff < 600000) {
-      alert("Each slot must be at least 10 minutes long.");
-    } // checking if the selected time slot overlaps with more than {num_zoom_accounts} of the any of the other interviewers' slots
+    if (diff < 0) alert('Error: The time period must start BEFORE it ends.');else if (diff < 600000) alert('Each slot must be at least 10 minutes long.'); // checking if the selected time slot overlaps with more than {num_zoom_accounts} of the any of the other interviewers' slots
     else if (all_other_time_slots.reduce(function (num_overlaps, cur) {
       if (Interval.fromDateTimes(start, end).overlaps(Interval.fromDateTimes(cur.start, cur.end))) return num_overlaps + 1;else return num_overlaps;
     }, 0) < num_zoom_accounts) {
@@ -167,25 +165,25 @@ var App = function App() {
 
   var saveData = function saveData() {
     setSaving(true);
-    fetch("/admin/interview/interviewer/save-time-slots", {
-      method: "POST",
+    fetch('/admin/interview/interviewer/save-time-slots', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        interview_round_id: document.getElementById("interview-round-id").value,
+        interview_round_id: document.getElementById('interview-round-id').value,
         time_slots: time_slots
       })
     }).then(function (raw_response) {
       setSaving(false);
 
       if (raw_response.ok) {
-        alert("Saved Successfully");
+        alert('Saved Successfully');
       } else {
-        alert("Something went wrong on the server end.");
+        alert('Something went wrong on the server end.');
       }
     }).catch(function (err) {
-      alert("Something went wrong. Make sure your internet is working.");
+      alert('Something went wrong. Make sure your internet is working.');
       console.log(err);
     });
   };
@@ -196,18 +194,18 @@ var App = function App() {
   }, /*#__PURE__*/React.createElement("label", null, "Slot Start: "), !editing_start ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     className: "bg-gray-200 border p-4"
   }, DateTime.fromISO(period_start).toLocaleString({
-    weekday: "short",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
+    weekday: 'short',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
   })), /*#__PURE__*/React.createElement("a", {
     onClick: function onClick() {
       setEditingStart(true);
     },
     className: "text-iec-blue hover:text-iec-blue-hover cursor-pointer"
   }, /*#__PURE__*/React.createElement("i", {
-    class: "far fa-edit"
+    className: "far fa-edit"
   }), " Edit")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
     type: "datetime-local",
     value: period_start_draft,
@@ -215,7 +213,7 @@ var App = function App() {
       setPeriodStartDraft(e.target.value);
     },
     min: DateTime.local({
-      zone: "Asia/Karachi"
+      zone: 'Asia/Karachi'
     }).toISO({
       includeOffset: false
     }).substr(0, 16),
@@ -231,18 +229,18 @@ var App = function App() {
   }, "Set")), !editing_end ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("span", {
     className: "bg-gray-200 border p-4"
   }, DateTime.fromISO(period_end).toLocaleString({
-    weekday: "short",
-    month: "short",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit"
+    weekday: 'short',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit'
   })), /*#__PURE__*/React.createElement("a", {
     onClick: function onClick() {
       setEditingEnd(true);
     },
     className: "text-iec-blue hover:text-iec-blue-hover cursor-pointer"
   }, /*#__PURE__*/React.createElement("i", {
-    class: "far fa-edit"
+    className: "far fa-edit"
   }), " Edit")) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
     type: "datetime-local",
     value: period_end_draft,
@@ -250,7 +248,7 @@ var App = function App() {
       setPeriodEndDraft(e.target.value);
     },
     min: DateTime.local({
-      zone: "Asia/Karachi"
+      zone: 'Asia/Karachi'
     }).toISO({
       includeOffset: false
     }).substr(0, 16),
@@ -263,7 +261,7 @@ var App = function App() {
       setEditingEnd(false);
     },
     className: "p-4 bg-iec-blue hover:bg-iec-blue-hover text-white cursor-pointer"
-  }, "Set")), /*#__PURE__*/React.createElement("p", null, "Slot Duration:", " ", /*#__PURE__*/React.createElement("span", {
+  }, "Set")), /*#__PURE__*/React.createElement("p", null, "Slot Duration:", ' ', /*#__PURE__*/React.createElement("span", {
     className: "text-red-700"
   }, Duration.fromMillis(duration).toFormat("hh 'hours' mm 'minutes'"))), /*#__PURE__*/React.createElement("input", {
     type: "submit",
@@ -278,7 +276,7 @@ var App = function App() {
     className: "fas fa-spinner animate-spin"
   }) : /*#__PURE__*/React.createElement("i", {
     className: "fas fa-save"
-  }), " ", "Save Time Slots"), /*#__PURE__*/React.createElement("table", {
+  }), ' ', "Save Time Slots"), /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left"
   }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", {
     className: "p-2 border"
@@ -298,19 +296,19 @@ var App = function App() {
     }, index + 1), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border"
     }, DateTime.fromISO(time_slot.start).toLocaleString({
-      weekday: "short",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
     })), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border"
     }, DateTime.fromISO(time_slot.end).toLocaleString({
-      weekday: "short",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
+      weekday: 'short',
+      month: 'short',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
     })), /*#__PURE__*/React.createElement("td", {
       className: "p-2 border"
     }, Duration.fromMillis(time_slot.duration).toFormat("hh 'hours' mm 'minutes'")), /*#__PURE__*/React.createElement("td", {
@@ -321,8 +319,10 @@ var App = function App() {
       onClick: function onClick(e) {
         deleteSlot(e.target.dataset.index);
       }
-    }, "Delete"))) : /*#__PURE__*/React.createElement("tr", null);
+    }, "Delete"))) : /*#__PURE__*/React.createElement("tr", {
+      key: index
+    });
   })))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

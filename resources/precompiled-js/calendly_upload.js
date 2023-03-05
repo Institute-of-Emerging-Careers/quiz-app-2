@@ -24,24 +24,20 @@ var useState = React.useState;
 var useEffect = React.useEffect;
 
 var CalendlyUpload = function CalendlyUpload() {
-  var _useState = useState(""),
+  var _useState = useState(''),
       _useState2 = _slicedToArray(_useState, 2),
       link = _useState2[0],
       setLink = _useState2[1];
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-    var response;
     return _regeneratorRuntime().wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return fetch("/admin/interview/get-link");
+            return fetch('/admin/interview/get-link');
 
           case 2:
-            response = _context.sent;
-
-          case 3:
           case "end":
             return _context.stop();
         }
@@ -52,17 +48,17 @@ var CalendlyUpload = function CalendlyUpload() {
   var uploadLink = function uploadLink(e) {
     e.preventDefault();
     console.log(link);
-    fetch("/admin/interview/upload-link", {
-      method: "POST",
+    fetch('/admin/interview/upload-link', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         calendly_link: link
       })
     }).then(function (res) {
       if (res.status === 200) {
-        window.alert("Link uploaded successfully!");
+        window.alert('Link uploaded successfully!');
       }
     });
   };
@@ -86,4 +82,4 @@ var CalendlyUpload = function CalendlyUpload() {
   }, "Upload")));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(CalendlyUpload, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(CalendlyUpload, null), document.getElementById('app'));

@@ -18,16 +18,16 @@ var useState = React.useState;
 var useContext = React.useContext;
 var useRef = React.useRef;
 var useMemo = React.useMemo;
-var sectionId = parseInt(document.getElementById("sectionId").value);
-var quizTitle = document.getElementById("quizTitle").innerText;
-var sectionTitle = document.getElementById("sectionTitle").innerText;
-var preview_or_not = parseInt(document.getElementById("previewOrNot").value);
+var sectionId = parseInt(document.getElementById('sectionId').value);
+var quizTitle = document.getElementById('quizTitle').innerText;
+var sectionTitle = document.getElementById('sectionTitle').innerText;
+var preview_or_not = parseInt(document.getElementById('previewOrNot').value);
 
 function millisecondsToMinutesAndSeconds(millis) {
-  if (millis == 0) return "No Time Limit";else {
+  if (millis === 0) return 'No Time Limit';else {
     var minutes = Math.floor(millis / 60000);
     var seconds = (millis % 60000 / 1000).toFixed(0);
-    return minutes + " minutes and " + (seconds < 10 ? "0" : "") + seconds + " seconds remaining";
+    return minutes + ' minutes and ' + (seconds < 10 ? '0' : '') + seconds + ' seconds remaining';
   }
 }
 
@@ -71,8 +71,8 @@ var MCQSOption = function MCQSOption(props) {
     value: props.option.id,
     className: "mb-2 align-baseline",
     style: {
-      height: "17px",
-      width: "17px"
+      height: '17px',
+      width: '17px'
     },
     onChange: function onChange(e) {
       setQuestions(function (cur) {
@@ -80,10 +80,9 @@ var MCQSOption = function MCQSOption(props) {
         copy[props.questionIndex].answer = e.target.value;
         return copy;
       });
-      console.log("MCQ-S", e.target.value);
     },
-    checked: questions[props.questionIndex].answer == props.option.id
-  }), " ", /*#__PURE__*/React.createElement("label", null, props.option.statement, props.option.image != null ? /*#__PURE__*/React.createElement("img", {
+    checked: Number(questions[props.questionIndex].answer) === props.option.id
+  }), ' ', /*#__PURE__*/React.createElement("label", null, props.option.statement, props.option.image != null ? /*#__PURE__*/React.createElement("img", {
     src: props.option.image,
     className: "max-h-48 max-w-full h-auto w-auto py-4"
   }) : /*#__PURE__*/React.createElement("span", null)));
@@ -106,20 +105,20 @@ var MCQMOption = function MCQMOption(props) {
       setQuestions(function (cur) {
         var copy = cur.slice();
         copy[props.questionIndex].answer[props.optionIndex] = !copy[props.questionIndex].answer[props.optionIndex];
-        console.log("MCQ-M", copy);
+        console.log('MCQ-M', copy);
         return copy;
       });
     },
     checked: questions[props.questionIndex].answer[props.optionIndex]
-  }), " ", /*#__PURE__*/React.createElement("label", null, props.option.statement));
+  }), ' ', /*#__PURE__*/React.createElement("label", null, props.option.statement));
 };
 
 var Option = function Option(props) {
-  if (props.questionType == "MCQ-S") return /*#__PURE__*/React.createElement(MCQSOption, {
+  if (props.questionType === 'MCQ-S') return /*#__PURE__*/React.createElement(MCQSOption, {
     option: props.option,
     name: props.name,
     questionIndex: props.questionIndex
-  });else if (props.questionType == "MCQ-M") return /*#__PURE__*/React.createElement(MCQMOption, {
+  });else if (props.questionType === 'MCQ-M') return /*#__PURE__*/React.createElement(MCQMOption, {
     option: props.option,
     optionIndex: props.optionIndex,
     name: props.name,
@@ -151,20 +150,18 @@ var PassageQuestionPrompt = function PassageQuestionPrompt(props) {
   var _useContext3 = useContext(MyContext),
       questionsObj = _useContext3.questionsObj;
 
-  var _questionsObj3 = _slicedToArray(questionsObj, 2),
-      questions = _questionsObj3[0],
-      setQuestions = _questionsObj3[1];
+  var _questionsObj3 = _slicedToArray(questionsObj, 1),
+      questions = _questionsObj3[0];
 
-  var _useState7 = useState(""),
+  var _useState7 = useState(''),
       _useState8 = _slicedToArray(_useState7, 2),
-      list_of_questions = _useState8[0],
       setListOfQuestions = _useState8[1];
 
   useEffect(function () {
-    var list = "";
+    var list = '';
     questions.forEach(function (question_obj, question_index) {
-      if (question_obj.question.passage == props.passageIndex) {
-        if (list != "") list += ", ";
+      if (question_obj.question.passage === props.passageIndex) {
+        if (list !== '') list += ', ';
         list += question_index + 1;
       }
     });
@@ -177,9 +174,8 @@ var Passage = function Passage(props) {
   var _useContext4 = useContext(MyContext),
       passagesObj = _useContext4.passagesObj;
 
-  var _passagesObj = _slicedToArray(passagesObj, 2),
-      passages = _passagesObj[0],
-      setPassages = _passagesObj[1];
+  var _passagesObj = _slicedToArray(passagesObj, 1),
+      passages = _passagesObj[0];
 
   return /*#__PURE__*/React.createElement("div", {
     className: "single-question rounded-lg pb-4 text-left mx-auto mt-4"
@@ -193,23 +189,23 @@ var Passage = function Passage(props) {
   }, /*#__PURE__*/React.createElement("div", {
     className: "single-question-statement",
     style: {
-      whiteSpace: "pre-line"
+      whiteSpace: 'pre-line'
     }
   }, /*#__PURE__*/React.createElement("p", {
     style: {
-      wordWrap: "break-word"
+      wordWrap: 'break-word'
     }
   }, passages[props.passageIndex].statement))));
 };
 
 var ImageOrAudio = function ImageOrAudio(props) {
-  if (props.question.image != null && props.question.image != "null") {
-    if (props.question.image.indexOf("img/") !== -1) {
+  if (props.question.image != null && props.question.image !== 'null') {
+    if (props.question.image.indexOf('img/') !== -1) {
       return /*#__PURE__*/React.createElement("img", {
         src: props.question.image,
         className: "max-w-xl max-h-xl w-auto h-auto"
       });
-    } else if (props.question.image.indexOf("audio/") !== -1) {
+    } else if (props.question.image.indexOf('audio/') !== -1) {
       return /*#__PURE__*/React.createElement("audio", {
         controls: true
       }, /*#__PURE__*/React.createElement("source", {
@@ -221,13 +217,6 @@ var ImageOrAudio = function ImageOrAudio(props) {
 };
 
 var Question = function Question(props) {
-  var _useContext5 = useContext(MyContext),
-      questionsObj = _useContext5.questionsObj;
-
-  var _questionsObj4 = _slicedToArray(questionsObj, 2),
-      questions = _questionsObj4[0],
-      setQuestions = _questionsObj4[1];
-
   var question = props.obj.question;
   var options = props.obj.options;
   return /*#__PURE__*/React.createElement("div", {
@@ -241,11 +230,12 @@ var Question = function Question(props) {
   }), /*#__PURE__*/React.createElement("a", {
     href: question.link_url,
     className: "text-blue-600 underline hover:no-underline",
-    target: "_blank"
+    target: "_blank",
+    rel: "noreferrer"
   }, question.link_text == null ? question.link_url : question.link_text), /*#__PURE__*/React.createElement("div", {
     className: "single-question-statement",
     style: {
-      whiteSpace: "pre-line"
+      whiteSpace: 'pre-line'
     }
   }, question.statement), /*#__PURE__*/React.createElement("ul", {
     className: "mt-2"
@@ -262,34 +252,33 @@ var Question = function Question(props) {
 };
 
 var Main = function Main() {
-  var _useContext6 = useContext(MyContext),
-      questionsObj = _useContext6.questionsObj,
-      displayQuestionsObj = _useContext6.displayQuestionsObj,
-      passagesObj = _useContext6.passagesObj;
+  var _useContext5 = useContext(MyContext),
+      questionsObj = _useContext5.questionsObj,
+      displayQuestionsObj = _useContext5.displayQuestionsObj,
+      passagesObj = _useContext5.passagesObj;
 
-  var _questionsObj5 = _slicedToArray(questionsObj, 2),
-      questions = _questionsObj5[0],
-      setQuestions = _questionsObj5[1];
+  var _questionsObj4 = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj4[0],
+      setQuestions = _questionsObj4[1];
 
   var _passagesObj2 = _slicedToArray(passagesObj, 2),
       passages = _passagesObj2[0],
       setPassages = _passagesObj2[1];
 
-  var _displayQuestionsObj = _slicedToArray(displayQuestionsObj, 2),
-      displayQuestions = _displayQuestionsObj[0],
-      setDisplayQuestions = _displayQuestionsObj[1];
+  var _displayQuestionsObj = _slicedToArray(displayQuestionsObj, 1),
+      displayQuestions = _displayQuestionsObj[0];
 
   var _useState9 = useState(false),
       _useState10 = _slicedToArray(_useState9, 2),
       saveSpinner = _useState10[0],
       setSaveSpinner = _useState10[1];
 
-  var _useState11 = useState("bg-iec-blue"),
+  var _useState11 = useState('bg-iec-blue'),
       _useState12 = _slicedToArray(_useState11, 2),
       saveButtonColor = _useState12[0],
       setSaveButtonColor = _useState12[1];
 
-  var _useState13 = useState("Save Current Progress"),
+  var _useState13 = useState('Save Current Progress'),
       _useState14 = _slicedToArray(_useState13, 2),
       saveButtonText = _useState14[0],
       setSaveButtonText = _useState14[1];
@@ -299,17 +288,17 @@ var Main = function Main() {
       submitSpinner = _useState16[0],
       setSubmitSpinner = _useState16[1];
 
-  var _useState17 = useState("bg-iec-blue"),
+  var _useState17 = useState('bg-iec-blue'),
       _useState18 = _slicedToArray(_useState17, 2),
       submitButtonColor = _useState18[0],
       setSubmitButtonColor = _useState18[1];
 
   useMemo(function () {
-    setSaveButtonColor("bg-iec-blue");
-    setSaveButtonText("Save Current Progress");
+    setSaveButtonColor('bg-iec-blue');
+    setSaveButtonText('Save Current Progress');
   }, [questions]);
   useEffect(function () {
-    if (displayQuestions == false) submitQuiz();
+    if (displayQuestions === false) submitQuiz();
   }, [displayQuestions]);
 
   function saveQuizProgress() {
@@ -317,7 +306,7 @@ var Main = function Main() {
     setSaveSpinner(true);
     var answers = [];
     questions.forEach(function (obj) {
-      if (obj.question.type == "MCQ-S") answers.push({
+      if (obj.question.type === 'MCQ-S') answers.push({
         questionId: obj.question.id,
         questionType: obj.question.type,
         answerOptionId: obj.answer
@@ -336,51 +325,51 @@ var Main = function Main() {
     });
     return new Promise(function (resolve, reject) {
       $.ajax({
-        url: "/quiz/save-progress",
-        type: "POST",
-        contentType: "application/json",
+        url: '/quiz/save-progress',
+        type: 'POST',
+        contentType: 'application/json',
         data: JSON.stringify({
           sectionId: sectionId,
           answers: answers
         }),
-        dataType: "json",
+        dataType: 'json',
         success: function success(response) {
           setSaveSpinner(false);
 
-          if (response.success == true) {
-            setSaveButtonColor("bg-green-500");
-            setSaveButtonText("Saved Successfully");
+          if (response.success === true) {
+            setSaveButtonColor('bg-green-500');
+            setSaveButtonText('Saved Successfully');
             resolve(response.time);
           } else {
-            setSaveButtonColor("bg-red-500");
-            setSaveButtonText("Saving Failed!");
+            setSaveButtonColor('bg-red-500');
+            setSaveButtonText('Saving Failed!');
             setTimeout(function () {
-              setSaveButtonColor("bg-iec-blue");
-              setSaveButtonText("Save Current Progress");
+              setSaveButtonColor('bg-iec-blue');
+              setSaveButtonText('Save Current Progress');
             }, 3000);
-            reject();
+            reject(new Error('Failed to save progress'));
           }
         }
       });
     });
   }
 
-  function sendScoringRequest(time) {
-    $.get("/quiz/attempt/" + sectionId + "/score", function (resp) {
-      if (resp.success == true) {
+  function sendScoringRequest() {
+    $.get('/quiz/attempt/' + sectionId + '/score', function (resp) {
+      if (resp.success === true) {
         setSubmitSpinner(false);
-        setSubmitButtonColor("bg-green-500");
-        console.log("Quiz submitted successfully.");
-        if (resp.all_sections_solved) window.location = "/student/feedback";else window.location = "/student?success=true";
+        setSubmitButtonColor('bg-green-500');
+        console.log('Quiz submitted successfully.');
+        if (resp.all_sections_solved) window.location = '/student/feedback';else window.location = '/student?success=true';
       } else {
-        console.log("Error submitting quiz.");
+        console.log('Error submitting quiz.');
       }
     });
   }
 
   function submitQuiz() {
     // if saveButtonColor is green, that means student's quiz has been saved at the server and nothing has changed afterwards
-    if (saveButtonColor != "bg-green-500") {
+    if (saveButtonColor !== 'bg-green-500') {
       saveQuizProgress().then(function (time) {
         setSubmitSpinner(true);
         sendScoringRequest(time);
@@ -394,40 +383,42 @@ var Main = function Main() {
   }
 
   useEffect(function () {
-    $.get("/quiz/section/" + sectionId + "/all-questions", function (resp) {
-      if (resp.success == true) {
+    $.get('/quiz/section/' + sectionId + '/all-questions', function (resp) {
+      if (resp.success === true) {
         var mcqs = resp.data;
         setPassages(resp.passages);
         setQuestions(mcqs);
       } else {
         // handle error
-        console.log("Error getting questions.");
+        console.log('Error getting questions.');
       }
-    }, "json");
+    }, 'json');
   }, []);
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 justify-end mb-6"
   }, /*#__PURE__*/React.createElement("div", {
     className: "justify-self-center sm:justify-self-end flex flex-row gap-2"
   }, /*#__PURE__*/React.createElement("button", {
-    className: saveButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2",
+    className: saveButtonColor + ' hover:bg-iec-blue-hover text-white rounded-md px-4 py-2',
     onClick: saveQuizProgress,
     disabled: preview_or_not
   }, /*#__PURE__*/React.createElement("i", {
-    className: saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
-  }), " ", saveButtonText), /*#__PURE__*/React.createElement("button", {
-    className: submitButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2",
+    className: saveSpinner ? 'fas fa-spinner animate-spin' : 'far fa-save'
+  }), ' ', saveButtonText), /*#__PURE__*/React.createElement("button", {
+    className: submitButtonColor + ' hover:bg-iec-blue-hover text-white rounded-md px-4 py-2',
     onClick: submitQuiz,
     disabled: preview_or_not
   }, /*#__PURE__*/React.createElement("i", {
-    className: submitSpinner ? "fas fa-spinner animate-spin" : "far fa-paper-plane"
-  }), " ", "Finish & Submit Quiz"))), displayQuestions ? questions.map(function (obj, index) {
+    className: submitSpinner ? 'fas fa-spinner animate-spin' : 'far fa-paper-plane'
+  }), ' ', "Finish & Submit Quiz"))), displayQuestions ? questions.map(function (obj, index) {
     return obj.question.passage == null ? /*#__PURE__*/React.createElement(Question, {
       obj: obj,
       questionIndex: index,
       total_questions: questions.length,
       key: obj.question.id
-    }) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Passage, {
+    }) : /*#__PURE__*/React.createElement("div", {
+      key: index
+    }, /*#__PURE__*/React.createElement(Passage, {
       passage: passages[obj.question.passage],
       questionIndex: index,
       passageIndex: obj.question.passage
@@ -442,47 +433,45 @@ var Main = function Main() {
   }, /*#__PURE__*/React.createElement("div", {
     className: "justify-self-center sm:justify-self-end flex flex-row gap-2"
   }, /*#__PURE__*/React.createElement("button", {
-    className: saveButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2",
+    className: saveButtonColor + ' hover:bg-iec-blue-hover text-white rounded-md px-4 py-2',
     onClick: saveQuizProgress,
     disabled: preview_or_not
   }, /*#__PURE__*/React.createElement("i", {
-    className: saveSpinner ? "fas fa-spinner animate-spin" : "far fa-save"
-  }), " ", saveButtonText), /*#__PURE__*/React.createElement("button", {
-    className: submitButtonColor + " hover:bg-iec-blue-hover text-white rounded-md px-4 py-2",
+    className: saveSpinner ? 'fas fa-spinner animate-spin' : 'far fa-save'
+  }), ' ', saveButtonText), /*#__PURE__*/React.createElement("button", {
+    className: submitButtonColor + ' hover:bg-iec-blue-hover text-white rounded-md px-4 py-2',
     onClick: submitQuiz,
     disabled: preview_or_not
   }, /*#__PURE__*/React.createElement("i", {
-    className: submitSpinner ? "fas fa-spinner animate-spin" : "far fa-paper-plane"
-  }), " ", "Finish & Submit Quiz"))));
+    className: submitSpinner ? 'fas fa-spinner animate-spin' : 'far fa-paper-plane'
+  }), ' ', "Finish & Submit Quiz"))));
 };
 
 var Header = function Header() {
-  var _useContext7 = useContext(MyContext),
-      questionsObj = _useContext7.questionsObj,
-      displayQuestionsObj = _useContext7.displayQuestionsObj;
+  var _useContext6 = useContext(MyContext),
+      displayQuestionsObj = _useContext6.displayQuestionsObj;
 
   var _displayQuestionsObj2 = _slicedToArray(displayQuestionsObj, 2),
-      displayQuestions = _displayQuestionsObj2[0],
       setDisplayQuestions = _displayQuestionsObj2[1];
 
-  var _useState19 = useState("Please wait"),
+  var _useState19 = useState('Please wait'),
       _useState20 = _slicedToArray(_useState19, 2),
       remainingTime = _useState20[0],
       setRemainingTime = _useState20[1];
 
-  var remainingTimeRef = useRef("Please wait");
-  var timeRef = useRef(null); //stores the setInterval object
+  var remainingTimeRef = useRef('Please wait');
+  var timeRef = useRef(null); // stores the setInterval object
 
   remainingTimeRef.current = remainingTime;
 
   function myFunction() {
-    if (remainingTimeRef.current == 0) {
-      setRemainingTime("No Time Limit");
+    if (remainingTimeRef.current === 0) {
+      setRemainingTime('No Time Limit');
       clearInterval(timeRef.current);
     } else if (remainingTimeRef.current != null && remainingTimeRef.current < 2000) {
       setTimeout(function () {
         setDisplayQuestions(false);
-        setRemainingTime("Time Over");
+        setRemainingTime('Time Over');
       }, 1000);
       clearInterval(timeRef.current);
     } else if (remainingTimeRef.current != null) {
@@ -494,24 +483,24 @@ var Header = function Header() {
 
   useEffect(function () {
     var edt;
-    $.get("/quiz/section/" + sectionId + "/endTime", function (resp) {
-      if (resp.success == true) {
+    $.get('/quiz/section/' + sectionId + '/endTime', function (resp) {
+      if (resp.success === true) {
         edt = resp.duration_left;
         setRemainingTime(edt);
 
-        if (edt != 0) {
-          console.log("interval set");
+        if (edt !== 0) {
+          console.log('interval set');
           timeRef.current = setInterval(myFunction, 1000);
         }
       } else {
         // handle error
-        console.log("Error getting endTime.");
-        alert("Please contact IT team at rohan.hussain@iec.org.pk");
+        console.log('Error getting endTime.');
+        alert('Please contact IT team at rohan.hussain@iec.org.pk');
       }
-    }, "json");
+    }, 'json');
   }, []);
   return /*#__PURE__*/React.createElement("div", {
-    class: "sticky top-0 shadow-lg"
+    className: "sticky top-0 shadow-lg"
   }, /*#__PURE__*/React.createElement("div", {
     id: "quiz-header",
     className: "bg-white m-auto mb-1 gap-y-2 px-8 py-4 rounded-2xl grid grid-cols-4 justify-between text-lg"
@@ -520,7 +509,7 @@ var Header = function Header() {
   }, quizTitle), /*#__PURE__*/React.createElement("p", {
     className: "justify-self-center md:justify-self-end col-span-4 md:col-span-2 lg:col-span-1"
   }, sectionTitle), /*#__PURE__*/React.createElement("p", {
-    className: remainingTime == "No Time Limit" ? "text-green-700 justify-self-center lg:justify-self-end col-span-4 lg:col-span-2" : "text-red-700" + "justify-self-center lg:justify-self-end col-span-4 lg:col-span-2"
+    className: remainingTime === 'No Time Limit' ? 'text-green-700 justify-self-center lg:justify-self-end col-span-4 lg:col-span-2' : 'text-red-700' + 'justify-self-center lg:justify-self-end col-span-4 lg:col-span-2'
   }, millisecondsToMinutesAndSeconds(remainingTime))));
 };
 
@@ -528,4 +517,4 @@ var App = function App() {
   return /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(Header, null), /*#__PURE__*/React.createElement(Main, null));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

@@ -1,8 +1,8 @@
-const { Assignment, Attempt, Section, Quiz } = require("../db/models")
-const allSectionsSolved = require("./allSectionsSolved")
-const calculateScore = require("./calculateScore")
-const updateScore = require("./updateScore")
-const { setSectionStatusToComplete } = require("./setSectionStatusToComplete")
+const { Assignment, Attempt, Section, Quiz } = require('../db/models')
+const allSectionsSolved = require('./allSectionsSolved')
+const calculateScore = require('./calculateScore')
+const updateScore = require('./updateScore')
+const { setSectionStatusToComplete } = require('./setSectionStatusToComplete')
 
 function scoreSection(
 	section_id,
@@ -14,8 +14,8 @@ function scoreSection(
 		try {
 			const section = await Section.findOne({
 				where: { id: section_id },
-				include: { model: Quiz, required: true, attributes: ["id"] },
-				attributes: ["title"],
+				include: { model: Quiz, required: true, attributes: ['id'] },
+				attributes: ['title'],
 			})
 
 			const quizId = section.Quiz.id
@@ -93,7 +93,7 @@ function scoreSection(
 				// }
 				resolve()
 			} else {
-				reject()
+				reject(new Error())
 			}
 		} catch (err) {
 			reject(err)

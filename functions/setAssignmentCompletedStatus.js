@@ -1,5 +1,4 @@
-const { Op } = require("sequelize")
-const { Quiz, Section, Assignment, Attempt } = require("../db/models")
+const { Quiz, Section, Assignment, Attempt } = require('../db/models')
 
 async function setAssignmentCompletedStatus(quiz_id) {
 	const quiz = await Quiz.findOne({
@@ -18,9 +17,7 @@ async function setAssignmentCompletedStatus(quiz_id) {
 			resolve()
 		})
 
-	const assignments = quiz.hasOwnProperty("Assignments")
-		? quiz.Assignments
-		: null
+	const assignments = quiz.Assignments ?? null
 	return Promise.all(
 		assignments == null
 			? [
@@ -30,17 +27,15 @@ async function setAssignmentCompletedStatus(quiz_id) {
 			  ]
 			: assignments.map((assignment) => {
 					if (
-						assignment.Attempts.length == quiz.Sections.length &&
+						assignment.Attempts.length === quiz.Sections.length &&
 						assignment.Attempts.reduce((final, cur) => {
 							if (!final) return false
-							else if (cur.statusText != "Completed") return false
+							else if (cur.statusText !== 'Completed') return false
 							else return true
 						}, true)
-					) {
+					)
 						return assignment.update({ completed: true })
-					} else {
-						return assignment.update({ completed: false })
-					}
+					else return assignment.update({ completed: false })
 			  })
 	)
 }

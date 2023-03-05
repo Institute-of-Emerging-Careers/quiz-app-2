@@ -1,5 +1,5 @@
-const { Answer, Question, Section } = require("../db/models")
-const getQuestionsOfStudent = require("./getQuestionsOfStudent.js")
+const { Answer, Question, Section } = require('../db/models')
+const getQuestionsOfStudent = require('./getQuestionsOfStudent.js')
 
 function calculateScore(sectionId, studentId) {
 	return new Promise(async (main_resolve, main_reject) => {
@@ -7,37 +7,37 @@ function calculateScore(sectionId, studentId) {
 		let score = 0.0
 		let questions = await Question.findAll({
 			where: { SectionId: sectionId },
-			attributes: ["id", "marks", "type"],
+			attributes: ['id', 'marks', 'type'],
 		})
-		if (section.poolCount == questions.length) {
+		if (section.poolCount === questions.length) {
 			let count_questions = 0
 			questions.forEach(async (question) => {
-				if (question.type == "MCQ-S") {
+				if (question.type === 'MCQ-S') {
 					const student_answer = await Answer.findOne({
 						where: { QuestionId: question.id, StudentId: studentId },
-						order: [["id", "desc"]],
+						order: [['id', 'desc']],
 					})
 					if (student_answer != null) {
 						const student_answer_option = await student_answer.getOption({
-							attributes: ["correct"],
+							attributes: ['correct'],
 						})
 						if (student_answer_option.correct) {
 							score += question.marks
 						}
 					}
 					count_questions++
-					if (count_questions == questions.length) {
+					if (count_questions === questions.length) {
 						main_resolve(score)
 					}
-				} else if (question.type == "MCQ-M") {
+				} else if (question.type === 'MCQ-M') {
 					let all_correct = true
 					const student_answers = await Answer.findAll({
 						where: { QuestionId: question.id, StudentId: studentId },
 					})
 
-					if (student_answers == null || student_answers.length == 0) {
+					if (student_answers == null || student_answers.length === 0) {
 						count_questions++
-						if (count_questions == questions.length) {
+						if (count_questions === questions.length) {
 							main_resolve(score)
 						}
 					} else {
@@ -46,17 +46,17 @@ function calculateScore(sectionId, studentId) {
 							student_answers.every(async (answer) => {
 								try {
 									const key = await answer.getOption({
-										attributes: ["correct"],
+										attributes: ['correct'],
 									})
 									if (!key.correct) {
 										all_correct = false
 									}
 									count_answers++
-									if (count_answers == student_answers.length) {
+									if (count_answers === student_answers.length) {
 										resolve(all_correct)
 									}
 								} catch (err) {
-									reject()
+									reject(err)
 								}
 							})
 						})
@@ -65,7 +65,7 @@ function calculateScore(sectionId, studentId) {
 									score += question.marks
 								}
 								count_questions++
-								if (count_questions == questions.length) {
+								if (count_questions === questions.length) {
 									main_resolve(score)
 								}
 							})
@@ -81,14 +81,14 @@ function calculateScore(sectionId, studentId) {
 			let count_questions = 0
 			if (questions.length > 0) {
 				questions.forEach(async (question) => {
-					if (question.type == "MCQ-S") {
+					if (question.type === 'MCQ-S') {
 						const student_answer = await Answer.findOne({
 							where: { QuestionId: question.id, StudentId: studentId },
-							order: [["id", "desc"]],
+							order: [['id', 'desc']],
 						})
 						if (student_answer != null) {
 							const student_answer_option = await student_answer.getOption({
-								attributes: ["correct"],
+								attributes: ['correct'],
 							})
 							if (
 								student_answer_option != null &&
@@ -98,18 +98,18 @@ function calculateScore(sectionId, studentId) {
 							}
 						}
 						count_questions++
-						if (count_questions == questions.length) {
+						if (count_questions === questions.length) {
 							main_resolve(score)
 						}
-					} else if (question.type == "MCQ-M") {
+					} else if (question.type === 'MCQ-M') {
 						let all_correct = true
 						const student_answers = await Answer.findAll({
 							where: { QuestionId: question.id, StudentId: studentId },
 						})
 
-						if (student_answers == null || student_answers.length == 0) {
+						if (student_answers == null || student_answers.length === 0) {
 							count_questions++
-							if (count_questions == questions.length) {
+							if (count_questions === questions.length) {
 								main_resolve(score)
 							}
 						} else {
@@ -118,17 +118,17 @@ function calculateScore(sectionId, studentId) {
 								student_answers.every(async (answer) => {
 									try {
 										const key = await answer.getOption({
-											attributes: ["correct"],
+											attributes: ['correct'],
 										})
 										if (!key.correct) {
 											all_correct = false
 										}
 										count_answers++
-										if (count_answers == student_answers.length) {
+										if (count_answers === student_answers.length) {
 											resolve(all_correct)
 										}
 									} catch (err) {
-										reject()
+										reject(err)
 									}
 								})
 							})
@@ -137,7 +137,7 @@ function calculateScore(sectionId, studentId) {
 										score += 1
 									}
 									count_questions++
-									if (count_questions == questions.length) {
+									if (count_questions === questions.length) {
 										main_resolve(score)
 									}
 								})

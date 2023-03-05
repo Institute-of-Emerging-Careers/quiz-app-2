@@ -21,6 +21,7 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 // this file requires data_lists.js
+// eslint-disable-next-line
 var ApplicationsList = function ApplicationsList(props) {
   var _useContext = useContext(MyContext),
       applications_object = _useContext.applications_object,
@@ -28,15 +29,12 @@ var ApplicationsList = function ApplicationsList(props) {
       reload_object = _useContext.reload_object;
 
   var _reload_object = _slicedToArray(reload_object, 2),
-      reload_applications = _reload_object[0],
       setReloadApplications = _reload_object[1];
 
-  var _applications_object = _slicedToArray(applications_object, 2),
-      applications = _applications_object[0],
-      setApplications = _applications_object[1];
+  var _applications_object = _slicedToArray(applications_object, 1),
+      applications = _applications_object[0];
 
   var _modal_object = _slicedToArray(modal_object, 2),
-      show_modal = _modal_object[0],
       setShowModal = _modal_object[1];
 
   var _useState = useState(false),
@@ -72,162 +70,161 @@ var ApplicationsList = function ApplicationsList(props) {
   var application_id_to_array_index_map = props.application_id_to_array_index_map;
 
   var _useState13 = useState([{
-    title: "Age Group",
-    name: ["age_group"]
+    title: 'Age Group',
+    name: ['age_group']
   }, {
     title: "Father's Name",
-    name: ["father_name"]
+    name: ['father_name']
   }, {
-    title: "City of Residence",
-    name: ["city"]
+    title: 'City of Residence',
+    name: ['city']
   }, {
-    title: "Province of Residence",
-    name: ["province"]
+    title: 'Province of Residence',
+    name: ['province']
   }, {
-    title: "Country of Residence",
-    name: ["country"]
+    title: 'Country of Residence',
+    name: ['country']
   }, {
-    title: "Home Address",
-    name: ["address"]
+    title: 'Home Address',
+    name: ['address']
   }, {
-    title: "Current Address",
-    name: ["current_address"]
+    title: 'Current Address',
+    name: ['current_address']
   }, {
-    title: "From flood affected area",
-    name: ["belongs_to_flood_area"]
+    title: 'From flood affected area',
+    name: ['belongs_to_flood_area']
   }, {
-    title: "City of origin",
-    name: ["city_of_origin"]
-  },, {
-    title: "Flood area name",
-    name: ["flood_area_name"]
+    title: 'City of origin',
+    name: ['city_of_origin']
+  }, {
+    title: 'Flood area name',
+    name: ['flood_area_name']
   }, {
     title: "Has completed bachelor's degree",
-    name: ["has_completed_ba"]
+    name: ['has_completed_ba']
   }, {
-    title: "Has completed diploma",
-    name: ["has_completed_diploma"]
+    title: 'Has completed diploma',
+    name: ['has_completed_diploma']
   }, {
-    title: "Institute of degree or diploma",
-    name: ["inst_degree_dip"]
+    title: 'Institute of degree or diploma',
+    name: ['inst_degree_dip']
   }, {
-    title: "Can share FinAid docs",
-    name: ["can_share_fa_docs"]
+    title: 'Can share FinAid docs',
+    name: ['can_share_fa_docs']
   }, {
-    title: "Can share FinAid docs",
-    name: ["can_share_fa_docs"]
+    title: 'Can share FinAid docs',
+    name: ['can_share_fa_docs']
   }, {
-    title: "Education Completed",
-    name: ["education_completed"]
+    title: 'Education Completed',
+    name: ['education_completed']
   }, {
-    title: ["Major of Education Completed"],
-    name: ["education_completed_major"]
+    title: ['Major of Education Completed'],
+    name: ['education_completed_major']
   }, {
-    title: "Ongoing Education",
-    name: ["education_ongoing"]
+    title: 'Ongoing Education',
+    name: ['education_ongoing']
   }, {
-    title: "Degree Choice",
-    name: ["degree_choice"]
+    title: 'Degree Choice',
+    name: ['degree_choice']
   }, {
-    title: "Major of Ongoing Education",
-    name: ["education_ongoing_major"]
+    title: 'Major of Ongoing Education',
+    name: ['education_ongoing_major']
   }, {
-    title: "Monthly Family Income",
-    name: ["monthly_family_income"]
+    title: 'Monthly Family Income',
+    name: ['monthly_family_income']
   }, {
-    title: "Do you have computer and internet access?",
-    name: ["computer_and_internet_access"]
+    title: 'Do you have computer and internet access?',
+    name: ['computer_and_internet_access']
   }, {
-    title: "Is there reliable internet facility in your area?",
-    name: ["internet_facility_in_area"]
+    title: 'Is there reliable internet facility in your area?',
+    name: ['internet_facility_in_area']
   }, {
-    title: "Can you spend 30 to 40 hours a week on the program?",
-    name: ["time_commitment"]
+    title: 'Can you spend 30 to 40 hours a week on the program?',
+    name: ['time_commitment']
   }, {
-    title: "Are you currently employed?",
-    name: ["is_employed"]
+    title: 'Are you currently employed?',
+    name: ['is_employed']
   }, {
-    title: "Employment type",
-    name: ["type_of_employment"]
+    title: 'Employment type',
+    name: ['type_of_employment']
   }, {
-    title: "Current salary",
-    name: ["salary"]
+    title: 'Current salary',
+    name: ['salary']
   }, {
-    title: "How are you enrolling in the program",
-    name: ["how_to_enroll"]
+    title: 'How are you enrolling in the program',
+    name: ['how_to_enroll']
   }, {
-    title: "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-    name: ["will_leave_job"]
+    title: 'Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?',
+    name: ['will_leave_job']
   }, {
-    title: "Salary expectations after graduation",
-    name: ["salary_expectation"]
+    title: 'Salary expectations after graduation',
+    name: ['salary_expectation']
   }, {
-    title: "Are you on financial aid in university?",
-    name: ["on_fa_in_university"]
+    title: 'Are you on financial aid in university?',
+    name: ['on_fa_in_university']
   }, {
-    title: "How many people are earning in your household?",
-    name: ["people_earning_in_household"]
+    title: 'How many people are earning in your household?',
+    name: ['people_earning_in_household']
   }, {
-    title: "Have you applied to IEC before?",
-    name: ["has_applied_before"]
+    title: 'Have you applied to IEC before?',
+    name: ['has_applied_before']
   }, {
-    title: "How will you complete the course?",
-    name: ["how_complete_course"]
+    title: 'How will you complete the course?',
+    name: ['how_complete_course']
   }, {
-    title: "Can you pay 2000 PKR per month?",
-    name: ["can_pay_2000"]
+    title: 'Can you pay 2000 PKR per month?',
+    name: ['can_pay_2000']
   }, {
-    title: "Are you married?",
-    name: ["is_married"]
+    title: 'Are you married?',
+    name: ['is_married']
   }, {
-    title: "First Preference",
-    name: ["first preference", "title"]
+    title: 'First Preference',
+    name: ['first preference', 'title']
   }, {
-    title: "Second Preference",
-    name: ["second preference", "title"]
+    title: 'Second Preference',
+    name: ['second preference', 'title']
   }, {
-    title: "Third Preference",
-    name: ["third preference", "title"]
+    title: 'Third Preference',
+    name: ['third preference', 'title']
   }, {
-    title: "Reason for Preferences",
-    name: ["preference_reason"]
+    title: 'Reason for Preferences',
+    name: ['preference_reason']
   }, {
-    title: "Are you a graduate in computer science or any related field?",
-    name: ["is_comp_sci_grad"]
+    title: 'Are you a graduate in computer science or any related field?',
+    name: ['is_comp_sci_grad']
   }, {
-    title: "Do you have any digital skills certifications? If yes, please share their names and the name of the institution.",
-    name: ["digi_skills_certifications"]
+    title: 'Do you have any digital skills certifications? If yes, please share their names and the name of the institution.',
+    name: ['digi_skills_certifications']
   }, {
-    title: "How did you hear about IEC?",
-    name: ["how_heard_about_iec"]
+    title: 'How did you hear about IEC?',
+    name: ['how_heard_about_iec']
   }, {
-    title: "Do you know anyone from IEC?",
-    name: ["knows_from_IEC"]
+    title: 'Do you know anyone from IEC?',
+    name: ['knows_from_IEC']
   }, {
-    title: "Will you sign the LEC agreement?",
-    name: ["LEC_acknowledgement"]
+    title: 'Will you sign the LEC agreement?',
+    name: ['LEC_acknowledgement']
   }, {
-    title: "Will you be available for full time work after the program?",
-    name: ["will_work_full_time"]
+    title: 'Will you be available for full time work after the program?',
+    name: ['will_work_full_time']
   }, {
-    title: "What is your first preference reason?",
-    name: ["firstPreferenceReason"]
+    title: 'What is your first preference reason?',
+    name: ['firstPreferenceReason']
   }, {
-    title: "What is your second preference reason?",
-    name: ["secondPreferenceReason"]
+    title: 'What is your second preference reason?',
+    name: ['secondPreferenceReason']
   }, {
-    title: "What is your first preference reason?",
-    name: ["firstPreferenceReason"]
+    title: 'What is your first preference reason?',
+    name: ['firstPreferenceReason']
   }, {
-    title: "The program is entirely online. Do you acknowledge that?",
-    name: ["acknowledge_online"]
+    title: 'The program is entirely online. Do you acknowledge that?',
+    name: ['acknowledge_online']
   }, {
-    title: "Applicant Emailed about Assessment",
-    name: ["was_emailed_about_assessment"]
+    title: 'Applicant Emailed about Assessment',
+    name: ['was_emailed_about_assessment']
   }]),
-      _useState14 = _slicedToArray(_useState13, 2),
-      questions = _useState14[0],
-      setQuestions = _useState14[1];
+      _useState14 = _slicedToArray(_useState13, 1),
+      questions = _useState14[0];
 
   useEffect(function () {
     fetch("/admin/application/courses/".concat(props.application_round_id)).then(function (raw_response) {
@@ -235,22 +232,22 @@ var ApplicationsList = function ApplicationsList(props) {
         raw_response.json().then(function (response) {
           setCourses(response);
         }).catch(function (err) {
-          alert("The server sent an invalid response. Something is wrong.");
+          alert('The server sent an invalid response. Something is wrong.');
           console.log(err);
         });
       } else {
-        alert("Something went wrong while getting list of course preference filters. The rest of the page will work fine.");
+        alert('Something went wrong while getting list of course preference filters. The rest of the page will work fine.');
       }
     }).catch(function (err) {
       console.log(err);
-      alert("Could not load courses for filtering. Check your internet connection.");
+      alert('Could not load courses for filtering. Check your internet connection.');
     });
   }, []);
   useEffect(function () {
     setFilters([{
-      title: "Age Group",
-      name: "age_group",
-      filter_type: "fixed_values",
+      title: 'Age Group',
+      name: 'age_group',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: age_groups.map(function (val) {
         return {
@@ -260,9 +257,9 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "City of Residence",
-      name: "city",
-      filter_type: "fixed_values",
+      title: 'City of Residence',
+      name: 'city',
+      filter_type: 'fixed_values',
       possible_values: cities.map(function (val) {
         return {
           value: val,
@@ -272,9 +269,9 @@ var ApplicationsList = function ApplicationsList(props) {
       discrepancy_between_value_and_text: false,
       expand_possible_values: false
     }, {
-      title: "Province of Residence",
-      name: "province",
-      filter_type: "fixed_values",
+      title: 'Province of Residence',
+      name: 'province',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: provinces.map(function (val) {
         return {
@@ -284,9 +281,9 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Country of Residence",
-      name: "country",
-      filter_type: "fixed_values",
+      title: 'Country of Residence',
+      name: 'country',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: cities.map(function (val) {
         return {
@@ -296,24 +293,24 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "From flood affected areas",
-      name: "belongs_to_flood_area",
-      filter_type: "fixed_values",
+      title: 'From flood affected areas',
+      name: 'belongs_to_flood_area',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }],
       expand_possible_values: false
     }, {
-      title: "Education Completed",
-      name: "education_completed",
-      filter_type: "fixed_values",
+      title: 'Education Completed',
+      name: 'education_completed',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: education_levels.map(function (val) {
         return {
@@ -323,24 +320,24 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Can pay 2000",
-      name: "can_pay_2000",
-      filter_type: "fixed_values",
+      title: 'Can pay 2000',
+      name: 'can_pay_2000',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }],
       expand_possible_values: false
     }, {
-      title: "Ongoing Education",
-      name: "education_ongoing",
-      filter_type: "fixed_values",
+      title: 'Ongoing Education',
+      name: 'education_ongoing',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: education_levels.map(function (val) {
         return {
@@ -350,83 +347,83 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Minimum Monthly Family Income",
-      name: "monthly_family_income",
-      filter_type: "integer_value",
+      title: 'Minimum Monthly Family Income',
+      name: 'monthly_family_income',
+      filter_type: 'integer_value',
       min: 0,
       max: 200000,
       increment: 5000,
       value: 0,
-      unit: "PKR"
+      unit: 'PKR'
     }, {
-      title: "Minimum Current salary",
-      name: "salary",
-      filter_type: "integer_value",
+      title: 'Minimum Current salary',
+      name: 'salary',
+      filter_type: 'integer_value',
       min: 0,
       max: 200000,
       increment: 5000,
       value: 0,
-      unit: "PKR"
+      unit: 'PKR'
     }, {
-      title: "Do you have computer and internet access?",
-      name: "computer_and_internet_access",
-      filter_type: "fixed_values",
+      title: 'Do you have computer and internet access?',
+      name: 'computer_and_internet_access',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Is there reliable internet facility in your area?",
-      name: "internet_facility_in_area",
-      filter_type: "fixed_values",
+      title: 'Is there reliable internet facility in your area?',
+      name: 'internet_facility_in_area',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Can you spend 30 to 40 hours a week on the program?",
-      name: "time_commitment",
-      filter_type: "fixed_values",
+      title: 'Can you spend 30 to 40 hours a week on the program?',
+      name: 'time_commitment',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Are you currently employed?",
-      name: "is_employed",
-      filter_type: "fixed_values",
+      title: 'Are you currently employed?',
+      name: 'is_employed',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Employment type",
-      name: "type_of_employment",
-      filter_type: "fixed_values",
+      title: 'Employment type',
+      name: 'type_of_employment',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: false,
       possible_values: type_of_employment.map(function (val) {
         return {
@@ -435,37 +432,37 @@ var ApplicationsList = function ApplicationsList(props) {
         };
       })
     }, {
-      title: "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-      name: "will_leave_job",
-      filter_type: "fixed_values",
+      title: 'Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?',
+      name: 'will_leave_job',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Have you applied to IEC before?",
-      name: "has_applied_before",
-      filter_type: "fixed_values",
+      title: 'Have you applied to IEC before?',
+      name: 'has_applied_before',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "First Preference",
-      name: "firstPreferenceId",
-      filter_type: "fixed_values",
+      title: 'First Preference',
+      name: 'firstPreferenceId',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: courses.map(function (val) {
         return {
@@ -476,9 +473,9 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Second Preference",
-      name: "secondPreferenceId",
-      filter_type: "fixed_values",
+      title: 'Second Preference',
+      name: 'secondPreferenceId',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: courses.map(function (val) {
         return {
@@ -489,9 +486,9 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Third Preference",
-      name: "thirdPreferenceId",
-      filter_type: "fixed_values",
+      title: 'Third Preference',
+      name: 'thirdPreferenceId',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: courses.map(function (val) {
         return {
@@ -502,58 +499,58 @@ var ApplicationsList = function ApplicationsList(props) {
       }),
       expand_possible_values: false
     }, {
-      title: "Are you a graduate in computer science or any related field?",
-      name: "is_comp_sci_grad",
-      filter_type: "fixed_values",
+      title: 'Are you a graduate in computer science or any related field?',
+      name: 'is_comp_sci_grad',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
-      name: "will_work_full_time",
-      filter_type: "fixed_values",
+      title: 'After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?',
+      name: 'will_work_full_time',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "The program is entirely online. Do you acknowledge that?",
-      name: "acknowledge_online",
-      filter_type: "fixed_values",
+      title: 'The program is entirely online. Do you acknowledge that?',
+      name: 'acknowledge_online',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
     }, {
-      title: "Applicant automatically rejected and rejection email sent",
-      name: "rejection_email_sent",
-      filter_type: "fixed_values",
+      title: 'Applicant automatically rejected and rejection email sent',
+      name: 'rejection_email_sent',
+      filter_type: 'fixed_values',
       discrepancy_between_value_and_text: true,
       possible_values: [{
-        text: "Yes",
+        text: 'Yes',
         value: 1,
         checked: false
       }, {
-        text: "No",
+        text: 'No',
         value: 0,
         checked: false
       }]
@@ -569,15 +566,15 @@ var ApplicationsList = function ApplicationsList(props) {
       var _loop = function _loop(i) {
         var filter = filters[i];
 
-        if (filter.filter_type == "integer_value" && application[filter.name] < filter.value) {
+        if (filter.filter_type === 'integer_value' && application[filter.name] < filter.value) {
           show_this_application = false;
           return "break";
-        } else if (filter.filter_type == "fixed_values" && filter.possible_values.length > 0 && filter.possible_values.reduce(function (prev, cur) {
+        } else if (filter.filter_type === 'fixed_values' && filter.possible_values.length > 0 && filter.possible_values.reduce(function (prev, cur) {
           if (prev) return prev;
           if (cur.checked) return true;else return false;
         }, false) && filter.possible_values.reduce(function (prev, cur) {
-          if (prev) return prev;else if (cur.checked && cur.value == application[filter.name]) return true;else return false;
-        }, false) == false) {
+          if (prev) return prev;else if (cur.checked && cur.value === application[filter.name]) return true;else return false;
+        }, false) === false) {
           show_this_application = false;
           return "break";
         }
@@ -597,7 +594,7 @@ var ApplicationsList = function ApplicationsList(props) {
   }, [filtered_applications]);
 
   var formatOutput = function formatOutput(output) {
-    if (output === false) return "No";else if (output === true) return "Yes";else return output;
+    if (output === false) return 'No';else if (output === true) return 'Yes';else return output;
   };
 
   var getValue = function getValue(obj, properties_array) {
@@ -626,7 +623,7 @@ var ApplicationsList = function ApplicationsList(props) {
           return !cur;
         });
       } else {
-        alert("Application delete failed due to unknown reason.");
+        alert('Application delete failed due to unknown reason.');
       }
     });
   };
@@ -649,8 +646,9 @@ var ApplicationsList = function ApplicationsList(props) {
   }), " Hide Filters") : /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("i", {
     className: "far fa-eye"
   }), " Show Filters")), show_filters ? filters.map(function (filter, index) {
-    return filter.filter_type == "integer_value" ? /*#__PURE__*/React.createElement("div", {
-      className: "w-full grid grid-cols-10 align-middle mb-2"
+    return filter.filter_type === 'integer_value' ? /*#__PURE__*/React.createElement("div", {
+      className: "w-full grid grid-cols-10 align-middle mb-2",
+      key: index
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-2"
     }, filter.title, ":"), /*#__PURE__*/React.createElement("input", {
@@ -664,13 +662,13 @@ var ApplicationsList = function ApplicationsList(props) {
       onChange: function onChange(e) {
         setFilters(function (cur) {
           var copy = cur.slice();
-          copy[e.target.dataset.index]["value"] = e.target.value;
+          copy[e.target.dataset.index].value = e.target.value;
           return copy;
         });
       }
     }), /*#__PURE__*/React.createElement("label", {
       className: "pl-2 col-span-1"
-    }, filter.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,"), " ", filter.unit)) : filter.filter_type == "fixed_values" && filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
+    }, filter.value.toString().replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,'), ' ', filter.unit)) : filter.filter_type === 'fixed_values' && filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-4"
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-1"
@@ -682,14 +680,16 @@ var ApplicationsList = function ApplicationsList(props) {
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, true);
       }
-    }, "Check All"), " ", /*#__PURE__*/React.createElement("a", {
+    }, "Check All"), ' ', /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer",
       "data-filter_index": index,
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, false);
       }
     }, "Uncheck All"), filter.possible_values.map(function (possible_value_obj, i2) {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i2
+      }, /*#__PURE__*/React.createElement("input", {
         type: "checkbox",
         name: filter.name,
         "data-filter_index": index,
@@ -699,7 +699,7 @@ var ApplicationsList = function ApplicationsList(props) {
         onChange: function onChange(e) {
           setFilters(function (cur) {
             var copy = cur.slice();
-            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"] = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"];
+            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked;
             return copy;
           });
         }
@@ -715,7 +715,7 @@ var ApplicationsList = function ApplicationsList(props) {
           return copy;
         });
       }
-    }, "Click here to show all possible value filters"))) : filter.filter_type == "fixed_values" && !filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
+    }, "Click here to show all possible value filters"))) : filter.filter_type === 'fixed_values' && !filter.discrepancy_between_value_and_text ? /*#__PURE__*/React.createElement("div", {
       className: "grid grid-cols-4"
     }, /*#__PURE__*/React.createElement("label", {
       className: "col-span-1"
@@ -740,14 +740,16 @@ var ApplicationsList = function ApplicationsList(props) {
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, true);
       }
-    }, "Check All"), /*#__PURE__*/React.createElement("a", {
+    }, 'Check All'), /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:underline cursor-pointer",
       "data-filter_index": index,
       onClick: function onClick(e) {
         setAllCheckBoxes(e.target.dataset.filter_index, false);
       }
-    }, "Uncheck All")), filter.possible_values.map(function (possible_value_obj, i2) {
-      return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("input", {
+    }, 'Uncheck All')), filter.possible_values.map(function (possible_value_obj, i2) {
+      return /*#__PURE__*/React.createElement("div", {
+        key: i2
+      }, /*#__PURE__*/React.createElement("input", {
         type: "checkbox",
         name: filter.name,
         "data-filter_index": index,
@@ -757,7 +759,7 @@ var ApplicationsList = function ApplicationsList(props) {
         onChange: function onChange(e) {
           setFilters(function (cur) {
             var copy = cur.slice();
-            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"] = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index]["checked"];
+            copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked = !copy[e.target.dataset.filter_index].possible_values[e.target.dataset.possible_value_index].checked;
             return copy;
           });
         }
@@ -768,22 +770,23 @@ var ApplicationsList = function ApplicationsList(props) {
     className: "text-white mb-2 float-right px-3 py-2 bg-iec-blue hover:bg-iec-blue-hover cursor-pointer",
     onClick: function onClick() {
       setDownloadingAsExcel(true);
-      download_table_as_csv("main-table");
+      download_table_as_csv('main-table');
       setDownloadingAsExcel(false);
     }
   }, /*#__PURE__*/React.createElement("i", {
     className: "fas fa-download"
   }), " Download as Excel File") : /*#__PURE__*/React.createElement("i", null), applications.length > 0 ? /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", null, "Total Number of Applications: ", applications.length), /*#__PURE__*/React.createElement("p", null, "Filtered Number of Applications: ", num_rows), /*#__PURE__*/React.createElement("table", {
-    className: "w-full text-left text-sm ".concat(downloading_as_excel ? " invisible" : ""),
+    className: "w-full text-left text-sm ".concat(downloading_as_excel ? ' invisible' : ''),
     id: "main-table"
-  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Gender"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Phone"), /*#__PURE__*/React.createElement("th", null, "CNIC"), questions.map(function (question) {
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Name"), /*#__PURE__*/React.createElement("th", null, "Gender"), /*#__PURE__*/React.createElement("th", null, "Email"), /*#__PURE__*/React.createElement("th", null, "Phone"), /*#__PURE__*/React.createElement("th", null, "CNIC"), questions.map(function (question, index) {
     return /*#__PURE__*/React.createElement("th", {
-      className: downloading_as_excel ? "" : "hidden"
+      className: downloading_as_excel ? '' : 'hidden',
+      key: index
     }, question.title);
   }), /*#__PURE__*/React.createElement("th", null, "Action"))), /*#__PURE__*/React.createElement("tbody", null, filtered_applications.map(function (application, index) {
     return /*#__PURE__*/React.createElement("tr", {
       key: application.id,
-      className: application.rejection_email_sent ? "bg-red-300" : ""
+      className: application.rejection_email_sent ? 'bg-red-300' : ''
     }, /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
     }, "".concat(application.Student.firstName, " ").concat(application.Student.lastName)), /*#__PURE__*/React.createElement("td", {
@@ -794,9 +797,10 @@ var ApplicationsList = function ApplicationsList(props) {
       className: "border px-4 py-2"
     }, application.phone), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
-    }, application.Student.cnic), questions.map(function (question) {
+    }, application.Student.cnic), questions.map(function (question, index) {
       return /*#__PURE__*/React.createElement("td", {
-        className: downloading_as_excel ? "" : "hidden"
+        className: downloading_as_excel ? '' : 'hidden',
+        key: index
       }, formatOutput(getValue(application, question.name)));
     }), /*#__PURE__*/React.createElement("td", {
       className: "border px-4 py-2"
@@ -806,7 +810,7 @@ var ApplicationsList = function ApplicationsList(props) {
       onClick: function onClick(e) {
         setShowModal(e.target.dataset.index);
       }
-    }, "View Details"), " ", " | ", /*#__PURE__*/React.createElement("a", {
+    }, "View Details"), ' ', ' | ', /*#__PURE__*/React.createElement("a", {
       className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer",
       "data-index": application_id_to_array_index_map[application.id],
       onClick: function onClick(e) {

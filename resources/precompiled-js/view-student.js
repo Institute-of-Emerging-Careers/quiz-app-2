@@ -30,8 +30,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var useState = React.useState;
 var useEffect = React.useEffect;
-var interview_round_id = document.getElementById("interview-round-id").innerHTML;
-var student_id = document.getElementById("student-id").innerHTML; // need to fetch all questions for this interview round
+var interview_round_id = document.getElementById('interview-round-id').innerHTML;
+var student_id = document.getElementById('student-id').innerHTML; // need to fetch all questions for this interview round
 // then take input for all those questions
 // insert the answers into the Answers table
 
@@ -48,13 +48,11 @@ var ViewStudent = function ViewStudent() {
 
   var _useState5 = useState(0),
       _useState6 = _slicedToArray(_useState5, 2),
-      totalMarks = _useState6[0],
       setTotalMarks = _useState6[1];
 
   var _useState7 = useState(0),
       _useState8 = _slicedToArray(_useState7, 2),
-      obtainedMarks = _useState8[0],
-      setObtainedMarks = _useState8[1]; //fetch questions for this cohort on mount
+      setObtainedMarks = _useState8[1]; // fetch questions for this cohort on mount
 
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -85,7 +83,7 @@ var ViewStudent = function ViewStudent() {
             _context.prev = 9;
             _context.t0 = _context["catch"](0);
             console.log(_context.t0);
-            window.alert("An error occured, please refresh the page");
+            window.alert('An error occured, please refresh the page');
 
           case 13:
           case "end":
@@ -93,7 +91,7 @@ var ViewStudent = function ViewStudent() {
         }
       }
     }, _callee, null, [[0, 9]]);
-  })), []); //fetch answers to those questions for this student
+  })), []); // fetch answers to those questions for this student
 
   useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
     var response;
@@ -112,7 +110,7 @@ var ViewStudent = function ViewStudent() {
           case 5:
             response = _context2.sent;
 
-            if (response.success == "ok") {
+            if (response.success === 'ok') {
               console.log(response.answers);
               if (response.answers.length > 0) setAnswers(response.answers);
               if (response.totalMarks) setTotalMarks(response.totalMarks);
@@ -144,14 +142,14 @@ var ViewStudent = function ViewStudent() {
             case 0:
               _context3.next = 2;
               return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/mark-absent"), {
-                method: "POST"
+                method: 'POST'
               });
 
             case 2:
               response = _context3.sent;
 
-              if (response.status == 200) {
-                window.alert("Student marked absent");
+              if (response.status === 200) {
+                window.alert('Student marked absent');
                 window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
               }
 
@@ -181,18 +179,18 @@ var ViewStudent = function ViewStudent() {
                 var value = e.target.elements.namedItem(question.questionID).value;
                 answers = [].concat(_toConsumableArray(answers), [{
                   questionID: question.questionID,
-                  questionAnswer: question.questionType == "descriptive" ? value : null,
-                  questionScale: question.questionType == "descriptive" ? null : value
+                  questionAnswer: question.questionType === 'descriptive' ? value : null,
+                  questionScale: question.questionType === 'descriptive' ? null : value
                 }]);
-              }); //compute total marks from number scale answers
+              }); // compute total marks from number scale answers
 
               totalMarks = questions.reduce(function (total, question) {
-                if (question.questionType == "number scale") {
+                if (question.questionType === 'number scale') {
                   return total + parseInt(question.questionScale);
                 }
 
                 return total + 0;
-              }, 0); //compute obtained marks from number scale answers
+              }, 0); // compute obtained marks from number scale answers
 
               obtainedMarks = answers.reduce(function (total, answer) {
                 if (answer.questionScale) {
@@ -200,7 +198,7 @@ var ViewStudent = function ViewStudent() {
                 }
 
                 return total + 0;
-              }, 0); //insert answers into Answers table
+              }, 0); // insert answers into Answers table
 
               answers.map( /*#__PURE__*/function () {
                 var _ref5 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4(answer) {
@@ -211,9 +209,9 @@ var ViewStudent = function ViewStudent() {
                           _context4.prev = 0;
                           _context4.next = 3;
                           return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/enter-marks"), {
-                            method: "POST",
+                            method: 'POST',
                             headers: {
-                              "Content-Type": "application/json"
+                              'Content-Type': 'application/json'
                             },
                             body: JSON.stringify(answer)
                           });
@@ -226,7 +224,7 @@ var ViewStudent = function ViewStudent() {
                           _context4.prev = 5;
                           _context4.t0 = _context4["catch"](0);
                           console.log(_context4.t0);
-                          window.alert("An error occured, please refresh the page");
+                          window.alert('An error occured, please refresh the page');
 
                         case 9:
                         case "end":
@@ -242,9 +240,9 @@ var ViewStudent = function ViewStudent() {
               }());
               _context5.next = 8;
               return fetch("/admin/interview/".concat(interview_round_id, "/student/").concat(student_id, "/total-marks"), {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json"
+                  'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                   totalMarks: totalMarks,
@@ -255,8 +253,8 @@ var ViewStudent = function ViewStudent() {
             case 8:
               response = _context5.sent;
 
-              if (response.status == 200) {
-                window.alert("Marks added successfully");
+              if (response.status === 200) {
+                window.alert('Marks added successfully');
                 window.location.href = "/admin/interview/".concat(interview_round_id, "/view-students");
               }
 
@@ -305,8 +303,9 @@ var ViewStudent = function ViewStudent() {
   }, /*#__PURE__*/React.createElement("p", {
     className: "text-2xl font-bold border-b-2 p-2 border-iec-blue"
   }, "Numeric Questions")), questions.length > 0 ? /*#__PURE__*/React.createElement(React.Fragment, null, questions.map(function (question) {
-    return question.questionType == "number scale" && /*#__PURE__*/React.createElement("div", {
-      className: "flex flex-row items-left justify-left mt-10"
+    return question.questionType === 'number scale' && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-row items-left justify-left mt-10",
+      key: question.id
     }, /*#__PURE__*/React.createElement("div", {
       className: "flex items-left justify-left w-3/4"
     }, /*#__PURE__*/React.createElement("p", {
@@ -323,7 +322,7 @@ var ViewStudent = function ViewStudent() {
       name: question.questionID,
       max: question.questionScale,
       defaultValue: answers.length > 0 ? answers.find(function (answer) {
-        return answer.questionID == question.questionID;
+        return answer.questionID === question.questionID;
       }).questionRating : null
     })), /*#__PURE__*/React.createElement("div", {
       className: "flex items-left justify-left"
@@ -337,8 +336,9 @@ var ViewStudent = function ViewStudent() {
   }, /*#__PURE__*/React.createElement("p", {
     className: "text-2xl font-bold border-b-2 p-2 border-iec-blue"
   }, "Descriptive Questions")), questions.length > 0 ? questions.map(function (question) {
-    return question.questionType == "descriptive" && /*#__PURE__*/React.createElement("div", {
-      className: "flex flex-col items-left justify-left mt-10"
+    return question.questionType === 'descriptive' && /*#__PURE__*/React.createElement("div", {
+      className: "flex flex-col items-left justify-left mt-10",
+      key: question.id
     }, /*#__PURE__*/React.createElement("div", {
       className: "w-full flex items-left justify-left"
     }, /*#__PURE__*/React.createElement("p", {
@@ -351,10 +351,10 @@ var ViewStudent = function ViewStudent() {
       type: "text",
       placeholder: "Enter answer here",
       defaultValue: answers.length > 0 ? answers.find(function (answer) {
-        return answer.questionID == question.questionID;
+        return answer.questionID === question.questionID;
       }).questionAnswer : null
     })));
   }) : null))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(ViewStudent, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(ViewStudent, null), document.getElementById('app'));

@@ -1,8 +1,8 @@
-const { Question } = require("../db/models")
-const sequelize = require("../db/connect.js")
+const { Question } = require('../db/models')
+const sequelize = require('../db/connect.js')
 
 async function getTotalMarksOfSection(section_id, pool_count, num_questions) {
-	if (pool_count == num_questions) {
+	if (pool_count === num_questions) {
 		return new Promise(async (resolve) => {
 			const section_total_marks = (
 				await Question.findAll({
@@ -10,7 +10,7 @@ async function getTotalMarksOfSection(section_id, pool_count, num_questions) {
 						SectionId: section_id,
 					},
 					attributes: [
-						[sequelize.fn("SUM", sequelize.col("marks")), "total_marks"],
+						[sequelize.fn('SUM', sequelize.col('marks')), 'total_marks'],
 					],
 				})
 			)[0].dataValues.total_marks

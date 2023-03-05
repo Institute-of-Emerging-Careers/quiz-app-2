@@ -1,0 +1,36 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "standard",
+        "eslint:recommended"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "no-undef":"error",
+        "indent": "off",
+        "camelcase":"off",
+        "no-tabs": "off",
+        "comma-dangle": "off",
+        "curly": "off",
+        "array-callback-return": "warn",
+        "no-async-promise-executor": "warn",
+        "no-multiple-empty-lines": "error",
+        "space-before-function-paren": "off",
+        "no-mixed-spaces-and-tabs": "off",
+        "promise/param-names": "warn"
+    },
+    "ignorePatterns": ["**/precompiled-js/**"]
+}

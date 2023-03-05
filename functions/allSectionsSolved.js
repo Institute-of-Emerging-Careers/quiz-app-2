@@ -1,4 +1,4 @@
-const { Attempt, Section } = require("../db/models")
+const { Attempt, Section } = require('../db/models')
 
 async function allSectionsSolved(quizId, assignment) {
 	if (assignment.completed) {
@@ -6,21 +6,22 @@ async function allSectionsSolved(quizId, assignment) {
 			resolve(true)
 		})
 	} else {
-		const sections = await Section.findAll({ where: { QuizId: quizId } })
-		let all_solved = true
-		let count_sections = 0
-		return new Promise(async (resolve) => {
-			sections.forEach(async (section) => {
-				const attempt = await Attempt.findOne({
-					where: { AssignmentId: assignment.id, SectionId: section.id },
-				})
-				if (attempt == null || attempt.statusText != "Completed") {
-					all_solved = false
-				}
-				count_sections++
-				if (count_sections == sections.length) resolve(all_solved)
-			})
-		})
+		try {
+			const sections = await Section.findAll({ where: { QuizId: quizId } })
+			const attempts = await Promise.all(
+				sections.map((section) =>
+					Attempt.findOne({
+						where: { AssignmentId: assignment.id, SectionId: section.id },
+					})
+				)
+			)
+			console.log('attempts:', attempts)
+			return attempts.every(
+				(attempt) => attempt !== null && attempt.statusText === 'Completed'
+			)
+		} catch (err) {
+			return new Promise((resolve, reject) => reject(err))
+		}
 	}
 }
 

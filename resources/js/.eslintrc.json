@@ -1,0 +1,39 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "standard",
+        "eslint:recommended"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "no-undef":"off",
+        "indent": "off",
+        "camelcase":"off",
+        "no-tabs": "off",
+        "comma-dangle": "off",
+        "curly": "off",
+        "array-callback-return": "warn",
+        "no-async-promise-executor": "warn",
+        "no-multiple-empty-lines": "error",
+        "space-before-function-paren": "off",
+        "no-mixed-spaces-and-tabs": "off",
+        "react/prop-types": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-no-undef": "off",
+        "multiline-ternary": "off"
+    },
+    "ignorePatterns": ["**/precompiled-js/**", "**/jquery-ui-1.13.1/**", "luxon.js", "react-dom.development-17.0.2.js", "react.development-17.js"]
+}

@@ -1,11 +1,11 @@
-const express = require("express")
+const express = require('express')
 const router = express.Router()
 
-const randomstring = require("randomstring")
-const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
-const checkInterviewerAuthenticated = require("../../db/check-interviewer-authenticated")
-const { generateRandomNumberInRange } = require("../../functions/utilities")
-const getQuizTotalScore = require("../../functions/getQuizTotalScore")
+const randomstring = require('randomstring')
+const checkAdminAuthenticated = require('../../db/check-admin-authenticated')
+const checkInterviewerAuthenticated = require('../../db/check-interviewer-authenticated')
+const { generateRandomNumberInRange } = require('../../functions/utilities')
+const getQuizTotalScore = require('../../functions/getQuizTotalScore')
 const {
 	InterviewRound,
 	Interviewer,
@@ -23,19 +23,19 @@ const {
 	Assignment,
 	Student,
 	Attempt,
-} = require("../../db/models")
-const { DateTime } = require("luxon")
-const { queueMail } = require("../../bull")
-const passport = require("passport")
-const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces")
-const { Op } = require("sequelize")
+} = require('../../db/models')
+const { DateTime } = require('luxon')
+const { queueMail } = require('../../bull')
+const passport = require('passport')
+const roundToTwoDecimalPlaces = require('../../functions/roundToTwoDecimalPlaces')
+const { Op } = require('sequelize')
 // middleware that is specific to this router
 router.use((req, res, next) => {
 	next()
 })
 
-router.get("/", checkAdminAuthenticated, (req, res) => {
-	res.render("admin/interview/index.ejs", {
+router.get('/', checkAdminAuthenticated, (req, res) => {
+	res.render('admin/interview/index.ejs', {
 		env: process.env.NODE_ENV,
 		myname: req.user.user?.firstName,
 		user_type: req.user.type,
@@ -44,15 +44,15 @@ router.get("/", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
+router.get('/new/:quiz_id', checkAdminAuthenticated, (req, res) => {
 	const new_interview_round_name = `Interview Round ${DateTime.now().toFormat(
-		"hh:mm:ss-yyyy-LLL-dd"
+		'hh:mm:ss-yyyy-LLL-dd'
 	)}`
 	InterviewRound.create({
 		title: new_interview_round_name,
 		QuizId: req.params.quiz_id,
 	}).then((interview_round) => {
-		res.render("admin/interview/new.ejs", {
+		res.render('admin/interview/new.ejs', {
 			interview_round_name: new_interview_round_name,
 			interview_round_id: interview_round.id,
 			env: process.env.NODE_ENV,
@@ -61,25 +61,25 @@ router.get("/new/:quiz_id", checkAdminAuthenticated, (req, res) => {
 	})
 })
 
-router.get("/edit/:interview_round_id", checkAdminAuthenticated, (req, res) => {
+router.get('/edit/:interview_round_id', checkAdminAuthenticated, (req, res) => {
 	InterviewRound.findOne({
 		where: { id: req.params.interview_round_id },
 	})
 		.then((interview_round) => {
 			if (interview_round != null) {
-				res.render("admin/interview/new.ejs", {
+				res.render('admin/interview/new.ejs', {
 					interview_round_name: interview_round.title,
 					interview_round_id: interview_round.id,
 					env: process.env.NODE_ENV,
 					user_type: req.user.type,
 				})
 			} else {
-				res.render("templates/error.ejs", {
-					additional_info: "No such interview round exists",
+				res.render('templates/error.ejs', {
+					additional_info: 'No such interview round exists',
 					error_message:
-						"You must have entered the wrong URL into the address bar of your browser. Please recheck or contact IT.",
-					action_link: "/interview",
-					action_link_text: "Return to Interview Panel",
+						'You must have entered the wrong URL into the address bar of your browser. Please recheck or contact IT.',
+					action_link: '/interview',
+					action_link_text: 'Return to Interview Panel',
 				})
 			}
 		})
@@ -89,7 +89,7 @@ router.get("/edit/:interview_round_id", checkAdminAuthenticated, (req, res) => {
 })
 
 router.patch(
-	"/update-round-title/:interview_round_id",
+	'/update-round-title/:interview_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -106,18 +106,18 @@ router.patch(
 		}
 	}
 )
-router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
+router.post('/send-emails', checkAdminAuthenticated, async (req, res) => {
 	const email_content = req.body.email_content
 	try {
 		await new Promise((resolve) => {
 			let i = 0
 			const n = req.body.users.length
-			if (i == n) resolve()
+			if (i === n) resolve()
 			req.body.users.forEach(async (interviewer) => {
 				const interviewer_password = (
 					await Interviewer.findOne({
 						where: { email: interviewer.email },
-						attributes: ["password"],
+						attributes: ['password'],
 					})
 				).password
 				const interviewer_login_link = `${
@@ -133,7 +133,7 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
 					button_link: interviewer_login_link,
 				})
 				i++
-				if (i == n) resolve()
+				if (i === n) resolve()
 			})
 		})
 		res.sendStatus(200)
@@ -144,7 +144,7 @@ router.post("/send-emails", checkAdminAuthenticated, async (req, res) => {
 })
 
 router.post(
-	"/update-interviewer-list/:interview_round_id",
+	'/update-interviewer-list/:interview_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -161,12 +161,12 @@ router.post(
 
 			// we create two HashMaps. One for all the interviewers of this InterviewRound present in the Database, and one for all the interviewers sent by the user in this request
 
-			let db_interviewers_map = new Map()
+			const db_interviewers_map = new Map()
 			interviewers.forEach((interviewer_object) => {
 				db_interviewers_map.set(interviewer_object.email, interviewer_object)
 			})
 
-			let new_interviewers_map = new Map()
+			const new_interviewers_map = new Map()
 			req.body.interviewers.forEach((interviewer) => {
 				new_interviewers_map.set(interviewer.email, true)
 			})
@@ -174,11 +174,11 @@ router.post(
 			await new Promise((resolve) => {
 				let i = 0
 				const n = req.body.interviewers.length
-				if (req.body.interviewers.length == 0) resolve()
+				if (req.body.interviewers.length === 0) resolve()
 				else {
 					req.body.interviewers.forEach(async (interviewer) => {
 						if (!db_interviewers_map.has(interviewer.email)) {
-							console.log("oye hoy")
+							console.log('oye hoy')
 							const new_interviewer = (
 								await Interviewer.findOrCreate({
 									where: { email: interviewer.email },
@@ -199,7 +199,7 @@ router.post(
 							db_interviewers_map.delete(interviewer.email)
 						}
 						i++
-						if (i == n) resolve()
+						if (i === n) resolve()
 					})
 				}
 			})
@@ -207,7 +207,7 @@ router.post(
 			await new Promise(async (resolve) => {
 				let i = 0
 				const n = db_interviewers_map.size
-				if (n == 0) resolve()
+				if (n === 0) resolve()
 				else {
 					for (const interviewer of db_interviewers_map) {
 						if (!new_interviewers_map.has(interviewer[1].email)) {
@@ -219,7 +219,7 @@ router.post(
 							})
 						}
 						i++
-						if (i == n) resolve()
+						if (i === n) resolve()
 					}
 				}
 			})
@@ -232,7 +232,7 @@ router.post(
 	}
 )
 
-router.get("/round/delete/:interview_round_id", async (req, res) => {
+router.get('/round/delete/:interview_round_id', async (req, res) => {
 	try {
 		await Promise.all([
 			...(
@@ -253,60 +253,51 @@ router.get("/round/delete/:interview_round_id", async (req, res) => {
 		res.sendStatus(200)
 	} catch (err) {
 		console.log(err)
-		re.sendStatus(500)
+		res.sendStatus(500)
 	}
 })
 
-router.get("/getTotalDuration/:interview_round_id", async (req, res) => {
-	try {
-		const interview_round = await InterviewRound.findOne({
-			where: { id: req.params.interview_round_id },
-		})
-		const interviewers = await interview_round.getInterviewers()
-	} catch (err) {
-		console.log(err)
-	}
-})
+router.get('/login', async (req, res) => {
+	let password = ''
+	let email = ''
+	if (Object.prototype.hasOwnProperty.call(req.query, 'password'))
+		password = req.query.password
+	if (Object.prototype.hasOwnProperty.call(req.query, 'email'))
+		email = req.query.email
 
-router.get("/login", async (req, res) => {
-	let password = "",
-		email = ""
-	if (req.query.hasOwnProperty("password")) password = req.query.password
-	if (req.query.hasOwnProperty("email")) email = req.query.email
-
-	res.render("interviewer/login/index.ejs", {
-		email: email,
-		password: password,
+	res.render('interviewer/login/index.ejs', {
+		email,
+		password,
 	})
 })
 
 router.post(
-	"/login",
-	passport.authenticate("interviewer-login", {
-		failureRedirect: "/",
+	'/login',
+	passport.authenticate('interviewer-login', {
+		failureRedirect: '/',
 		failureFlash: true,
 	}),
 	async (req, res) => {
-		if (req.hasOwnProperty("user")) {
-			res.redirect("/admin/interview/panel")
+		if (Object.prototype.hasOwnProperty.call(req, 'user')) {
+			res.redirect('/admin/interview/panel')
 		} else {
 			res.sendStatus(403)
 		}
 	}
 )
 
-router.get("/panel", checkInterviewerAuthenticated, async (req, res) => {
+router.get('/panel', checkInterviewerAuthenticated, async (req, res) => {
 	try {
 		const interviewer = await Interviewer.findOne({
 			where: { id: req.user.user.id },
 		})
 		const interview_rounds = await interviewer.getInterviewRounds()
 
-		res.render("interviewer/panel.ejs", {
-			env: process.env.NODE_ENV, //required when deciding which React dependencies to include (prod or dev)
+		res.render('interviewer/panel.ejs', {
+			env: process.env.NODE_ENV, // required when deciding which React dependencies to include (prod or dev)
 			myname: req.user.user.name,
 			user_type: req.user.type,
-			interview_rounds: interview_rounds,
+			interview_rounds,
 		})
 	} catch (err) {
 		res.sendStatus(500)
@@ -314,14 +305,14 @@ router.get("/panel", checkInterviewerAuthenticated, async (req, res) => {
 })
 
 router.get(
-	"/declare-time-slots/:interview_round_id",
+	'/declare-time-slots/:interview_round_id',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
 			})
-			res.render("interviewer/time-slots-picker.ejs", {
+			res.render('interviewer/time-slots-picker.ejs', {
 				env: process.env.NODE_ENV,
 				myname: req.user.user.name,
 				user_type: req.user.type,
@@ -335,78 +326,8 @@ router.get(
 	}
 )
 
-router.get("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
-	try {
-		const interview_rounds = await InterviewRound.findAll()
-
-		const calendly_link = await InterviewerCalendlyLinks.findOne({
-			where: { InterviewerId: req.user.user.id },
-		}).calendly_link
-
-		res.render("interviewer/link-upload.ejs", {
-			env: process.env.NODE_ENV,
-			myname: req.user.user.name,
-			user_type: req.user.type,
-			current_link: calendly_link,
-		})
-	} catch (err) {
-		console.log(err)
-		res.sendStatus(500)
-	}
-})
-
-// router.post("/upload-link", checkInterviewerAuthenticated, async (req, res) => {
-//   try {
-//     const interviewer = await Interviewer.findOne({
-//       where: { id: req.user.user.id },
-//     });
-
-//     if (interviewer == null) return res.sendStatus(404);
-
-//     const drop_previous = await InterviewerCalendlyLinks.destroy({
-//       where: { InterviewerId: interviewer.id },
-//     });
-
-//     const response = await InterviewerCalendlyLinks.create({
-//       calendly_link: req.body.calendly_link,
-//       InterviewerId: interviewer.id,
-//     });
-
-//     res.sendStatus(200);
-//   } catch (err) {
-//     console.log(err);
-//     res.sendStatus(500);
-//   }
-// });
-
-// router.get("/get-link", checkInterviewerAuthenticated, async (req, res) => {
-//   try {
-//     const interview_round = await InterviewRound.findOne({
-//       where: { id: req.params.interview_round_id },
-//     });
-//     if (interview_round == null) return res.sendStatus(404);
-
-//     const interviewer = await Interviewer.findOne({
-//       where: { id: req.user.user.id },
-//     });
-//     if (interviewer == null) return res.sendStatus(404);
-
-//     const calendly_link = await InterviewerCalendlyLinks.findOne({
-//       where: { InterviewerId: interviewer.id },
-//     });
-//     if (calendly_link == null) return res.sendStatus(404);
-
-//     res.status(200).json({
-//       calendly_link: calendly_link.calendly_link,
-//     });
-//   } catch (err) {
-//     console.log(err);
-//     res.sendStatus(500);
-//   }
-// });
-
 router.post(
-	"/interviewer/save-time-slots",
+	'/interviewer/save-time-slots',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		const interviewer_invite = await InterviewerInvite.findOne({
@@ -415,10 +336,9 @@ router.post(
 				InterviewRoundId: req.body.interview_round_id,
 			},
 		})
-		await interviewer_invite.deleteSlots() //custom class instance method I declared in db/models.js
-		let promises = []
+		await interviewer_invite.deleteSlots() // custom class instance method I declared in db/models.js
+		const promises = []
 		req.body.time_slots.forEach((time_slot) => {
-			console.log(interviewer_invite.id)
 			promises.push(
 				InterviewerSlot.create({
 					start: time_slot.start,
@@ -440,16 +360,16 @@ router.post(
 	}
 )
 
-router.post("/interviewees/save", checkAdminAuthenticated, async (req, res) => {
+router.post('/interviewees/save', checkAdminAuthenticated, async (req, res) => {
 	try {
 		const interview_round_id = req.body.interview_round_id
 
 		// let's get all students who have already been invited to this InterviewRound and create a hashmap.
-		let interview_round_invites = await StudentInterviewRoundInvite.findAll({
+		const interview_round_invites = await StudentInterviewRoundInvite.findAll({
 			where: { InterviewRoundId: interview_round_id },
 		})
 
-		let students_already_invited = new Map()
+		const students_already_invited = new Map()
 		interview_round_invites.map((invite) => {
 			students_already_invited.set(invite.StudentId, invite)
 		})
@@ -460,12 +380,12 @@ router.post("/interviewees/save", checkAdminAuthenticated, async (req, res) => {
 		await new Promise((resolve, reject) => {
 			req.body.students.map(async (student) => {
 				if (
-					student.added == false &&
+					student.added === false &&
 					students_already_invited.has(student.id)
 				) {
 					students_already_invited.get(student.id).destroy()
 				} else if (
-					student.added == true &&
+					student.added === true &&
 					!students_already_invited.has(student.id)
 				) {
 					await StudentInterviewRoundInvite.create({
@@ -474,7 +394,7 @@ router.post("/interviewees/save", checkAdminAuthenticated, async (req, res) => {
 					})
 				}
 				i++
-				if (i == n) {
+				if (i === n) {
 					resolve()
 				}
 			})
@@ -488,22 +408,22 @@ router.post("/interviewees/save", checkAdminAuthenticated, async (req, res) => {
 })
 
 router.get(
-	"/all-students/:interview_round_id",
+	'/all-students/:interview_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		const interview_round = await InterviewRound.findOne({
 			where: { id: req.params.interview_round_id },
-			attributes: ["id", "QuizId"],
+			attributes: ['id', 'QuizId'],
 			include: [{ model: Quiz, include: [Section] }],
 		})
 
 		if (interview_round != null && interview_round.QuizId != null) {
 			// finding total score of quiz
-			let quiz_total_score = await getQuizTotalScore(interview_round.Quiz)
+			const quiz_total_score = await getQuizTotalScore(interview_round.Quiz)
 
-			let data = [] //list of students who have solved this quiz and their data
+			const data = [] // list of students who have solved this quiz and their data
 
-			let assignments = await Assignment.findAll({
+			const assignments = await Assignment.findAll({
 				where: { QuizId: interview_round.QuizId, completed: true },
 				include: [
 					{
@@ -512,7 +432,7 @@ router.get(
 					},
 					{
 						model: Attempt,
-						include: [{ model: Section, order: ["id"] }, Score],
+						include: [{ model: Section, order: ['id'] }, Score],
 					},
 				],
 			})
@@ -523,21 +443,22 @@ router.get(
 					const cur_index =
 						data.push({
 							added:
-								assignment.Student.hasOwnProperty("InterviewRounds") &&
+								Object.prototype.hasOwnProperty.call(
+									assignment.Student,
+									'InterviewRounds'
+								) &&
 								assignment.Student.InterviewRounds.length > 0 &&
 								assignment.Student.InterviewRounds.reduce(
 									(hasThisInterviewRoundId, cur) =>
 										hasThisInterviewRoundId
 											? true
-											: cur.id == req.params.interview_round_id
-											? true
-											: false,
+											: cur.id === req.params.interview_round_id,
 									false
 								),
 							id: assignment.Student.id,
 							name:
 								assignment.Student.firstName +
-								" " +
+								' ' +
 								assignment.Student.lastName,
 							email: assignment.Student.email,
 							age: assignment.Student.age,
@@ -547,7 +468,7 @@ router.get(
 							percentage_score: 0,
 						}) - 1
 
-					let remove_student = false //we remove student from data if student turns out to have an unsolved section (no attempt)
+					let remove_student = false // we remove student from data if student turns out to have an unsolved section (no attempt)
 					assignment.Attempts.forEach((attempt) => {
 						if (attempt == null || attempt.Score == null) {
 							remove_student = true
@@ -562,22 +483,21 @@ router.get(
 					if (remove_student) data.pop()
 				})
 			}
-			res.json({ success: true, data: data })
+			res.json({ success: true, data })
 		} else {
-			// console.log("Error: QuizId: or orientation:", orientation, "is NULL");
 			res.json({ success: false })
 		}
 	}
 )
 
 router.get(
-	"/interviewer/time-slots/:interview_round_id",
+	'/interviewer/time-slots/:interview_round_id',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
 			const interview_round = await InterviewRound.findOne({
 				where: { id: req.params.interview_round_id },
-				attributes: ["num_zoom_accounts"],
+				attributes: ['num_zoom_accounts'],
 			})
 
 			const interviewer_invite = await InterviewerInvite.findOne({
@@ -597,7 +517,7 @@ router.get(
 			let all_other_time_slots = await Promise.all(
 				all_other_invites.map((invite) =>
 					invite.getInterviewerSlots({
-						attributes: ["start", "end", "duration"],
+						attributes: ['start', 'end', 'duration'],
 					})
 				)
 			)
@@ -610,7 +530,7 @@ router.get(
 			res.json({
 				success: true,
 				time_slots: interviewer_time_slots,
-				all_other_time_slots: all_other_time_slots,
+				all_other_time_slots,
 				num_zoom_accounts: interview_round.num_zoom_accounts,
 			})
 		} catch (err) {
@@ -621,7 +541,7 @@ router.get(
 )
 
 router.get(
-	"/interviewers/all/:interview_round_id",
+	'/interviewers/all/:interview_round_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -631,8 +551,8 @@ router.get(
 
 			if (interview_round == null) return res.sendStatus(404)
 			else {
-				let interviewers = await interview_round.getInterviewers({
-					attributes: ["id", "name", "email"],
+				const interviewers = await interview_round.getInterviewers({
+					attributes: ['id', 'name', 'email'],
 				})
 				const interviewer_invites = await Promise.all(
 					interviewers.map((interviewer) =>
@@ -653,7 +573,7 @@ router.get(
 					)
 				)
 
-				let data = interviewers.map((interviewer, i) => {
+				const data = interviewers.map((interviewer, i) => {
 					return {
 						name: interviewer.name,
 						email: interviewer.email,
@@ -675,7 +595,7 @@ router.get(
 )
 
 router.delete(
-	"/interviewer/time-slot/delete/:time_slot_id",
+	'/interviewer/time-slot/delete/:time_slot_id',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -688,10 +608,10 @@ router.delete(
 	}
 )
 
-router.get("/all", checkAdminAuthenticated, (req, res) => {
-	InterviewRound.findAll({ order: [["id", "desc"]] })
+router.get('/all', checkAdminAuthenticated, (req, res) => {
+	InterviewRound.findAll({ order: [['id', 'desc']] })
 		.then((interview_rounds) => {
-			res.json({ success: true, interview_rounds: interview_rounds })
+			res.json({ success: true, interview_rounds })
 		})
 		.catch((err) => {
 			console.log(err)
@@ -705,7 +625,7 @@ router.get("/all", checkAdminAuthenticated, (req, res) => {
  */
 
 router.post(
-	"/:interview_round_id/create-matching",
+	'/:interview_round_id/create-matching',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -715,12 +635,12 @@ router.post(
 
 			if (interview_round == null) res.sendStatus(300)
 
-			//drop all matchings with the same interview round
+			// drop all matchings with the same interview round
 			await InterviewMatching.destroy({
 				where: { InterviewRoundId: req.params.interview_round_id },
 			})
 
-			//extract unique interviewer emails from req.body
+			// extract unique interviewer emails from req.body
 			const interviewer_emails = [
 				...new Set(req.body.matching.map((slot) => slot.interviewer_email)),
 			]
@@ -730,7 +650,7 @@ router.post(
 				where: { email: interviewer_emails },
 			})
 
-			//replace interviewer emails with interviewer ids
+			// replace interviewer emails with interviewer ids
 			req.body.matching.forEach((slot) => {
 				slot.interviewer_id = interviewers.find(
 					(interviewer) => interviewer.email === slot.interviewer_email
@@ -754,7 +674,7 @@ router.post(
 )
 
 router.get(
-	"/:interview_round_id/:interviewer_id/matchings",
+	'/:interview_round_id/:interviewer_id/matchings',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -779,7 +699,7 @@ router.get(
 
 			res.sendStatus(200)
 
-			res.json({ success: true, interview_matchings: interview_matchings })
+			res.json({ success: true, interview_matchings })
 		} catch (err) {
 			console.log(err)
 			res.sendStatus(500)
@@ -788,7 +708,7 @@ router.get(
 )
 
 router.get(
-	"/:interview_round_id/matchings",
+	'/:interview_round_id/matchings',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -801,7 +721,7 @@ router.get(
 				where: { InterviewRoundId: req.params.interview_round_id },
 			})
 
-			//format matchings as per frontend requirements
+			// format matchings as per frontend requirements
 			const matchings = interview_matchings.map((matching) => {
 				return {
 					student_id: matching.StudentId,
@@ -821,7 +741,7 @@ router.get(
 )
 
 router.post(
-	"/:interview_round_id/send-matching-emails-interviewer",
+	'/:interview_round_id/send-matching-emails-interviewer',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -840,7 +760,7 @@ router.post(
 				const interviewer_password = (
 					await Interviewer.findOne({
 						where: { email: interviewer.email },
-						attributes: ["password"],
+						attributes: ['password'],
 					})
 				).password
 				const interviewer_login_link = `${
@@ -867,7 +787,7 @@ router.post(
 )
 
 router.post(
-	"/:interview_round_id/send-matching-emails-student",
+	'/:interview_round_id/send-matching-emails-student',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -897,7 +817,7 @@ router.post(
 )
 
 router.post(
-	"/:interview_round_id/save-questions",
+	'/:interview_round_id/save-questions',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -916,8 +836,8 @@ router.post(
 							where: {
 								question: statement,
 								InterviewRoundId: req.params.interview_round_id,
-								questionType: questionType, //either "number scale" or "descriptive"
-								questionScale: questionScale,
+								questionType, // either "number scale" or "descriptive"
+								questionScale,
 								order,
 							},
 						})
@@ -932,7 +852,7 @@ router.post(
 	}
 )
 
-router.get("/:interview_round_id/all-questions", async (req, res) => {
+router.get('/:interview_round_id/all-questions', async (req, res) => {
 	try {
 		const interview_round = await InterviewRound.findOne({
 			where: { id: req.params.interview_round_id },
@@ -941,7 +861,7 @@ router.get("/:interview_round_id/all-questions", async (req, res) => {
 
 		const questions = await InterviewQuestions.findAll({
 			where: { InterviewRoundId: req.params.interview_round_id },
-			order: [["order", "asc"]],
+			order: [['order', 'asc']],
 		})
 		if (questions == null) return res.sendStatus(404)
 
@@ -954,17 +874,17 @@ router.get("/:interview_round_id/all-questions", async (req, res) => {
 			}
 		})
 
-		res.status(200).json({ success: "ok", questions: q_response })
+		res.status(200).json({ success: 'ok', questions: q_response })
 	} catch (err) {
 		console.log(err)
 	}
 })
 
 router.get(
-	"/:interview_round_id/view-students",
+	'/:interview_round_id/view-students',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
-		res.status(200).render("interviewer/view-students.ejs", {
+		res.status(200).render('interviewer/view-students.ejs', {
 			env: process.env.NODE_ENV,
 			myname: req.user.user.name,
 			user_type: req.user.type,
@@ -974,7 +894,7 @@ router.get(
 )
 
 router.get(
-	"/:interview_round_id/get-assigned-students",
+	'/:interview_round_id/get-assigned-students',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -990,7 +910,7 @@ router.get(
 				},
 			})
 
-			//get the student details for each student in the matching
+			// get the student details for each student in the matching
 
 			matchings = await Promise.all(
 				matchings.map(async (matching) => {
@@ -1045,7 +965,7 @@ router.get(
 				}
 			})
 
-			res.status(200).json({ success: "ok", matchings: matchings })
+			res.status(200).json({ success: 'ok', matchings })
 		} catch (err) {
 			console.log(err)
 			res.sendStatus(500)
@@ -1054,7 +974,7 @@ router.get(
 )
 
 router.get(
-	"/:interview_round_id/student/:student_id/enter-marks",
+	'/:interview_round_id/student/:student_id/enter-marks',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1068,7 +988,7 @@ router.get(
 			})
 			if (student == null) return res.sendStatus(404)
 
-			res.status(200).render("interviewer/view-student.ejs", {
+			res.status(200).render('interviewer/view-student.ejs', {
 				env: process.env.NODE_ENV,
 				myname: req.user.user.name,
 				user_type: req.user.type,
@@ -1083,7 +1003,7 @@ router.get(
 )
 
 router.post(
-	"/:interview_round_id/student/:student_id/enter-marks",
+	'/:interview_round_id/student/:student_id/enter-marks',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1107,7 +1027,7 @@ router.post(
 			})
 
 			if (answer == null) {
-				//update if found, create if not found
+				// update if found, create if not found
 				await InterviewAnswers.create({
 					InterviewRoundId: req.params.interview_round_id,
 					StudentId: req.params.student_id,
@@ -1142,7 +1062,7 @@ router.post(
 )
 
 router.post(
-	"/:interview_round_id/student/:student_id/total-marks",
+	'/:interview_round_id/student/:student_id/total-marks',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1179,7 +1099,7 @@ router.post(
 					}
 				)
 			} else {
-				//create
+				// create
 				await InterviewScores.create({
 					InterviewRoundId: req.params.interview_round_id,
 					StudentId: req.params.student_id,
@@ -1210,9 +1130,9 @@ router.post(
 	}
 )
 
-//get total marks, obtained marks, scores in each component and comments for a student in a particular interview round
+// get total marks, obtained marks, scores in each component and comments for a student in a particular interview round
 router.get(
-	"/:interview_round_id/student/:student_id/view-marks",
+	'/:interview_round_id/student/:student_id/view-marks',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1245,9 +1165,8 @@ router.get(
 			)
 
 			res.status(200).json({
-				success: "ok",
-
-				answers: answers,
+				success: 'ok',
+				answers,
 			})
 		} catch (err) {
 			console.log(err)
@@ -1257,7 +1176,7 @@ router.get(
 )
 
 router.post(
-	"/:interview_round_id/student/:student_id/mark-absent",
+	'/:interview_round_id/student/:student_id/mark-absent',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1293,7 +1212,7 @@ router.post(
 )
 
 router.get(
-	"/:interview_round_id/get-interview-duration",
+	'/:interview_round_id/get-interview-duration',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -1303,7 +1222,7 @@ router.get(
 			if (interview_round == null) return res.sendStatus(404)
 
 			res.status(200).json({
-				success: "ok",
+				success: 'ok',
 				interview_duration: interview_round.dataValues.interview_duration,
 			})
 		} catch (err) {
@@ -1314,7 +1233,7 @@ router.get(
 )
 
 router.post(
-	"/:interview_round_id/set-interview-duration",
+	'/:interview_round_id/set-interview-duration',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -1323,12 +1242,12 @@ router.post(
 			})
 			if (interview_round == null) return res.sendStatus(404)
 
-			const response = interview_round.update({
+			await interview_round.update({
 				interview_duration: req.body.interview_duration,
 			})
 
 			res.status(200).json({
-				success: "ok",
+				success: 'ok',
 			})
 		} catch (err) {
 			console.log(err)
@@ -1338,7 +1257,7 @@ router.post(
 )
 
 router.post(
-	"/:interview_round_id/create-booking-slots",
+	'/:interview_round_id/create-booking-slots',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -1347,13 +1266,13 @@ router.post(
 			})
 			if (interview_round == null) return res.sendStatus(404)
 
-			//we need to fetch each timeslot created by the interviewer in this interview round, and divide it into n slots of duration interview_duration and create a booking slot for each of them
+			// we need to fetch each timeslot created by the interviewer in this interview round, and divide it into n slots of duration interview_duration and create a booking slot for each of them
 			const interviewer = await Interviewer.findOne({
 				where: { email: req.body.interviewer_email },
 			})
 			if (interviewer == null) return res.sendStatus(404)
 
-			//find slot for an interviewer in an interview round through the interviewer invite table
+			// find slot for an interviewer in an interview round through the interviewer invite table
 			const interviewer_invite = await InterviewerInvite.findOne({
 				where: {
 					InterviewerId: interviewer.dataValues.id,
@@ -1361,21 +1280,21 @@ router.post(
 				},
 			})
 
-			//find all the timeslots for this interviewer invite
+			// find all the timeslots for this interviewer invite
 			const timeslots = await InterviewerSlot.findAll({
 				where: { InterviewerInviteId: interviewer_invite.dataValues.id },
 			})
 
 			timeslots.map(async (timeslot) => {
-				//extract start and end and convert to unix time
+				// extract start and end and convert to unix time
 				const start_time = new Date(timeslot.dataValues.start).getTime()
 				const duration = timeslot.dataValues.duration
 				const interview_duration =
 					interview_round.dataValues.interview_duration * 60 * 1000
 
-				const n = duration / interview_duration //number of possible slots
+				const n = duration / interview_duration // number of possible slots
 
-				//destroy all the existing booking slots for this interviewer and timeslot
+				// destroy all the existing booking slots for this interviewer and timeslot
 				await InterviewBookingSlots.destroy({
 					where: {
 						InterviewRoundId: req.params.interview_round_id,
@@ -1398,7 +1317,7 @@ router.post(
 			})
 
 			res.status(200).json({
-				success: "ok",
+				success: 'ok',
 				response: timeslots,
 			})
 		} catch (err) {
@@ -1409,7 +1328,7 @@ router.post(
 )
 
 router.get(
-	"/:interview_round_id/get-student-scores",
+	'/:interview_round_id/get-student-scores',
 	checkAdminAuthenticated,
 	async (req, res) => {
 		try {
@@ -1464,7 +1383,7 @@ router.get(
 			)
 
 			res.status(200).json({
-				success: "ok",
+				success: 'ok',
 				scores: list,
 			})
 		} catch (err) {
@@ -1475,7 +1394,7 @@ router.get(
 )
 
 router.post(
-	"/:interview_round_id/interviewer-send-email",
+	'/:interview_round_id/interviewer-send-email',
 	checkInterviewerAuthenticated,
 	async (req, res) => {
 		try {
@@ -1491,7 +1410,7 @@ router.post(
 
 			const email_content = req.body.email_content
 
-			for (student_email of req.body.users) {
+			for (const student_email of req.body.users) {
 				await queueMail(student_email, `${email_content.subject}`, {
 					heading: email_content.heading,
 					inner_text: email_content.body,

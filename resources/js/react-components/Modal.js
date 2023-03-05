@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 const Modal = (props) => {
 	const { show_modal, setShowModal, heading, content, children } = props
 

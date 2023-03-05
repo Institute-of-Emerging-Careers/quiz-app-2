@@ -28,18 +28,17 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
-var MyContext = React.createContext();
 var useEffect = React.useEffect;
 var useState = React.useState;
 
 var createApplicationRound = function createApplicationRound(courses, new_round_title, setUpdateData, setShowNewRoundModal) {
-  if (new_round_title == "") alert("Please give the Application Round a title.");else if (courses.reduce(function (num_false, cur) {
+  if (new_round_title === '') alert('Please give the Application Round a title.');else if (courses.reduce(function (num_false, cur) {
     num_false += cur.checked;
-  }, 0) < 3) alert("Please select at least 3 courses.");else {
-    fetch("/admin/application/rounds/new", {
-      method: "POST",
+  }, 0) < 3) alert('Please select at least 3 courses.');else {
+    fetch('/admin/application/rounds/new', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         title: new_round_title,
@@ -53,7 +52,7 @@ var createApplicationRound = function createApplicationRound(courses, new_round_
         setUpdateData(function (cur) {
           return cur + 1;
         });
-      } else alert("Could not create application round.");
+      } else alert('Could not create application round.');
     });
   }
 };
@@ -61,10 +60,10 @@ var createApplicationRound = function createApplicationRound(courses, new_round_
 var deleteApplicationRound = function deleteApplicationRound(application_round_id, setDeletingApplicationRound, setUpdateData) {
   var confirmation = prompt("Are you sure you wish to delete this application round? All applications will be deleted. Type 'yes' if you do.");
 
-  if (confirmation == "yes") {
+  if (confirmation === 'yes') {
     setDeletingApplicationRound(true);
     fetch("/admin/application/rounds/delete/".concat(application_round_id), {
-      method: "DELETE"
+      method: 'DELETE'
     }).then(function (response) {
       setDeletingApplicationRound(false);
 
@@ -72,19 +71,19 @@ var deleteApplicationRound = function deleteApplicationRound(application_round_i
         setUpdateData(function (cur) {
           return cur + 1;
         });
-      } else alert("Could not delete application round due to an error. Code 01.");
+      } else alert('Could not delete application round due to an error. Code 01.');
     }).catch(function (err) {
       console.log(err);
-      alert("Could not delete application round due to an error. Code 02.");
+      alert('Could not delete application round due to an error. Code 02.');
     });
   }
 };
 
 var addNewCourse = function addNewCourse(new_course_title, setNewCourseTitle, setCourses) {
-  fetch("/admin/application/course/new", {
-    method: "POST",
+  fetch('/admin/application/course/new', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify({
       title: new_course_title
@@ -99,12 +98,12 @@ var addNewCourse = function addNewCourse(new_course_title, setNewCourseTitle, se
             checked: false
           }]);
         });
-        setNewCourseTitle("");
+        setNewCourseTitle('');
       });
     }
   }).catch(function (err) {
     console.log(err);
-    alert("Something went wrong while adding a new course.");
+    alert('Something went wrong while adding a new course.');
   });
 };
 
@@ -114,12 +113,12 @@ var NewApplicationModal = function NewApplicationModal(_ref) {
       setUpdateData = _ref.setUpdateData,
       setShowNewRoundModal = _ref.setShowNewRoundModal;
 
-  var _useState = useState(""),
+  var _useState = useState(''),
       _useState2 = _slicedToArray(_useState, 2),
       new_round_title = _useState2[0],
       setNewRoundTitle = _useState2[1];
 
-  var _useState3 = useState(""),
+  var _useState3 = useState(''),
       _useState4 = _slicedToArray(_useState3, 2),
       new_course_title = _useState4[0],
       setNewCourseTitle = _useState4[1];
@@ -178,7 +177,7 @@ var NewApplicationModal = function NewApplicationModal(_ref) {
           return copy;
         });
       }
-    }), /*#__PURE__*/React.createElement("label", null, " " + course.title));
+    }), /*#__PURE__*/React.createElement("label", null, ' ' + course.title));
   }), /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
     name: "courses"
@@ -211,7 +210,7 @@ var openQuizSelectionModal = function openQuizSelectionModal(applicationRoundId,
 
 var saveAutoAssignQuiz = function saveAutoAssignQuiz(applicationRoundId, quizId) {
   return fetch("/admin/application/rounds/set-auto-assign-quiz/".concat(applicationRoundId, "/").concat(quizId), {
-    method: "POST"
+    method: 'POST'
   });
 };
 
@@ -236,7 +235,7 @@ var QuizSelectionModal = function QuizSelectionModal(_ref2) {
       setLoading = _useState10[1];
 
   useEffect(function () {
-    fetch("/quiz/all-titles").then(function (response) {
+    fetch('/quiz/all-titles').then(function (response) {
       response.json().then(function (parsed_response) {
         setQuizzes(parsed_response);
       });
@@ -282,7 +281,7 @@ var QuizSelectionModal = function QuizSelectionModal(_ref2) {
             case 6:
               _context.prev = 6;
               _context.t0 = _context["catch"](1);
-              alert("Something went wrong.");
+              alert('Something went wrong.');
 
             case 9:
               setLoading(false);
@@ -351,7 +350,7 @@ var App = function App() {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return fetch("/admin/application/rounds/all");
+            return fetch('/admin/application/rounds/all');
 
           case 3:
             raw_response = _context2.sent;
@@ -361,7 +360,7 @@ var App = function App() {
           case 6:
             _context2.prev = 6;
             _context2.t0 = _context2["catch"](0);
-            alert("Please check your internet connection and try again. Error code 03.");
+            alert('Please check your internet connection and try again. Error code 03.');
             return _context2.abrupt("return");
 
           case 10:
@@ -370,7 +369,7 @@ var App = function App() {
               break;
             }
 
-            alert("Something went wrong while getting application rounds. Error code 01.");
+            alert('Something went wrong while getting application rounds. Error code 01.');
             return _context2.abrupt("return");
 
           case 13:
@@ -409,7 +408,7 @@ var App = function App() {
           return cur + 1;
         });
       } else {
-        alert("Could not change state of application round.");
+        alert('Could not change state of application round.');
       }
     });
   };
@@ -436,7 +435,7 @@ var App = function App() {
     className: "text-xs absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 w-max h-max bg-white px-4 py-2 shadow-md text-gray-800"
   }, "Linked Copied to Clipboard!") : /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-wrap justify-start gap-y-10 gap-x-10"
-  }, application_rounds.length == 0 ? /*#__PURE__*/React.createElement("p", null, "No application rounds to show.") : application_rounds.map(function (application_round, index) {
+  }, application_rounds.length === 0 ? /*#__PURE__*/React.createElement("p", null, "No application rounds to show.") : application_rounds.map(function (application_round, index) {
     return /*#__PURE__*/React.createElement("div", {
       className: "w-64 border bg-white quiz-card",
       key: index
@@ -464,7 +463,7 @@ var App = function App() {
       "data-id": application_round.id
     })), /*#__PURE__*/React.createElement("a", {
       className: "text-white text-xl col-span-1 justify-self-center hover:text-gray-100 cursor-pointer",
-      title: application_round.open ? "Close Applications" : "Open Applications",
+      title: application_round.open ? 'Close Applications' : 'Open Applications',
       onClick: function onClick() {
         changeApplicationOpenState(application_round.id, !application_round.open);
       }
@@ -506,4 +505,4 @@ var App = function App() {
   })));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(App, null), document.getElementById('app'));

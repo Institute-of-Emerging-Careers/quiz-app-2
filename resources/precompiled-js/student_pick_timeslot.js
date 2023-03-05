@@ -20,8 +20,8 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var interview_round_id = document.getElementById("interview_round_id").innerHTML;
-var interviewer_id = document.getElementById("interviewer_id").innerHTML;
+var interview_round_id = document.getElementById('interview_round_id').innerHTML;
+var interviewer_id = document.getElementById('interviewer_id').innerHTML;
 
 function tConvert(time) {
   // Check correct time format and split into components
@@ -44,7 +44,7 @@ var DatePill = function DatePill(_ref) {
       selectedDate = _ref.selectedDate,
       onToggleDate = _ref.onToggleDate;
   return /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 rounded-md text-lg justify-center items-center p-4 ".concat(selectedDate ? "bg-iec-blue text-white border-white" : "text-iec-blue bg-white border-iec-blue"),
+    className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 rounded-md text-lg justify-center items-center p-4 ".concat(selectedDate ? 'bg-iec-blue text-white border-white' : 'text-iec-blue bg-white border-iec-blue'),
     onClick: function onClick() {
       onToggleDate(date);
     }
@@ -56,11 +56,11 @@ var TimeSlotPill = function TimeSlotPill(_ref2) {
       selectedTimeSlot = _ref2.selectedTimeSlot,
       onToggleTimeSlot = _ref2.onToggleTimeSlot,
       setInterviewTime = _ref2.setInterviewTime;
-  //compute the interview time from start_time and end_time format as hh:mm 12 hour format
-  var start_time = tConvert(new Date(new Number(timeSlot.start_time)).toISOString().slice(11, 16));
-  var end_time = tConvert(new Date(new Number(timeSlot.end_time)).toISOString().slice(11, 16));
+  // compute the interview time from start_time and end_time format as hh:mm 12 hour format
+  var start_time = tConvert(new Date(Number(timeSlot.start_time)).toISOString().slice(11, 16));
+  var end_time = tConvert(new Date(Number(timeSlot.end_time)).toISOString().slice(11, 16));
   return /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ".concat(selectedTimeSlot === timeSlot.id ? "bg-iec-blue text-white border-white" : "text-iec-blue bg-white border-iec-blue"),
+    className: "flex flex-col border w-1/2 hover:scale-105 cursor-pointer transition-all duration-150 mb-4 p-4 rounded-md text-lg justify-center items-center ".concat(selectedTimeSlot === timeSlot.id ? 'bg-iec-blue text-white border-white' : 'text-iec-blue bg-white border-iec-blue'),
     onClick: function onClick() {
       onToggleTimeSlot(timeSlot.id);
       setInterviewTime({
@@ -95,7 +95,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
   var _React$useState9 = React.useState(null),
       _React$useState10 = _slicedToArray(_React$useState9, 2),
       interviewTime = _React$useState10[0],
-      setInterviewTime = _React$useState10[1]; //fetch available booking slots for interviewer
+      setInterviewTime = _React$useState10[1]; // fetch available booking slots for interviewer
 
 
   React.useEffect( /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
@@ -113,25 +113,24 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
           case 4:
             response = _context.sent;
-            timeslots = response.booking_slots; //extract all unique dates from timeslots in the format day, moth, date
+            timeslots = response.booking_slots; // extract all unique dates from timeslots in the format day, moth, date
 
-            console.log(timeslots);
             dates = new Set(timeslots.map(function (timeSlots) {
-              return new Date(new Number(timeSlots.start_time)).toDateString({}, {
-                weekday: "long",
-                month: "long",
-                day: "numeric"
+              return new Date(Number(timeSlots.start_time)).toDateString({}, {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
               });
-            })); //convert dates from set to array
+            })); // convert dates from set to array
 
-            setDates(Array.from(dates)); //group timeslots by date hh.mm format
+            setDates(Array.from(dates)); // group timeslots by date hh.mm format
 
             timeSlotsByDate = {};
             timeslots.forEach(function (timeslot) {
-              var date = new Date(new Number(timeslot.start_time)).toDateString({}, {
-                weekday: "long",
-                month: "long",
-                day: "numeric"
+              var date = new Date(Number(timeslot.start_time)).toDateString({}, {
+                weekday: 'long',
+                month: 'long',
+                day: 'numeric'
               });
 
               if (timeSlotsByDate[date]) {
@@ -139,17 +138,17 @@ var TimeSlotPicker = function TimeSlotPicker() {
               } else {
                 timeSlotsByDate[date] = [timeslot];
               }
-            }); //sort timeslots by start time
+            }); // sort timeslots by start time
 
             for (date in timeSlotsByDate) {
               timeSlotsByDate[date].sort(function (a, b) {
-                return new Number(a.start_time) - new Number(b.start_time);
+                return Number(a.start_time) - Number(b.start_time);
               });
             }
 
             setTimeSlots(timeSlotsByDate);
 
-          case 13:
+          case 12:
           case "end":
             return _context.stop();
         }
@@ -191,9 +190,9 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
               _context2.next = 4;
               return fetch("/student/interview/".concat(interview_round_id, "/interviewer/").concat(interviewer_id, "/book-slot"), {
-                method: "POST",
+                method: 'POST',
                 headers: {
-                  "Content-Type": "application/json"
+                  'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                   booking_slot_id: selectedTimeSlot
@@ -203,7 +202,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
             case 4:
               _response = _context2.sent;
 
-              if (!(_response.status == 200)) {
+              if (!(_response.status === 200)) {
                 _context2.next = 10;
                 break;
               }
@@ -216,7 +215,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
 
               if (_response.success) {
                 window.alert(_response.message);
-                window.location.href = "/student/interview";
+                window.location.href = '/student/interview';
               }
 
             case 10:
@@ -228,7 +227,7 @@ var TimeSlotPicker = function TimeSlotPicker() {
               _context2.t0 = _context2["catch"](0);
               console.log(_context2.t0);
               window.alert(response.message);
-              window.location.href = "/student/interview";
+              window.location.href = '/student/interview';
 
             case 17:
             case "end":
@@ -258,13 +257,14 @@ var TimeSlotPicker = function TimeSlotPicker() {
     id: "assessments-box-content",
     className: "px-4 py-8 overflow-x-auto grid md:grid-cols-3 grid-cols-1 grid-flow-col gap-2"
   }, dates.length > 0 ? /*#__PURE__*/React.createElement("div", {
-    className: "w-full ".concat(selectedDate ? "hidden md:flex md:flex-col" : "flex flex-col")
+    className: "w-full ".concat(selectedDate ? 'hidden md:flex md:flex-col' : 'flex flex-col')
   }, /*#__PURE__*/React.createElement("p", {
     className: "text-2xl font-semibold flex items-center justify-center mb-4"
   }, "Pick a Date"), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col h-full w-full items-center justify-center"
-  }, dates.map(function (date) {
+  }, dates.map(function (date, i) {
     return /*#__PURE__*/React.createElement(DatePill, {
+      key: i,
       date: date,
       selectedDate: selectedDate,
       onToggleDate: handleToggleDate
@@ -274,15 +274,16 @@ var TimeSlotPicker = function TimeSlotPicker() {
   }, /*#__PURE__*/React.createElement("p", {
     className: "text-2xl font-semibold flex items-center justify-center mb-4"
   }, "No slots available")), selectedDate && /*#__PURE__*/React.createElement("div", {
-    className: "flex flex-col w-full ".concat(selectedDate && selectedTimeSlot ? "hidden md:flex md:flex-col" : "flex flex-col")
+    className: "flex flex-col w-full ".concat(selectedDate && selectedTimeSlot ? 'hidden md:flex md:flex-col' : 'flex flex-col')
   }, /*#__PURE__*/React.createElement("p", {
-    className: "".concat(selectedDate ? "md:hidden" : "flex justify-center items-center text-lg mb-2 border-b border-iec-blue")
+    className: "".concat(selectedDate ? 'md:hidden' : 'flex justify-center items-center text-lg mb-2 border-b border-iec-blue')
   }, "Interview Date: ", selectedDate), /*#__PURE__*/React.createElement("p", {
     className: "text-2xl font-semibold flex items-center justify-center mb-4"
   }, "Pick a Time"), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col w-full h-full items-center justify-center"
-  }, timeSlots[selectedDate].map(function (timeSlot) {
+  }, timeSlots[selectedDate].map(function (timeSlot, i) {
     return /*#__PURE__*/React.createElement(TimeSlotPill, {
+      key: i,
       timeSlot: timeSlot,
       selectedTimeSlot: selectedTimeSlot,
       onToggleTimeSlot: handleToggleTimeSlot,
@@ -296,10 +297,10 @@ var TimeSlotPicker = function TimeSlotPicker() {
     className: "flex flex-col w-full h-full items-center justify-center mt-4"
   }, /*#__PURE__*/React.createElement("p", {
     className: "text-lg border-b border-iec-blue"
-  }, " ", selectedDate, " | ", interviewTime.start_time, " - ", interviewTime.end_time), /*#__PURE__*/React.createElement("button", {
+  }, ' ', selectedDate, " | ", interviewTime.start_time, " -", ' ', interviewTime.end_time), /*#__PURE__*/React.createElement("button", {
     className: "bg-iec-blue text-xl text-white p-4 m-2 mt-4 rounded-md",
     onClick: bookSlot
   }, "Book Interview")))))));
 };
 
-ReactDOM.render( /*#__PURE__*/React.createElement(TimeSlotPicker, null), document.getElementById("app"));
+ReactDOM.render( /*#__PURE__*/React.createElement(TimeSlotPicker, null), document.getElementById('app'));

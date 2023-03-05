@@ -55,4 +55,5 @@ jobs:
     - run: npm ci
     - run: npm run build:css
     - run: npm run build:babel
-    - run: npm test
+    - run: npm run mocha-test
+    - run: npm run jest-test

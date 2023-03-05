@@ -1,6 +1,6 @@
-const { Quiz, Section, Question, Option, Passage } = require("../db/models")
-const { saveEverythingInQuiz } = require("./saveNewQuiz.js")
-const sequelize = require("../db/connect")
+const { Quiz, Section, Question, Option, Passage } = require('../db/models')
+const { saveEverythingInQuiz } = require('./saveNewQuiz.js')
+const sequelize = require('../db/connect')
 
 function countTheComponentsInAQuiz(data) {
 	// Note: The quiz must be queried by "include"ing its Sections, Questions, and Options. See saveExistingQuiz.js in start of function removeEverythingInQuiz for precedent
@@ -33,7 +33,7 @@ function deleteAllOptionsInQuiz(data, num_options, t) {
 						.destroy({ transaction: t })
 						.then(() => {
 							count_options++
-							if (count_options == num_options) {
+							if (count_options === num_options) {
 								resolve()
 							}
 						})
@@ -41,7 +41,7 @@ function deleteAllOptionsInQuiz(data, num_options, t) {
 							reject(err)
 						})
 				})
-				if (num_options == 0) resolve()
+				if (num_options === 0) resolve()
 			})
 		})
 	})
@@ -56,7 +56,7 @@ function deleteAllQuestionsInQuiz(data, num_questions, t) {
 					.destroy({ transaction: t })
 					.then(() => {
 						count_questions++
-						if (count_questions == num_questions) {
+						if (count_questions === num_questions) {
 							resolve()
 						}
 					})
@@ -76,7 +76,7 @@ function deleteAllSectionsInQuiz(data, num_sections, t) {
 				.destroy({ transaction: t })
 				.then(() => {
 					count_sections++
-					if (count_sections == num_sections) {
+					if (count_sections === num_sections) {
 						resolve()
 					}
 				})
@@ -90,18 +90,18 @@ function deleteAllSectionsInQuiz(data, num_sections, t) {
 function deleteAllComprehensionPassagesInQuiz(data, num_passages, t) {
 	let count_passages = 0
 	return new Promise((resolve, reject) => {
-		if (num_passages == 0) resolve()
+		if (num_passages === 0) resolve()
 		else
 			data.Sections.forEach((section) => {
 				section.Questions.forEach(async (question) => {
 					if (question.Passage != null) {
-						let passage_temp_store = question.Passage
+						const passage_temp_store = question.Passage
 						await question.update({ PassageId: null })
 						passage_temp_store
 							.destroy({ transaction: t })
 							.then(() => {
 								count_passages++
-								if (count_passages == num_passages) {
+								if (count_passages === num_passages) {
 									resolve()
 								}
 							})
@@ -115,7 +115,7 @@ function deleteAllComprehensionPassagesInQuiz(data, num_passages, t) {
 }
 
 async function removeEverythingInQuiz(the_quiz, t) {
-	let data = await Quiz.findOne({
+	const data = await Quiz.findOne({
 		where: { id: the_quiz.id },
 		include: {
 			model: Section,
@@ -123,7 +123,7 @@ async function removeEverythingInQuiz(the_quiz, t) {
 		},
 	})
 
-	let [num_options, num_questions, num_sections, num_passages] =
+	const [num_options, num_questions, num_sections, num_passages] =
 		countTheComponentsInAQuiz(data)
 
 	return deleteAllOptionsInQuiz(data, num_options, t)
@@ -155,7 +155,7 @@ const saveExistingQuiz = async (req, res) => {
 		console.log(err)
 	}
 
-	if (the_quiz.title != req.body.quizTitle) {
+	if (the_quiz.title !== req.body.quizTitle) {
 		the_quiz.update({ title: req.body.quizTitle }, { transaction: t })
 	}
 
@@ -167,15 +167,15 @@ const saveExistingQuiz = async (req, res) => {
 						.then(async () => {
 							await t.commit()
 							res.send({
-								message: "Resaved quiz.",
+								message: 'Resaved quiz.',
 								status: true,
 								quizId: the_quiz.id,
 							})
 						})
 						.catch(async (err) => {
 							await t.rollback()
-							console.log("Error 01", err)
-							if (err.code == "ER_ROW_IS_REFERENCED_2") {
+							console.log('Error 01', err)
+							if (err.code === 'ER_ROW_IS_REFERENCED_2') {
 								res.send({
 									message:
 										"Error: A student has already solved this quiz and it has been graded. You cannot change the quiz now without deleting that student's attempt.",
@@ -184,7 +184,7 @@ const saveExistingQuiz = async (req, res) => {
 								})
 							} else {
 								res.send({
-									message: "Code 01 Error. Please contact the tech team.",
+									message: 'Code 01 Error. Please contact the tech team.',
 									status: false,
 									quizId: the_quiz.id,
 								})
@@ -193,8 +193,8 @@ const saveExistingQuiz = async (req, res) => {
 				})
 				.catch(async (err) => {
 					await t.rollback()
-					console.log("Error 02", err.original.code)
-					if (err.original.code == "ER_ROW_IS_REFERENCED_2") {
+					console.log('Error 02', err.original.code)
+					if (err.original.code === 'ER_ROW_IS_REFERENCED_2') {
 						res.send({
 							message:
 								"Error: A student has already solved this quiz and it has been graded. You cannot change the quiz now without deleting that student's attempt.",
@@ -203,7 +203,7 @@ const saveExistingQuiz = async (req, res) => {
 						})
 					} else {
 						res.send({
-							message: "Code 02 Error. Please contact the tech team.",
+							message: 'Code 02 Error. Please contact the tech team.',
 							status: false,
 							quizId: the_quiz.id,
 						})
@@ -214,16 +214,16 @@ const saveExistingQuiz = async (req, res) => {
 				.then(async () => {
 					await t.commit()
 					res.send({
-						message: "Resaved quiz.",
+						message: 'Resaved quiz.',
 						status: true,
 						quizId: the_quiz.id,
 					})
 				})
 				.catch(async (err) => {
 					await t.rollback()
-					console.log("Error 03", err)
+					console.log('Error 03', err)
 					res.send({
-						message: "Code 03 Error. Please contact the tech team.",
+						message: 'Code 03 Error. Please contact the tech team.',
 						status: false,
 						quizId: the_quiz.id,
 					})
@@ -231,7 +231,7 @@ const saveExistingQuiz = async (req, res) => {
 		}
 	} else {
 		await t.rollback()
-		res.send({ message: "Quiz does not exist.", status: false })
+		res.send({ message: 'Quiz does not exist.', status: false })
 	}
 }
 

@@ -1,10 +1,10 @@
-const server = require("./server_config")
-const initializeDatabase = require("./db/initialize")
-const { createClient } = require("redis")
-const { email_bull_queue } = require("./bull")
-const { Server } = require("socket.io")
-const { createServer } = require("http")
-const { sendHTMLMail } = require("./functions/sendEmail")
+const server = require('./server_config')
+const initializeDatabase = require('./db/initialize')
+const { createClient } = require('redis')
+const { email_bull_queue } = require('./bull')
+const { Server } = require('socket.io')
+const { createServer } = require('http')
+const { sendHTMLMail } = require('./functions/sendEmail')
 
 email_bull_queue.process(function (job, done) {
 	// send force=true with password recet email
@@ -15,12 +15,12 @@ email_bull_queue.process(function (job, done) {
 		job.data.force_send
 	)
 		.then(() => {
-			console.log("Email successfully sent to", job.data.recepient)
+			console.log('Email successfully sent to', job.data.recepient)
 			done()
 		})
 		.catch((err) => {
 			done(err)
-			console.log("Email error: ", err)
+			console.log('Email error: ', err)
 		})
 })
 
@@ -29,7 +29,7 @@ initializeDatabase()
 // Redis configuration
 
 const client = createClient()
-client.on("error", (err) => console.log("Redis Client Error", err))
+client.on('error', (err) => console.log('Redis Client Error', err))
 client
 	.connect()
 	.then(() => {})
@@ -40,10 +40,10 @@ const httpServer = createServer(server)
 
 const io = new Server(httpServer, {})
 
-io.on("connection", (socket) => {
-	console.log("socket id: ", socket.id)
-	email_bull_queue.on("completed", (obj) => {
-		io.emit("email-sent", obj.data.recepient)
+io.on('connection', (socket) => {
+	console.log('socket id: ', socket.id)
+	email_bull_queue.on('completed', (obj) => {
+		io.emit('email-sent', obj.data.recepient)
 	})
 })
 
