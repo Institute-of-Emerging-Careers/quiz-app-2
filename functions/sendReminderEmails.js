@@ -47,7 +47,7 @@ async function sendReminderEmails() {
 						if (!all_sections_solved) {
 							const deadline = DateTime.fromMillis(
 								new Date(assignment.createdAt).getTime()
-							).plus({ days: 3 }) //timeOfAssignment + 72 hours
+							).plus({ days: process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS }) //timeOfAssignment + Quiz deadline time
 
 							const deadline_diff = deadline
 								.diff(DateTime.now(), ["days", "hours", "minutes"])
@@ -59,8 +59,8 @@ async function sendReminderEmails() {
 							remaining_time_in_words += ` ${remaining_hours} hour`
 							if (remaining_hours != 1) remaining_time_in_words += "s"
 
-							if (remaining_days > 0 && remaining_days < 3) {
-								//if remaining time more than 0 days and less than 3 days then send email, because we don't want to be sending reminder emails to students whose 72 hours have already passed
+							if (remaining_days > 0 && remaining_days < process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS) {
+								//if remaining time more than 0 days and less than x days then send email, because we don't want to be sending reminder emails to students whose env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS have already passed
 
 								console.log(
 									`Sending email. Time left: ${remaining_days} days and ${remaining_hours} hours`
@@ -73,11 +73,13 @@ async function sendReminderEmails() {
 										`Reminder | IEC Assessment Deadline`,
 										{
 											heading: "IEC Assessment Due",
-											inner_text: `Dear Student<br>You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. <br> Use this link to login at the student portal to access your assessment: https://apply.iec.org.pk/student/login `,
+											inner_text: `Dear Student,<br>You have been assigned Assessments that you have to complete within 48 hours of your registration.  The assessment is designed to test your basic English language and critical thinking skills. If you do not complete the Assessment in time you will be disqualified. You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. <br> <br>Best Regards,<br>IEC Team.`,
+											button_announcer: "Log into your student portal to complete assessment",
+											button_text: "Login",
+											button_link: "https://apply.iec.org.pk/student",
 										}
 									),
 
-									// now updating timeOfLastReminderEmail in assignment
 									assignment.update({
 										timeOfLastReminderEmail: Date.now(),
 									}),
