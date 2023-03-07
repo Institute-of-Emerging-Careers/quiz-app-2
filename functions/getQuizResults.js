@@ -165,6 +165,7 @@ const getQuizResults = (quiz_id) => {
 							sections: [],
 							completed: false, //this tells if the student has completed all sections or not
 							started: false, //this tells if the student has started a section or not
+							assignedAt: assignment.createdAt,
 							total_score: 0,
 							maximum_total_score: 0,
 							percentage_total: 0,
