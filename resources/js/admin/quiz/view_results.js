@@ -1012,6 +1012,8 @@ const StudentsList = () => {
                 <th className="py-3 px-6">Student Email</th>
                 {show_student_personal_details
                   ? [
+                      <th className="py-3 px-6">Assigned on</th>,
+                      <th className="py-3 px-6">Completed</th>,
                       <th className="py-3 px-6">Student CNIC</th>,
                       ...application_fields.map((field) => (
                         <th className="py-3 px-6">{field.text}</th>
@@ -1065,6 +1067,9 @@ const StudentsList = () => {
                   <td className="py-3 px-6">{student.student_email}</td>
                   {show_student_personal_details
                     ? [
+                        <td className="py-3 px-6">{new Date(student.assignedAt).toDateString()}</td>,
+                        <td className="py-3 px-6">{student.completed ? "Yes" : "No"}</td>,
+
                         <td className="py-3 px-6">{student.student_cnic}</td>,
                         ...application_fields.map((field) =>
                           student.hasOwnProperty(field.name) ? (
