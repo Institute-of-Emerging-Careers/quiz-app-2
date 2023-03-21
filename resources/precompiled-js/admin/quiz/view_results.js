@@ -167,6 +167,10 @@ var StudentsList = function StudentsList() {
     text: "Belongs to flood area"
   }, {
     is_preference_field: false,
+    name: "is_tcf_alumni",
+    text: "Is a TCF alumni"
+  }, {
+    is_preference_field: false,
     name: "can_pay_2000",
     text: "Can pay 2000"
   }, {

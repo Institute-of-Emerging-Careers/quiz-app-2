@@ -12,6 +12,7 @@ const ApplicantDetailsModal = (props) => {
     { title: "Home Address", name: ["address"] },
     { title: "Current Address", name: ["current_address"] },
     { title: "From Flood Affected Area", name: ["belongs_to_flood_area"] },
+    { title: "Is TCF alumni", name: ["is_tcf_alumni"] },
 
     { title: "Education Completed", name: ["education_completed"] },
     {

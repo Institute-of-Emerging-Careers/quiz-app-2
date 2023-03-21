@@ -96,6 +96,9 @@ var ApplicationsList = function ApplicationsList(props) {
     title: "From flood affected area",
     name: ["belongs_to_flood_area"]
   }, {
+    title: "Is TCF alumni",
+    name: ["is_tcf_alumni"]
+  }, {
     title: "City of origin",
     name: ["city_of_origin"]
   },, {
@@ -298,6 +301,21 @@ var ApplicationsList = function ApplicationsList(props) {
     }, {
       title: "From flood affected areas",
       name: "belongs_to_flood_area",
+      filter_type: "fixed_values",
+      discrepancy_between_value_and_text: true,
+      possible_values: [{
+        text: "Yes",
+        value: 1,
+        checked: false
+      }, {
+        text: "No",
+        value: 0,
+        checked: false
+      }],
+      expand_possible_values: false
+    }, {
+      title: "Is TCF alumni",
+      name: "is_tcf_alumni",
       filter_type: "fixed_values",
       discrepancy_between_value_and_text: true,
       possible_values: [{

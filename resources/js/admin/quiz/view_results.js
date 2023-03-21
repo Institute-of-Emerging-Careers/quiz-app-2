@@ -63,6 +63,11 @@ const StudentsList = () => {
     },
     {
       is_preference_field: false,
+      name: "is_tcf_alumni",
+      text: "Is a TCF alumni",
+    },
+    {
+      is_preference_field: false,
       name: "can_pay_2000",
       text: "Can pay 2000",
     },

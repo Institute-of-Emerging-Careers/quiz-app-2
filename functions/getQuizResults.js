@@ -53,7 +53,7 @@ const application_fields = [
 	"father_name",
 	"current_address",
 	"belongs_to_flood_area",
-	,
+	"is_tcf_alumni",
 	"can_pay_2000",
 	"how_to_enroll",
 	"has_completed_ba",

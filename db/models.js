@@ -169,6 +169,15 @@ Application.init(
 				},
 			},
 		},
+		is_tcf_alumni: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			validate: {
+				notEmpty: {
+					msg: "Please tell us if you are a TCF Alumni or not.",
+				}
+			}
+		},
 		city_of_origin: {
 			type: DataTypes.STRING(100),
 			allowNull: true,
