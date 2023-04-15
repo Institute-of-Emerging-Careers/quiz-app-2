@@ -50,6 +50,9 @@ var ApplicantDetailsModal = function ApplicantDetailsModal(props) {
     title: "From Flood Affected Area",
     name: ["belongs_to_flood_area"]
   }, {
+    title: "Is TCF alumni",
+    name: ["is_tcf_alumni"]
+  }, {
     title: "Education Completed",
     name: ["education_completed"]
   }, {

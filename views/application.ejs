@@ -362,6 +362,25 @@
             </div>
           </div>
 
+          <fieldset class="mt-3 mb-4 input-group">
+            <label for="is_tcf_alumni" class="input-group-text">Are you a TCF alumni?*</label>
+            <div class="col-sm-8 form-control">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni" value="1" required>
+                <label class="form-check-label" for="is_tcf_alumni">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni_no" value="0">
+                <label class="form-check-label" for="is_tcf_alumni_no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="is_tcf_alumni-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
           <!-- Next Button -->
             <button
               type="button"

@@ -167,6 +167,10 @@ var StudentsList = function StudentsList() {
     text: "Belongs to flood area"
   }, {
     is_preference_field: false,
+    name: "is_tcf_alumni",
+    text: "Is a TCF alumni"
+  }, {
+    is_preference_field: false,
     name: "can_pay_2000",
     text: "Can pay 2000"
   }, {
@@ -987,6 +991,10 @@ var StudentsList = function StudentsList() {
     className: "py-3 px-6"
   }, "Student Email"), show_student_personal_details ? [/*#__PURE__*/React.createElement("th", {
     className: "py-3 px-6"
+  }, "Assigned on"), /*#__PURE__*/React.createElement("th", {
+    className: "py-3 px-6"
+  }, "Completed"), /*#__PURE__*/React.createElement("th", {
+    className: "py-3 px-6"
   }, "Student CNIC")].concat(_toConsumableArray(application_fields.map(function (field) {
     return /*#__PURE__*/React.createElement("th", {
       className: "py-3 px-6"
@@ -1019,6 +1027,10 @@ var StudentsList = function StudentsList() {
     }, student.student_name), /*#__PURE__*/React.createElement("td", {
       className: "py-3 px-6"
     }, student.student_email), show_student_personal_details ? [/*#__PURE__*/React.createElement("td", {
+      className: "py-3 px-6"
+    }, new Date(student.assignedAt).toDateString()), /*#__PURE__*/React.createElement("td", {
+      className: "py-3 px-6"
+    }, student.completed ? "Yes" : "No"), /*#__PURE__*/React.createElement("td", {
       className: "py-3 px-6"
     }, student.student_cnic)].concat(_toConsumableArray(application_fields.map(function (field) {
       return student.hasOwnProperty(field.name) ? student[field.name] === true ? /*#__PURE__*/React.createElement("td", null, "Yes") : student[field.name] === false ? /*#__PURE__*/React.createElement("td", null, "No") : /*#__PURE__*/React.createElement("td", {
