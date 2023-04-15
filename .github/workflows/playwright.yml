@@ -58,12 +58,12 @@ jobs:
     - run: npm run build:babel
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-    - name: Run Playwright Tests
-      run: |
-        npm start &
-        sleep 10 &&
-        curl http://localhost:4000 &&
-        npx playwright test
+    - name: Start Server
+      run: npm run start &
+    - name: Wait for Server to Start
+      run: sleep 10
+    - name: Run Tests with Playwright
+      run: npm test
     - uses: actions/upload-artifact@v3
       if: always()
       with:
