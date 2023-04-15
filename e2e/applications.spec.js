@@ -9,9 +9,6 @@ test("Create Application Round", async ({ page }) => {
   // Create Application Round
   await page.getByRole("link", { name: /Applications/ }).click();
   await expect(page).toHaveTitle("Cohort Applications - Admin Panel");
-  console.log("pagetitle:", await page.title());
-  const content = await page.content();
-  console.log(content);
 
   await page.getByTestId("new-application-round-button").click();
   const createRoundButton = await page.getByRole("button", {
@@ -22,7 +19,7 @@ test("Create Application Round", async ({ page }) => {
   await page.getByPlaceholder("Cohort 4 Application Round 1").fill(roundTitle);
   let title = "Course A"
 
-  // Course A
+  // Create Course A and make sure it exists
   await page.getByPlaceholder("Course Title").fill(title);
   let addCourseButton = await page.getByRole("button", {
     name: "Add New Course",
@@ -32,7 +29,7 @@ test("Create Application Round", async ({ page }) => {
   let isChecked = await page.locator(`[data-testid="checkbox-${title}"]`).isChecked()
   expect(isChecked).toBeTruthy();
 
-  // Course B
+  // Create Course B and make sure it exists
   title = "Course B"
   await page.getByPlaceholder("Course Title").fill(title);
   addCourseButton = await page.getByRole("button", {
@@ -43,7 +40,7 @@ test("Create Application Round", async ({ page }) => {
   isChecked = await page.locator(`[data-testid="checkbox-${title}"]`).isChecked()
   expect(isChecked).toBeTruthy();
 
-  // Course C
+  // Create Course C and make sure it exists
   title = "Course C"
   await page.getByPlaceholder("Course Title").fill(title);
   addCourseButton = await page.getByRole("button", {
@@ -54,6 +51,9 @@ test("Create Application Round", async ({ page }) => {
   isChecked = await page.locator(`[data-testid="checkbox-${title}"]`).isChecked()
   expect(isChecked).toBeTruthy();
 
+  // Create the Application Round
   await createRoundButton.click();
+
+  // Make sure the round was successfully created
   await expect(page.getByText(roundTitle)).toBeVisible();
 });
