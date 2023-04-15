@@ -9,7 +9,7 @@ This is a Student Acquisition System consisting of 5 phases:
 </ul>
 
 ## Tech Stack
-- NodeJS (version 14) | ExpressJS |  ReactJS | EJS | TailwindCSS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis v5.0.7 | Bull<br>
+- NodeJS (version 14) | ExpressJS |  ReactJS (v17) | EJS | TailwindCSS | MySQL v8.0.30 | Sequelize ORM |  AWS EC2 |  AWS SES | Redis v5.0.7 | Bull<br>
 - For unit testing it uses Jest & Chai.<br>
 - For E2E testing it uses Playwright v1.3.
 - For emails it uses AWS SES, and for email queues it uses Redis-Bull.
