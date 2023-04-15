@@ -10,7 +10,7 @@ const initializeDatabase = async () => {
 		await sequelize.sync({
 			alter: alterandforce,
 			force: alterandforce,
-			logging: process.env.NODE_ENV == "test" ? true : false,
+			logging: process.env.NODE_ENV == "test" ? console.log : false,
 		});
 
 		// await InterviewRound.sync({ alter: true, force: false });
