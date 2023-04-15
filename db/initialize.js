@@ -6,6 +6,7 @@ const { User } = require("./models")
 const initializeDatabase = async () => {
 	try {
 		let alterandforce = process.env.NODE_ENV === "test";
+		console.log("alterandforce: ", alterandforce)
 		// Sync models with database
 		await sequelize.sync({
 			alter: alterandforce,
