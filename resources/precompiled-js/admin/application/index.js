@@ -82,7 +82,7 @@ var deleteApplicationRound = function deleteApplicationRound(application_round_i
 
 var addNewCourse = function addNewCourse(new_course_title, setNewCourseTitle, setCourses) {
   fetch("/admin/application/course/new", {
-    method: "POST",
+    method: "PUT",
     headers: {
       "Content-Type": "application/json"
     },
@@ -92,10 +92,10 @@ var addNewCourse = function addNewCourse(new_course_title, setNewCourseTitle, se
   }).then(function (response) {
     if (response.ok) {
       response.json().then(function (parsed_response) {
-        setCourses(function (cur) {
+        if (parsed_response.newlyCreated) setCourses(function (cur) {
           return [].concat(_toConsumableArray(cur), [{
-            id: parsed_response.id,
-            title: parsed_response.title,
+            id: parsed_response.course.id,
+            title: parsed_response.course.title,
             checked: false
           }]);
         });
@@ -171,6 +171,7 @@ var NewApplicationModal = function NewApplicationModal(_ref) {
       name: "courses",
       checked: course.checked,
       "data-index": index,
+      "data-testid": "checkbox-".concat(course.title),
       onChange: function onChange(e) {
         setCourses(function (cur) {
           var copy = cur.slice();

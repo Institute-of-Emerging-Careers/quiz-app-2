@@ -61,7 +61,7 @@ const deleteApplicationRound = (
 
 const addNewCourse = (new_course_title, setNewCourseTitle, setCourses) => {
 	fetch("/admin/application/course/new", {
-		method: "POST",
+		method: "PUT",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
 			title: new_course_title,
@@ -70,16 +70,17 @@ const addNewCourse = (new_course_title, setNewCourseTitle, setCourses) => {
 		.then((response) => {
 			if (response.ok) {
 				response.json().then((parsed_response) => {
-					setCourses((cur) => [
-						...cur,
-						{
-							id: parsed_response.id,
-							title: parsed_response.title,
-							checked: false,
-						},
-					])
-					setNewCourseTitle("")
-				})
+					if (parsed_response.newlyCreated)
+						setCourses((cur) => [
+							...cur,
+							{
+								id: parsed_response.course.id,
+								title: parsed_response.course.title,
+								checked: false,
+							},
+						]);
+					setNewCourseTitle("");
+				});
 			}
 		})
 		.catch((err) => {
@@ -154,6 +155,7 @@ const NewApplicationModal = ({
 										name="courses"
 										checked={course.checked}
 										data-index={index}
+										data-testid={`checkbox-${course.title}`}
 										onChange={(e) => {
 											setCourses((cur) => {
 												let copy = cur.slice()
