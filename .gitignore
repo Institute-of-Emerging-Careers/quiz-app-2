@@ -10,3 +10,5 @@ nginx.conf
 /test-results/
 /playwright-report/
 /playwright/.cache/
+tests-examples/
+test-results/
