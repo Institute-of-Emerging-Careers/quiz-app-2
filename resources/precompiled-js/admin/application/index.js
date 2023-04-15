@@ -432,7 +432,8 @@ var App = function App() {
       setShowNewRoundModal(function (cur) {
         return !cur;
       });
-    }
+    },
+    "data-testid": "new-application-round-button"
   }, "NEW")), show_copied_box ? /*#__PURE__*/React.createElement("div", {
     className: "text-xs absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 z-10 w-max h-max bg-white px-4 py-2 shadow-md text-gray-800"
   }, "Linked Copied to Clipboard!") : /*#__PURE__*/React.createElement("span", null), /*#__PURE__*/React.createElement("div", {

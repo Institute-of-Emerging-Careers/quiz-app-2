@@ -362,6 +362,7 @@ const App = () => {
 					onClick={() => {
 						setShowNewRoundModal((cur) => !cur)
 					}}
+					data-testid="new-application-round-button"
 				>
 					NEW
 				</button>
