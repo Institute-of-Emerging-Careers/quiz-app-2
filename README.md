@@ -49,7 +49,15 @@ MySQL requires 0.5Gb of RAM. If you try to use VS Code SSH-Remote on the server,
 I have also run the system on SQLite by changing the dialect of sequelize, and it works fine. This enabled me to run the system on a Raspberry PI 3 Model B on 1Gb of RAM.
 
 ## Building
-To build javascript files optimized for production, you need to run `npm run build:babel` and `npm run build:css` on production.
+To optimize for production, you need to run `npm run build:babel` and `npm run build:css`. The built files are committed to the repository for simplicity of the deployment step.
 
 ## Running
 To finally start the server, run `npm run dev` for development or `npm start` for production.
+
+## Running E2E Tests
+To run playwright tests in headless mode, you can use WSL2 as well.
+Run the following command in the root directory of the project:
+```
+npx playwright test
+```
+If you are running this command for the first time, it will tell you to install playwright and its dependencies first and will tell you which commands to run. Once you have run them, the `npx playwright test` command will work.
