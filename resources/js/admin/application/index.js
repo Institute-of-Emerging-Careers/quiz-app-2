@@ -390,6 +390,7 @@ const App = () => {
 								</a>
 								<a
 									data-id={application_round.id}
+									data-testid={`copy-${application_round.title}-link`}
 									onClick={(e) => {
 										navigator.clipboard.writeText(
 											`${site_domain_name}/application/fill/${e.target.dataset.id}`
