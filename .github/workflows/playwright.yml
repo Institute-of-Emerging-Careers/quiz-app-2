@@ -52,7 +52,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm ci
+    - run: npm install
     - name: Install Redis
       uses: pustovitDmytro/redis-github-action@v1.0.1
     - run: npm run build:babel
