@@ -25,19 +25,17 @@ router.use((req, res, next) => {
 
 router.get("/", checkAdminAuthenticated, async (req, res) => {
 	try {
-		const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] })
+		const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] });
 		for (let i = 0; i < all_quizzes.length; i++) {
-			all_quizzes[i].num_sections = await all_quizzes[i].countSections()
-			const all_sections = await all_quizzes[i].getSections()
-			let total_questions = 0
+			all_quizzes[i].num_sections = await all_quizzes[i].countSections();
+			const all_sections = await all_quizzes[i].getSections();
+			let total_questions = 0;
 			for (let j = 0; j < all_sections.length; j++) {
-				total_questions += await all_sections[j].countQuestions()
+				total_questions += await all_sections[j].countQuestions();
 			}
-			all_quizzes[i].num_questions = total_questions
+			all_quizzes[i].num_questions = total_questions;
 		}
-		const all_invites = await Invite.findAll({ include: [Quiz] })
-		console.log(req.url)
-		console.log(req.user)
+		const all_invites = await Invite.findAll({ include: [Quiz] });
 		res.render("admin/index.ejs", {
 			myname: req.user.user?.firstName,
 			user_type: req.user.type,
@@ -47,12 +45,12 @@ router.get("/", checkAdminAuthenticated, async (req, res) => {
 			moment: moment,
 			query: req.query,
 			current_url: `/admin${req.url}`,
-		})
+		});
 	} catch (err) {
-		console.log(err)
-		res.sendStatus(500)
+		console.log(err);
+		res.sendStatus(500);
 	}
-})
+});
 
 router.get("/login", checkAdminAlreadyLoggedIn, (req, res) => {
 	res.render("admin/login/index.ejs")

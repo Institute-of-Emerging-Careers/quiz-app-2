@@ -5,13 +5,14 @@ const { User } = require("./models")
 
 const initializeDatabase = async () => {
 	try {
-		let alterandforce = false
+		let alterandforce = process.env.NODE_ENV === "test";
+		console.log("alterandforce: ", alterandforce)
 		// Sync models with database
 		await sequelize.sync({
-			alter: false,
+			alter: alterandforce,
 			force: alterandforce,
-			logging: process.env.NODE_ENV == "test" ? true : false,
-		})
+			logging: process.env.NODE_ENV == "test" ? console.log : false,
+		});
 
 		// await InterviewRound.sync({ alter: true, force: false });
 		// await Application.sync({ alter: true, force: false });

@@ -4,13 +4,8 @@
 <script crossorigin src="/js/react-dom.development-17.0.2.js"></script>
 <!-- Babel -->
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-<%} else if (env==="production") {%>
-<script
-  crossorigin
-  src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"
-></script>
-<script
-  crossorigin
-  src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"
-></script>
+<%} else { %>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+<script crossorigin
+  src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
 <%}%>
