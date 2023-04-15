@@ -452,6 +452,7 @@ var App = function App() {
       className: "fas fa-list"
     })), /*#__PURE__*/React.createElement("a", {
       "data-id": application_round.id,
+      "data-testid": "copy-".concat(application_round.title, "-link"),
       onClick: function onClick(e) {
         navigator.clipboard.writeText("".concat(site_domain_name, "/application/fill/").concat(e.target.dataset.id));
         setShowCopiedBox(true);
