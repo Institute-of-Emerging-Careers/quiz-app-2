@@ -34,4 +34,4 @@ test("Create Application Round", async ({ page }) => {
   await createAndSelectCourse(page, "Course C");
   await createRoundButton.click();
   await expect(page.getByText(roundTitle)).toBeVisible();
-});
+}, { timeout: 6000 });
