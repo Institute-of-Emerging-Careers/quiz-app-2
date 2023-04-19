@@ -137,7 +137,7 @@ const initializeDatabase = async () => {
 				email: "rohanhussain1@yahoo.com",
 				password: hashedPwd,
 				phone: "03320460729",
-				cnic: "35201-3520462-3",
+				cnic: "00000-0000000-0",
 				InviteId: invite.id,
 			})
 			await invite.increment("registrations")
