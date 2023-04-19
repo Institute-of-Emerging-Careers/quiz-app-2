@@ -1,19 +1,12 @@
-<header
-  class="flex bg-white text-gray-800 px-4 shadow-md py-2 items-center fixed z-10 top-0 right-0 w-screen"
->
+<header class="flex bg-white text-gray-800 px-4 shadow-md py-2 items-center fixed z-10 top-0 right-0 w-screen">
   <div class="flex gap-x-4 items-center ml-4">
-    <a href="/" class="cursor-pointer"
-      ><img src="/img/cropped-Frame-3-409x66.png" class="h-6 sm:h-12"
-    /></a>
+    <a href="/" class="cursor-pointer"><img src="/img/cropped-Frame-3-409x66.png" class="h-6 sm:h-12" /></a>
   </div>
-  <ul
-    class="hidden sm:flex grow justify-end content-center items-center gap-x-8 mr-4"
-  >
+  <ul class="hidden sm:flex grow justify-end content-center items-center gap-x-8 mr-4">
     <li>
       <a
-        href="<% if (user_type=='admin') { %>/admin <% } else if (user_type=='student') { %> /student <% }  else { %> /admin/interview/panel <% } %>"
-        ><i class="fas fa-home"></i> Home</a
-      >
+        href="<% if (user_type=='admin') { %>/admin <% } else if (user_type=='student') { %> /student <% }  else { %> /admin/interview/panel <% } %>"><i
+          class="fas fa-home"></i> Home</a>
     </li>
     <li>
       <a href="#"><i class="fas fa-cog"></i> Settings</a>
@@ -23,23 +16,20 @@
     </li>
   </ul>
   <div class="relative sm:hidden grow justify-items-end">
-    <i
-      class="fas fa-bars float-right"
-      onClick="document.getElementById('header-ul').classList.toggle('hidden');"
-    ></i>
+    <i class="fas fa-bars float-right" onClick="document.getElementById('header-ul').classList.toggle('hidden');"></i>
     <ul class="hidden absolute shadow-lg right-0 top-6" id="header-ul">
-      <a href="/admin/interview/panel"
-        ><li class="px-4 py-1 bg-white hover:bg-gray-200">
+      <a href="/admin/interview/panel">
+        <li class="px-4 py-1 bg-white hover:bg-gray-200">
           <i class="fas fa-home"></i> Home
-        </li></a
-      >
-      <a href="/logout"
-        ><li class="px-4 py-1 bg-white hover:bg-gray-200">
+        </li>
+      </a>
+      <a href="/logout">
+        <li class="px-4 py-1 bg-white hover:bg-gray-200">
           <i class="fas fa-sign-out-alt"></i> Logout
-        </li></a
-      >
+        </li>
+      </a>
     </ul>
   </div>
 </header>
 
-<script src="/js/header.js"></script>
+<script src="/precompiled-js/header.js"></script>

@@ -20,7 +20,7 @@ const {
 	InterviewMatching,
 	InterviewBookingSlots,
 } = require("../db/models")
-
+const { pdf_upload } = require("../multer-config")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
 
 const { queueMail } = require("../bull")
@@ -68,12 +68,6 @@ router.get("/onboarding", checkStudentAuthenticated, (req, res) => {
 	res.render("student/onboarding/index.ejs", {
 		user_type: req.user.type,
 		query: req.query,
-	})
-})
-
-router.get("/lec-agreement", checkStudentAuthenticated, (req, res) => {
-	res.render("student/lec-agreement/index.ejs", {
-		user_type: req.user.type,
 	})
 })
 
@@ -581,5 +575,17 @@ router.post(
 		}
 	}
 )
+
+// LEC Agreements
+
+router.get("/lec-agreement", checkStudentAuthenticated, async (req, res) => {
+	res.render("student/lec-agreement/index.ejs", {
+		user_type: req.user.type,
+	})
+})
+
+router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.single("file"), (req, res) => {
+	res.send(`<i class="fas fa-check"></i></i> Your LEC Agreement has been uploaded successfully.`)
+})
 
 module.exports = router

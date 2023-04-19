@@ -51,7 +51,12 @@
                                 target="_blank"
                                 class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer">Click
                                 here to watch a video guide.</a></li>
-                        <li>Once you have signed the PDF, upload the signed PDF here: <br><input type="file" /></li>
+                        <li>Once you have signed the PDF, upload the signed PDF here: <br>
+                            <form id="upload_form" enctype="multipart/form-data" method="post">
+                                <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
+                                <progress id="progressBar" value="0" max="100" class="hidden w-72"></progress>
+                                <h3 id="status"></h3>
+                            </form>
                     </ol>
                     </p>
                     <br />
@@ -59,6 +64,7 @@
             </div>
         </section>
     </div>
+    <script src="/precompiled-js/lec-agreement.js"></script>
 </body>
 
 </html>
