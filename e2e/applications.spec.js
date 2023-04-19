@@ -1,7 +1,7 @@
 const { test, expect } = require("@playwright/test");
 require("dotenv").config();
 const randomstring = require("randomstring");
-import { logIntoAdminPanel, createCourseAndCheck, logout } from "./utils/application/utils";
+import { logIntoAdminPanel, createCourseAndCheck, logout, fillStep1 } from "./utils/application/utils";
 
 let applicationRoundId = null, roundTitle = `E2E Test Round ${randomstring.generate(8)}`, applicationFormLink = '';
 
@@ -50,7 +50,7 @@ test("Create Application Round", async () => {
   applicationFormLink = `http://localhost:${process.env.PORT}/application/fill/${applicationRoundId}`
 });
 
-test("Go to Application Form", async () => {
+test("Application Form opens", async () => {
   await logout(page);
 
   // Go to application form as logged out student
@@ -59,4 +59,24 @@ test("Go to Application Form", async () => {
   // Select the h1 element by looking for its text content
   await expect(page.getByRole('heading', { name: 'Apply to IEC' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Step 1: Basic Information *' })).toBeVisible();
+})
+
+test("Filling step 1 with an existing account but wrong cnic number should show error message", async () => {
+  // Filling correct email but wrong cnic number
+  await fillStep1("Rohan", "Hussain", "rohanhussain1@yahoo.com", "12345-1234567-8", page)
+  expect(await page.getByText(/The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time./)).toBeTruthy()
+  await expect(page.getByText("Step 2: Personal Information")).not.toBeVisible()
+})
+
+test("Filling step 1 with an existing account but wrong email address should show error message", async () => {
+  // Filling correct cnic number but wrong email address
+  await fillStep1("Rohan", "Hussain", "wrong@yahoo.com", "00000-0000000-0", page)
+  expect(await page.getByText(/We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time./)).toBeTruthy()
+  await expect(page.getByText("Step 2: Personal Information")).not.toBeVisible()
+})
+
+test("Filling step 1 with an existing account correctly should show Step 2", async () => {
+  // Filling correct cnic number but wrong email address
+  await fillStep1("Rohan", "Hussain", "rohanhussain1@yahoo.com", "00000-0000000-0", page)
+  await expect(page.getByText("Step 2: Personal Information")).toBeVisible()
 })

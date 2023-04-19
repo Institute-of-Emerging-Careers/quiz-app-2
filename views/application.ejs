@@ -1,760 +1,662 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apply to IEC</title>
-    <link rel="stylesheet" href="/css/application.css" />
 
-    <!-- jQuery -->
-    <script
-      src="https://code.jquery.com/jquery-3.6.0.js"
-      integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
-      crossorigin="anonymous"
-    ></script>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Apply to IEC</title>
+  <link rel="stylesheet" href="/css/application.css" />
 
-    <!-- Latest compiled and minified CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+    crossorigin="anonymous"></script>
 
-    <!-- Latest compiled JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" />
 
-    <!-- Roboto Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-      rel="stylesheet"
-    />
+  <!-- Latest compiled JavaScript -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://kit.fontawesome.com/bf601caba0.js" crossorigin="anonymous"></script>
-  </head>
-  <body
-    style="
+  <!-- Roboto Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+
+  <script src="https://kit.fontawesome.com/bf601caba0.js" crossorigin="anonymous"></script>
+</head>
+
+<body style="
       background-image: url('/img/45degreee_fabric.png');
       background-repeat: repeat;
-    "
-  >
-  
+    ">
+
   <div class="container bg-white rounded-3 w-md-75 p-4 p-md-5  mt-3">
-      <h1><img src="/img/iec_logo_only.png" height="50px"> Apply to IEC</h1>
-      <!-- Progress Bar Starts -->
-      <div class="progress mt-3" style="height:60px;">
-        <div
-          class="progress-bar progress-bar-striped"
-          style="width: 20%; height: 60px;"
-          id="step1-bar"
-        >
-          <p style="font-size:20px">Step 1</p>
+    <h1><img src="/img/iec_logo_only.png" height="50px"> Apply to IEC</h1>
+    <!-- Progress Bar Starts -->
+    <div class="progress mt-3" style="height:60px;">
+      <div class="progress-bar progress-bar-striped" style="width: 20%; height: 60px;" id="step1-bar">
+        <p style="font-size:20px">Step 1</p>
+      </div>
+      <div class="progress-bar bg-secondary" id="step2-bar" style="width: 20%; height: 60px;">
+        <p style="font-size:20px">Step 2</p>
+      </div>
+      <div class="progress-bar bg-secondary" id="step3-bar" style="width: 20%; height: 60px;">
+        <p style="font-size:20px">Step 3</p>
+      </div>
+      <div class="progress-bar bg-secondary" id="step4-bar" style="width: 20%; height: 60px;">
+        <p style="font-size:20px">Step 4</p>
+      </div>
+      <div class="progress-bar bg-secondary" id="step5-bar" style="width: 20%; height: 60px;">
+        <p style="font-size:20px">Step 5</p>
+      </div>
+    </div>
+    <!-- Progress Bar Ends -->
+    <input type="hidden" value="<%=application_round_id%>" id="application_round_id_field">
+
+    <form id="application-form" class="needs-validation" method="POST"
+      action="/application/submit/<%=application_round_id%>">
+
+      <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
+      <div id="step1" class="mt-3">
+        <h3 class="mt-3">Step 1: Basic Information *</h3>
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-user"></i></span>
+            <input type="text" class="form-control" id="firstName" placeholder="First Name" name="firstName"
+              data-testid="firstName-input" required />
+            <input type="text" class="form-control" id="lastName" placeholder="Last Name" name="lastName"
+              data-testid="lastName-input" required />
+            <div id="firstName-error-message" class="invalid-feedback"></div>
+            <div id="lastName-error-message" class="invalid-feedback"></div>
+          </div>
         </div>
-        <div
-          class="progress-bar bg-secondary"
-          id="step2-bar"
-          style="width: 20%; height: 60px;"
-        >
-          <p style="font-size:20px">Step 2</p>
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"
+              data-testid="email-input" required />
+            <div id="email-error-message" class="invalid-feedback"></div>
+          </div>
         </div>
-        <div
-          class="progress-bar bg-secondary"
-          id="step3-bar"
-          style="width: 20%; height: 60px;"
-        >
-          <p style="font-size:20px">Step 3</p>
+        <!-- CNIC Number -->
+        <div class="mb-3 mt-3">
+          <div class="input-group has-validation">
+            <span class="input-group-text"><i class="fas fa-address-card"></i></span>
+            <input type="text" id="cnic" minlength="15" maxlength="15" name="cnic"
+              placeholder="CNIC Number (with dashes) e.g. 35201-1234567-8" class="form-control"
+              pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d" data-testid="cnic-input" required />
+            <div id="cnic-error-message" class="invalid-feedback" data-testid="cnic-error-message"></div>
+          </div>
         </div>
-        <div
-          class="progress-bar bg-secondary"
-          id="step4-bar"
-          style="width: 20%; height: 60px;"
-        >
-          <p style="font-size:20px">Step 4</p>
-        </div>
-        <div
-          class="progress-bar bg-secondary"
-          id="step5-bar"
-          style="width: 20%; height: 60px;"
-        >
-          <p style="font-size:20px">Step 5</p>
+
+        <button type="button" class="btn btn-primary" id="step1-next-button" data-testid="step1-next-button">
+          <i class="fas fa-arrow-right"></i> Next Step
+        </button>
+        <div class="spinner-grow hidden-imp" id="step-1-next-button-spinner"
+          style="vertical-align: middle; width: 1.5rem; height: 1.5rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
         </div>
       </div>
-      <!-- Progress Bar Ends -->
-      <input type="hidden" value="<%=application_round_id%>" id="application_round_id_field">
-
-      <form id="application-form" class="needs-validation" method="POST" action="/application/submit/<%=application_round_id%>">
-
-        <div class="alert alert-danger mt-2 hidden" id="application-form-error-message" role="alert"></div>
-        <div id="step1" class="mt-3">
-          <h3 class="mt-3">Step 1: Basic Information *</h3>
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-user"></i></span>
-              <input
-                type="text"
-                class="form-control"
-                id="firstName"
-                placeholder="First Name"
-                name="firstName"
-                required
-              />
-              <input
-                type="text"
-                class="form-control"
-                id="lastName"
-                placeholder="Last Name"
-                name="lastName"
-                required
-              />
-              <div id="firstName-error-message" class="invalid-feedback"></div>
-              <div id="lastName-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-              <input
-                type="email"
-                class="form-control"
-                id="email"
-                placeholder="Enter email"
-                name="email"
-                required
-              />
-              <div id="email-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <!-- CNIC Number -->
-          <div class="mb-3 mt-3">
-            <div class="input-group has-validation">
-              <span class="input-group-text"><i class="fas fa-address-card"></i></span>
-              <input
-                type="text"
-                id="cnic"
-                minlength="15"
-                maxlength="15"
-                name="cnic"
-                placeholder="CNIC Number (with dashes) e.g. 35201-1234567-8"
-                class="form-control"
-                pattern="\d\d\d\d\d-\d\d\d\d\d\d\d-\d"
-                required
-              />
-              <div id="cnic-error-message" class="invalid-feedback"></div>
-            </div>
+      <div id="step2" class="hidden mt-5">
+        <h3 class="mt-3">Step 2: Personal Information</h3>
+        <!-- Password -->
+        <div id="password-success-message" class="text-success"></div>
+        <div class="mb-3 mt-3" id="password-input-group">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-key"></i></span>
+            <input type="password" class="form-control" id="password" placeholder="Set a new password" name="password"
+              required />
+            <input type="password" class="form-control" id="password2" placeholder="Type password again"
+              name="password2" required />
+            <div id="password-error-message" class="invalid-feedback"></div>
           </div>
 
-          <button type="button" class="btn btn-primary" id="step1-next-button">
-            <i class="fas fa-arrow-right"></i> Next Step
-          </button>
-          <div class="spinner-grow hidden-imp" id="step-1-next-button-spinner" style="vertical-align: middle; width: 1.5rem; height: 1.5rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
+        </div>
+        <!-- Age & Gender -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Age*: </span>
+            <input type="number" class="form-control" id="age" min="6" max="100" placeholder="Enter Age" name="age"
+              required />
+            <span class="input-group-text">Gender*: </span>
+            <select class="form-select" name="gender" required>
+              <option value="other">Other</option>
+              <option value="female">Female</option>
+              <option value="male">Male</option>
+            </select>
+            <div id="age-error-message" class="invalid-feedback"></div>
+            <div id="gender-error-message" class="invalid-feedback"></div>
           </div>
         </div>
-        <div id="step2" class="hidden mt-5">
-          <h3 class="mt-3">Step 2: Personal Information</h3>
-          <!-- Password -->
-          <div id="password-success-message" class="text-success"></div>
-          <div class="mb-3 mt-3" id="password-input-group">
-            <div class="input-group">
-              <span class="input-group-text"><i class="fas fa-key"></i></span>
-              <input
-                type="password"
-                class="form-control"
-                id="password"
-                placeholder="Set a new password"
-                name="password"
-                required
-              />
-              <input
-                type="password"
-                class="form-control"
-                id="password2"
-                placeholder="Type password again"
-                name="password2"
-                required
-              />
-              <div id="password-error-message" class="invalid-feedback"></div>
-            </div>
-            
+        <!-- Phone Number -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Phone Number*: </span>
+            <input type="tel" class="form-control" id="phone" placeholder="e.g. 03021234567" minlength="11"
+              maxlength="11" name="phone" required />
+            <div id="phone-error-message" class="invalid-feedback"></div>
           </div>
-          <!-- Age & Gender -->
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <span class="input-group-text">Age*: </span>
-              <input
-                type="number"
-                class="form-control"
-                id="age"
-                min="6"
-                max="100"
-                placeholder="Enter Age"
-                name="age"
-                required
-              />
-              <span class="input-group-text">Gender*: </span>
-              <select class="form-select" name="gender" required>
-                <option value="other">Other</option>
-                <option value="female">Female</option>
-                <option value="male">Male</option>
-              </select>
-              <div id="age-error-message" class="invalid-feedback"></div>
-              <div id="gender-error-message" class="invalid-feedback"></div>
+        </div>
+        <!-- Father's Name -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Father's Name*: </span>
+            <input type="text" class="form-control" id="father_name" placeholder="Enter Father's Name"
+              name="father_name" required />
+            <div id="father_name-error-message" class="invalid-feedback"></div>
+          </div>
+        </div>
+        <!-- City, Province, Country -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <!-- City -->
+            <span class="input-group-text">City of Residence*: </span>
+            <select class="form-select" name="city" id="city" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<cities.length;i++) { %>
+              <option value="<%=cities[i]%>">
+                <%=cities[i]%>
+              </option>
+              <% } %>
+            </select>
+
+            <!-- Province -->
+            <span class="input-group-text">Province*: </span>
+            <select class="form-select" name="province" id="province" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<provinces.length;i++) { %>
+              <option value="<%=provinces[i]%>">
+                <%=provinces[i]%>
+              </option>
+              <% } %>
+            </select>
+
+            <!-- Country -->
+            <span class="input-group-text">Country*: </span>
+            <select class="form-select" name="country" id="country" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<countries.length;i++) { if (countries[i]=="Pakistan" ) { %>
+              <option value="<%=countries[i]%>" selected>
+                <%=countries[i]%>
+              </option>
+              <% } else { %>
+              <option value="<%=countries[i]%>">
+                <%=countries[i]%>
+              </option>
+              <% } } %>
+            </select>
+            <div id="city-error-message" class="invalid-feedback"></div>
+            <div id="province-error-message" class="invalid-feedback"></div>
+            <div id="country-error-message" class="invalid-feedback"></div>
+          </div>
+        </div>
+
+        <!-- Home Address -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Home Address*: </span>
+            <textarea type="text" class="form-control" id="address" placeholder="Enter Home Address" name="address"
+              required></textarea>
+            <div id="address-error-message" class="invalid-feedback"></div>
+          </div>
+        </div>
+
+        <!-- Current Address -->
+        <div class="mb-3 mt-3">
+          <div class="input-group">
+            <span class="input-group-text">Current Address*: </span>
+            <textarea type="text" class="form-control" id="current_address" placeholder="Enter Current Address"
+              name="current_address" required></textarea>
+            <div id="current_address-error-message" class="invalid-feedback"></div>
+          </div>
+        </div>
+
+        <!-- Flood Affected Areas -->
+        <fieldset class="mt-3 mb-4 input-group">
+          <label for="belongs_to_flood_area" class="input-group-text">Are you an individual belonging to flood affected
+            areas?*</label>
+          <div class="col-sm-8 form-control">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area"
+                value="1" required>
+              <label class="form-check-label" for="belongs_to_flood_area">
+                Yes
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area_no"
+                value="0">
+              <label class="form-check-label" for="belongs_to_flood_area_no">
+                No
+              </label>
             </div>
           </div>
-          <!-- Phone Number -->
-          <div class="mb-3 mt-3">
+          <div id="belongs_to_flood_area-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+        <div class="hidden" id="flood_area_questions">
+
+          <div class="mb-3 mt-3" id="city-of-origin">
             <div class="input-group">
-              <span class="input-group-text">Phone Number*: </span>
-              <input
-                type="tel"
-                class="form-control"
-                id="phone"
-                placeholder="e.g. 03021234567"
-                minlength="11"
-                maxlength="11"
-                name="phone"
-                required
-              />
-              <div id="phone-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <!-- Father's Name -->
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <span class="input-group-text">Father's Name*: </span>
-              <input
-                type="text"
-                class="form-control"
-                id="father_name"
-                placeholder="Enter Father's Name"
-                name="father_name"
-                required
-              />
-              <div id="father_name-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-          <!-- City, Province, Country -->
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <!-- City -->
-              <span class="input-group-text">City of Residence*: </span>
-              <select class="form-select" name="city" id="city" required>
+              <span class="input-group-text">Please share your city of birth*: </span>
+              <select class="form-select" name="city_of_origin" id="city_of_origin">
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<cities.length;i++) { %>
-                  <option value="<%=cities[i]%>"><%=cities[i]%></option>
+                <option value="<%=cities[i]%>">
+                  <%=cities[i]%>
+                </option>
                 <% } %>
               </select>
-
-              <!-- Province -->
-              <span class="input-group-text">Province*: </span>
-              <select class="form-select" name="province" id="province" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<provinces.length;i++) { %>
-                  <option value="<%=provinces[i]%>"><%=provinces[i]%></option>
-                <% } %>
-              </select>
-
-              <!-- Country -->
-              <span class="input-group-text">Country*: </span>
-              <select class="form-select" name="country" id="country" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<countries.length;i++) 
-                { 
-                  if (countries[i]=="Pakistan") {
-                %>
-                    <option value="<%=countries[i]%>" selected><%=countries[i]%></option>
-                <%
-                  } else {
-                %>
-                  <option value="<%=countries[i]%>"><%=countries[i]%></option>
-                <% 
-                  }
-                } 
-                %>
-              </select>
-              <div id="city-error-message" class="invalid-feedback"></div>
-              <div id="province-error-message" class="invalid-feedback"></div>
-              <div id="country-error-message" class="invalid-feedback"></div>
+              <div id="city-of-origin-error-message" class="invalid-feedback"></div>
             </div>
           </div>
-          
-          <!-- Home Address -->
+
           <div class="mb-3 mt-3">
             <div class="input-group">
-              <span class="input-group-text">Home Address*: </span>
-              <textarea
-                type="text"
-                class="form-control"
-                id="address"
-                placeholder="Enter Home Address"
-                name="address"
-                required
-              ></textarea>
-              <div id="address-error-message" class="invalid-feedback"></div>
+              <span class="input-group-text">Which flood affected area do you belong to?</span>
+              <textarea type="text" class="form-control" id="flood_area_name" placeholder="Area name"
+                name="flood_area_name" required></textarea>
+              <div id="flood_area_name-error-message" class="invalid-feedback"></div>
             </div>
           </div>
-
-          <!-- Current Address -->
-          <div class="mb-3 mt-3">
-            <div class="input-group">
-              <span class="input-group-text">Current Address*: </span>
-              <textarea
-                type="text"
-                class="form-control"
-                id="current_address"
-                placeholder="Enter Current Address"
-                name="current_address"
-                required
-              ></textarea>
-              <div id="current_address-error-message" class="invalid-feedback"></div>
-            </div>
-          </div>
-
-          <!-- Flood Affected Areas -->
-          <fieldset class="mt-3 mb-4 input-group">
-            <label for="belongs_to_flood_area" class="input-group-text">Are you an individual belonging to flood affected areas?*</label>
-            <div class="col-sm-8 form-control">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area" value="1" required>
-                <label class="form-check-label" for="belongs_to_flood_area">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="belongs_to_flood_area" id="belongs_to_flood_area_no" value="0">
-                <label class="form-check-label" for="belongs_to_flood_area_no">
-                  No
-                </label>
-              </div>
-            </div>
-            <div id="belongs_to_flood_area-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <div class="hidden" id="flood_area_questions">
-            
-            <div class="mb-3 mt-3" id="city-of-origin">
-              <div class="input-group">
-                <span class="input-group-text">Please share your city of birth*: </span>
-                <select class="form-select" name="city_of_origin" id="city_of_origin">
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<cities.length;i++) { %>
-                    <option value="<%=cities[i]%>"><%=cities[i]%></option>
-                  <% } %>
-                </select>
-                <div id="city-of-origin-error-message" class="invalid-feedback"></div>
-              </div>
-            </div>
-
-            <div class="mb-3 mt-3">
-              <div class="input-group">
-                <span class="input-group-text">Which flood affected area do you belong to?</span>
-                <textarea
-                  type="text"
-                  class="form-control"
-                  id="flood_area_name"
-                  placeholder="Area name"
-                  name="flood_area_name"
-                  required
-                ></textarea>
-                <div id="flood_area_name-error-message" class="invalid-feedback"></div>
-              </div>
-            </div>
-          </div>
-
-          <fieldset class="mt-3 mb-4 input-group">
-            <label for="is_tcf_alumni" class="input-group-text">Are you a TCF alumni?*</label>
-            <div class="col-sm-8 form-control">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni" value="1" required>
-                <label class="form-check-label" for="is_tcf_alumni">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni_no" value="0">
-                <label class="form-check-label" for="is_tcf_alumni_no">
-                  No
-                </label>
-              </div>
-            </div>
-            <div id="is_tcf_alumni-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <!-- Next Button -->
-            <button
-              type="button"
-              id="step2-next-button"
-              class="btn btn-primary"
-            >
-            <i class="fas fa-arrow-right"></i> Next Step
-            </button>
         </div>
-        <div id="step3" class="hidden mt-5">
-          <h3 class="mt-3">Step 3: Education Information</h3>
 
-          <!-- Education Completed -->
-          
-          <div class="row mb-4">
-            <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
-            <div class="col-sm-8">
-              <select class="form-select mb-2" name="education_completed" id="education_completed" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<education_levels.length;i++) { %>
-                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
-                <% } %>
-              </select>
-              <div id="education_completed-error-message" class="invalid-feedback mb-2"></div>
-
+        <fieldset class="mt-3 mb-4 input-group">
+          <label for="is_tcf_alumni" class="input-group-text">Are you a TCF alumni?*</label>
+          <div class="col-sm-8 form-control">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni" value="1" required>
+              <label class="form-check-label" for="is_tcf_alumni">
+                Yes
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_tcf_alumni" id="is_tcf_alumni_no" value="0">
+              <label class="form-check-label" for="is_tcf_alumni_no">
+                No
+              </label>
             </div>
           </div>
+          <div id="is_tcf_alumni-error-message" class="invalid-feedback"></div>
+        </fieldset>
 
-          <!-- Education Ongoing -->
-          
-          <div class="row mb-4">
-            <label class="col-sm-3 col-form-label">Are you currently Enrolled in any of the Following Institutional Programs?*: </label>
-            <div class="col-sm-8">
-              <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<education_levels.length;i++) { %>
-                  <option value="<%=education_levels[i]%>"><%=education_levels[i]%></option>
-                <% } %>
-              </select>
-              <div id="education_ongoing-error-message" class="invalid-feedback mb-2"></div>
-            </div>
-          </div>
-
-          <div class="row mb-4">
-            <label class="col-sm-3 col-form-label">Name of your Latest educational Institution: </label>
-            <div class="col-sm-8">
-              <select class="form-select mb-2" name="inst_degree_dip" id="inst_degree_dip" required>
-                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<universities.length;i++) { %>
-                  <option value="<%=universities[i]%>"><%=universities[i]%></option>
-                <% } %>
-              </select>
-            </div>
-          </div>
-
-          <div class="row mb-4">
-              <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
-              <div class="col-sm-8">
-                <input
-                type="text"
-                class="form-control"
-                id="education_completed_major"
-                placeholder="e.g BS in Computer science"
-                name="education_completed_major"
-                required
-                />
-                <div id="education_completed_major-error-message" class="invalid-feedback"></div>
-              </div>
-
-          </div>
-
-          <!-- Year of Graduation -->
-
-          <fieldset class="row mb-4 input-group">
-            <label for="year_of_graduation" class="col-sm-4 col-form-label">What was or is the year of your graduation?</label>
-            <input
-                type="number"
-                class="form-control col-sm-8"
-                id="year_of_graduation"
-                placeholder="e.g. 2019"
-                name="year_of_graduation"
-              ></input>
-              <div id="year_of_graduation-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-
-
-          <!-- Comp Sci student -->
-
-          <fieldset class="row mb-4">
-            <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you from a CS background?*</label>
-            <div class="col-sm-8">
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad" value="1" required>
-                <label class="form-check-label" for="is_comp_sci_grad">
-                  Yes
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad_no" value="0">
-                <label class="form-check-label" for="is_comp_sci_grad_no">
-                  No
-                </label>
-              </div>
-            </div>
-            <div id="is_comp_sci_grad-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <!-- Digital Certifications -->
-
-          <fieldset class="row mb-4 input-group">
-            <label for="digi_skills_certifications" class="col-sm-4 col-form-label">If you have any digital or tech related certifications, please share their names, the name of the institution and year of completion. (e.g SEO from digi skills 2022  etc). If no, leave empty.</label>
-            <textarea
-                type="text"
-                class="form-control col-sm-8"
-                id="digi_skills_certifications"
-                placeholder="Certifications"
-                name="digi_skills_certifications"
-              ></textarea>
-              <div id="digi_skills_certifications-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <button
-            type="button"
-            id="step3-next-button"
-            class="btn btn-primary"
-          >
+        <!-- Next Button -->
+        <button type="button" id="step2-next-button" class="btn btn-primary">
           <i class="fas fa-arrow-right"></i> Next Step
-          </button>
+        </button>
+      </div>
+      <div id="step3" class="hidden mt-5">
+        <h3 class="mt-3">Step 3: Education Information</h3>
+
+        <!-- Education Completed -->
+
+        <div class="row mb-4">
+          <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
+          <div class="col-sm-8">
+            <select class="form-select mb-2" name="education_completed" id="education_completed" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<education_levels.length;i++) { %>
+              <option value="<%=education_levels[i]%>">
+                <%=education_levels[i]%>
+              </option>
+              <% } %>
+            </select>
+            <div id="education_completed-error-message" class="invalid-feedback mb-2"></div>
+
+          </div>
+        </div>
+
+        <!-- Education Ongoing -->
+
+        <div class="row mb-4">
+          <label class="col-sm-3 col-form-label">Are you currently Enrolled in any of the Following Institutional
+            Programs?*: </label>
+          <div class="col-sm-8">
+            <select class="form-select mb-2" name="education_ongoing" id="education_ongoing" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<education_levels.length;i++) { %>
+              <option value="<%=education_levels[i]%>">
+                <%=education_levels[i]%>
+              </option>
+              <% } %>
+            </select>
+            <div id="education_ongoing-error-message" class="invalid-feedback mb-2"></div>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <label class="col-sm-3 col-form-label">Name of your Latest educational Institution: </label>
+          <div class="col-sm-8">
+            <select class="form-select mb-2" name="inst_degree_dip" id="inst_degree_dip" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<universities.length;i++) { %>
+              <option value="<%=universities[i]%>">
+                <%=universities[i]%>
+              </option>
+              <% } %>
+            </select>
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <label class="col-sm-3 col-form-label">What is your latest completed education?*: </label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="education_completed_major"
+              placeholder="e.g BS in Computer science" name="education_completed_major" required />
+            <div id="education_completed_major-error-message" class="invalid-feedback"></div>
+          </div>
 
         </div>
-        <div id="step4" class="hidden mt-5">
-          <h3 class="mt-3">Step 4: Financial Information</h3>
 
-          <!-- Employment -->
+        <!-- Year of Graduation -->
+
+        <fieldset class="row mb-4 input-group">
+          <label for="year_of_graduation" class="col-sm-4 col-form-label">What was or is the year of your
+            graduation?</label>
+          <input type="number" class="form-control col-sm-8" id="year_of_graduation" placeholder="e.g. 2019"
+            name="year_of_graduation"></input>
+          <div id="year_of_graduation-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+
+
+        <!-- Comp Sci student -->
+
+        <fieldset class="row mb-4">
+          <label for="is-comp-sci-grad" class="col-sm-4 col-form-label">Are you from a CS background?*</label>
+          <div class="col-sm-8">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad" value="1"
+                required>
+              <label class="form-check-label" for="is_comp_sci_grad">
+                Yes
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_comp_sci_grad" id="is_comp_sci_grad_no" value="0">
+              <label class="form-check-label" for="is_comp_sci_grad_no">
+                No
+              </label>
+            </div>
+          </div>
+          <div id="is_comp_sci_grad-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+        <!-- Digital Certifications -->
+
+        <fieldset class="row mb-4 input-group">
+          <label for="digi_skills_certifications" class="col-sm-4 col-form-label">If you have any digital or tech
+            related certifications, please share their names, the name of the institution and year of completion. (e.g
+            SEO from digi skills 2022 etc). If no, leave empty.</label>
+          <textarea type="text" class="form-control col-sm-8" id="digi_skills_certifications"
+            placeholder="Certifications" name="digi_skills_certifications"></textarea>
+          <div id="digi_skills_certifications-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+        <button type="button" id="step3-next-button" class="btn btn-primary">
+          <i class="fas fa-arrow-right"></i> Next Step
+        </button>
+
+      </div>
+      <div id="step4" class="hidden mt-5">
+        <h3 class="mt-3">Step 4: Financial Information</h3>
+
+        <!-- Employment -->
+        <fieldset class="row mb-4">
+          <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?*</label>
+          <div class="col-lg-8">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_employed" id="is_employed" value="1" required>
+              <label class="form-check-label" for="is_employed" required>
+                Yes
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="is_employed" id="is_employed_no" value="0">
+              <label class="form-check-label" for="is_employed_no">
+                No
+              </label>
+            </div>
+          </div>
+          <div id="is_employed-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+        <div class="hidden" id="additional-employment-questions">
           <fieldset class="row mb-4">
-            <label for="is-employed" class="col-lg-4 col-form-label">Are you currently employed?*</label>
+            <label for="type-of-employment" class="col-lg-4 col-form-label">Are you working part-time or
+              full-time?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_employed" id="is_employed" value="1" required>
-                <label class="form-check-label" for="is_employed" required>
-                  Yes
+                <input class="form-check-input" type="radio" name="type_of_employment" id="part-time" value="Part Time">
+                <label class="form-check-label" for="part-time">
+                  Part-time
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="is_employed" id="is_employed_no" value="0">
-                <label class="form-check-label" for="is_employed_no">
-                  No
+                <input class="form-check-input" type="radio" name="type_of_employment" id="full-time" value="Full Time">
+                <label class="form-check-label" for="full-time">
+                  Full-time
                 </label>
               </div>
             </div>
-            <div id="is_employed-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <div class="hidden" id="additional-employment-questions">
-            <fieldset class="row mb-4">
-              <label for="type-of-employment" class="col-lg-4 col-form-label">Are you working part-time or full-time?</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type_of_employment" id="part-time" value="Part Time">
-                  <label class="form-check-label" for="part-time">
-                    Part-time
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="type_of_employment" id="full-time" value="Full Time">
-                  <label class="form-check-label" for="full-time">
-                    Full-time
-                  </label>
-                </div>
-              </div>
             <div id="type_of_employment-error-message" class="invalid-feedback"></div>
 
-            </fieldset>
+          </fieldset>
 
 
-            <fieldset class="row mb-4 input-group">
-              <label for="current_field" class="col-sm-4 col-form-label">What field are you currently working in?</label>
-              <textarea
-                  type="text"
-                  class="form-control col-sm-8"
-                  id="current_field"
-                  placeholder="Current field"
-                  name="current_field"
-                ></textarea>
-                <div id="current_field-error-message" class="invalid-feedback"></div>
-            </fieldset>
+          <fieldset class="row mb-4 input-group">
+            <label for="current_field" class="col-sm-4 col-form-label">What field are you currently working in?</label>
+            <textarea type="text" class="form-control col-sm-8" id="current_field" placeholder="Current field"
+              name="current_field"></textarea>
+            <div id="current_field-error-message" class="invalid-feedback"></div>
+          </fieldset>
 
-            <fieldset class="row mb-4">
-              <label class="col-lg-4 col-form-label">Your Current Salary: </label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="salary" id="salary" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<income_brackets.length;i++) { %>
-                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
-                  <% } %>
-                </select>
-              </div>
-            <div id="salary-error-message" class="invalid-feedback"></div>
-
-            </fieldset>
-
-            <!-- Salary expectation -->
-            <div class="row mb-4">
-              <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<income_brackets.length;i++) { %>
-                    <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
-                  <% } %>
-                </select>
-                <div id="salary_expectation-error-message" class="invalid-feedback"></div>
-              </div>
-            </div>
-
-            <fieldset class="row mb-4">
-              <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-yes" value="1">
-                  <label class="form-check-label" for="will-leave-job-yes">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-no" value="0">
-                  <label class="form-check-label" for="will-leave-job-no">
-                    No
-                  </label>
-                </div>
-              </div>
-            <div id="will_leave_job-error-message" class="invalid-feedback"></div>
-            </fieldset>
-          </div>
-
-
-          <!-- Monthly Income -->
-          <div class="row mb-4">
-            <label class="col-lg-4 col-form-label">Monthly Family Income (Including yours)*: </label>
+          <fieldset class="row mb-4">
+            <label class="col-lg-4 col-form-label">Your Current Salary: </label>
             <div class="col-lg-8">
-              <select class="form-select mb-2" name="monthly_family_income" id="monthly_family_income" required>
+              <select class="form-select mb-2" name="salary" id="salary" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<income_brackets.length;i++) { %>
-                  <option value="<%=income_brackets[i]%>"><%=income_brackets[i]%></option>
+                <option value="<%=income_brackets[i]%>">
+                  <%=income_brackets[i]%>
+                </option>
                 <% } %>
               </select>
-              <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
+            </div>
+            <div id="salary-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
+          <!-- Salary expectation -->
+          <div class="row mb-4">
+            <label class="col-lg-4 col-form-label">What is your salary expectation when getting a job?</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="salary_expectation" id="salary_expectation" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<income_brackets.length;i++) { %>
+                <option value="<%=income_brackets[i]%>">
+                  <%=income_brackets[i]%>
+                </option>
+                <% } %>
+              </select>
+              <div id="salary_expectation-error-message" class="invalid-feedback"></div>
             </div>
           </div>
 
-          <!-- People earning -->
           <fieldset class="row mb-4">
-            <label class="col-lg-4 col-form-label">How many immediate family members are earning in your household?</label>
+            <label for="will-leave-job" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend
+              the program full time, if you are given a stipend of a percentage of the salary?</label>
             <div class="col-lg-8">
-              <select class="form-select mb-2" name="people_earning_in_household" id="people_earning_in_household" required>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-yes" value="1">
+                <label class="form-check-label" for="will-leave-job-yes">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_leave_job" id="will-leave-job-no" value="0">
+                <label class="form-check-label" for="will-leave-job-no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="will_leave_job-error-message" class="invalid-feedback"></div>
+          </fieldset>
+        </div>
+
+
+        <!-- Monthly Income -->
+        <div class="row mb-4">
+          <label class="col-lg-4 col-form-label">Monthly Family Income (Including yours)*: </label>
+          <div class="col-lg-8">
+            <select class="form-select mb-2" name="monthly_family_income" id="monthly_family_income" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<income_brackets.length;i++) { %>
+              <option value="<%=income_brackets[i]%>">
+                <%=income_brackets[i]%>
+              </option>
+              <% } %>
+            </select>
+            <div id="monthly_family_income-error-message" class="invalid-feedback"></div>
+          </div>
+        </div>
+
+        <!-- People earning -->
+        <fieldset class="row mb-4">
+          <label class="col-lg-4 col-form-label">How many immediate family members are earning in your
+            household?</label>
+          <div class="col-lg-8">
+            <select class="form-select mb-2" name="people_earning_in_household" id="people_earning_in_household"
+              required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<people_in_household.length;i++) { %>
+              <option value="<%=people_in_household[i]%>">
+                <%=people_in_household[i]%>
+              </option>
+              <% } %>
+            </select>
+          </div>
+          <div id="people_earning_in_household-error-message" class="invalid-feedback"></div>
+
+        </fieldset>
+
+
+
+
+
+        <!-- FA or Standard -->
+
+        <fieldset class="row mb-4">
+          <label for="how_to_enroll" class="col-lg-4 col-form-label">How do you want to enroll in our course?*</label>
+          <div class="col-lg-8">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll" value="1" required>
+              <label class="form-check-label" for="how_to_enroll">
+                Standard (2000 per month)
+              </label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll_fa" value="0">
+              <label class="form-check-label" for="how_to_enroll_fa">
+                Financial Aid
+              </label>
+            </div>
+          </div>
+          <div id="how_to_enroll-error-message" class="invalid-feedback"></div>
+        </fieldset>
+
+        <div class="hidden" id="fa-questions">
+
+          <!-- On fa in uni -->
+          <fieldset class="row mb-4">
+            <label for="on_fa_in_university" class="col-lg-4 col-form-label">Were you on financial aid/assistance while
+              in university?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university"
+                  value="1" required>
+                <label class="form-check-label" for="on_fa_in_university" required>
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university_no"
+                  value="0">
+                <label class="form-check-label" for="on_fa_in_university_no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="on_fa_in_university-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+          <!-- People in HouseHold -->
+
+          <fieldset class="row mb-4">
+            <label class="col-lg-4 col-form-label">How many people are there in your household?</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="people_in_household" id="people_in_household" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
                 <% for (let i=0;i<people_in_household.length;i++) { %>
-                  <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
+                <option value="<%=people_in_household[i]%>">
+                  <%=people_in_household[i]%>
+                </option>
                 <% } %>
               </select>
             </div>
-          <div id="people_earning_in_household-error-message" class="invalid-feedback"></div>
+            <div id="people_in_household-error-message" class="invalid-feedback"></div>
 
           </fieldset>
 
-          
-
-
-
-          <!-- FA or Standard -->
+          <!-- Is married -->
 
           <fieldset class="row mb-4">
-            <label for="how_to_enroll" class="col-lg-4 col-form-label">How do you want to enroll in our course?*</label>
+            <label for="is_married" class="col-lg-4 col-form-label">Are you married?</label>
             <div class="col-lg-8">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll" value="1" required>
-                <label class="form-check-label" for="how_to_enroll">
-                  Standard (2000 per month)
+                <input class="form-check-input" type="radio" name="is_married" id="is_married-yes" value="1">
+                <label class="form-check-label" for="is_married-yes">
+                  Yes
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="how_to_enroll" id="how_to_enroll_fa" value="0">
-                <label class="form-check-label" for="how_to_enroll_fa">
-                  Financial Aid
+                <input class="form-check-input" type="radio" name="is_married" id="is_married-no" value="0">
+                <label class="form-check-label" for="is_married-no">
+                  No
                 </label>
               </div>
             </div>
-            <div id="how_to_enroll-error-message" class="invalid-feedback"></div>
-          </fieldset>
-
-          <div class="hidden" id="fa-questions">
-
-            <!-- On fa in uni -->
-            <fieldset class="row mb-4">
-              <label for="on_fa_in_university" class="col-lg-4 col-form-label">Were you on financial aid/assistance while in university?</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university" value="1" required>
-                  <label class="form-check-label" for="on_fa_in_university" required>
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="on_fa_in_university" id="on_fa_in_university_no" value="0">
-                  <label class="form-check-label" for="on_fa_in_university_no">
-                    No
-                  </label>
-                </div>
-              </div>
-              <div id="on_fa_in_university-error-message" class="invalid-feedback"></div>
-            </fieldset>
-  
-            <!-- People in HouseHold -->
-
-            <fieldset class="row mb-4">
-                <label class="col-lg-4 col-form-label">How many people are there in your household?</label>
-                <div class="col-lg-8">
-                  <select class="form-select mb-2" name="people_in_household" id="people_in_household" required>
-                    <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                    <% for (let i=0;i<people_in_household.length;i++) { %>
-                      <option value="<%=people_in_household[i]%>"><%=people_in_household[i]%></option>
-                    <% } %>
-                  </select>
-                </div>
-              <div id="people_in_household-error-message" class="invalid-feedback"></div>
-
-            </fieldset>
-
-            <!-- Is married -->
-
-            <fieldset class="row mb-4">
-              <label for="is_married" class="col-lg-4 col-form-label">Are you married?</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="is_married" id="is_married-yes" value="1">
-                  <label class="form-check-label" for="is_married-yes">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="is_married" id="is_married-no" value="0">
-                  <label class="form-check-label" for="is_married-no">
-                    No
-                  </label>
-                </div>
-              </div>
             <div id="is_married-error-message" class="invalid-feedback"></div>
-            </fieldset>
+          </fieldset>
 
 
           <!-- Computer access -->
-            <fieldset class="row mb-4">
-              <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer and internet?*</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access" value="1" required>
-                  <label class="form-check-label" for="computer_and_internet_access">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="computer_and_internet_access" id="computer_and_internet_access_no" value="0">
-                  <label class="form-check-label" for="computer_and_internet_access_no">
-                    No
-                  </label>
-                </div>
+          <fieldset class="row mb-4">
+            <label for="computer-and-internet-access" class="col-lg-4 col-form-label">Do you have access to a computer
+              and internet?*</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="computer_and_internet_access"
+                  id="computer_and_internet_access" value="1" required>
+                <label class="form-check-label" for="computer_and_internet_access">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="computer_and_internet_access"
+                  id="computer_and_internet_access_no" value="0">
+                <label class="form-check-label" for="computer_and_internet_access_no">
+                  No
+                </label>
+              </div>
               <div id="computer_and_internet_access-error-message" class="invalid-feedback"></div>
 
-              </div>
+            </div>
 
-            </fieldset>
+          </fieldset>
 
-           <!-- Internet Access
+          <!-- Internet Access
 
             <fieldset class="row mb-4">
               <label for="internet-facility-in-area" class="col-lg-4 col-form-label">Do you have a reliable internet connection facility in your area?*</label>
@@ -774,310 +676,338 @@
               </div>
               <div id="internet_facility_in_area-error-message" class="invalid-feedback"></div>
             </fieldset> -->
-          
-            <!-- How will you complete course -->
 
-            <fieldset class="row mb-4 input-group">
-              <label for="how_complete_course" class="col-sm-4 col-form-label">How will you complete the course if you do not have internet or a laptop? (leave empty if not applicable)</label>
-              <textarea
-                  type="text"
-                  class="form-control col-sm-8"
-                  id="how_complete_course"
-                  name="how_complete_course"
-                ></textarea>
-                <div id="how_complete_course-error-message" class="invalid-feedback"></div>
-            </fieldset>
+          <!-- How will you complete course -->
 
-            <fieldset class="row mb-4">
-              <label for="can_share_fa_docs" class="col-lg-4 col-form-label">Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_yes" value="1">
-                  <label class="form-check-label" for="can_share_fa_docs_yes">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_no" value="0">
-                  <label class="form-check-label" for="can_share_fa_docs_no">
-                    No
-                  </label>
-                </div>
+          <fieldset class="row mb-4 input-group">
+            <label for="how_complete_course" class="col-sm-4 col-form-label">How will you complete the course if you do
+              not have internet or a laptop? (leave empty if not applicable)</label>
+            <textarea type="text" class="form-control col-sm-8" id="how_complete_course"
+              name="how_complete_course"></textarea>
+            <div id="how_complete_course-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <label for="can_share_fa_docs" class="col-lg-4 col-form-label">Will you be willing to leave the job to
+              attend the program full time, if you are given a stipend of a percentage of the salary?</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_yes"
+                  value="1">
+                <label class="form-check-label" for="can_share_fa_docs_yes">
+                  Yes
+                </label>
               </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="can_share_fa_docs" id="can_share_fa_docs_no"
+                  value="0">
+                <label class="form-check-label" for="can_share_fa_docs_no">
+                  No
+                </label>
+              </div>
+            </div>
             <div id="can_share_fa_docs-error-message" class="invalid-feedback"></div>
-            </fieldset>
-
-          </div>
-
-          <div class="hidden" id="standard-questions">
-
-            <!-- Can pay 2000 -->
-            <fieldset class="row mb-4">
-              <label for="can_pay_2000" class="col-lg-4 col-form-label">Can you pay 2,000 RS per month for 6 months of the program?
-              </label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000" value="1" >
-                  <label class="form-check-label" for="can_pay_2000" required>
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000_no" value="0">
-                  <label class="form-check-label" for="can_pay_2000_no">
-                    No
-                  </label>
-                </div>
-              </div>
-              <div id="can_pay_2000-error-message" class="invalid-feedback"></div>
-            </fieldset>
-  
-          </div>
-
- 
-            <button
-              type="button"
-              id="step4-next-button"
-              class="btn btn-primary"
-            >
-            <i class="fas fa-arrow-right"></i> Next Step
-            </button>
+          </fieldset>
 
         </div>
 
-        <div id="step5" class="hidden mt-5">
-          <div id="step5-fields">
-            <h3 class="mt-3">Step 5: Final Information</h3>
+        <div class="hidden" id="standard-questions">
 
-            <fieldset class="row mb-4">
-              <label class="col-lg-4 col-form-label">Do you know anyone from IEC?</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="knows_from_IEC" id="knows_from_IEC" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<knows_from_IEC.length;i++) { %>
-                    <option value="<%=knows_from_IEC[i]%>"><%=knows_from_IEC[i]%></option>
-                  <% } %>
-                </select>
+          <!-- Can pay 2000 -->
+          <fieldset class="row mb-4">
+            <label for="can_pay_2000" class="col-lg-4 col-form-label">Can you pay 2,000 RS per month for 6 months of the
+              program?
+            </label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000" value="1">
+                <label class="form-check-label" for="can_pay_2000" required>
+                  Yes
+                </label>
               </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="can_pay_2000" id="can_pay_2000_no" value="0">
+                <label class="form-check-label" for="can_pay_2000_no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="can_pay_2000-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+        </div>
+
+
+        <button type="button" id="step4-next-button" class="btn btn-primary">
+          <i class="fas fa-arrow-right"></i> Next Step
+        </button>
+
+      </div>
+
+      <div id="step5" class="hidden mt-5">
+        <div id="step5-fields">
+          <h3 class="mt-3">Step 5: Final Information</h3>
+
+          <fieldset class="row mb-4">
+            <label class="col-lg-4 col-form-label">Do you know anyone from IEC?</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="knows_from_IEC" id="knows_from_IEC" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<knows_from_IEC.length;i++) { %>
+                <option value="<%=knows_from_IEC[i]%>">
+                  <%=knows_from_IEC[i]%>
+                </option>
+                <% } %>
+              </select>
+            </div>
             <div id="knows_from_IEC-error-message" class="invalid-feedback"></div>
 
           </fieldset>
 
-            <fieldset class="row mb-4">
-              <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the program?*</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment" value="1" required>
-                  <label class="form-check-label" for="time_commitment">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment_no" value="0">
-                  <label class="form-check-label" for="time_commitment_no">
-                    No
-                  </label>
-                </div>
+          <fieldset class="row mb-4">
+            <label for="time-commitment" class="col-lg-4 col-form-label">Can you spend 30 to 40 hours a week on the
+              program?*</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment" value="1"
+                  required>
+                <label class="form-check-label" for="time_commitment">
+                  Yes
+                </label>
               </div>
-              <div id="time_commitment-error-message" class="invalid-feedback"></div>
-            </fieldset>
-
-            <fieldset class="row mb-4">
-              <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?*</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before" value="1" required>
-                  <label class="form-check-label" for="has_applied_before">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before_no" value="0">
-                  <label class="form-check-label" for="has_applied_before_no">
-                    No
-                  </label>
-                </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="time_commitment" id="time_commitment_no" value="0">
+                <label class="form-check-label" for="time_commitment_no">
+                  No
+                </label>
               </div>
-              <div id="has_applied_before-error-message" class="invalid-feedback"></div>
-            </fieldset>
+            </div>
+            <div id="time_commitment-error-message" class="invalid-feedback"></div>
+          </fieldset>
 
-            <div class="row mb-4 gy-2">
-              <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course*:</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<courses.length;i++) { %>
-                    <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                  <% } %>
-                </select>
-                <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
+          <fieldset class="row mb-4">
+            <label for="has-applied-before" class="col-lg-4 col-form-label">Have you applied to IEC before?*</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before" value="1"
+                  required>
+                <label class="form-check-label" for="has_applied_before">
+                  Yes
+                </label>
               </div>
-
-
-              <!-- Reasons for Preferences -->
-
-              <label for="firstPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your first preference.*</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="firstPreferenceReason" id="firstPreferenceReason" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
-                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
-                  <% } %>
-                </select>
-              <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="has_applied_before" id="has_applied_before_no"
+                  value="0">
+                <label class="form-check-label" for="has_applied_before_no">
+                  No
+                </label>
               </div>
+            </div>
+            <div id="has_applied_before-error-message" class="invalid-feedback"></div>
+          </fieldset>
 
-              <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<courses.length;i++) { %>
-                    <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                  <% } %>
-                </select>
-                <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
-              </div>
-
-              <!-- Reasons for Preferences -->
-              
-              <label for="secondPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your second preference.*</label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="secondPreferenceReason" id="secondPreferenceReason" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<reasons_to_join.length;i++) { %>
-                    <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
-                  <% } %>
-                </select>
-                <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
-              </div>
-              <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
-
-
-              <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
-              <div class="col-lg-8">
-                <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
-                  <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                  <% for (let i=0;i<courses.length;i++) { %>
-                    <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>"><%=courses[i].title%></option>
-                  <% } %>
-                </select>
-                <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
-              </div>
-
-              <!-- Reasons for Preferences -->
-
-                <label for="thirdPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your third preference.*</label>
-                <div class="col-lg-8">
-                  <select class="form-select mb-2" name="thirdPreferenceReason" id="thirdPreferenceReason" required>
-                    <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                    <% for (let i=0;i<reasons_to_join.length;i++) { %>
-                      <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>"><%=reasons_to_join[i]%></option>
-                    <% } %>
-                  </select>
-                  <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
-                </div>
-                <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
-
+          <div class="row mb-4 gy-2">
+            <label for="first-preference" class="col-lg-4 col-form-label">Your First Preference Course*:</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="firstPreferenceId" id="firstPreferenceId" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                <option value="<%=courses[i].id%>" id="<%=`first-preference-${courses[i].id}`%>">
+                  <%=courses[i].title%>
+                </option>
+                <% } %>
+              </select>
+              <div id="firstPreferenceId-error-message" class="invalid-feedback"></div>
             </div>
 
-            <!-- How did you hear -->
-            <fieldset class="row mb-4 input-group">
-              <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC?*</label>
-              <select class="form-select" name="how_heard_about_iec" id="how_heard_about_iec" required>
+
+            <!-- Reasons for Preferences -->
+
+            <label for="firstPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your first
+              preference.*</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="firstPreferenceReason" id="firstPreferenceReason" required>
                 <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
-                <% for (let i=0;i<sources_of_information.length;i++) 
-                { 
-                %>
-                  <option value="<%=sources_of_information[i]%>"><%=sources_of_information[i]%></option>
-                <% 
-                } 
-                %>
+                <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>">
+                  <%=reasons_to_join[i]%>
+                </option>
+                <% } %>
               </select>
-              <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
+              <div id="firstPreferenceReason-error-message" class="invalid-firstPreferenceReason"></div>
+            </div>
 
-            </fieldset>
+            <label for="second-preference" class="col-lg-4 col-form-label">Your Second Preference Course*: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="secondPreferenceId" id="secondPreferenceId" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                <option value="<%=courses[i].id%>" id="<%=`second-preference-${courses[i].id}`%>">
+                  <%=courses[i].title%>
+                </option>
+                <% } %>
+              </select>
+              <div id="secondPreferenceId-error-message" class="invalid-feedback"></div>
+            </div>
 
-            <!--Will work full time?-->
-            <fieldset class="row mb-4">
-              <label for="will_work_full_time" class="col-lg-4 col-form-label">Will you be available for a full time job after completion of the course?*</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time" value="1" required>
-                  <label class="form-check-label" for="will_work_full_time">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time-no" value="0">
-                  <label class="form-check-label" for="will_work_full_time-no">
-                    No
-                  </label>
-                </div>
-              </div>
-              <div id="will_work_full_time-error-message" class="invalid-feedback"></div>
+            <!-- Reasons for Preferences -->
 
-            </fieldset>
+            <label for="secondPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your second
+              preference.*</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="secondPreferenceReason" id="secondPreferenceReason" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>">
+                  <%=reasons_to_join[i]%>
+                </option>
+                <% } %>
+              </select>
+              <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
+            </div>
+            <div id="secondPreferenceReason-error-message" class="invalid-secondPreferenceReason"></div>
 
-            <fieldset class="row mb-4">
-              <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you acknowledge that?*</label>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1" required>
-                  <label class="form-check-label" for="acknowledge_online">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-no" value="0">
-                  <label class="form-check-label" for="acknowledge-online-no">
-                    No
-                  </label>
-                </div>
-              </div>
-              <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
-            </fieldset>
 
-            <fieldset class="row mb-4">
-              <div class="col-lg-4 col-form-label flex flex-col">
-                <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's support, and contribute back to IEC after you find a job?</label>
-              </div>
-              <div class="col-lg-8">
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement" value="1" required>
-                  <label class="form-check-label" for="LEC_acknowledgement">
-                    Yes
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement-no" value="0">
-                  <label class="form-check-label" for="LEC_acknowledgement-no">
-                    No
-                  </label>
-                </div>
-              </div>
-              <div id="LEC_acknowledgement-error-message" class="invalid-feedback"></div>
+            <label for="third-preference" class="col-lg-4 col-form-label">Your Third Preference Course*: </label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="thirdPreferenceId" id="thirdPreferenceId" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<courses.length;i++) { %>
+                <option value="<%=courses[i].id%>" id="<%=`third-preference-${courses[i].id}`%>">
+                  <%=courses[i].title%>
+                </option>
+                <% } %>
+              </select>
+              <div id="thirdPreferenceId-error-message" class="invalid-feedback"></div>
+            </div>
 
-            </fieldset>
+            <!-- Reasons for Preferences -->
 
-            <small class="mb-4 text-muted" >Learn, Earn & Contribute (LEC) is a document consisting of students' finalized payment model and their agreement to pay back the remaining course amount to IEC on the basis of 10% of their salary after getting a job.*</small>
+            <label for="thirdPreferenceReason" class="col-lg-4 col-form-label">Please share the reason for your third
+              preference.*</label>
+            <div class="col-lg-8">
+              <select class="form-select mb-2" name="thirdPreferenceReason" id="thirdPreferenceReason" required>
+                <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+                <% for (let i=0;i<reasons_to_join.length;i++) { %>
+                <option value="<%=reasons_to_join[i]%>" id="<%=`first-preference-${i}`%>">
+                  <%=reasons_to_join[i]%>
+                </option>
+                <% } %>
+              </select>
+              <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
+            </div>
+            <div id="thirdPreferenceReason-error-message" class="invalid-thirdPreferenceReason"></div>
 
           </div>
-          <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out for a confirmation email from us. Make sure you remember your email and password for future use.</p>
 
-          <button
-            type="submit"
-            id="step5-next-button"
-            class="btn btn-primary mt-5"
-          >
-          <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true" id="submit-spinner"></span>
-          <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
-          </button>
+          <!-- How did you hear -->
+          <fieldset class="row mb-4 input-group">
+            <label for="how-heard-about-iec" class="col-sm-4 col-form-label">How did you hear about IEC?*</label>
+            <select class="form-select" name="how_heard_about_iec" id="how_heard_about_iec" required>
+              <option value="" disabled="disabled" selected="true" hidden>Select an Option</option>
+              <% for (let i=0;i<sources_of_information.length;i++) { %>
+              <option value="<%=sources_of_information[i]%>">
+                <%=sources_of_information[i]%>
+              </option>
+              <% } %>
+            </select>
+            <div id="how_heard_about_iec-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
+          <!--Will work full time?-->
+          <fieldset class="row mb-4">
+            <label for="will_work_full_time" class="col-lg-4 col-form-label">Will you be available for a full time job
+              after completion of the course?*</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time"
+                  value="1" required>
+                <label class="form-check-label" for="will_work_full_time">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="will_work_full_time" id="will_work_full_time-no"
+                  value="0">
+                <label class="form-check-label" for="will_work_full_time-no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="will_work_full_time-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <label for="acknowledge-online" class="col-lg-4 col-form-label">The program is entirely online. Do you
+              acknowledge that?*</label>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge_online" value="1"
+                  required>
+                <label class="form-check-label" for="acknowledge_online">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="acknowledge_online" id="acknowledge-online-no"
+                  value="0">
+                <label class="form-check-label" for="acknowledge-online-no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="acknowledge_online-error-message" class="invalid-feedback"></div>
+          </fieldset>
+
+          <fieldset class="row mb-4">
+            <div class="col-lg-4 col-form-label flex flex-col">
+              <label for="LEC_acknowledgement" class="">Do you acknowledge that you will be signing an LEC* Agreement
+                where you pledge to learn a tech skill from IEC, find a job to earn after your program with IEC's
+                support, and contribute back to IEC after you find a job?</label>
+            </div>
+            <div class="col-lg-8">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement"
+                  value="1" required>
+                <label class="form-check-label" for="LEC_acknowledgement">
+                  Yes
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="LEC_acknowledgement" id="LEC_acknowledgement-no"
+                  value="0">
+                <label class="form-check-label" for="LEC_acknowledgement-no">
+                  No
+                </label>
+              </div>
+            </div>
+            <div id="LEC_acknowledgement-error-message" class="invalid-feedback"></div>
+
+          </fieldset>
+
+          <small class="mb-4 text-muted">Learn, Earn & Contribute (LEC) is a document consisting of students' finalized
+            payment model and their agreement to pay back the remaining course amount to IEC on the basis of 10% of
+            their salary after getting a job.*</small>
+
         </div>
-      </form>
-    </div>
+        <p id="after_save_message" class="hidden text-success">You have successfully submitted the application. Look out
+          for a confirmation email from us. Make sure you remember your email and password for future use.</p>
 
-    <p class="text-center fw-light font-monospace text-muted mt-4 fs-6">Support Email: <a href="mailto:mail@iec.org.pk?body=" id="support_email" target="_blank">mail@iec.org.pk</a></p>
+        <button type="submit" id="step5-next-button" class="btn btn-primary mt-5">
+          <span class="spinner-border spinner-border-sm hidden-imp" role="status" aria-hidden="true"
+            id="submit-spinner"></span>
+          <span id="submit-button-text"><i class="fas fa-paper-plane"></i> Finish & Submit</span>
+        </button>
+      </div>
+    </form>
+  </div>
 
-    <script src="/precompiled-js/application.js"></script>
-  </body>
+  <p class="text-center fw-light font-monospace text-muted mt-4 fs-6">Support Email: <a
+      href="mailto:mail@iec.org.pk?body=" id="support_email" target="_blank">mail@iec.org.pk</a></p>
+
+  <script src="/precompiled-js/application.js"></script>
+</body>
+
 </html>
