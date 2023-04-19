@@ -32,9 +32,9 @@ export const logout = async (page) => {
 
 
 export const fillStep1 = async (firstName, lastName, email, cnic, page) => {
-  await page.getByTestId("firstName-input").fill("Rohan")
-  await page.getByTestId("lastName-input").fill("Hussain")
-  await page.getByTestId("email-input").fill("rohanhussain1@yahoo.com")
-  await page.getByTestId("cnic-input").fill("12345-1234567-8")
+  await page.getByTestId("firstName-input").fill(firstName)
+  await page.getByTestId("lastName-input").fill(lastName)
+  await page.getByTestId("email-input").fill(email)
+  await page.getByTestId("cnic-input").fill(cnic)
   return page.getByTestId("step1-next-button").click()
 }
