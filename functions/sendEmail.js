@@ -1,19 +1,24 @@
 const ejs = require("ejs")
 const sequelize = require("../db/connect")
 const {
-    SESClient, CloneReceiptRuleSetCommand
+    SESClient, SendEmailCommand
 } = require("@aws-sdk/client-ses");
 const { queueMail } = require("../bull")
 
-const client = new SESClient({ region: process.env.AWS_REGION });
+const client = new SESClient({
+    region: process.env.AWS_REGION,
+});
 
 const AWSSendEmail = (html, mailOptions) => {
-    // Create sendEmail params
-    var params = {
+    const command = new SendEmailCommand({
         Destination: {
             /* required */
-            CcAddresses: [],
-            ToAddresses: [mailOptions.to],
+            CcAddresses: [
+                /* more items */
+            ],
+            ToAddresses: [
+                mailOptions.to
+            ],
         },
         Message: {
             /* required */
@@ -29,15 +34,13 @@ const AWSSendEmail = (html, mailOptions) => {
                 Data: mailOptions.subject,
             },
         },
-        Source: mailOptions.from /* required */,
+        Source: mailOptions.from,
         ReplyToAddresses: [
             mailOptions.from,
-            /* more items */
         ],
-    }
+    });
 
     // Return promise
-    const command = new CloneReceiptRuleSetCommand(params);
     return client.send(command)
 }
 
