@@ -20,7 +20,7 @@ const {
 	InterviewMatching,
 	InterviewBookingSlots,
 } = require("../db/models")
-
+const { pdf_upload } = require("../multer-config")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
 
 const { queueMail } = require("../bull")
@@ -138,15 +138,15 @@ router.post("/signup", async (req, res) => {
 		if (err.errors) {
 			res.redirect(
 				"/invite/" +
-					invite_link +
-					"?error=" +
-					encodeURIComponent(err.errors[0].type) +
-					"&field=" +
-					encodeURIComponent(err.errors[0].path) +
-					"&type=" +
-					encodeURIComponent(err.errors[0].validatorName) +
-					"&message=" +
-					encodeURIComponent(err.errors[0].message)
+				invite_link +
+				"?error=" +
+				encodeURIComponent(err.errors[0].type) +
+				"&field=" +
+				encodeURIComponent(err.errors[0].path) +
+				"&type=" +
+				encodeURIComponent(err.errors[0].validatorName) +
+				"&message=" +
+				encodeURIComponent(err.errors[0].message)
 			)
 		} else res.redirect("/invite/" + invite_link)
 	}
@@ -575,5 +575,17 @@ router.post(
 		}
 	}
 )
+
+// LEC Agreements
+
+router.get("/lec-agreement", checkStudentAuthenticated, async (req, res) => {
+	res.render("student/lec-agreement/index.ejs", {
+		user_type: req.user.type,
+	})
+})
+
+router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.single("file"), (req, res) => {
+	res.send(`<i class="fas fa-check"></i></i> Your LEC Agreement has been uploaded successfully.`)
+})
 
 module.exports = router

@@ -144,7 +144,6 @@ app.get("/test", async (req, res) => {
 })
 
 app.post("/upload", file_upload.single("file"), (req, res) => {
-	console.log("uploading file")
 	const file_type = req.file.mimetype.slice(0, 5)
 	let file_name = ""
 	if (file_type == "image") file_name = "/img/"
@@ -204,11 +203,11 @@ app.post(
 					() => {
 						if (!err) {
 							/* data = [
-            ["Emails"],
-            ["rohanhussain1@yahoo.com"],
-            ["dkhn.act@gmail.com"],
-            ["22100063@lums.edu.pk"]    
-          ] */
+			["Emails"],
+			["rohanhussain1@yahoo.com"],
+			["dkhn.act@gmail.com"],
+			["22100063@lums.edu.pk"]    
+		  ] */
 							console.log(data)
 							data = flatten2DArray(data)
 							res.status(200).json(data)

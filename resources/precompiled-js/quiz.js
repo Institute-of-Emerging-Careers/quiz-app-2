@@ -215,8 +215,7 @@ var Option = function Option(props) {
 
   function uploadFile(e) {
     var data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
-    setUploading(true); // data.append("file", e.target.files[0]);
-
+    setUploading(true);
     fetch("/upload", {
       method: "POST",
       body: data
