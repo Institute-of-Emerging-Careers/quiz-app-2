@@ -71,6 +71,12 @@ router.get("/onboarding", checkStudentAuthenticated, (req, res) => {
 	})
 })
 
+router.get("/lec-agreement", checkStudentAuthenticated, (req, res) => {
+	res.render("student/lec-agreement/index.ejs", {
+		user_type: req.user.type,
+	})
+})
+
 router.post("/signup", async (req, res) => {
 	const firstName = req.body.firstName,
 		lastName = req.body.lastName,
@@ -138,15 +144,15 @@ router.post("/signup", async (req, res) => {
 		if (err.errors) {
 			res.redirect(
 				"/invite/" +
-					invite_link +
-					"?error=" +
-					encodeURIComponent(err.errors[0].type) +
-					"&field=" +
-					encodeURIComponent(err.errors[0].path) +
-					"&type=" +
-					encodeURIComponent(err.errors[0].validatorName) +
-					"&message=" +
-					encodeURIComponent(err.errors[0].message)
+				invite_link +
+				"?error=" +
+				encodeURIComponent(err.errors[0].type) +
+				"&field=" +
+				encodeURIComponent(err.errors[0].path) +
+				"&type=" +
+				encodeURIComponent(err.errors[0].validatorName) +
+				"&message=" +
+				encodeURIComponent(err.errors[0].message)
 			)
 		} else res.redirect("/invite/" + invite_link)
 	}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <title>LEC Agreement - Student Panel</title>
+    <style>
+        .mytable td,
+        th {
+            padding: 0.5rem 0.5rem;
+        }
+
+        @media screen and (min-width: 480px) {
+
+            .mytable td,
+            th {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        .hidden-imp {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
+    <%- include('../../templates/header-7-by-8.ejs') %>
+
+    <%- include('../../templates/student-sidemenu.ejs') %>
+    <div class="flex items-center content-center align-middle">
+        <section class="py-2 px-1 w-full md:w-7/8 mx-auto mr-0 md:mt-16" id="main-section">
+            <div id="assessments-box" class="bg-white w-7/8 rounded-lg m-auto">
+                <div id="assessments-title-box"
+                    class="bg-iec-blue text-white text-lg md:text-xl font-light px-4 py-3 rounded-t-lg">
+                    My LEC Agreements
+                </div>
+                <div class="px-2 md:px-10 py-8 overflow-x-auto md:text-base text-xs">
+                    <p>You are required to sign an LEC Agreement before you start learning with IEC.</p><br />
+                    <p>Follow these steps:</p>
+                    <ol class="list-decimal">
+                        <li>Download your unsigned LEC Agreement PDF by clicking <a
+                                class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer">here</a>.
+                        </li>
+                        <li>Sign the PDF. There are many ways to sign a PDF. <a href="https://youtu.be/3tqb1htxz1k"
+                                target="_blank"
+                                class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer">Click
+                                here to watch a video guide.</a></li>
+                        <li>Once you have signed the PDF, upload the signed PDF here: <br><input type="file" /></li>
+                    </ol>
+                    </p>
+                    <br />
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>

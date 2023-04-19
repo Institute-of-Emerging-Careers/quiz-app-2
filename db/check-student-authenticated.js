@@ -7,8 +7,9 @@ const checkAuthenticated = (req, res, next) => {
       res.redirect("/student/login");
     }
   } else {
-    if (req.url != "/student")
-      res.redirect(`/student/login?url=${encodeURIComponent(req.url)}`);
+    if (req.url != "/student") {
+      res.redirect(`/student/login?url=${encodeURIComponent(req.originalUrl)}`);
+    }
     else res.redirect(`/student/login`);
   }
 };
