@@ -29,3 +29,12 @@ export const logout = async (page) => {
   // Wait for second redirect to /admin/login
   return page.waitForURL(`http://localhost:${process.env.PORT}/admin/login`);
 }
+
+
+export const fillStep1 = async (firstName, lastName, email, cnic, page) => {
+  await page.getByTestId("firstName-input").fill("Rohan")
+  await page.getByTestId("lastName-input").fill("Hussain")
+  await page.getByTestId("email-input").fill("rohanhussain1@yahoo.com")
+  await page.getByTestId("cnic-input").fill("12345-1234567-8")
+  return page.getByTestId("step1-next-button").click()
+}
