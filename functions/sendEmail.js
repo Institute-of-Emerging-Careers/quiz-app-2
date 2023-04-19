@@ -1,16 +1,11 @@
 const ejs = require("ejs")
 const sequelize = require("../db/connect")
-var AWS = require("aws-sdk")
+const {
+	SES
+} = require("@aws-sdk/client-ses");
 const { queueMail } = require("../bull")
 
 const AWSSendEmail = (html, mailOptions) => {
-	// Set the region
-	AWS.config.update({
-		accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
-		secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
-		region: process.env.AWS_SES_REGION,
-	})
-
 	// Create sendEmail params
 	var params = {
 		Destination: {
@@ -40,7 +35,7 @@ const AWSSendEmail = (html, mailOptions) => {
 	}
 
 	// Create the promise and SES service object
-	var promise = new AWS.SES({ apiVersion: "2010-12-01" })
+	var promise = new SES({ apiVersion: "2010-12-01", region: process.env.AWS_REGION })
 		.sendEmail(params)
 		.promise()
 
@@ -76,13 +71,13 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 
 			return AWSSendEmail(html, mailOptions)
 			/*promise.then(function (data) {
-        console.log(data.MessageId);
-        res.sendStatus(200);
-      })
-      .catch(function (err) {
-        console.error(err, err.stack);
-        res.sendStatus(500);
-      });*/
+		console.log(data.MessageId);
+		res.sendStatus(200);
+	  })
+	  .catch(function (err) {
+		console.error(err, err.stack);
+		res.sendStatus(500);
+	  });*/
 		} else {
 			console.log(
 				recepient,
