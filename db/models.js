@@ -17,7 +17,7 @@ const {
 const { sendApplicationReceiptEmail } = require("../functions/sendEmail")
 const { autoAssignQuiz } = require("./utils")
 
-class ApplicationRound extends Model {}
+class ApplicationRound extends Model { }
 
 ApplicationRound.init(
 	{
@@ -37,7 +37,7 @@ ApplicationRound.init(
 	}
 )
 
-class Application extends Model {}
+class Application extends Model { }
 
 Application.init(
 	{
@@ -607,7 +607,7 @@ Application.init(
 	}
 )
 
-class Course extends Model {}
+class Course extends Model { }
 
 Course.init(
 	{
@@ -623,7 +623,7 @@ Course.init(
 )
 
 // junction table for ApplicaitonRound and Course (many-to-many relationship)
-class ApplicationRoundCourseJunction extends Model {}
+class ApplicationRoundCourseJunction extends Model { }
 ApplicationRoundCourseJunction.init(
 	{
 		id: {
@@ -636,7 +636,7 @@ ApplicationRoundCourseJunction.init(
 	{ sequelize, modelName: "ApplicationRoundCourseJunction" }
 )
 
-class InterviewRound extends Model {}
+class InterviewRound extends Model { }
 
 InterviewRound.init(
 	{
@@ -660,7 +660,7 @@ InterviewRound.init(
 	}
 )
 
-class Interviewer extends Model {}
+class Interviewer extends Model { }
 
 Interviewer.init(
 	{
@@ -684,7 +684,7 @@ Interviewer.init(
 	}
 )
 
-class InterviewerSlot extends Model {}
+class InterviewerSlot extends Model { }
 
 InterviewerSlot.init(
 	{
@@ -726,7 +726,7 @@ InterviewerInvite.init(
 )
 
 // StudentInterviewRoundInvite is junction model for the many-to-many relationship between "Student" and "InterviewRound"
-class StudentInterviewRoundInvite extends Model {}
+class StudentInterviewRoundInvite extends Model { }
 StudentInterviewRoundInvite.init(
 	{
 		id: {
@@ -739,7 +739,7 @@ StudentInterviewRoundInvite.init(
 	{ sequelize, modelName: "StudentInterviewRoundInvite" }
 )
 
-class InterviewMatching extends Model {}
+class InterviewMatching extends Model { }
 
 InterviewMatching.init(
 	{
@@ -767,7 +767,7 @@ InterviewMatching.init(
 	{ sequelize, modelName: "InterviewMatching" }
 )
 
-class InterviewQuestions extends Model {}
+class InterviewQuestions extends Model { }
 
 InterviewQuestions.init(
 	{
@@ -802,7 +802,7 @@ InterviewQuestions.init(
 	{ sequelize, modelName: "InterviewQuestions" }
 )
 
-class InterviewAnswers extends Model {}
+class InterviewAnswers extends Model { }
 
 InterviewAnswers.init(
 	{
@@ -846,7 +846,7 @@ InterviewAnswers.init(
 	{ sequelize, modelName: "InterviewAnswers" }
 )
 
-class InterviewScores extends Model {}
+class InterviewScores extends Model { }
 
 InterviewScores.init(
 	{
@@ -882,7 +882,7 @@ InterviewScores.init(
 	{ sequelize, modelName: "InterviewScores" }
 )
 
-class InterviewBookingSlots extends Model {}
+class InterviewBookingSlots extends Model { }
 
 InterviewBookingSlots.init(
 	{
@@ -932,7 +932,7 @@ InterviewBookingSlots.init(
 	}
 )
 
-class Orientation extends Model {}
+class Orientation extends Model { }
 
 Orientation.init(
 	{
@@ -961,7 +961,7 @@ Orientation.init(
 
 // OrientationInvite is the Junction model for the Many-to-Many relationship of "Orientation" and "Student" models.
 
-class OrientationInvite extends Model {}
+class OrientationInvite extends Model { }
 OrientationInvite.init(
 	{
 		email_sent: {
@@ -981,7 +981,7 @@ OrientationInvite.init(
 	}
 )
 
-class Quiz extends Model {}
+class Quiz extends Model { }
 
 Quiz.init(
 	{
@@ -1011,7 +1011,7 @@ Quiz.init(
 	}
 )
 
-class Section extends Model {}
+class Section extends Model { }
 
 Section.init(
 	{
@@ -1038,7 +1038,7 @@ Section.init(
 	}
 )
 
-class Passage extends Model {}
+class Passage extends Model { }
 Passage.init(
 	{
 		statement: {
@@ -1056,7 +1056,7 @@ Passage.init(
 	}
 )
 
-class Question extends Model {}
+class Question extends Model { }
 
 Question.init(
 	{
@@ -1097,7 +1097,7 @@ Question.init(
 	}
 )
 
-class Option extends Model {}
+class Option extends Model { }
 
 Option.init(
 	{
@@ -1124,7 +1124,7 @@ Option.init(
 	}
 )
 
-class User extends Model {}
+class User extends Model { }
 
 User.init(
 	{
@@ -1152,7 +1152,7 @@ User.init(
 	}
 )
 
-class Student extends Model {}
+class Student extends Model { }
 
 Student.init(
 	{
@@ -1255,7 +1255,7 @@ Student.init(
 	}
 )
 
-class Invite extends Model {}
+class Invite extends Model { }
 
 Invite.init(
 	{
@@ -1276,7 +1276,7 @@ Invite.init(
 	}
 )
 
-class Assignment extends Model {}
+class Assignment extends Model { }
 
 Assignment.init(
 	{
@@ -1297,7 +1297,7 @@ Assignment.init(
 	}
 )
 
-class Attempt extends Model {}
+class Attempt extends Model { }
 
 // An Attempt is the attempt of just a single section out of a quiz
 Attempt.init(
@@ -1326,7 +1326,7 @@ Attempt.init(
 	}
 )
 
-class Score extends Model {}
+class Score extends Model { }
 
 // An Attempt is the attempt of just a single section out of a quiz
 Score.init(
@@ -1343,11 +1343,11 @@ Score.init(
 	}
 )
 
-class Answer extends Model {}
+class Answer extends Model { }
 
 Answer.init({}, { sequelize, modelName: "Answer" })
 
-class PasswordResetLink extends Model {}
+class PasswordResetLink extends Model { }
 
 PasswordResetLink.init(
 	{
@@ -1362,7 +1362,7 @@ PasswordResetLink.init(
 	}
 )
 
-class Email extends Model {}
+class Email extends Model { }
 
 Email.init(
 	{
@@ -1396,6 +1396,37 @@ Email.init(
 		modelName: "Email",
 	}
 )
+
+// LEC Agreements
+class LECRound extends Model { };
+LECRound.init({
+	title: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	},
+	open: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: true,
+	},
+	send_reminders: {
+		type: DataTypes.BOOLEAN,
+		allowNull: false,
+		defaultValue: true,
+	},
+}, { sequelize, modelName: "LECRound" })
+
+class LECRoundInvite extends Model { };
+LECRoundInvite.init({
+	// how many times this particular user has been emailed about this particular LEC round, be it through automated reminder emails or manual emails
+	num_emails_sent: {
+		type: DataTypes.TINYINT,
+		allowNull: false,
+		defaultValue: 0,
+	}
+}, { sequelize, modelName: "LECRoundInvite" })
+
+// Relationships
 
 Quiz.hasMany(Section, {
 	onDelete: "CASCADE",
@@ -1618,6 +1649,9 @@ Quiz.hasMany(ApplicationRound, {
 })
 ApplicationRound.belongsTo(Quiz)
 
+LECRound.belongsToMany(Student, { through: LECRoundInvite })
+Student.belongsToMany(LECRound, { through: LECRoundInvite })
+
 module.exports = {
 	Application,
 	ApplicationRound,
@@ -1635,6 +1669,8 @@ module.exports = {
 	InterviewBookingSlots,
 	Orientation,
 	OrientationInvite,
+	LECRound,
+	LECRoundInvite,
 	Quiz,
 	Section,
 	Question,
