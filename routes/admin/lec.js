@@ -1,5 +1,5 @@
 const lecRouter = require("express").Router();
-const { LECRound, Quiz, Section, Assignment, Student, Attempt, Score, LECRoundInvite } = require("../../db/models")
+const { LECRound, Quiz, Section, Assignment, Student, Attempt, Score, LECRoundInvite, LECAgreementTemplate } = require("../../db/models")
 const getQuizTotalScore = require("../../functions/getQuizTotalScore")
 const checkAdminAuthenticated = require("../../db/check-admin-authenticated")
 const roundToTwoDecimalPlaces = require("../../functions/roundToTwoDecimalPlaces")
@@ -13,6 +13,18 @@ lecRouter.get("/", checkAdminAuthenticated, (req, res) => {
         current_url: `/admin/LEC${req.url}`,
     });
 });
+
+lecRouter.get("/:round_id", checkAdminAuthenticated, async (req, res) => {
+    console.log("round_id:", req.params.round_id)
+    const round = await LECRound.findOne({ where: { id: req.params.round_id }, include: [LECAgreementTemplate] })
+    if (round === null) {
+        res.sendStatus(401)
+        return
+    }
+    if (round.LECAgreementTemplates?.length > 0)
+        res.json({ url: round.LECAgreementTemplates[0].url })
+    else res.json({ url: "" })
+})
 
 lecRouter.get("/all", checkAdminAuthenticated, async (req, res) => {
     try {
@@ -104,8 +116,6 @@ lecRouter.get("/all-students/:round_id", checkAdminAuthenticated, async (req, re
             */
 
             let assignments = quiz.Assignments
-
-
             if (assignments != null && assignments.length > 0) {
                 const round_invites = await Promise.all(
                     assignments.map(assignment => LECRoundInvite.findOne(
@@ -129,7 +139,7 @@ lecRouter.get("/all-students/:round_id", checkAdminAuthenticated, async (req, re
                         added:
                             student.hasOwnProperty("LECRounds") &&
                             student.LECRounds.length > 0 &&
-                            student.LECRounds.some(round => round.id === req.params.round_id),
+                            student.LECRounds.some(round => round.id === parseInt(req.params.round_id)),
                         email_sent:
                             round_invite === null
                                 ? false
@@ -154,6 +164,49 @@ lecRouter.get("/all-students/:round_id", checkAdminAuthenticated, async (req, re
         } else {
             res.sendStatus(401)
         }
+    } catch (err) {
+        res.sendStatus(500)
+        console.log(err)
+    }
+})
+
+lecRouter.post("/save/:round_id", checkAdminAuthenticated, async (req, res) => {
+    try {
+        const template = await LECAgreementTemplate.findOne({ where: { LECRoundId: req.params.round_id }, order: [["id", "desc"]] })
+        if (template !== null) {
+            await template.destroy();
+        }
+        await LECAgreementTemplate.create({ url: req.body.url, LECRoundId: req.params.round_id })
+
+        // let's get all students who have already been invited to this LEC Round and create a hashmap. Then use it to update invites in the database.
+        let invites = await LECRoundInvite.findAll({
+            where: { LECRoundId: req.params.round_id },
+        })
+
+        let students_already_invited = new Map()
+        invites.map((invite) => {
+            students_already_invited.set(invite.StudentId, invite)
+        })
+
+        await Promise.all(req.body.students.map(async (student) => {
+            if (
+                student.added == false &&
+                students_already_invited.has(student.id)
+            ) {
+                students_already_invited.get(student.id).destroy()
+            } else if (
+                student.added == true &&
+                !students_already_invited.has(student.id)
+            ) {
+                return LECRoundInvite.create({
+                    StudentId: student.id,
+                    LECRoundId: req.params.round_id,
+                })
+            }
+            return new Promise((resolve, reject) => resolve())
+        }))
+
+        res.sendStatus(200)
     } catch (err) {
         res.sendStatus(500)
         console.log(err)

@@ -13,7 +13,7 @@ const StudentsList = (props) => {
         <b>List of Students already added to this {props.title}</b>
       </h2>
       {props.progressSaved === undefined ? null :
-        !props.progressSaved ? <p className="text-orange-700 text-center"><i class='fas fa-info-circle'></i> Progress not saved to server. Click the 'Save' button above or your changes will be lost.</p> : null
+        !props.progressSaved ? <p className="text-orange-700 text-center"><i className='fas fa-info-circle'></i> Progress not saved to server. Click the 'Save' button above or your changes will be lost.</p> : null
       }
       {field_to_show_green_if_true == null ? (
         <p></p>

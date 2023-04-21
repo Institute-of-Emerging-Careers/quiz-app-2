@@ -11,7 +11,7 @@ var StudentsList = function StudentsList(props) {
   }, /*#__PURE__*/React.createElement("b", null, "List of Students already added to this ", props.title)), props.progressSaved === undefined ? null : !props.progressSaved ? /*#__PURE__*/React.createElement("p", {
     className: "text-orange-700 text-center"
   }, /*#__PURE__*/React.createElement("i", {
-    class: "fas fa-info-circle"
+    className: "fas fa-info-circle"
   }), " Progress not saved to server. Click the 'Save' button above or your changes will be lost.") : null, field_to_show_green_if_true == null ? /*#__PURE__*/React.createElement("p", null) : /*#__PURE__*/React.createElement("p", {
     className: "text-gray-700 mt-4"
   }, "A student row will be ", /*#__PURE__*/React.createElement("span", {

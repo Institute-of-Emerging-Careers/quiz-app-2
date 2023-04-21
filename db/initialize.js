@@ -138,7 +138,7 @@ const initializeDatabase = async () => {
 			})
 			await invite.increment("registrations")
 			// Create an assignment
-			const assignment = await sequelize.models.Assignment.create({
+			await sequelize.models.Assignment.create({
 				QuizId: quiz.id,
 				StudentId: studentUser.id,
 			})

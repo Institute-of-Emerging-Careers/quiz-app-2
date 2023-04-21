@@ -1426,8 +1426,16 @@ LECRoundInvite.init({
 	}
 }, { sequelize, modelName: "LECRoundInvite" })
 
-// Relationships
+// an LEC Agreement Template is an unsigned LEC agreement PDF that can be sent to students. Students download it, fill & sign it, and send it back to us.
+class LECAgreementTemplate extends Model { };
+LECAgreementTemplate.init({
+	url: {
+		type: DataTypes.STRING,
+		allowNull: false,
+	}
+}, { sequelize })
 
+// Relationships
 Quiz.hasMany(Section, {
 	onDelete: "CASCADE",
 	onUpdate: "RESTRICT",
@@ -1658,6 +1666,9 @@ Quiz.hasOne(LECRound, {
 })
 LECRound.belongsTo(Quiz)
 
+LECRound.hasMany(LECAgreementTemplate)
+LECAgreementTemplate.belongsTo(LECRound)
+
 module.exports = {
 	Application,
 	ApplicationRound,
@@ -1677,6 +1688,7 @@ module.exports = {
 	OrientationInvite,
 	LECRound,
 	LECRoundInvite,
+	LECAgreementTemplate,
 	Quiz,
 	Section,
 	Question,
