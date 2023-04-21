@@ -32,6 +32,22 @@ var App = function App() {
       students = _useState2[0],
       setStudents = _useState2[1];
 
+  var _useState3 = useState(0),
+      _useState4 = _slicedToArray(_useState3, 2),
+      initialDataLoaded = _useState4[0],
+      setInitialDataLoaded = _useState4[1];
+
+  var _useState5 = useState(true),
+      _useState6 = _slicedToArray(_useState5, 2),
+      progressSaved = _useState6[0],
+      setProgressSaved = _useState6[1];
+
+  useEffect(function () {
+    if (initialDataLoaded > 1) setProgressSaved(false);
+    setInitialDataLoaded(function (cur) {
+      return cur + 1;
+    });
+  }, [students]);
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-y-4"
   }, /*#__PURE__*/React.createElement("div", {
@@ -40,7 +56,10 @@ var App = function App() {
     className: "font-bold"
   }, roundTitle), /*#__PURE__*/React.createElement("form", {
     className: "flex gap-x-2 justify-center items-center",
-    onSubmit: save
+    onSubmit: function onSubmit(e) {
+      save(e);
+      setProgressSaved(true);
+    }
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "agreement-template-link"
   }, "LEC Agreement Template PDF URL:"), /*#__PURE__*/React.createElement("input", {
@@ -71,7 +90,8 @@ var App = function App() {
     }, {
       title: "Percentage Score",
       name: ["percentage_score"]
-    }]
+    }],
+    progressSaved: progressSaved
   })), /*#__PURE__*/React.createElement("div", {
     className: "bg-white p-6"
   }, /*#__PURE__*/React.createElement(NewStudentAdder, {
