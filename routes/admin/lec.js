@@ -33,4 +33,23 @@ lecRouter.post("/create", checkAdminAuthenticated, async (req, res) => {
     }
 })
 
+lecRouter.get("/edit/:round_id", checkAdminAuthenticated, async (req, res) => {
+    try {
+        const round = await LECRound.findOne({ where: { id: req.params.round_id }, attributes: ["title"] })
+        if (round === null) {
+            res.sendStatus(404)
+            return
+        }
+        res.render("admin/lec/edit.ejs", {
+            env: process.env.NODE_ENV,
+            user_type: req.user.type,
+            lec_round_title: round.title,
+            lec_round_id: req.params.round_id
+        })
+    } catch (err) {
+        res.sendStatus(500)
+        console.log(err)
+    }
+})
+
 module.exports = lecRouter;

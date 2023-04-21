@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <%- include('../../templates/global.ejs') %>
+    <%- include('../../templates/react-includes.ejs') %>
+    <script src="/js/luxon.js"></script>
+    <title>Edit LEC Round - Admin Panel</title>
+</head>
+
+<body class="px-8 md:px-32 pt-28 min-h-screen bg-gray-200">
+    <%- include('../../templates/header.ejs') %>
+    <input id="lec-round-title-field" type="hidden" class="hidden" value="<%=lec_round_title%>"></input>
+    <input id="lec-round-id-field" type="hidden" class="hidden" value="<%=lec_round_id%>"></input>
+
+    <section id="app"></section>
+
+    <script src="/precompiled-js/react-components/StudentsList.js" defer></script>
+    <script src="/precompiled-js/admin/lec/edit.js" defer></script>
+</body>
+
+</html>
