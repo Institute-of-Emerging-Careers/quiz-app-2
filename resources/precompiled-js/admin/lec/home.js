@@ -96,6 +96,14 @@ var getRounds = /*#__PURE__*/function () {
   };
 }();
 
+var getAssessments = function getAssessments(setAssessments) {
+  fetch("/quiz/all-titles-and-num-attempts").then(function (response) {
+    response.json().then(function (parsed_response) {
+      setAssessments(parsed_response);
+    });
+  });
+};
+
 var App = function App() {
   var _React$useState = React.useState([]),
       _React$useState2 = _slicedToArray(_React$useState, 2),
@@ -107,13 +115,21 @@ var App = function App() {
       showModal = _React$useState4[0],
       setShowModal = _React$useState4[1];
 
-  var _React$useState5 = React.useState(""),
+  var _React$useState5 = React.useState([]),
       _React$useState6 = _slicedToArray(_React$useState5, 2),
-      error = _React$useState6[0],
-      setError = _React$useState6[1];
+      assessments = _React$useState6[0],
+      setAssessments = _React$useState6[1];
+
+  var _React$useState7 = React.useState(""),
+      _React$useState8 = _slicedToArray(_React$useState7, 2),
+      error = _React$useState8[0],
+      setError = _React$useState8[1];
 
   React.useEffect(function () {
     return getRounds(setRounds);
+  }, []);
+  React.useEffect(function () {
+    return getAssessments(setAssessments);
   }, []);
   return /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Modal, {
     show_modal: showModal,
@@ -128,15 +144,15 @@ var App = function App() {
     onSubmit: function onSubmit(e) {
       return createRound(e, setRounds, setShowModal, setError);
     },
-    className: "flex flex-col gap-y-2"
-  }, /*#__PURE__*/React.createElement("label", {
+    className: "flex flex-col gap-y-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     htmlFor: "title"
   }, "Name the LEC Round:"), /*#__PURE__*/React.createElement("input", {
     type: "text",
     name: "title",
     placeholder: "e.g. Cohort 7 LEC Round 1",
     className: "px-2 py-1 border ml-2"
-  }), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("label", {
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
     htmlFor: "send_reminders"
   }, "Send Reminder Emails: "), /*#__PURE__*/React.createElement("select", {
     name: "send_reminders",
@@ -146,7 +162,18 @@ var App = function App() {
     selected: true
   }, "Yes"), /*#__PURE__*/React.createElement("option", {
     value: "0"
-  }, "No")), /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("input", {
+  }, "No"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("label", {
+    for: "source_assessment_id"
+  }, "Select Assessment to import Students from: "), /*#__PURE__*/React.createElement("select", {
+    className: "px-2 py-1",
+    name: "source_assessment_id"
+  }, assessments.map(function (assessment) {
+    return /*#__PURE__*/React.createElement("option", {
+      className: "p-2",
+      value: assessment.id,
+      key: assessment.id
+    }, assessment.title, " | ", assessment.num_assignments, " Assignments", " ");
+  }))), /*#__PURE__*/React.createElement("input", {
     type: "submit",
     value: "Create",
     className: "px-2 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white"

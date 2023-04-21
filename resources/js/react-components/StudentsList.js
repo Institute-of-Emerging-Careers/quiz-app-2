@@ -15,7 +15,7 @@ const StudentsList = (props) => {
       {field_to_show_green_if_true == null ? (
         <p></p>
       ) : (
-        <p>
+        <p className="text-gray-700">
           A student row will be <span className="bg-green-300">green</span> if{" "}
           {field_to_show_green_if_true.text} to that student.
         </p>

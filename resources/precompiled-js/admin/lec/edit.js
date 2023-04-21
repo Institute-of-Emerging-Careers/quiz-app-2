@@ -13,16 +13,24 @@ function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Sy
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 var roundTitle = document.getElementById("lec-round-title-field").value;
+var roundId = document.getElementById("lec-round-id-field").value;
+var _React = React,
+    useState = _React.useState,
+    useEffect = _React.useEffect,
+    useRef = _React.useRef;
+var _luxon = luxon,
+    DateTime = _luxon.DateTime,
+    Duration = _luxon.Duration;
 
 var save = function save(e) {
   e.preventDefault();
 };
 
 var App = function App() {
-  var _React$useState = React.useState([]),
-      _React$useState2 = _slicedToArray(_React$useState, 2),
-      students = _React$useState2[0],
-      setStudents = _React$useState2[1];
+  var _useState = useState([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      students = _useState2[0],
+      setStudents = _useState2[1];
 
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-y-4"
@@ -34,7 +42,7 @@ var App = function App() {
     className: "flex gap-x-2 justify-center items-center",
     onSubmit: save
   }, /*#__PURE__*/React.createElement("label", {
-    for: "agreement-template-link"
+    htmlFor: "agreement-template-link"
   }, "LEC Agreement Template PDF URL:"), /*#__PURE__*/React.createElement("input", {
     type: "url",
     name: "agreement-template-link",
@@ -52,7 +60,7 @@ var App = function App() {
     title: "LEC Round",
     field_to_show_green_if_true: {
       field: "email_sent",
-      text: "orientation email was sent"
+      text: "LEC Agreement email was sent"
     },
     fields: [{
       title: "Name",
@@ -64,6 +72,12 @@ var App = function App() {
       title: "Percentage Score",
       name: ["percentage_score"]
     }]
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-6"
+  }, /*#__PURE__*/React.createElement(NewStudentAdder, {
+    all_students_api_endpoint_url: "/admin/lec/all-students/".concat(roundId),
+    students_object: [students, setStudents],
+    title: "LEC Round"
   })));
 };
 

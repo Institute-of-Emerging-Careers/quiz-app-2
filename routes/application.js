@@ -3,7 +3,7 @@ const express = require("express")
 const router = express.Router()
 const bcrypt = require("bcrypt")
 const checkAnyoneAlreadyAuthenticated = require("../db/check-anyone-already-authenticated")
-const { ApplicationRound, Application, Student } = require("../db/models")
+const { ApplicationRound, Application, Student, Quiz, Section, Assignment, Orientation, Score, Attempt } = require("../db/models")
 const {
 	cities,
 	provinces,
@@ -18,6 +18,7 @@ const {
 	sources_of_information,
 	reasons_to_join,
 } = require("../db/data_lists")
+const getQuizTotalScore = require("../functions/getQuizTotalScore")
 
 router.use((req, res, next) => {
 	next()

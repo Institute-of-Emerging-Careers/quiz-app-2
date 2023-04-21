@@ -29,21 +29,49 @@ const getRounds = async (setRounds) => {
     }
 }
 
+const getAssessments = (setAssessments) => {
+    fetch("/quiz/all-titles-and-num-attempts").then((response) => {
+        response.json().then((parsed_response) => {
+            setAssessments(parsed_response);
+        });
+    });
+}
+
 const App = () => {
     const [rounds, setRounds] = React.useState([])
     const [showModal, setShowModal] = React.useState(false)
+    const [assessments, setAssessments] = React.useState([])
     const [error, setError] = React.useState("")
 
     React.useEffect(() => getRounds(setRounds), [])
+    React.useEffect(() => getAssessments(setAssessments), [])
     return <div>
         <Modal show_modal={showModal} setShowModal={setShowModal} heading="Create New LEC Round">
             {!!error && <p className="text-red-500"><i class="fas fa-exclamation-triangle"></i> {error}</p>}
-            <form method="POST" onSubmit={(e) => createRound(e, setRounds, setShowModal, setError)} className="flex flex-col gap-y-2">
-                <label htmlFor="title">Name the LEC Round:</label><input type="text" name="title" placeholder="e.g. Cohort 7 LEC Round 1" className="px-2 py-1 border ml-2"></input><br></br>
-                <label htmlFor="send_reminders">Send Reminder Emails: </label><select name="send_reminders" className="px-2 py-1">
-                    <option value="1" selected>Yes</option>
-                    <option value="0">No</option>
-                </select><br></br>
+            <form method="POST" onSubmit={(e) => createRound(e, setRounds, setShowModal, setError)} className="flex flex-col gap-y-4">
+                <div>
+                    <label htmlFor="title">Name the LEC Round:</label>
+                    <input type="text" name="title" placeholder="e.g. Cohort 7 LEC Round 1" className="px-2 py-1 border ml-2"></input>
+                </div>
+                <div>
+                    <label htmlFor="send_reminders">Send Reminder Emails: </label>
+                    <select name="send_reminders" className="px-2 py-1">
+                        <option value="1" selected>Yes</option>
+                        <option value="0">No</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="source_assessment_id">Select Assessment to import Students from: </label>
+                    <select className="px-2 py-1" name="source_assessment_id">
+                        {assessments.map(assessment => <option
+                            className="p-2"
+                            value={assessment.id}
+                            key={assessment.id}
+                        >
+                            {assessment.title} | {assessment.num_assignments} Assignments{" "}
+                        </option>)}
+                    </select>
+                </div>
                 <input type="submit" value="Create" className="px-2 py-1 cursor-pointer bg-iec-blue hover:bg-iec-blue-hover text-white"></input>
             </form>
         </Modal>

@@ -1652,6 +1652,12 @@ ApplicationRound.belongsTo(Quiz)
 LECRound.belongsToMany(Student, { through: LECRoundInvite })
 Student.belongsToMany(LECRound, { through: LECRoundInvite })
 
+Quiz.hasOne(LECRound, {
+	onUpdate: "CASCADE",
+	onDelete: "CASCADE",
+})
+LECRound.belongsTo(Quiz)
+
 module.exports = {
 	Application,
 	ApplicationRound,

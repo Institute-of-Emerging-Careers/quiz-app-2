@@ -8,7 +8,9 @@ var StudentsList = function StudentsList(props) {
     className: "overflow-auto"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "text-base text-center mb-4"
-  }, /*#__PURE__*/React.createElement("b", null, "List of Students already added to this ", props.title)), field_to_show_green_if_true == null ? /*#__PURE__*/React.createElement("p", null) : /*#__PURE__*/React.createElement("p", null, "A student row will be ", /*#__PURE__*/React.createElement("span", {
+  }, /*#__PURE__*/React.createElement("b", null, "List of Students already added to this ", props.title)), field_to_show_green_if_true == null ? /*#__PURE__*/React.createElement("p", null) : /*#__PURE__*/React.createElement("p", {
+    className: "text-gray-700"
+  }, "A student row will be ", /*#__PURE__*/React.createElement("span", {
     className: "bg-green-300"
   }, "green"), " if", " ", field_to_show_green_if_true.text, " to that student."), students.length > 0 ? /*#__PURE__*/React.createElement("table", {
     className: "w-full text-left text-sm"
