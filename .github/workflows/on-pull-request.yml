@@ -31,11 +31,11 @@ jobs:
         echo MYSQL_CONNECTION_STRING='mysql://root:test_password@localhost:3800/' >> .env
         echo PORT=4000 >> .env
         echo TIMEZONE_OFFSET=+05:00 >> .env
-        echo AWS_SES_ACCESS_KEY_ID='AKSKPlakjsldakjdl' >> .env
-        echo AWS_SES_SECRET_ACCESS_KEY='laksjdlakjlaksdjlaksdTN5' >> .env
-        echo AWS_SES_REGION=us-east-2 >> .env
         echo QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS=30 >> .env
-        echo LEC_BUCKET_NAME=test-bucket
+        echo AWS_ACCESS_KEY_ID=wrongwrongwrong
+        echo AWS_SECRET_ACCESS_KEY=wrongwrongwrongwrongwrong
+        echo AWS_REGION=wrong
+        echo LEC_BUCKET_NAME=acquisition-lec-agreements
         cat .env
         ls
     - name: Setup MySQL
