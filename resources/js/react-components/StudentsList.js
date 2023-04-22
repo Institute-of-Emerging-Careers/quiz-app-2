@@ -9,19 +9,19 @@ const StudentsList = (props) => {
 
   return (
     <div className="overflow-auto">
-      <h2 className="text-base text-center mb-4">
+      <h2 className="text-base text-center">
         <b>List of Students already added to this {props.title}</b>
       </h2>
       {field_to_show_green_if_true == null ? (
         <p></p>
       ) : (
-        <p>
+        <p className="text-gray-700 mt-4">
           A student row will be <span className="bg-green-300">green</span> if{" "}
           {field_to_show_green_if_true.text} to that student.
         </p>
       )}
       {students.length > 0 ? (
-        <table className="w-full text-left text-sm">
+        <table className="w-full text-left text-sm mt-4">
           <thead>
             <tr>
               {fields.map((field) => (
@@ -62,7 +62,7 @@ const StudentsList = (props) => {
           </tbody>
         </table>
       ) : (
-        <p>No students added yet.</p>
+        <p className="mt-4">No students added yet.</p>
       )}
     </div>
   );

@@ -22,6 +22,7 @@ function showModal() {
 }
 
 function assignStatusColor(status) {
+  let statusColor = ""
   if (status == "In Progress") statusColor = "text-red-700";
   else if (status == "Completed") statusColor = "text-green-700";
   else if (status == "Incomplete") statusColor = "text-yellow-700";
@@ -81,18 +82,18 @@ function details(elem) {
         console.log(section.status);
         modal_section_table_body.append(
           "<tr><td>" +
-            section.title +
-            "</td><td>" +
-            section.num_questions +
-            "</td><td>" +
-            section.time +
-            " minute(s)</td><td class='" +
-            statusColor +
-            "'>" +
-            section.status[0] +
-            "</td><td>" +
-            action +
-            "</td></tr>"
+          section.title +
+          "</td><td>" +
+          section.num_questions +
+          "</td><td>" +
+          section.time +
+          " minute(s)</td><td class='" +
+          statusColor +
+          "'>" +
+          section.status[0] +
+          "</td><td>" +
+          action +
+          "</td></tr>"
         );
       });
       // show modal
@@ -111,29 +112,30 @@ $(document).ready(function () {
   $.get(
     "/student/assignments",
     function (data) {
+      console.log("data:", data)
       data.forEach((item) => {
         let [status, action] = item.status;
         let statusColor = assignStatusColor(status);
         assessments_table_body.append(
           "<tr><td>" +
-            item.quiz_title +
-            "</td><td>" +
-            item.num_sections +
-            "</td><td class='" +
-            statusColor +
-            "'>" +
-            status +
-            "</td><td>" +
-            item.createdAt +
-            "</td><td><a onClick='details(this)' data-quiz_title='" +
-            item.quiz_title +
-            "' data-num_sections='" +
-            item.num_sections +
-            "' id='" +
-            item.quiz_id +
-            "' class='text-blue-600 cursor-pointer'>" +
-            action +
-            "</a></td></tr>"
+          item.quiz_title +
+          "</td><td>" +
+          item.num_sections +
+          "</td><td class='" +
+          statusColor +
+          "'>" +
+          status +
+          "</td><td>" +
+          item.createdAt +
+          "</td><td><a onClick='details(this)' data-quiz_title='" +
+          item.quiz_title +
+          "' data-num_sections='" +
+          item.num_sections +
+          "' id='" +
+          item.quiz_id +
+          "' class='text-blue-600 cursor-pointer'>" +
+          action +
+          "</a></td></tr>"
         );
       });
     },

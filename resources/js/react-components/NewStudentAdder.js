@@ -2,7 +2,7 @@ const NewStudentAdder = (props) => {
   const [students, setStudents] = props.students_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
-  const [filter_date, setFilterDate] = useState(DateTime.now().minus({months: 1}).toFormat("yyyy-MM-dd"));
+  const [filter_date, setFilterDate] = useState(DateTime.now().endOf("day").toFormat("yyyy-MM-dd"));
   const [orientation_status_filter, setOrientationStatusFilter] =
     useState("all");
 
@@ -30,18 +30,19 @@ const NewStudentAdder = (props) => {
   useEffect(() => {
     setFilteredStudents(
       students.filter(
-        (student) =>
-          student.percentage_score >= filter_min_score &&
-          DateTime.fromISO(student.assignment_completed_date).startOf("day").ts >= DateTime.fromFormat(filter_date,"yyyy-MM-dd").startOf("day").ts &&
-          ((student.added &&
-            (orientation_status_filter == "all" ||
-              orientation_status_filter == "added")) ||
-            (!student.added &&
+        (student) => {
+          return student.percentage_score >= filter_min_score &&
+            DateTime.fromISO(student.assignment_completed_date).startOf("day").ts <= DateTime.fromFormat(filter_date, "yyyy-MM-dd").startOf("day").ts &&
+            ((student.added &&
               (orientation_status_filter == "all" ||
-                orientation_status_filter == "not-added")))
+                orientation_status_filter == "added")) ||
+              (!student.added &&
+                (orientation_status_filter == "all" ||
+                  orientation_status_filter == "not-added")))
+        }
       )
     );
-  }, [filter_min_score,filter_date, orientation_status_filter]);
+  }, [filter_min_score, filter_date, orientation_status_filter]);
 
   useEffect(() => {
     setLoading(true);
@@ -132,7 +133,6 @@ const NewStudentAdder = (props) => {
               name="filter_date"
               onChange={(e) => {
                 setFilterDate(e.target.value);
-                console.log("Filter Date: ",e.target.value)
               }}
               className="ml-2 p-2 w-72 border"
             ></input>

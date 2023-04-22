@@ -1,11 +1,7 @@
 const multer = require("multer");
 const { Student } = require("./db/models")
 const multerS3 = require('multer-s3')
-const { S3Client } = require('@aws-sdk/client-s3')
-
-const s3 = new S3Client({
-  region: process.env.AWS_REGION,
-})
+const s3 = require("./s3-config")
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -74,9 +70,9 @@ var csv_upload = multer({ storage: csv_storage });
 const pdf_upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: 'acquisition-lec-agreements', // Bucket name
+    bucket: process.env.LEC_BUCKET_NAME, // Bucket name
     metadata: function (req, file, cb) {
-      cb(null, { fieldName: file.fieldname });
+      cb(null, Object.assign({}, { ...req.body, student_id: req.user.user.id.toString() }));
     },
     key: async function (req, file, cb) {
       const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic;
@@ -91,5 +87,4 @@ const pdf_upload = multer({
     cb(null, true);
   }
 });
-
 module.exports = { img_upload, file_upload, csv_upload, pdf_upload };

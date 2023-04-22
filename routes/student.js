@@ -19,7 +19,11 @@ const {
 	InterviewRound,
 	InterviewMatching,
 	InterviewBookingSlots,
+	LECAgreementTemplate,
+	LECAgreementSubmission,
 } = require("../db/models")
+const s3 = require("../s3-config")
+const { GetObjectCommand } = require("@aws-sdk/client-s3");
 const { pdf_upload } = require("../multer-config")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
 
@@ -579,13 +583,47 @@ router.post(
 // LEC Agreements
 
 router.get("/lec-agreement", checkStudentAuthenticated, async (req, res) => {
+	const student = await Student.findOne({ where: { id: req.user.user.id }, attributes: ["id"] })
+	const round = (await student.getLECRounds({ include: [LECAgreementTemplate], order: [["id", "desc"]] }))[0]
+	const agreement_template = round.LECAgreementTemplates[0]
+	const submission = await LECAgreementSubmission.findOne({ where: { StudentId: req.user.user.id, LECRoundId: round.id, LECAgreementTemplateId: agreement_template.id }, order: [["id", "desc"]] })
 	res.render("student/lec-agreement/index.ejs", {
 		user_type: req.user.type,
+		agreement_template_url: agreement_template.url,
+		agreement_template_id: agreement_template.id,
+		round_id: round.id,
+		submission_exists: submission !== null
 	})
 })
 
-router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.single("file"), (req, res) => {
-	res.send(`<i class="fas fa-check"></i></i> Your LEC Agreement has been uploaded successfully.`)
+router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.single("file"), async (req, res) => {
+	try {
+		await LECAgreementSubmission.create({ LECAgreementTemplateId: req.body.agreement_template_id, StudentId: req.user.user.id, LECRoundId: req.body.round_id })
+		res.send(`<i class="fas fa-check"></i></i> Your LEC Agreement has been uploaded successfully.`)
+	} catch (err) {
+		res.status(500).send("There was a problem with your submission. Please contact IEC Support Team at mail@iec.org.pk")
+	}
 })
 
+router.get("/lec-agreement/get-latest-submission", checkStudentAuthenticated, async (req, res) => {
+	try {
+		const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic
+		const command = new GetObjectCommand({
+			Bucket: process.env.LEC_BUCKET_NAME,
+			Key: `${cnic}.pdf`
+		});
+
+		try {
+			const response = await s3.send(command);
+			// The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
+			const body = await response.Body.transformToByteArray()
+			res.attachment(`${cnic}.pdf`).contentType("application/pdf").end(body, 'binary')
+		} catch (err) {
+			console.error(err);
+		}
+	} catch (err) {
+		console.log(err)
+		res.sendStatus(404)
+	}
+});
 module.exports = router

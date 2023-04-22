@@ -14,15 +14,11 @@ const initializeDatabase = async () => {
 			logging: process.env.NODE_ENV == "test" ? console.log : false,
 		});
 
-		// await InterviewRound.sync({ alter: true, force: false });
+		// await sequelize.models.LECRound.sync({ alter: true, force: true });
+		// await sequelize.models.LECRoundInvite.sync({ alter: true, force: true });
+		// await sequelize.models.Student.sync({ alter: true, force: false });
 		// await Application.sync({ alter: true, force: false });
-		// await Orientation.sync({ alter: true, force: false });
-		// await OrientationInvite.sync({ alter: true, force: false });
-		// await ApplicationRound.sync({ alter: true, force: false })
-		// await Quiz.sync({ alter: true, force: false })
-		// await Interviewer.sync({ alter: false });
-		// await InterviewerInvite.sync({ alter: false });
-		// await InterviewerSlot.sync({ alter: false });
+
 		console.log("Sync complete.")
 
 		if (alterandforce) {
@@ -142,7 +138,7 @@ const initializeDatabase = async () => {
 			})
 			await invite.increment("registrations")
 			// Create an assignment
-			const assignment = await sequelize.models.Assignment.create({
+			await sequelize.models.Assignment.create({
 				QuizId: quiz.id,
 				StudentId: studentUser.id,
 			})

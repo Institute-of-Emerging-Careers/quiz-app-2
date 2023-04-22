@@ -117,7 +117,6 @@ router.post(
 				where: { id: req.params.orientation_id },
 				include: [Quiz],
 			})
-			console.log(req.body.meeting_data)
 			await orientation.update({
 				title: req.body.orientation_name,
 				date: req.body.meeting_data.date,
@@ -209,19 +208,19 @@ router.get(
 
 				let data = [] //list of students who have solved this quiz and their data
 				/*
-          [
-            {
-              id:...,
-              name:...,
-              email:...,
-              added:...,
-              age:...,
-              gender:...,
-              total_score_achieved:...,
-              percentage_score:...,
-            }
-          ]
-        */
+		  [
+			{
+			  id:...,
+			  name:...,
+			  email:...,
+			  added:...,
+			  age:...,
+			  gender:...,
+			  total_score_achieved:...,
+			  percentage_score:...,
+			}
+		  ]
+		*/
 
 				let assignments = orientation.Quiz.Assignments
 
@@ -251,8 +250,8 @@ router.get(
 											hasThisOrientationId
 												? true
 												: cur.id == req.params.orientation_id
-												? true
-												: false,
+													? true
+													: false,
 										false
 									),
 								email_sent:
