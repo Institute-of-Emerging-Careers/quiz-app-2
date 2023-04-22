@@ -31,10 +31,10 @@ jobs:
           echo PORT=4000 >> .env
           echo TIMEZONE_OFFSET=+05:00 >> .env
           echo QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS=30 >> .env
-          echo AWS_ACCESS_KEY_ID=wrongwrongwrong
-          echo AWS_SECRET_ACCESS_KEY=wrongwrongwrongwrongwrong
-          echo AWS_REGION=wrong
-          echo LEC_BUCKET_NAME=acquisition-lec-agreements
+          echo AWS_ACCESS_KEY_ID=wrongwrongwrong >> .env
+          echo AWS_SECRET_ACCESS_KEY=wrongwrongwrongwrongwrong >> .env
+          echo AWS_REGION=wrong >> .env
+          echo LEC_BUCKET_NAME=acquisition-lec-agreements >> .env
           cat .env
           ls
       - name: Setup MySQL
