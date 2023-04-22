@@ -14,18 +14,6 @@ lecRouter.get("/", checkAdminAuthenticated, (req, res) => {
     });
 });
 
-lecRouter.get("/:round_id", checkAdminAuthenticated, async (req, res) => {
-    console.log("round_id:", req.params.round_id)
-    const round = await LECRound.findOne({ where: { id: req.params.round_id }, include: [LECAgreementTemplate] })
-    if (round === null) {
-        res.sendStatus(401)
-        return
-    }
-    if (round.LECAgreementTemplates?.length > 0)
-        res.json({ url: round.LECAgreementTemplates[0].url })
-    else res.json({ url: "" })
-})
-
 lecRouter.get("/all", checkAdminAuthenticated, async (req, res) => {
     try {
         const rounds = await LECRound.findAll({ order: [["id", "desc"]] })
@@ -211,6 +199,17 @@ lecRouter.post("/save/:round_id", checkAdminAuthenticated, async (req, res) => {
         res.sendStatus(500)
         console.log(err)
     }
+})
+
+lecRouter.get("/data/:round_id", checkAdminAuthenticated, async (req, res) => {
+    const round = await LECRound.findOne({ where: { id: req.params.round_id }, include: [LECAgreementTemplate] })
+    if (round === null) {
+        res.sendStatus(401)
+        return
+    }
+    if (round.LECAgreementTemplates?.length > 0)
+        res.json({ url: round.LECAgreementTemplates[0].url })
+    else res.json({ url: "" })
 })
 
 module.exports = lecRouter;

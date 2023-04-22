@@ -17,7 +17,7 @@ const save = async (e, setLoading, url, students) => {
 }
 
 const loadUrl = async (setUrl) => {
-    const raw_response = await fetch(`/admin/lec/${roundId}`)
+    const raw_response = await fetch(`/admin/lec/data/${roundId}`)
     if (!raw_response.ok) {
         alert("Something went wrong while loading LEC agreement url.")
         return

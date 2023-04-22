@@ -27,9 +27,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
       filter_min_score = _useState4[0],
       setFilterMinScore = _useState4[1];
 
-  var _useState5 = useState(DateTime.now().minus({
-    months: 1
-  }).toFormat("yyyy-MM-dd")),
+  var _useState5 = useState(DateTime.now().endOf("day").toFormat("yyyy-MM-dd")),
       _useState6 = _slicedToArray(_useState5, 2),
       filter_date = _useState6[0],
       setFilterDate = _useState6[1];

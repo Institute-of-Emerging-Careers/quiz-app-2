@@ -19,6 +19,9 @@ const {
 	InterviewRound,
 	InterviewMatching,
 	InterviewBookingSlots,
+	LECRoundInvite,
+	LECRound,
+	LECAgreementTemplate,
 } = require("../db/models")
 const { pdf_upload } = require("../multer-config")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
@@ -579,8 +582,13 @@ router.post(
 // LEC Agreements
 
 router.get("/lec-agreement", checkStudentAuthenticated, async (req, res) => {
+	const student = await Student.findOne({ where: { id: req.user.user.id }, attributes: ["id"] })
+	const round = (await student.getLECRounds({ include: [LECAgreementTemplate], order: [["id", "desc"]] }))[0]
+
+	const agreement_template_url = round.LECAgreementTemplates[0].url
 	res.render("student/lec-agreement/index.ejs", {
 		user_type: req.user.type,
+		agreement_template_url,
 	})
 })
 

@@ -2,7 +2,7 @@ const NewStudentAdder = (props) => {
   const [students, setStudents] = props.students_object;
   const [loading, setLoading] = useState(false);
   const [filter_min_score, setFilterMinScore] = useState(0);
-  const [filter_date, setFilterDate] = useState(DateTime.now().minus({ months: 1 }).toFormat("yyyy-MM-dd"));
+  const [filter_date, setFilterDate] = useState(DateTime.now().endOf("day").toFormat("yyyy-MM-dd"));
   const [orientation_status_filter, setOrientationStatusFilter] =
     useState("all");
 

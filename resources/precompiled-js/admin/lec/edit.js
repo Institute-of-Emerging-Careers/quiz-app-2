@@ -77,7 +77,7 @@ var loadUrl = /*#__PURE__*/function () {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return fetch("/admin/lec/".concat(roundId));
+            return fetch("/admin/lec/data/".concat(roundId));
 
           case 2:
             raw_response = _context2.sent;
