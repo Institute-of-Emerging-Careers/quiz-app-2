@@ -187,7 +187,6 @@ router.get("/", checkStudentAuthenticated, async (req, res) => {
 		},
 		false
 	)
-	console.log(orientation_exists)
 
 	res.render("student/index.ejs", {
 		user_type: req.user.type,
