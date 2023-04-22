@@ -67,25 +67,27 @@ var csv_storage = multer.diskStorage({
 var csv_upload = multer({ storage: csv_storage });
 
 // Multer configuration for PDF file upload for LEC Agreements
-const pdf_upload = multer({
-  storage: multerS3({
-    s3: s3,
-    bucket: process.env.LEC_BUCKET_NAME, // Bucket name
-    metadata: function (req, file, cb) {
-      cb(null, Object.assign({}, { ...req.body, student_id: req.user.user.id.toString() }));
-    },
-    key: async function (req, file, cb) {
-      const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic;
-      cb(null, `${cnic}.pdf`); // Unique filename for uploaded file
+let pdf_upload = {}
+if (process.env.NODE_ENV !== 'test') {
+  pdf_upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: process.env.LEC_BUCKET_NAME, // Bucket name
+      metadata: function (req, file, cb) {
+        cb(null, Object.assign({}, { ...req.body, student_id: req.user.user.id.toString() }));
+      },
+      key: async function (req, file, cb) {
+        const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic;
+        cb(null, `${cnic}.pdf`); // Unique filename for uploaded file
+      }
+    }),
+    fileFilter: function (req, file, cb) {
+      // Only accept pdf files
+      if (file.mimetype !== 'application/pdf') {
+        return cb(new Error('Only PDF files are allowed.'));
+      }
+      cb(null, true);
     }
-  }),
-  fileFilter: function (req, file, cb) {
-    // Only accept pdf files
-    if (file.mimetype !== 'application/pdf') {
-      return cb(new Error('Only PDF files are allowed.'));
-    }
-    cb(null, true);
-  }
-});
-
+  });
+}
 module.exports = { img_upload, file_upload, csv_upload, pdf_upload };
