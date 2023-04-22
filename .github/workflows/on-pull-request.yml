@@ -35,6 +35,7 @@ jobs:
         echo AWS_SES_SECRET_ACCESS_KEY='laksjdlakjlaksdjlaksdTN5' >> .env
         echo AWS_SES_REGION=us-east-2 >> .env
         echo QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS=30 >> .env
+        echo LEC_BUCKET_NAME=test-bucket
         cat .env
         ls
     - name: Setup MySQL
