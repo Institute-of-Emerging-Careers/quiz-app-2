@@ -41,12 +41,23 @@
                     My LEC Agreements
                 </div>
                 <div class="px-2 md:px-10 py-8 overflow-x-auto md:text-base text-xs">
-                    <p>You are required to sign an LEC Agreement before you start learning with IEC.</p><br />
-                    <p>Follow these steps:</p>
+                    <% if (submission_exists) {  
+                        %>
+                    <a href="/student/lec-agreement/get-latest-submission" target="_blank"
+                        class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer">You
+                        have submitted 1 file before. Click to view
+                        Previous
+                        Submission</a>
+                    <%} else {%>
+                    <p>You are required to sign an LEC Agreement before you start learning with IEC.</p>
+                    <%}%>
+                    <br />
+                    <p>Follow these steps <%=submission_exists && "to re-submit signed agreement (note that the previous submission will be deleted if you re-submit)"%>:
+                    </p>
                     <ol class="list-decimal">
                         <li>Download your unsigned LEC Agreement PDF by clicking <a href="<%= agreement_template_url %>"
-                                target="_blank"
-                                class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline cursor-pointer">here</a>.
+                                target="_blank" class="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline
+                    cursor-pointer">here</a>.
                         </li>
                         <li>Sign the PDF. There are many ways to sign a PDF. <a href="https://youtu.be/3tqb1htxz1k"
                                 target="_blank"
@@ -58,9 +69,11 @@
                                     name="agreement_template_id" />
                                 <input type="hidden" value="<%= round_id %>" name="round_id" />
                             </form>
-                            <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
+                            <input type="file" name="file1" id="file1" accept="application/pdf"
+                                onchange="uploadPDFFile()"><br>
                             <progress id="progressBar" value="0" max="100" class="hidden w-72"></progress>
                             <h3 id="status"></h3>
+                        </li>
                     </ol>
                     </p>
                     <br />

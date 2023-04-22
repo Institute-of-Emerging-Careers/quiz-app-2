@@ -586,11 +586,13 @@ router.get("/lec-agreement", checkStudentAuthenticated, async (req, res) => {
 	const student = await Student.findOne({ where: { id: req.user.user.id }, attributes: ["id"] })
 	const round = (await student.getLECRounds({ include: [LECAgreementTemplate], order: [["id", "desc"]] }))[0]
 	const agreement_template = round.LECAgreementTemplates[0]
+	const submission = await LECAgreementSubmission.findOne({ where: { StudentId: req.user.user.id, LECRoundId: round.id, LECAgreementTemplateId: agreement_template.id }, order: [["id", "desc"]] })
 	res.render("student/lec-agreement/index.ejs", {
 		user_type: req.user.type,
 		agreement_template_url: agreement_template.url,
 		agreement_template_id: agreement_template.id,
-		round_id: round.id
+		round_id: round.id,
+		submission_exists: submission !== null
 	})
 })
 
@@ -604,19 +606,24 @@ router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.singl
 })
 
 router.get("/lec-agreement/get-latest-submission", checkStudentAuthenticated, async (req, res) => {
-	const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic
-	const command = new GetObjectCommand({
-		Bucket: process.env.LEC_BUCKET_NAME,
-		Key: `${cnic}.pdf`
-	});
-
 	try {
-		const response = await s3.send(command);
-		// The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-		const body = await response.Body.transformToByteArray()
-		res.attachment(`${cnic}.pdf`).contentType("application/pdf").end(body, 'binary')
+		const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic
+		const command = new GetObjectCommand({
+			Bucket: process.env.LEC_BUCKET_NAME,
+			Key: `${cnic}.pdf`
+		});
+
+		try {
+			const response = await s3.send(command);
+			// The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
+			const body = await response.Body.transformToByteArray()
+			res.attachment(`${cnic}.pdf`).contentType("application/pdf").end(body, 'binary')
+		} catch (err) {
+			console.error(err);
+		}
 	} catch (err) {
-		console.error(err);
+		console.log(err)
+		res.sendStatus(404)
 	}
 });
 module.exports = router
