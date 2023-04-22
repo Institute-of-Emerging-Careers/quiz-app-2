@@ -1435,6 +1435,9 @@ LECAgreementTemplate.init({
 	}
 }, { sequelize })
 
+class LECAgreementSubmission extends Model { };
+LECAgreementSubmission.init({}, { sequelize })
+
 // Relationships
 Quiz.hasMany(Section, {
 	onDelete: "CASCADE",
@@ -1657,8 +1660,8 @@ Quiz.hasMany(ApplicationRound, {
 })
 ApplicationRound.belongsTo(Quiz)
 
-LECRound.belongsToMany(Student, { through: LECRoundInvite })
-Student.belongsToMany(LECRound, { through: LECRoundInvite })
+LECRound.belongsToMany(Student, { through: LECRoundInvite, allowNull: false, })
+Student.belongsToMany(LECRound, { through: LECRoundInvite, allowNull: false, })
 
 Quiz.hasOne(LECRound, {
 	onUpdate: "CASCADE",
@@ -1667,7 +1670,16 @@ Quiz.hasOne(LECRound, {
 LECRound.belongsTo(Quiz)
 
 LECRound.hasMany(LECAgreementTemplate)
-LECAgreementTemplate.belongsTo(LECRound)
+LECAgreementTemplate.belongsTo(LECRound, { allowNull: false, })
+
+LECRound.hasMany(LECAgreementSubmission)
+LECAgreementSubmission.belongsTo(LECRound, { allowNull: false, })
+
+Student.hasMany(LECAgreementSubmission)
+LECAgreementSubmission.belongsTo(Student, { allowNull: false, })
+
+LECAgreementTemplate.hasMany(LECAgreementSubmission)
+LECAgreementSubmission.belongsTo(LECAgreementTemplate, { allowNull: false, })
 
 module.exports = {
 	Application,
@@ -1689,6 +1701,7 @@ module.exports = {
 	LECRound,
 	LECRoundInvite,
 	LECAgreementTemplate,
+	LECAgreementSubmission,
 	Quiz,
 	Section,
 	Question,

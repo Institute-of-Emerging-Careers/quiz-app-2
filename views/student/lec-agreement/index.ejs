@@ -54,10 +54,13 @@
                                 here to watch a video guide.</a></li>
                         <li>Once you have signed the PDF, upload the signed PDF here: <br>
                             <form id="upload_form" enctype="multipart/form-data" method="post">
-                                <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
-                                <progress id="progressBar" value="0" max="100" class="hidden w-72"></progress>
-                                <h3 id="status"></h3>
+                                <input type="hidden" value="<%= agreement_template_id %>"
+                                    name="agreement_template_id" />
+                                <input type="hidden" value="<%= round_id %>" name="round_id" />
                             </form>
+                            <input type="file" name="file1" id="file1" onchange="uploadFile()"><br>
+                            <progress id="progressBar" value="0" max="100" class="hidden w-72"></progress>
+                            <h3 id="status"></h3>
                     </ol>
                     </p>
                     <br />

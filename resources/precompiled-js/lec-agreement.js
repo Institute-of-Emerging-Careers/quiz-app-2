@@ -15,7 +15,7 @@ function uploadFile() {
   var file = _("file1").files[0]; // alert(file.name+" | "+file.size+" | "+file.type);
 
 
-  var formdata = new FormData();
+  var formdata = new FormData(_("upload_form"));
   formdata.append("file", file);
   var ajax = new XMLHttpRequest();
   ajax.upload.addEventListener("progress", progressHandler, false);
