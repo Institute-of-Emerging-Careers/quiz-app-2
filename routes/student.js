@@ -616,8 +616,9 @@ router.get("/lec-agreement/get-latest-submission", checkStudentAuthenticated, as
 		try {
 			const response = await s3.send(command);
 			// The Body object also has 'transformToByteArray' and 'transformToWebStream' methods.
-			const body = await response.Body.transformToByteArray()
-			res.attachment(`${cnic}.pdf`).contentType("application/pdf").end(body, 'binary')
+			const data = await response.Body.transformToByteArray()
+			const buffer = Buffer.from(data);
+			res.attachment(`${cnic}.pdf`).contentType("application/pdf").send(buffer)
 		} catch (err) {
 			console.error(err);
 		}
