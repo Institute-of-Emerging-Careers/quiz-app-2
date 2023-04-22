@@ -41,14 +41,19 @@ const App = () => {
     }, [students, url])
 
     return <div className="flex flex-col gap-y-4">
-        <div className="bg-white p-6">
-            <h1 className="font-bold">{roundTitle}</h1>
-            <form className="flex gap-x-2 justify-center items-center" onSubmit={async (e) => { await save(e, setLoading, url, students); setProgressSaved(true) }}>
+        <form className="w-full flex flex-col gap-y-4" onSubmit={async (e) => { await save(e, setLoading, url, students); setProgressSaved(true) }}>
+            <div className="bg-white p-6 text-center">
+                <h1 className="font-bold">{roundTitle}</h1>
+                <button type="submit" className="bg-iec-blue hover:bg-iec-blue-hover text-white px-2 py-1 cursor-pointer mx-auto">{loading ? <i className="fas fa-spinner animate-spin"></i> : <i className="fa-save fas"></i>} Save{!progressSaved && "*"}</button>
+                {
+                    !progressSaved ? <p className="text-orange-700 text-center"><i className='fas fa-info-circle'></i> Progress not saved to server. Click the 'Save' button above or your changes will be lost.</p> : null
+                }
+            </div>
+            <div className="bg-white p-6 flex gap-x-2 justify-center items-center">
                 <label htmlFor="agreement_template_link">LEC Agreement Template PDF URL:</label>
                 <input type="url" name="agreement_template_link" placeholder="https://drive.google.com/..." className="px-2 py-1 border basis-1/2" value={url} onChange={(e) => setUrl(e.target.value)}></input>
-                <button type="submit" className="bg-iec-blue hover:bg-iec-blue-hover text-white px-2 py-1 cursor-pointer">{loading ? <i className="fas fa-spinner animate-spin"></i> : <i className="fa-save fas"></i>} Save</button>
-            </form>
-        </div>
+            </div>
+        </form>
         <div className="bg-white p-6">
             <StudentsList
                 students={students}
@@ -62,7 +67,6 @@ const App = () => {
                     { title: "Email", name: ["email"] },
                     { title: "Percentage Score", name: ["percentage_score"] },
                 ]}
-                progressSaved={progressSaved}
             />
         </div>
         <div className="bg-white p-6">

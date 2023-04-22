@@ -148,12 +148,8 @@ var App = function App() {
   }, [students, url]);
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-y-4"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "bg-white p-6"
-  }, /*#__PURE__*/React.createElement("h1", {
-    className: "font-bold"
-  }, roundTitle), /*#__PURE__*/React.createElement("form", {
-    className: "flex gap-x-2 justify-center items-center",
+  }, /*#__PURE__*/React.createElement("form", {
+    className: "w-full flex flex-col gap-y-4",
     onSubmit: /*#__PURE__*/function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3(e) {
         return _regeneratorRuntime().wrap(function _callee3$(_context3) {
@@ -178,6 +174,23 @@ var App = function App() {
         return _ref3.apply(this, arguments);
       };
     }()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-6 text-center"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "font-bold"
+  }, roundTitle), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "bg-iec-blue hover:bg-iec-blue-hover text-white px-2 py-1 cursor-pointer mx-auto"
+  }, loading ? /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-spinner animate-spin"
+  }) : /*#__PURE__*/React.createElement("i", {
+    className: "fa-save fas"
+  }), " Save", !progressSaved && "*"), !progressSaved ? /*#__PURE__*/React.createElement("p", {
+    className: "text-orange-700 text-center"
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-info-circle"
+  }), " Progress not saved to server. Click the 'Save' button above or your changes will be lost.") : null), /*#__PURE__*/React.createElement("div", {
+    className: "bg-white p-6 flex gap-x-2 justify-center items-center"
   }, /*#__PURE__*/React.createElement("label", {
     htmlFor: "agreement_template_link"
   }, "LEC Agreement Template PDF URL:"), /*#__PURE__*/React.createElement("input", {
@@ -189,14 +202,7 @@ var App = function App() {
     onChange: function onChange(e) {
       return setUrl(e.target.value);
     }
-  }), /*#__PURE__*/React.createElement("button", {
-    type: "submit",
-    className: "bg-iec-blue hover:bg-iec-blue-hover text-white px-2 py-1 cursor-pointer"
-  }, loading ? /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-spinner animate-spin"
-  }) : /*#__PURE__*/React.createElement("i", {
-    className: "fa-save fas"
-  }), " Save"))), /*#__PURE__*/React.createElement("div", {
+  }))), /*#__PURE__*/React.createElement("div", {
     className: "bg-white p-6"
   }, /*#__PURE__*/React.createElement(StudentsList, {
     students: students,
@@ -214,8 +220,7 @@ var App = function App() {
     }, {
       title: "Percentage Score",
       name: ["percentage_score"]
-    }],
-    progressSaved: progressSaved
+    }]
   })), /*#__PURE__*/React.createElement("div", {
     className: "bg-white p-6"
   }, /*#__PURE__*/React.createElement(NewStudentAdder, {
