@@ -67,7 +67,7 @@ var csv_storage = multer.diskStorage({
 var csv_upload = multer({ storage: csv_storage });
 
 // Multer configuration for PDF file upload for LEC Agreements
-let pdf_upload = {}
+let pdf_upload = { single: function (req, res, next) { next() } }
 if (process.env.NODE_ENV !== 'test') {
   pdf_upload = multer({
     storage: multerS3({
