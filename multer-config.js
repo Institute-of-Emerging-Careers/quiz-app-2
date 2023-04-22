@@ -2,7 +2,6 @@ const multer = require("multer");
 const { Student } = require("./db/models")
 const multerS3 = require('multer-s3')
 const s3 = require("./s3-config")
-require("dotenv").config()
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -68,7 +67,6 @@ var csv_storage = multer.diskStorage({
 var csv_upload = multer({ storage: csv_storage });
 
 // Multer configuration for PDF file upload for LEC Agreements
-console.log("bucket_name: ", process.env.LEC_BUCKET_NAME)
 const pdf_upload = multer({
   storage: multerS3({
     s3: s3,
