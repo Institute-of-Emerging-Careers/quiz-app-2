@@ -55,7 +55,7 @@ var QuizTile = function QuizTile(_ref) {
     });
   }, [quiz, reminderEmailsEnabled]);
   return /*#__PURE__*/React.createElement("div", {
-    className: "grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card"
+    className: "grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card basis-full grow"
   }, /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-8 col-span-8 h-16 bg-iec-blue justify-center content-center"
   }, /*#__PURE__*/React.createElement("a", {
@@ -177,7 +177,7 @@ var App = function App() {
     }, _callee);
   })), []);
   return assessments.length > 0 ? /*#__PURE__*/React.createElement("div", {
-    className: "flex gap-x-4"
+    className: "flex flex-wrap gap-4"
   }, assessments.map(function (quiz) {
     return /*#__PURE__*/React.createElement(QuizTile, {
       quiz: quiz,
