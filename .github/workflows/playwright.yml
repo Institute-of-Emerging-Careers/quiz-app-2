@@ -1,0 +1,71 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Playwright E2E Tests
+
+on:
+  push:
+    branches: ["develop", "devBranch"]
+  pull_request:
+    branches: ["develop"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Create env file
+        run: |
+          touch .env
+          echo DEBUG=true >> .env
+          echo NODE_ENV=test >> .env
+          echo SITE_DOMAIN_NAME=http://localhost:4000 >> .env
+          echo SESSION_SECRET='nuCEebm9^7jsc3BPRhWPKy9!u9F8$kb%wddo7nCzAG2SWe3Z8yNqjkMBW7t5##AjWewwmA@KgPwNmh#' >> .env
+          echo MYSQL_CONNECTION_STRING='mysql://root:test_password@localhost:3800/' >> .env
+          echo PORT=4000 >> .env
+          echo TIMEZONE_OFFSET=+05:00 >> .env
+          echo QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS=30 >> .env
+          echo AWS_ACCESS_KEY_ID=wrongwrongwrong >> .env
+          echo AWS_SECRET_ACCESS_KEY=wrongwrongwrongwrongwrong >> .env
+          echo AWS_REGION=wrong >> .env
+          echo LEC_BUCKET_NAME=wrongwrong >> .env
+          cat .env
+          ls
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3800 # Optional, default value is 3306. The port of host
+          container port: 3307 # Optional, default value is 3306. The port of container
+          character set server: "utf8" # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: "utf8_general_ci" # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: "8.0.30" # Optional, default value is "latest". The version of the MySQL
+          mysql database: "test_quizdb" # Optional, default value is "test". The specified database which will be create
+          mysql root password: "test_password" # Required if "mysql user" is empty, default is empty. The root superuser password
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - run: npm install
+      - name: Install Redis
+        uses: pustovitDmytro/redis-github-action@v1.0.1
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+      - name: Start Server
+        run: npm run start &
+      - name: Wait for Server to Start
+        run: sleep 10
+      - name: Run Tests with Playwright
+        run: npx playwright test
+      - uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30

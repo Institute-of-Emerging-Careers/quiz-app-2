@@ -252,7 +252,7 @@ const Option = (props) => {
   function uploadFile(e) {
     let data = new FormData(ReactDOM.findDOMNode(fileUploadForm.current));
     setUploading(true);
-    // data.append("file", e.target.files[0]);
+
     fetch("/upload", {
       method: "POST",
       body: data,
@@ -887,9 +887,9 @@ const MCQ = (props) => {
               {state.mcqs[props.sectionIndex].questions[props.questionIndex]
                 .link.text == ""
                 ? state.mcqs[props.sectionIndex].questions[props.questionIndex]
-                    .link.url
+                  .link.url
                 : state.mcqs[props.sectionIndex].questions[props.questionIndex]
-                    .link.text}
+                  .link.text}
             </a>
           )}
           {state.mcqs[props.sectionIndex].questions[props.questionIndex]
@@ -1037,9 +1037,9 @@ const Passage = (props) => {
       // if this question has no passage or has a different passage, then assign the current passage to it
       if (
         mcqs_copy[props.sectionIndex].questions[e.target.value].passage ===
-          null ||
+        null ||
         mcqs_copy[props.sectionIndex].questions[e.target.value].passage !=
-          props.passageIndex
+        props.passageIndex
       )
         mcqs_copy[props.sectionIndex].questions[e.target.value].passage =
           props.passageIndex;
@@ -1125,7 +1125,7 @@ const Section = (props) => {
     if (
       autoPoolCount &&
       state.mcqs[props.sectionIndex].poolCount !=
-        state.mcqs[props.sectionIndex].questions.length
+      state.mcqs[props.sectionIndex].questions.length
     ) {
       setState((cur) => {
         let obj = { ...cur };
@@ -1529,8 +1529,8 @@ const Main = () => {
           } else if (section.poolCount == 0) {
             setError(
               "You set section " +
-                section.sectionTitle +
-                "'s pool count to 0. Please pick a number greater than 0 otherwise this section will show up empty to the students."
+              section.sectionTitle +
+              "'s pool count to 0. Please pick a number greater than 0 otherwise this section will show up empty to the students."
             );
             anyErrors = true;
           } else {

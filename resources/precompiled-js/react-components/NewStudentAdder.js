@@ -27,9 +27,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
       filter_min_score = _useState4[0],
       setFilterMinScore = _useState4[1];
 
-  var _useState5 = useState(DateTime.now().minus({
-    months: 1
-  }).toFormat("yyyy-MM-dd")),
+  var _useState5 = useState(DateTime.now().endOf("day").toFormat("yyyy-MM-dd")),
       _useState6 = _slicedToArray(_useState5, 2),
       filter_date = _useState6[0],
       setFilterDate = _useState6[1];
@@ -66,7 +64,7 @@ var NewStudentAdder = function NewStudentAdder(props) {
   }, [students]);
   useEffect(function () {
     setFilteredStudents(students.filter(function (student) {
-      return student.percentage_score >= filter_min_score && DateTime.fromISO(student.assignment_completed_date).startOf("day").ts >= DateTime.fromFormat(filter_date, "yyyy-MM-dd").startOf("day").ts && (student.added && (orientation_status_filter == "all" || orientation_status_filter == "added") || !student.added && (orientation_status_filter == "all" || orientation_status_filter == "not-added"));
+      return student.percentage_score >= filter_min_score && DateTime.fromISO(student.assignment_completed_date).startOf("day").ts <= DateTime.fromFormat(filter_date, "yyyy-MM-dd").startOf("day").ts && (student.added && (orientation_status_filter == "all" || orientation_status_filter == "added") || !student.added && (orientation_status_filter == "all" || orientation_status_filter == "not-added"));
     }));
   }, [filter_min_score, filter_date, orientation_status_filter]);
   useEffect(function () {
@@ -150,7 +148,6 @@ var NewStudentAdder = function NewStudentAdder(props) {
     name: "filter_date",
     onChange: function onChange(e) {
       setFilterDate(e.target.value);
-      console.log("Filter Date: ", e.target.value);
     },
     className: "ml-2 p-2 w-72 border"
   }), "%"), /*#__PURE__*/React.createElement("div", {

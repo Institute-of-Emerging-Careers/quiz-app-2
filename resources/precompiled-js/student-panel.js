@@ -37,6 +37,7 @@ function showModal() {
 }
 
 function assignStatusColor(status) {
+  var statusColor = "";
   if (status == "In Progress") statusColor = "text-red-700";else if (status == "Completed") statusColor = "text-green-700";else if (status == "Incomplete") statusColor = "text-yellow-700";else statusColor = "";
   return statusColor;
 }
@@ -94,6 +95,7 @@ $(document).ready(function () {
   modal_quiz_num_sections = $("#modal-quiz-num-sections");
   modal_quiz_title = $("#modal-quiz-title");
   $.get("/student/assignments", function (data) {
+    console.log("data:", data);
     data.forEach(function (item) {
       var _item$status = _slicedToArray(item.status, 2),
           status = _item$status[0],

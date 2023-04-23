@@ -1,9 +1,6 @@
 const express = require("express")
 const router = express.Router()
 
-// Load the AWS SDK for Node.js
-var AWS = require("aws-sdk")
-
 // My requirements
 const checkAdminAuthenticated = require("../db/check-admin-authenticated")
 const checkStudentAuthenticated = require("../db/check-student-authenticated")

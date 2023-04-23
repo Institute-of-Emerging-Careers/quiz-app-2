@@ -23,36 +23,36 @@ router.use((req, res, next) => {
 	next()
 })
 
+router.get("/all-quizzes", checkAdminAuthenticated, async (req, res) => {
+	const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] });
+	for (let i = 0; i < all_quizzes.length; i++) {
+		all_quizzes[i].num_sections = await all_quizzes[i].countSections();
+		const all_sections = await all_quizzes[i].getSections();
+		let total_questions = 0;
+		for (let j = 0; j < all_sections.length; j++) {
+			total_questions += await all_sections[j].countQuestions();
+		}
+		all_quizzes[i].num_questions = total_questions;
+	}
+	res.json(all_quizzes)
+})
+
 router.get("/", checkAdminAuthenticated, async (req, res) => {
 	try {
-		const all_quizzes = await Quiz.findAll({ order: [["id", "desc"]] })
-		for (let i = 0; i < all_quizzes.length; i++) {
-			all_quizzes[i].num_sections = await all_quizzes[i].countSections()
-			const all_sections = await all_quizzes[i].getSections()
-			let total_questions = 0
-			for (let j = 0; j < all_sections.length; j++) {
-				total_questions += await all_sections[j].countQuestions()
-			}
-			all_quizzes[i].num_questions = total_questions
-		}
-		const all_invites = await Invite.findAll({ include: [Quiz] })
-		console.log(req.url)
-		console.log(req.user)
 		res.render("admin/index.ejs", {
 			myname: req.user.user?.firstName,
 			user_type: req.user.type,
-			all_quizzes: all_quizzes,
-			all_invites: all_invites,
 			site_domain_name: process.env.SITE_DOMAIN_NAME,
 			moment: moment,
 			query: req.query,
 			current_url: `/admin${req.url}`,
-		})
+			env: process.env.NODE_ENV,
+		});
 	} catch (err) {
-		console.log(err)
-		res.sendStatus(500)
+		console.log(err);
+		res.sendStatus(500);
 	}
-})
+});
 
 router.get("/login", checkAdminAlreadyLoggedIn, (req, res) => {
 	res.render("admin/login/index.ejs")

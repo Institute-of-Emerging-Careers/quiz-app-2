@@ -119,32 +119,7 @@ app.get("/invite/:link", checkStudentAlreadyLoggedIn, async (req, res) => {
 	}
 })
 
-app.get("/test", async (req, res) => {
-	try {
-		await queueMail("22100063@lums.edu.pk", `Assessment Completed`, {
-			heading: `All Sections Completed`,
-			inner_text: `Dear Student
-        <br>
-        This email confirms that you have successfully solved the IEC Assessment. You'll now have to wait to hear back from us after the shortlisting process.
-        <br>
-        Thank you for showing your interest in becoming part of the program. 
-        <br>
-        Sincerely, 
-        IEC Admissions Team`,
-			button_announcer: "Visit out website to learn more about us",
-			button_text: "Visit",
-			button_link: "https://iec.org.pk",
-		})
-		console.log("Email sent")
-		res.sendStatus(200)
-	} catch (err) {
-		console.log("Email sending failed.", err)
-		res.sendStatus(500)
-	}
-})
-
 app.post("/upload", file_upload.single("file"), (req, res) => {
-	console.log("uploading file")
 	const file_type = req.file.mimetype.slice(0, 5)
 	let file_name = ""
 	if (file_type == "image") file_name = "/img/"
@@ -204,11 +179,11 @@ app.post(
 					() => {
 						if (!err) {
 							/* data = [
-            ["Emails"],
-            ["rohanhussain1@yahoo.com"],
-            ["dkhn.act@gmail.com"],
-            ["22100063@lums.edu.pk"]    
-          ] */
+			["Emails"],
+			["rohanhussain1@yahoo.com"],
+			["dkhn.act@gmail.com"],
+			["22100063@lums.edu.pk"]    
+		  ] */
 							console.log(data)
 							data = flatten2DArray(data)
 							res.status(200).json(data)

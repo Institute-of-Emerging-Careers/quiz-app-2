@@ -1,27 +1,23 @@
 const getTotalMarksOfSection = require("./getTotalMarksOfSection");
 
-function getQuizTotalScore(Quiz) {
-  // Quiz must "include" Sections
-  quiz_total_score = 0;
-  return new Promise((resolve, reject) => {
-    try {
-      let i = 0;
-      const n3 = Quiz.Sections.length;
-      Quiz.Sections.forEach(async (section) => {
-        const num_questions_in_section = await section.countQuestions();
-        const section_maximum_score = await getTotalMarksOfSection(
-          section.id,
-          section.poolCount,
-          num_questions_in_section
-        );
-        quiz_total_score += section_maximum_score;
-        i++;
-        if (i == n3) resolve(quiz_total_score);
-      });
-    } catch (err) {
-      reject(err);
-    }
-  });
+function sumArray(array) {
+  let sum = 0;
+  for (const item of array) {
+    sum += item;
+  }
+  return sum;
+}
+
+async function getQuizTotalScore(Quiz) {
+  // Quiz must "include" Sections.
+  const num_questions_per_section = await Promise.all(Quiz.Sections.map(section => section.countQuestions()))
+  const section_total_scores = await Promise.all(num_questions_per_section.map((numQuestions, i) => getTotalMarksOfSection(
+    Quiz.Sections[i].id,
+    Quiz.Sections[i].poolCount,
+    numQuestions
+  )))
+  const total_score = sumArray(section_total_scores)
+  return total_score
 }
 
 module.exports = getQuizTotalScore;

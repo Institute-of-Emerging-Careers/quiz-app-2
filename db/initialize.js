@@ -5,23 +5,20 @@ const { User } = require("./models")
 
 const initializeDatabase = async () => {
 	try {
-		let alterandforce = false
+		let alterandforce = process.env.NODE_ENV === "test";
+		console.log("alterandforce: ", alterandforce)
 		// Sync models with database
 		await sequelize.sync({
-			alter: false,
+			alter: alterandforce,
 			force: alterandforce,
-			logging: process.env.NODE_ENV == "test" ? true : false,
-		})
+			logging: process.env.NODE_ENV == "test" ? console.log : false,
+		});
 
-		// await InterviewRound.sync({ alter: true, force: false });
+		// await sequelize.models.LECRound.sync({ alter: true, force: true });
+		// await sequelize.models.LECRoundInvite.sync({ alter: true, force: true });
+		// await sequelize.models.Student.sync({ alter: true, force: false });
 		// await Application.sync({ alter: true, force: false });
-		// await Orientation.sync({ alter: true, force: false });
-		// await OrientationInvite.sync({ alter: true, force: false });
-		// await ApplicationRound.sync({ alter: true, force: false })
-		// await Quiz.sync({ alter: true, force: false })
-		// await Interviewer.sync({ alter: false });
-		// await InterviewerInvite.sync({ alter: false });
-		// await InterviewerSlot.sync({ alter: false });
+
 		console.log("Sync complete.")
 
 		if (alterandforce) {
@@ -136,12 +133,12 @@ const initializeDatabase = async () => {
 				email: "rohanhussain1@yahoo.com",
 				password: hashedPwd,
 				phone: "03320460729",
-				cnic: "35201-3520462-3",
+				cnic: "00000-0000000-0",
 				InviteId: invite.id,
 			})
 			await invite.increment("registrations")
 			// Create an assignment
-			const assignment = await sequelize.models.Assignment.create({
+			await sequelize.models.Assignment.create({
 				QuizId: quiz.id,
 				StudentId: studentUser.id,
 			})

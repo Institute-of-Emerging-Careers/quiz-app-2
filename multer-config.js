@@ -1,4 +1,7 @@
 const multer = require("multer");
+const { Student } = require("./db/models")
+const multerS3 = require('multer-s3')
+const s3 = require("./s3-config")
 
 // Multer config for image upload
 var img_storage = multer.diskStorage({
@@ -56,12 +59,6 @@ var file_upload = multer({ storage: file_storage });
 var csv_storage = multer.diskStorage({
   destination: "./uploads/csv",
   filename: function (req, file, cb) {
-    console.log(file.mimetype);
-    // switch (file.mimetype) {
-    //   case "application/vnd.ms-excel":
-    //     ext = ".csv";
-    //     break;
-    // }
     ext = ".csv";
     cb(null, file.originalname + "-" + Date.now() + ext);
   },
@@ -69,4 +66,25 @@ var csv_storage = multer.diskStorage({
 
 var csv_upload = multer({ storage: csv_storage });
 
-module.exports = { img_upload, file_upload, csv_upload };
+// Multer configuration for PDF file upload for LEC Agreements
+const pdf_upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: process.env.LEC_BUCKET_NAME, // Bucket name
+    metadata: function (req, file, cb) {
+      cb(null, Object.assign({}, { ...req.body, student_id: req.user.user.id.toString() }));
+    },
+    key: async function (req, file, cb) {
+      const cnic = (await Student.findOne({ where: { id: req.user.user.id }, attributes: ["cnic"] })).cnic;
+      cb(null, `${cnic}.pdf`); // Unique filename for uploaded file
+    }
+  }),
+  fileFilter: function (req, file, cb) {
+    // Only accept pdf files
+    if (file.mimetype !== 'application/pdf') {
+      return cb(new Error('Only PDF files are allowed.'));
+    }
+    cb(null, true);
+  }
+});
+module.exports = { img_upload, file_upload, csv_upload, pdf_upload };

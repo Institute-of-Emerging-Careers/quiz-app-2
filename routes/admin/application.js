@@ -56,15 +56,17 @@ router.get(
 	}
 )
 
-router.post("/course/new", checkAdminAuthenticated, async (req, res) => {
+router.put("/course/new", checkAdminAuthenticated, async (req, res) => {
 	try {
-		const course = await Course.create(req.body)
-		res.status(200).json(course)
+		const [course, newlyCreated] = await Course.findOrCreate({
+			where: { title: req.body.title },
+		});
+		res.status(200).json({ course, newlyCreated });
 	} catch (err) {
-		console.log(err)
-		res.sendStatus(501)
+		console.log(err);
+		res.sendStatus(501);
 	}
-})
+});
 
 router.post("/rounds/new", checkAdminAuthenticated, async (req, res) => {
 	const new_application_round = await ApplicationRound.create({
