@@ -338,15 +338,8 @@ const App = () => {
 											/>
 										</>
 									)}
-								</>
-							)}
-						</div>
-						{status !== "justOpened" && (
-							<div
-								id="right"
-								className="flex flex-col w-full basis-full gap-y-5"
-							>
-								<Input
+
+<Input
 									label="Phone Number:"
 									name="phone"
 									type="number"
@@ -379,6 +372,15 @@ const App = () => {
 										</option>
 									</select>
 								</div>
+								</>
+							)}
+						</div>
+						{status !== "justOpened" && (
+							<div
+								id="right"
+								className="flex flex-col w-full basis-full gap-y-5"
+							>
+
 
 								<div className="flex flex-col gap-1 w-full">
 									<label className="label">
