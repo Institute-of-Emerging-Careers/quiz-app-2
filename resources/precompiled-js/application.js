@@ -111,7 +111,7 @@ const App = () => {
     // email_only (don't ask for password)
 
     try {
-      const response = await fetch("http://localhost:3000/application/check-if-user-exists", {
+      const response = await fetch("https://apply.iec.org.pk/application/check-if-user-exists", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -175,7 +175,7 @@ const App = () => {
       const name = formData.get("name").split(" ");
       const firstname = name[0];
       const lastname = name.length > 1 ? name[1] : "";
-      const response = await fetch("http://localhost:3000/application/submit/".concat(application_round_id, "/"), {
+      const response = await fetch("https://apply.iec.org.pk/application/submit/".concat(application_round_id, "/"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -210,7 +210,7 @@ const App = () => {
   useEffect(async () => {
     //get application ID from URL
     const application_round_id = window.location.pathname.split("/")[3];
-    const response = await fetch("http://localhost:3000/application/".concat(application_round_id, "/courses"));
+    const response = await fetch("https://apply.iec.org.pk/application/".concat(application_round_id, "/courses"));
     const data = await response.json();
 
     if (data.success) {

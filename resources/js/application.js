@@ -125,7 +125,7 @@ const App = () => {
 
 		try {
 			const response = await fetch(
-				"http://localhost:3000/application/check-if-user-exists",
+				"https://apply.iec.org.pk/application/check-if-user-exists",
 				{
 					method: "POST",
 					headers: {
@@ -198,7 +198,7 @@ const App = () => {
 			const lastname = name.length > 1 ? name[1] : ""
 
 			const response = await fetch(
-				`http://localhost:3000/application/submit/${application_round_id}/`,
+				`https://apply.iec.org.pk/application/submit/${application_round_id}/`,
 				{
 					method: "POST",
 					headers: {
@@ -238,7 +238,7 @@ const App = () => {
 		const application_round_id = window.location.pathname.split("/")[3]
 
 		const response = await fetch(
-			`http://localhost:3000/application/${application_round_id}/courses`
+			`https://apply.iec.org.pk/application/${application_round_id}/courses`
 		)
 		const data = await response.json()
 		if (data.success) {
