@@ -37,6 +37,19 @@ module.exports = {
         my1: "55%",
         "25/2": "12.5%",
       },
+      // that is animation class
+      animation: {
+        fade: 'fadeIn 1s ease-linear',
+      },
+
+      // that is actual animation
+      keyframes: theme => ({
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1},
+        },
+
+      }),
     },
   },
   fontFamily: {

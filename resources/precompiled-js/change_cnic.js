@@ -1,17 +1,17 @@
 "use strict";
 
-var submit_button = document.getElementById("submit-button");
+const submit_button = document.getElementById("submit-button");
 
 function changeCNIC(e) {
   e.preventDefault();
   submit_button.value = "Please Wait";
   submit_button.classList.remove("btn-primary");
   submit_button.classList.add("btn-warning");
-  var data = new URLSearchParams(new FormData(e.target));
+  const data = new URLSearchParams(new FormData(e.target));
   fetch("/application/change-cnic", {
     method: "POST",
     body: data
-  }).then(function (res) {
+  }).then(res => {
     if (res.ok) {
       submit_button.value = "Success";
       submit_button.classList.remove("btn-warning");

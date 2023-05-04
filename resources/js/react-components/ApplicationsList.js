@@ -14,97 +14,17 @@ const ApplicationsList = (props) => {
   const application_id_to_array_index_map =
     props.application_id_to_array_index_map;
 
+    console.log(applications);
   const [questions, setQuestions] = useState([
     { title: "Age Group", name: ["age_group"] },
-    { title: "Father's Name", name: ["father_name"] },
     { title: "City of Residence", name: ["city"] },
-    { title: "Province of Residence", name: ["province"] },
-    { title: "Country of Residence", name: ["country"] },
-    { title: "Home Address", name: ["address"] },
-    { title: "Current Address", name: ["current_address"] },
-    { title: "From flood affected area", name: ["belongs_to_flood_area"]},
-    { title: "Is TCF alumni", name: ["is_tcf_alumni"]},
-    { title: "City of origin", name: ["city_of_origin"] },,
-    { title: "Flood area name", name: ["flood_area_name"] },
-    { title: "Has completed bachelor's degree", name: ["has_completed_ba"] },
-    { title: "Has completed diploma", name: ["has_completed_diploma"] },
-    { title: "Institute of degree or diploma", name: ["inst_degree_dip"] },
-    { title: "Can share FinAid docs", name: ["can_share_fa_docs"] },
-    { title: "Can share FinAid docs", name: ["can_share_fa_docs"] },
+
     { title: "Education Completed", name: ["education_completed"] },
-    {
-      title: ["Major of Education Completed"],
-      name: ["education_completed_major"],
-    },
-    { title: "Ongoing Education", name: ["education_ongoing"] },
-    { title: "Degree Choice", name: ["degree_choice"] },
-    { title: "Major of Ongoing Education", name: ["education_ongoing_major"] },
-    { title: "Monthly Family Income", name: ["monthly_family_income"] },
-    {
-      title: "Do you have computer and internet access?",
-      name: ["computer_and_internet_access"],
-    },
-    {
-      title: "Is there reliable internet facility in your area?",
-      name: ["internet_facility_in_area"],
-    },
-    {
-      title: "Can you spend 30 to 40 hours a week on the program?",
-      name: ["time_commitment"],
-    },
-    { title: "Are you currently employed?", name: ["is_employed"] },
+
     { title: "Employment type", name: ["type_of_employment"] },
-    { title: "Current salary", name: ["salary"] },
-    { title: "How are you enrolling in the program", name: ["how_to_enroll"] },
-    {
-      title:
-        "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-      name: ["will_leave_job"],
-    },
-    { title: "Salary expectations after graduation", name: ["salary_expectation"] },
-    { title: "Are you on financial aid in university?", name: ["on_fa_in_university"] },
-    { title: "How many people are earning in your household?", name: ["people_earning_in_household"] },
-    { title: "Have you applied to IEC before?", name: ["has_applied_before"] },
-    { title: "How will you complete the course?", name: ["how_complete_course"] },
-    { title: "Can you pay 2000 PKR per month?", name: ["can_pay_2000"] },
-    { title: "Are you married?", name: ["is_married"]},
-    { title: "First Preference", name: ["first preference", "title"] },
-    { title: "Second Preference", name: ["second preference", "title"] },
-    { title: "Third Preference", name: ["third preference", "title"] },
-    { title: "Reason for Preferences", name: ["preference_reason"] },
-    {
-      title: "Are you a graduate in computer science or any related field?",
-      name: ["is_comp_sci_grad"],
-    },
-    {
-      title:
-        "Do you have any digital skills certifications? If yes, please share their names and the name of the institution.",
-      name: ["digi_skills_certifications"],
-    },
-    { title: "How did you hear about IEC?", name: ["how_heard_about_iec"] },
-    { title: "Do you know anyone from IEC?", name: ["knows_from_IEC"] },
-    { title: "Will you sign the LEC agreement?", name: ["LEC_acknowledgement"] },
-    { title: "Will you be available for full time work after the program?", name: ["will_work_full_time"] },
-    {
-      title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"]
-    },
-    {
-      title: "What is your second preference reason?",
-      name: ["secondPreferenceReason"]
-    },
-    {
-      title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"]
-    },
-    {
-      title: "The program is entirely online. Do you acknowledge that?",
-      name: ["acknowledge_online"],
-    },
-    {
-      title: "Applicant Emailed about Assessment",
-      name: ["was_emailed_about_assessment"],
-    },
+
+    { title: "Course Preference", name: ["first_preference", "title"] },
+
   ]);
 
   useEffect(() => {
@@ -159,50 +79,6 @@ const ApplicationsList = (props) => {
         expand_possible_values: false,
       },
       {
-        title: "Province of Residence",
-        name: "province",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: false,
-        possible_values: provinces.map((val) => ({
-          value: val,
-          checked: false,
-        })),
-        expand_possible_values: false,
-      },
-      {
-        title: "Country of Residence",
-        name: "country",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: false,
-        possible_values: cities.map((val) => ({
-          value: val,
-          checked: false,
-        })),
-        expand_possible_values: false,
-      },
-      {
-        title: "From flood affected areas",
-        name: "belongs_to_flood_area",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-        expand_possible_values: false,
-      },
-      {
-        title: "Is TCF alumni",
-        name: "is_tcf_alumni",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-        expand_possible_values: false,
-      },
-      {
         title: "Education Completed",
         name: "education_completed",
         filter_type: "fixed_values",
@@ -212,88 +88,6 @@ const ApplicationsList = (props) => {
           checked: false,
         })),
         expand_possible_values: false,
-      },
-      {
-        title: "Can pay 2000",
-        name: "can_pay_2000",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-        expand_possible_values: false,
-      },      
-      {
-        title: "Ongoing Education",
-        name: "education_ongoing",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: false,
-        possible_values: education_levels.map((val) => ({
-          value: val,
-          checked: false,
-        })),
-        expand_possible_values: false,
-      },
-      {
-        title: "Minimum Monthly Family Income",
-        name: "monthly_family_income",
-        filter_type: "integer_value",
-        min: 0,
-        max: 200000,
-        increment: 5000,
-        value: 0,
-        unit: "PKR",
-      },
-      {
-        title: "Minimum Current salary",
-        name: "salary",
-        filter_type: "integer_value",
-        min: 0,
-        max: 200000,
-        increment: 5000,
-        value: 0,
-        unit: "PKR",
-      },
-      {
-        title: "Do you have computer and internet access?",
-        name: "computer_and_internet_access",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "Is there reliable internet facility in your area?",
-        name: "internet_facility_in_area",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "Can you spend 30 to 40 hours a week on the program?",
-        name: "time_commitment",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "Are you currently employed?",
-        name: "is_employed",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
       },
       {
         title: "Employment type",
@@ -306,28 +100,7 @@ const ApplicationsList = (props) => {
         })),
       },
       {
-        title:
-          "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-        name: "will_leave_job",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "Have you applied to IEC before?",
-        name: "has_applied_before",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "First Preference",
+        title: "Course Interest",
         name: "firstPreferenceId",
         filter_type: "fixed_values",
         discrepancy_between_value_and_text: true,
@@ -337,61 +110,6 @@ const ApplicationsList = (props) => {
           checked: false,
         })),
         expand_possible_values: false,
-      },
-      {
-        title: "Second Preference",
-        name: "secondPreferenceId",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: courses.map((val) => ({
-          value: val.id,
-          text: val.title,
-          checked: false,
-        })),
-        expand_possible_values: false,
-      },
-      {
-        title: "Third Preference",
-        name: "thirdPreferenceId",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: courses.map((val) => ({
-          value: val.id,
-          text: val.title,
-          checked: false,
-        })),
-        expand_possible_values: false,
-      },
-      {
-        title: "Are you a graduate in computer science or any related field?",
-        name: "is_comp_sci_grad",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title:
-          "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
-        name: "will_work_full_time",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
-      },
-      {
-        title: "The program is entirely online. Do you acknowledge that?",
-        name: "acknowledge_online",
-        filter_type: "fixed_values",
-        discrepancy_between_value_and_text: true,
-        possible_values: [
-          { text: "Yes", value: 1, checked: false },
-          { text: "No", value: 0, checked: false },
-        ],
       },
       {
         title: "Applicant automatically rejected and rejection email sent",
@@ -734,8 +452,8 @@ const ApplicationsList = (props) => {
           >
             <thead>
               <tr>
+                <th>Application ID</th>
                 <th>Name</th>
-                <th>Gender</th>
                 <th>Email</th>
                 <th>Phone</th>
                 <th>CNIC</th>
@@ -756,10 +474,10 @@ const ApplicationsList = (props) => {
                       application.rejection_email_sent ? "bg-red-300" : ""
                     }
                   >
+                    
+                    <td className="border px-4 py-2">{application.id}</td>
                     <td className="border px-4 py-2">{`${application.Student.firstName} ${application.Student.lastName}`}</td>
-                    <td className="border px-4 py-2">
-                      {application.Student.gender}
-                    </td>
+
                     <td className="border px-4 py-2">
                       {application.Student.email}
                     </td>

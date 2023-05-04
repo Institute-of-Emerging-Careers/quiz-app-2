@@ -5,83 +5,14 @@ const ApplicantDetailsModal = (props) => {
 
   const [questions, setQuestions] = useState([
     { title: "Age Group", name: ["age_group"] },
-    { title: "Father's Name", name: ["father_name"] },
     { title: "City of Residence", name: ["city"] },
-    { title: "Province of Residence", name: ["province"] },
-    { title: "Country of Residence", name: ["country"] },
-    { title: "Home Address", name: ["address"] },
-    { title: "Current Address", name: ["current_address"] },
-    { title: "From Flood Affected Area", name: ["belongs_to_flood_area"] },
-    { title: "Is TCF alumni", name: ["is_tcf_alumni"] },
 
     { title: "Education Completed", name: ["education_completed"] },
-    {
-      title: ["Major of Education Completed"],
-      name: ["education_completed_major"],
-    },
-    { title: "Monthly Family Income", name: ["monthly_family_income"] },
-    {
-      title: "Do you have computer and internet access?",
-      name: ["computer_and_internet_access"],
-    },
-    {
-      title: "Is there reliable internet facility in your area?",
-      name: ["internet_facility_in_area"],
-    },
-    {
-      title: "Can you spend 30 to 40 hours a week on the program?",
-      name: ["time_commitment"],
-    },
-    { title: "Are you currently employed?", name: ["is_employed"] },
+
     { title: "Employment type", name: ["type_of_employment"] },
-    { title: "Current salary", name: ["salary"] },
-    {
-      title:
-        "Will you be willing to leave the job to attend the program full time, if you are given a stipend of a percentage of the salary?",
-      name: ["will_leave_job"],
-    },
-    { title: "Have you applied to IEC before?", name: ["has_applied_before"] },
-    { title: "First Preference", name: ["first preference", "title"] },
-    { title: "Second Preference", name: ["second preference", "title"] },
-    { title: "Third Preference", name: ["third preference", "title"] },
-    { title: "Reason for Preferences", name: ["preference_reason"] },
-    {
-      title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"],
-    },
-    {
-      title: "What is your second preference reason?",
-      name: ["secondPreferenceReason"],
-    },
-    {
-      title: "What is your first preference reason?",
-      name: ["firstPreferenceReason"],
-    },
 
-    {
-      title: "Are you a graduate in computer science or any related field?",
-      name: ["is_comp_sci_grad"],
-    },
-    {
-      title:
-        "Do you have any digital skills certifications? If yes, please share their names and the name of the institution.",
-      name: ["digi_skills_certifications"],
-    },
-    { title: "How did you hear about IEC?", name: ["how_heard_about_iec"] },
-    {
-      title:
-        "After graduating from IEC, if we provide you with a Full Time Job opportunity, will you be willing to accept the job?",
-      name: ["will_work_full_time"],
-    },
+    { title: "Course Preference", name: ["first preference", "title"] },
 
-    {
-      title: "The program is entirely online. Do you acknowledge that?",
-      name: ["acknowledge_online"],
-    },
-    {
-      title: "Application automatically rejected and Rejection Email sent",
-      name: ["rejection_email_sent"],
-    },
   ]);
 
   const formatOutput = (output) => {

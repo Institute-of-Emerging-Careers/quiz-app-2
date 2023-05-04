@@ -3,23 +3,15 @@ const express = require("express")
 const router = express.Router()
 const bcrypt = require("bcrypt")
 const checkAnyoneAlreadyAuthenticated = require("../db/check-anyone-already-authenticated")
-const { ApplicationRound, Application, Student, Quiz, Section, Assignment, Orientation, Score, Attempt } = require("../db/models")
 const {
-	cities,
-	provinces,
-	countries,
-	education_levels,
-	universities,
-	degree_choice,
-	type_of_employment,
-	income_brackets,
-	people_in_household,
-	knows_from_IEC,
-	sources_of_information,
-	reasons_to_join,
-} = require("../db/data_lists")
-const getQuizTotalScore = require("../functions/getQuizTotalScore")
+	ApplicationRound,
+	Application,
+	Student,
 
+} = require("../db/models")
+
+
+//why is this here?
 router.use((req, res, next) => {
 	next()
 })
@@ -32,6 +24,7 @@ router.get(
 			const application_round = await ApplicationRound.findOne({
 				where: { id: req.params.application_round_id },
 			})
+			console.log(req.params.application_round_id);
 			if (!application_round.open) {
 				res.render("templates/error.ejs", {
 					additional_info: "Applications Closed",
@@ -42,24 +35,8 @@ router.get(
 				})
 			} else {
 				if (application_round != null) {
-					const courses = await application_round.getCourses({
-						attributes: ["id", "title"],
-					})
-
 					res.render("application.ejs", {
-						cities: cities,
-						provinces: provinces,
-						countries: countries,
-						education_levels: education_levels,
-						universities: universities,
-						degree_choice: degree_choice,
-						type_of_employment: type_of_employment,
-						income_brackets: income_brackets,
-						courses: courses,
-						people_in_household: people_in_household,
-						knows_from_IEC: knows_from_IEC,
-						sources_of_information: sources_of_information,
-						reasons_to_join: reasons_to_join,
+						env: process.env.NODE_ENV,
 						application_round_id: req.params.application_round_id,
 					})
 				} else {
@@ -173,6 +150,8 @@ router.post(
 
 		try {
 			// Each Student has many Applications. We need to ascertain whether this student is new or exists previously.
+			console.log("req.body", req.body);
+
 			let student = await Student.findOne({
 				where: { email: req.body.email, cnic: req.body.cnic },
 			})
@@ -301,6 +280,37 @@ router.post("/change-email", async (req, res) => {
 			console.log(err)
 		}
 	} else res.sendStatus(401)
+})
+
+router.get("/:application_round_id/courses", async (req, res) => {
+	try {
+		const application_round = await ApplicationRound.findOne({
+			where: { id: req.params.application_round_id },
+		})
+		
+		const courses = await application_round.getCourses({
+			attributes: ["id", "title"],
+		})
+
+		if (!courses) {
+			res.status(404).json({
+				success: false,
+				message: "No courses found",
+			})
+		}
+
+		res.status(200).json({
+			success: true,
+			message: "Successfully fetched courses",
+			courses,
+		})
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({
+			success: false,
+			message: "Internal Server Error",
+		})
+	}
 })
 
 module.exports = router

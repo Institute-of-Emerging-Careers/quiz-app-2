@@ -16,8 +16,9 @@ const {
 } = require("./data_lists")
 const { sendApplicationReceiptEmail } = require("../functions/sendEmail")
 const { autoAssignQuiz } = require("./utils")
+const { queueMail } = require("../bull")
 
-class ApplicationRound extends Model { }
+class ApplicationRound extends Model {}
 
 ApplicationRound.init(
 	{
@@ -37,7 +38,7 @@ ApplicationRound.init(
 	}
 )
 
-class Application extends Model { }
+class Application extends Model {}
 
 Application.init(
 	{
@@ -59,7 +60,7 @@ Application.init(
 		},
 		age: {
 			type: DataTypes.TINYINT.UNSIGNED,
-			allowNull: false,
+			allowNull: true,
 			validate: {
 				notEmpty: {
 					msg: "Age cannot be empty.",
@@ -88,10 +89,6 @@ Application.init(
 			type: DataTypes.STRING(100),
 			allowNull: false,
 			validate: {
-				isIn: {
-					args: [cities],
-					msg: "Invalid city. Please select one from the provided list.",
-				},
 				notEmpty: {
 					msg: "City cannot be empty.",
 				},
@@ -103,7 +100,7 @@ Application.init(
 		},
 		address: {
 			type: DataTypes.STRING(300),
-			allowNull: false,
+			allowNull: true,
 			validate: {
 				notEmpty: {
 					msg: "Address cannot be empty.",
@@ -116,7 +113,7 @@ Application.init(
 		},
 		father_name: {
 			type: DataTypes.STRING(200),
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
 			validate: {
 				notEmpty: {
@@ -130,7 +127,7 @@ Application.init(
 		},
 		province: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
 			validate: {
 				isIn: {
@@ -141,7 +138,7 @@ Application.init(
 		},
 		country: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
 			validate: {
 				isIn: {
@@ -152,7 +149,7 @@ Application.init(
 		},
 		current_address: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
 			validate: {
 				notEmpty: {
@@ -162,35 +159,15 @@ Application.init(
 		},
 		belongs_to_flood_area: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you are from a flood affected area or not.",
-				},
-			},
+			allowNull: true,
 		},
 		is_tcf_alumni: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you are a TCF Alumni or not.",
-				}
-			}
+			allowNull: true,
 		},
 		city_of_origin: {
 			type: DataTypes.STRING(100),
 			allowNull: true,
-			validate: {
-				isIn: {
-					args: [cities],
-					msg: "Invalid city. Please select one from the provided list.",
-				},
-				len: {
-					args: [[2, 100]],
-					msg: "City name must be between 2 and 100 characters long.",
-				},
-			},
 		},
 		flood_area_name: {
 			type: DataTypes.STRING(100),
@@ -209,6 +186,7 @@ Application.init(
 			allowNull: true,
 		},
 		education_completed: {
+			//this will be used for the new education field
 			type: DataTypes.STRING,
 			allowNull: false,
 			defaultValue: "N/A",
@@ -216,21 +194,12 @@ Application.init(
 				notEmpty: {
 					msg: "Education Completed cannot be empty. Please select an option.",
 				},
-				isIn: {
-					args: [education_levels],
-					msg: "Invalid Education Completed Level",
-				},
 			},
 		},
 		education_completed_major: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				notEmpty: {
-					msg: "Major/Field of Completed Education cannot be empty.",
-				},
-			},
 		},
 		education_ongoing: {
 			type: DataTypes.STRING,
@@ -258,17 +227,8 @@ Application.init(
 		},
 		monthly_family_income: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "0",
-			validate: {
-				notEmpty: {
-					msg: "Monthly Family Income cannot be empty. Please enter a non-negative value.",
-				},
-				isIn: {
-					args: [income_brackets],
-					msg: "Invalid Monthly Family Income",
-				},
-			},
 		},
 		computer_and_internet_access: {
 			type: DataTypes.BOOLEAN,
@@ -287,15 +247,10 @@ Application.init(
 			allowNull: true,
 		},
 		type_of_employment: {
+			//this field will be used for the new "employment" field
 			type: DataTypes.STRING,
 			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				isIn: {
-					args: [type_of_employment],
-					msg: "Invalid type of employment. Please pick one of the provided options.",
-				},
-			},
 		},
 		salary: {
 			type: DataTypes.STRING,
@@ -319,13 +274,8 @@ Application.init(
 		},
 		how_to_enroll: {
 			type: DataTypes.STRING,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: "N/A",
-			validate: {
-				notEmpty: {
-					msg: "How to enroll cannot be empty. Please select an option.",
-				},
-			},
 		},
 		salary_expectation: {
 			type: DataTypes.STRING,
@@ -379,12 +329,7 @@ Application.init(
 		},
 		has_applied_before: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have applied to IEC before by selecting one of the options.",
-				},
-			},
+			allowNull: true,
 		},
 		preference_reason: {
 			type: DataTypes.TEXT,
@@ -393,91 +338,52 @@ Application.init(
 		},
 		is_comp_sci_grad: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you are a computer science graduate or not.",
-				},
-			},
+			allowNull: true,
 		},
 		digi_skills_certifications: {
 			type: DataTypes.TEXT,
 			allowNull: true,
+			defaultValue: "",
 		},
 		how_heard_about_iec: {
 			type: DataTypes.STRING,
-			allowNull: false,
-			validate: {
-				isIn: {
-					args: [sources_of_information],
-					msg: "Please tell us how you heard about IEC.",
-				},
-			},
+			allowNull: true,
+			defaultValue: "",
 		},
 		knows_from_IEC: {
 			type: DataTypes.STRING,
 			allowNull: true,
-			validate: {
-				isIn: {
-					args: [knows_from_IEC],
-					msg: "Please tell us if you know anyone from IEC.",
-				},
-			},
+			defaultValue: "",
 		},
 		LEC_acknowledgement: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you have read and understood the LEC.",
-				},
-			},
+			allowNull: true,
+			defaultValue: false,
 		},
 		will_work_full_time: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
+			allowNull: true,
 			defaultValue: true,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us if you will work full time, if granted a job opportunity, or not.",
-				},
-			},
 		},
 		acknowledge_online: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please acknowledge that the program is online.",
-				},
-			},
+			allowNull: true,
+			defaultValue: false,
 		},
 		firstPreferenceReason: {
 			type: DataTypes.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us why you chose your first preference.",
-				},
-			},
+			allowNull: true,
+			defaultValue: "",
 		},
 		secondPreferenceReason: {
 			type: DataTypes.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us why you chose your second preference.",
-				},
-			},
+			allowNull: true,
+			defaultValue: "",
 		},
 		thirdPreferenceReason: {
 			type: DataTypes.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Please tell us why you chose your third preference.",
-				},
-			},
+			allowNull: true,
+			defaultValue: "",
 		},
 		rejection_email_sent: {
 			type: DataTypes.BOOLEAN,
@@ -494,100 +400,106 @@ Application.init(
 	{
 		sequelize,
 		modelName: "Application",
-		validate: {
-			firstPreferenceId() {
-				if (
-					this.firstPreferenceId == null ||
-					this.firstPreferenceId == undefined
-				) {
-					throw Error("First Preference cannot be empty. Select an option.")
-				}
-			},
-			secondPreferenceId() {
-				if (
-					this.secondPreferenceId == null ||
-					this.secondPreferenceId == undefined
-				) {
-					throw Error("Second Preference cannot be empty. Select an option.")
-				}
-			},
-			thirdPreferenceId() {
-				if (
-					this.thirdPreferenceId == null ||
-					this.thirdPreferenceId == undefined
-				) {
-					throw Error("Third Preference cannot be empty. Select an option.")
-				}
-			},
-		},
 		hooks: {
-			beforeValidate: (user, options) => {
-				let age_group_cutoffs = [
-					[19, "Under 20"],
-					[24, "20-24"],
-					[29, "25-29"],
-					[34, "30-34"],
-					[40, "35-40"],
-					[110, "Above 40"],
-				]
-				let age_group = ""
+			// beforeValidate: (user, options) => {
+			// 	let age_group_cutoffs = [
+			// 		[19, "Under 20"],
+			// 		[24, "20-24"],
+			// 		[29, "25-29"],
+			// 		[34, "30-34"],
+			// 		[40, "35-40"],
+			// 		[110, "Above 40"],
+			// 	]
+			// 	let age_group = ""
 
-				for (let i = 0; i < age_group_cutoffs.length; i++) {
-					if (user.age <= age_group_cutoffs[i][0]) {
-						age_group = age_group_cutoffs[i][1]
-						break
-					}
-				}
-				if (age_group == "") age_group = "Above 30"
-				user.age_group = age_group
-			},
-			// beforeSave: async (user, options) => {
-			// 	let reject = false;
-			// 	if (user.age < 18 || user.age > 30 || user.time_commitment == false) {
-			// 		reject = true;
-			// 	}
-
-			// 	if (reject === true) {
-			// 		try {
-			// 			const student = await user.getStudent({
-			// 				attributes: ["email", "firstName"],
-			// 			});
-			// 			user.rejection_email_sent = true;
-			// 			return queueMail(student.email, `IEC Application Update`, {
-			// 				heading: `Application Not Accepted`,
-			// 				inner_text: `Dear ${student.firstName},
-
-			//   Thank you for showing your interest in the Digital Skills Training Program at the Institute of Emerging Careers (IEC).
-
-			//   We regret to inform you that we will not be moving forward with your application because you do not meet the eligibility criteria required for the program. The Digital Skills Training Program is designed to train those who:<br>
-			//   <ul>
-			//   <li>Are in the age bracket 18-30</li>
-			//   <li>Can commit 30-40 hours per week</li>
-			//   </ul>
-
-			//   Stay tuned to our website and social media for the upcoming programs which might suit you or refer a friend for the Digital Skills Training Program, who fall under this criteria.
-
-			//   We wish you all the best for your future career endeavors. For any further questions or concerns, feel free to contact us at <a href="mailto:shan.rajput@iec.org.pk">shan.rajput@iec.org.pk</a> on Whatsapp: 03338800947
-
-			//   Best Regards,
-			//   Director Admissions
-			//   Institute of Emerging Careers
-			//   http://www.iec.org.pk`
-			// 			});
-			// 		} catch (err) {
-			// 			console.log(err);
-			// 			user.rejection_email_sent = false;
-			// 			return new Promise((resolve, reject) => {
-			// 				reject(err);
-			// 			});
+			// 	for (let i = 0; i < age_group_cutoffs.length; i++) {
+			// 		if (user.age <= age_group_cutoffs[i][0]) {
+			// 			age_group = age_group_cutoffs[i][1]
+			// 			break
 			// 		}
-			// 	} else {
-			// 		user.rejection_email_sent = false;
-			// 		return new Promise((resolve) => {
-			// 			resolve();
-			// 		});
 			// 	}
+			// 	if (age_group == "") age_group = "Above 30"
+			// 	user.age_group = age_group
 			// },
+			//need to add auto-rejection for this cohort
+			beforeSave: async (user, options) => {
+				//this time, we are rejecting students with age != 22-35
+				// city = other
+				// education != Bachelors (Completed ), Diploma (Completed), Postgraduate (Completed)
+				// employment == Employed (Full time), Employed (part time)
+
+				//this is the validation part
+				let reject = false
+
+				//age cutoff
+				if (user.age_group != "22 - 35") {
+					console.log("Invalid Age group")
+					reject = true
+				}
+
+				//not from a major city
+				if (user.city === "Other") {
+					console.log("Invalid Age group")
+
+					reject = true
+				}
+
+				if (
+					user.education_completed !== "Bachelors (Completed)" &&
+					user.education_completed !== "Diploma (Completed)" &&
+					user.education_completed !== "Postgraduate (Completed)"
+				) {
+					console.log(user.education_completed);
+					console.log("Invalid Education")
+
+					reject = true
+				}
+
+				if (
+					user.type_of_employment === "Employed (Full time)" ||
+					user.type_of_employment === "Employed (Part time)"
+				) {
+					console.log("Invalid Employment")
+
+					reject = true
+				}
+				//this is the sending email part
+				if (reject === true) {
+					try {
+						const student = await user.getStudent({
+							attributes: ["email", "firstName"],
+						})
+						user.rejection_email_sent = true
+						return queueMail(student.email, `IEC Application Update`, {
+							heading: `Application Not Accepted`,
+							inner_text: `Dear ${student.firstName},
+
+			  Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. We regret to inform you that we will not be moving forward with your application because you do not follow the required criteria set by IEC
+
+			  We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. Stay tuned to our website and social media for the upcoming programs. 
+
+			  We wish you all the best in your future career endeavors
+			  
+
+			  Best Regards,
+			  Team Acquisition
+			  Institute of Emerging Careers
+			  https://iec.org.pk`,
+						})
+					} catch (err) {
+						console.log(err)
+						user.rejection_email_sent = false
+						return new Promise((resolve, reject) => {
+							reject(err)
+						})
+					}
+				} else {
+					user.rejection_email_sent = false
+					return new Promise((resolve) => {
+						resolve()
+					})
+				}
+			},
 
 			afterSave: async (user, options) => {
 				if (!user.rejection_email_sent) {
@@ -607,7 +519,7 @@ Application.init(
 	}
 )
 
-class Course extends Model { }
+class Course extends Model {}
 
 Course.init(
 	{
@@ -623,7 +535,7 @@ Course.init(
 )
 
 // junction table for ApplicaitonRound and Course (many-to-many relationship)
-class ApplicationRoundCourseJunction extends Model { }
+class ApplicationRoundCourseJunction extends Model {}
 ApplicationRoundCourseJunction.init(
 	{
 		id: {
@@ -636,7 +548,7 @@ ApplicationRoundCourseJunction.init(
 	{ sequelize, modelName: "ApplicationRoundCourseJunction" }
 )
 
-class InterviewRound extends Model { }
+class InterviewRound extends Model {}
 
 InterviewRound.init(
 	{
@@ -660,7 +572,7 @@ InterviewRound.init(
 	}
 )
 
-class Interviewer extends Model { }
+class Interviewer extends Model {}
 
 Interviewer.init(
 	{
@@ -684,7 +596,7 @@ Interviewer.init(
 	}
 )
 
-class InterviewerSlot extends Model { }
+class InterviewerSlot extends Model {}
 
 InterviewerSlot.init(
 	{
@@ -726,7 +638,7 @@ InterviewerInvite.init(
 )
 
 // StudentInterviewRoundInvite is junction model for the many-to-many relationship between "Student" and "InterviewRound"
-class StudentInterviewRoundInvite extends Model { }
+class StudentInterviewRoundInvite extends Model {}
 StudentInterviewRoundInvite.init(
 	{
 		id: {
@@ -739,7 +651,7 @@ StudentInterviewRoundInvite.init(
 	{ sequelize, modelName: "StudentInterviewRoundInvite" }
 )
 
-class InterviewMatching extends Model { }
+class InterviewMatching extends Model {}
 
 InterviewMatching.init(
 	{
@@ -767,7 +679,7 @@ InterviewMatching.init(
 	{ sequelize, modelName: "InterviewMatching" }
 )
 
-class InterviewQuestions extends Model { }
+class InterviewQuestions extends Model {}
 
 InterviewQuestions.init(
 	{
@@ -802,7 +714,7 @@ InterviewQuestions.init(
 	{ sequelize, modelName: "InterviewQuestions" }
 )
 
-class InterviewAnswers extends Model { }
+class InterviewAnswers extends Model {}
 
 InterviewAnswers.init(
 	{
@@ -846,7 +758,7 @@ InterviewAnswers.init(
 	{ sequelize, modelName: "InterviewAnswers" }
 )
 
-class InterviewScores extends Model { }
+class InterviewScores extends Model {}
 
 InterviewScores.init(
 	{
@@ -882,7 +794,7 @@ InterviewScores.init(
 	{ sequelize, modelName: "InterviewScores" }
 )
 
-class InterviewBookingSlots extends Model { }
+class InterviewBookingSlots extends Model {}
 
 InterviewBookingSlots.init(
 	{
@@ -932,7 +844,7 @@ InterviewBookingSlots.init(
 	}
 )
 
-class Orientation extends Model { }
+class Orientation extends Model {}
 
 Orientation.init(
 	{
@@ -961,7 +873,7 @@ Orientation.init(
 
 // OrientationInvite is the Junction model for the Many-to-Many relationship of "Orientation" and "Student" models.
 
-class OrientationInvite extends Model { }
+class OrientationInvite extends Model {}
 OrientationInvite.init(
 	{
 		email_sent: {
@@ -981,7 +893,7 @@ OrientationInvite.init(
 	}
 )
 
-class Quiz extends Model { }
+class Quiz extends Model {}
 
 Quiz.init(
 	{
@@ -1011,7 +923,7 @@ Quiz.init(
 	}
 )
 
-class Section extends Model { }
+class Section extends Model {}
 
 Section.init(
 	{
@@ -1038,7 +950,7 @@ Section.init(
 	}
 )
 
-class Passage extends Model { }
+class Passage extends Model {}
 Passage.init(
 	{
 		statement: {
@@ -1056,7 +968,7 @@ Passage.init(
 	}
 )
 
-class Question extends Model { }
+class Question extends Model {}
 
 Question.init(
 	{
@@ -1097,7 +1009,7 @@ Question.init(
 	}
 )
 
-class Option extends Model { }
+class Option extends Model {}
 
 Option.init(
 	{
@@ -1124,7 +1036,7 @@ Option.init(
 	}
 )
 
-class User extends Model { }
+class User extends Model {}
 
 User.init(
 	{
@@ -1152,7 +1064,7 @@ User.init(
 	}
 )
 
-class Student extends Model { }
+class Student extends Model {}
 
 Student.init(
 	{
@@ -1231,11 +1143,8 @@ Student.init(
 		},
 		gender: {
 			type: DataTypes.STRING(15),
-			allowNull: false,
+			allowNull: true,
 			validate: {
-				notEmpty: {
-					msg: "Gender cannot be empty.",
-				},
 				len: {
 					args: [[2, 15]],
 					msg: "Gender name must be between 2 and 15 characters long.",
@@ -1255,7 +1164,7 @@ Student.init(
 	}
 )
 
-class Invite extends Model { }
+class Invite extends Model {}
 
 Invite.init(
 	{
@@ -1276,7 +1185,7 @@ Invite.init(
 	}
 )
 
-class Assignment extends Model { }
+class Assignment extends Model {}
 
 Assignment.init(
 	{
@@ -1297,7 +1206,7 @@ Assignment.init(
 	}
 )
 
-class Attempt extends Model { }
+class Attempt extends Model {}
 
 // An Attempt is the attempt of just a single section out of a quiz
 Attempt.init(
@@ -1326,7 +1235,7 @@ Attempt.init(
 	}
 )
 
-class Score extends Model { }
+class Score extends Model {}
 
 // An Attempt is the attempt of just a single section out of a quiz
 Score.init(
@@ -1343,11 +1252,11 @@ Score.init(
 	}
 )
 
-class Answer extends Model { }
+class Answer extends Model {}
 
 Answer.init({}, { sequelize, modelName: "Answer" })
 
-class PasswordResetLink extends Model { }
+class PasswordResetLink extends Model {}
 
 PasswordResetLink.init(
 	{
@@ -1362,7 +1271,7 @@ PasswordResetLink.init(
 	}
 )
 
-class Email extends Model { }
+class Email extends Model {}
 
 Email.init(
 	{
@@ -1398,44 +1307,53 @@ Email.init(
 )
 
 // LEC Agreements
-class LECRound extends Model { };
-LECRound.init({
-	title: {
-		type: DataTypes.STRING,
-		allowNull: false,
+class LECRound extends Model {}
+LECRound.init(
+	{
+		title: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+		open: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
+		},
+		send_reminders: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+			defaultValue: true,
+		},
 	},
-	open: {
-		type: DataTypes.BOOLEAN,
-		allowNull: false,
-		defaultValue: true,
-	},
-	send_reminders: {
-		type: DataTypes.BOOLEAN,
-		allowNull: false,
-		defaultValue: true,
-	},
-}, { sequelize, modelName: "LECRound" })
+	{ sequelize, modelName: "LECRound" }
+)
 
-class LECRoundInvite extends Model { };
-LECRoundInvite.init({
-	// how many times this particular user has been emailed about this particular LEC round, be it through automated reminder emails or manual emails
-	num_emails_sent: {
-		type: DataTypes.TINYINT,
-		allowNull: false,
-		defaultValue: 0,
-	}
-}, { sequelize, modelName: "LECRoundInvite" })
+class LECRoundInvite extends Model {}
+LECRoundInvite.init(
+	{
+		// how many times this particular user has been emailed about this particular LEC round, be it through automated reminder emails or manual emails
+		num_emails_sent: {
+			type: DataTypes.TINYINT,
+			allowNull: false,
+			defaultValue: 0,
+		},
+	},
+	{ sequelize, modelName: "LECRoundInvite" }
+)
 
 // an LEC Agreement Template is an unsigned LEC agreement PDF that can be sent to students. Students download it, fill & sign it, and send it back to us.
-class LECAgreementTemplate extends Model { };
-LECAgreementTemplate.init({
-	url: {
-		type: DataTypes.STRING,
-		allowNull: false,
-	}
-}, { sequelize })
+class LECAgreementTemplate extends Model {}
+LECAgreementTemplate.init(
+	{
+		url: {
+			type: DataTypes.STRING,
+			allowNull: false,
+		},
+	},
+	{ sequelize }
+)
 
-class LECAgreementSubmission extends Model { };
+class LECAgreementSubmission extends Model {}
 LECAgreementSubmission.init({}, { sequelize })
 
 // Relationships
@@ -1660,8 +1578,8 @@ Quiz.hasMany(ApplicationRound, {
 })
 ApplicationRound.belongsTo(Quiz)
 
-LECRound.belongsToMany(Student, { through: LECRoundInvite, allowNull: false, })
-Student.belongsToMany(LECRound, { through: LECRoundInvite, allowNull: false, })
+LECRound.belongsToMany(Student, { through: LECRoundInvite, allowNull: false })
+Student.belongsToMany(LECRound, { through: LECRoundInvite, allowNull: false })
 
 Quiz.hasOne(LECRound, {
 	onUpdate: "CASCADE",
@@ -1670,16 +1588,16 @@ Quiz.hasOne(LECRound, {
 LECRound.belongsTo(Quiz)
 
 LECRound.hasMany(LECAgreementTemplate)
-LECAgreementTemplate.belongsTo(LECRound, { allowNull: false, })
+LECAgreementTemplate.belongsTo(LECRound, { allowNull: false })
 
 LECRound.hasMany(LECAgreementSubmission)
-LECAgreementSubmission.belongsTo(LECRound, { allowNull: false, })
+LECAgreementSubmission.belongsTo(LECRound, { allowNull: false })
 
 Student.hasMany(LECAgreementSubmission)
-LECAgreementSubmission.belongsTo(Student, { allowNull: false, })
+LECAgreementSubmission.belongsTo(Student, { allowNull: false })
 
 LECAgreementTemplate.hasMany(LECAgreementSubmission)
-LECAgreementSubmission.belongsTo(LECAgreementTemplate, { allowNull: false, })
+LECAgreementSubmission.belongsTo(LECAgreementTemplate, { allowNull: false })
 
 module.exports = {
 	Application,

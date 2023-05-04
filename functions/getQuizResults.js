@@ -185,18 +185,7 @@ const getQuizResults = (quiz_id) => {
 								)
 							)
 								courses[assignment.Application["firstPreferenceId"]] = null
-							if (
-								!courses.hasOwnProperty(
-									assignment.Application["secondPreferenceId"]
-								)
-							)
-								courses[assignment.Application["secondPreferenceId"]] = null
-							if (
-								!courses.hasOwnProperty(
-									assignment.Application["thirdPreferenceId"]
-								)
-							)
-								courses[assignment.Application["thirdPreferenceId"]] = null
+				
 						}
 
 						// insert empty placeholder section objects according to number of sections
@@ -268,13 +257,13 @@ const getQuizResults = (quiz_id) => {
 					})
 				})
 			}
-
 			let course_objs = await Promise.all(
 				Object.keys(courses).map((course_id) =>
 					Course.findOne({ where: { id: course_id } })
 				)
 			)
 			course_objs.forEach((course_obj) => {
+
 				courses[course_obj.id] = course_obj.title
 			})
 
