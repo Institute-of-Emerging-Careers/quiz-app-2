@@ -109,7 +109,7 @@ const sendApplicationReceiptEmail = async (user) => {
 		heading: `Application Received`,
 		inner_text: `Dear ${student.firstName}
     
-        Thank you for applying to the “Tech Apprenticeship Program Cohort 08” at the Institute of Emerging Careers. Your Application number is ${user.id}. You may use this number for future correspondence. 
+        Thank you for applying to the “Tech Apprenticeship Program Cohort 08” at the Institute of Emerging Careers.<b> Your Application number is ${user.id}</b>. You may use this number for future correspondence. 
 
         Our next part of the registration process includes Assessments which have been assigned to you on the portal you signed-up on. This is compulsory to complete within 72 hours of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. Incompletion of the Assessment will lead to disqualification. 
 
