@@ -1196,6 +1196,10 @@ router.get(
 			section.Quiz.id,
 			assignment
 		)
+
+
+
+
 		res.json({ success: true, all_sections_solved: all_sections_solved })
 	}
 )

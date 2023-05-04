@@ -1,11 +1,13 @@
 "use strict";
 
-var Modal = function Modal(props) {
-  var show_modal = props.show_modal,
-      setShowModal = props.setShowModal,
-      heading = props.heading,
-      content = props.content,
-      children = props.children;
+const Modal = props => {
+  const {
+    show_modal,
+    setShowModal,
+    heading,
+    content,
+    children
+  } = props;
   return /*#__PURE__*/React.createElement("div", null, show_modal === true ? /*#__PURE__*/React.createElement("div", {
     id: "modal",
     className: "w-full inset-0 fixed z-30 bg-black/60"
@@ -17,7 +19,7 @@ var Modal = function Modal(props) {
     className: "text-xl col-auto justify-self-start self-center"
   }, heading), /*#__PURE__*/React.createElement("i", {
     className: "fas fa-times text-white cursor-pointer col-auto justify-self-end self-center",
-    onClick: function onClick() {
+    onClick: () => {
       setShowModal(false);
     }
   })), /*#__PURE__*/React.createElement("div", {

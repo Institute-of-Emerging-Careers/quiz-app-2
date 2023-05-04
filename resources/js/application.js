@@ -1,296 +1,505 @@
-const list_of_fields = [
-  "firstName",
-  "lastName",
-  "email",
-  "cnic",
-  "phone",
-  "age",
-  "city",
-  "province",
-  "country",
-  "address",
-  "father_name",
-  "current_address",
-  "education_completed",
-  "education_completed_major",
-  "education_ongoing",
-  "education_ongoing_major",
-  "monthly_family_income",
-  "computer_and_internet_access",
-  "internet_facility_in_area",
-  "time_commitment",
-  "is_employed",
-  "type_of_employment",
-  "salary",
-  "current_field",
-  "will_leave_job",
-  "has_applied_before",
-  "preference_reason",
-  "is_comp_sci_grad",
-  "how_heard_about_iec",
-  "will_work_full_time",
-  "acknowledge_online",
-];
+const useState = React.useState
+const useEffect = React.useEffect
 
-function handleForm(e) {
-  $("#submit-spinner").removeClass("hidden-imp");
-  e.preventDefault();
-  e.stopPropagation();
-
-  const data = new URLSearchParams(new FormData(e.target));
-
-  fetch($("#application-form").attr("action"), {
-    method: "POST",
-    body: data,
-  }).then((raw_response) => {
-    $("#submit-spinner").addClass("hidden-imp");
-    if (raw_response.ok) {
-      $("#step1").fadeOut();
-      $("#step2").fadeOut();
-      $("#step3").fadeOut();
-      $("#step4").fadeOut();
-      $("#step5-fields").fadeOut();
-      $("#after_save_message").removeClass("hidden");
-      $("#step5-next-button")
-        .removeClass("btn-primary")
-        .removeClass("btn-danger")
-        .addClass("btn-success")
-        .attr("disabled", true);
-      $("#submit-button-text").html(
-        "<i class='fas fa-check'></i> Application Submitted Successfully"
-      );
-      location.href = "https://iec.org.pk/thankyou/";
-    } else if (raw_response.status == 500) {
-      alert("Something went wrong.");
-      $("#step5-next-button").removeClass("btn-primary").addClass("btn-danger");
-    } else if (raw_response.status == 400) {
-      raw_response.json().then((response) => {
-        $("#step5-next-button")
-          .removeClass("btn-primary")
-          .addClass("btn-danger");
-        console.log(response);
-        $(`#${response.field}`).addClass("is-invalid").focus();
-        $(`#${response.field}-error-message`).text(response.message);
-        $("#application-form").addClass("was-validated");
-      });
-    } else if (raw_response.status == 403) {
-      alert(
-        "You have already applied for this cohort before. You cannot apply again."
-      );
-    } else alert("Something unknown went wrong. Error code 07.");
-  });
+const Header = () => {
+	return (
+		<div className="flex w-full items-center justify-center p-4 bg-white">
+			<h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-iec-blue to-green-500 p-5">
+				Apply To IEC
+			</h1>
+		</div>
+	)
 }
 
-function resetAllErrors(list_of_fields) {
-  list_of_fields.forEach((field) => {
-    $(`#${field}-error-message`).text("");
-  });
+const Input = ({
+	label,
+	placeholder,
+	form,
+	name,
+	type,
+	onChange = undefined,
+	value = undefined,
+}) => {
+	return (
+		<div className="flex flex-col w-full">
+			<div className="flex flex-col gap-1 w-full">
+				<label className="label">
+					<span className="">{label}</span>
+				</label>
+
+				<input
+					type={type}
+					name={name}
+					placeholder={placeholder}
+					onChange={onChange}
+					value={value}
+					required={true}
+					className="border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
+				/>
+			</div>
+		</div>
+	)
 }
 
-document
-  .getElementById("application-form")
-  .addEventListener("submit", handleForm);
+// const DropdownComponent = ({ label, name, placeholder, options }) => {
+// 	return (
+// 		<div className="flex flex-col w-full">
+// 			<div className="flex flex-col gap-1 w-full">
+// 				<label className="label">
+// 					<span className="">{label}</span>
+// 				</label>
 
-const nextStep = (from, to) => {
-  $(`#${to}-bar`).removeClass("bg-secondary").addClass("progress-bar-striped");
-  $(`#${from}`).addClass("was-validated");
-  if (to == "step5") $(`#${to}`).addClass("was-validated");
-  $(`#${from}-next-button`).fadeOut(() => {
-    $(`#${to}`).fadeIn();
-  });
-};
+// 				<select
+// 					name={name}
+// 					className="border-2 border-gray-300 rounded-lg p-2 w-full"
+// 					placeholder="Select employment"
+// 				>
+// 					<option value="" selected disabled>
+// 						{placeholder}
+// 					</option>
+// 					{options.map((option, index) => (
+// 						<option key={index} value={option}>
+// 							{option}
+// 						</option>
+// 					))}
+// 				</select>
+// 			</div>
+// 		</div>
+// 	)
+// }
 
-const checkIfUserExists = () => {
-  resetAllErrors(list_of_fields);
-  if ($("#email").val() == "") {
-    $("#step1").addClass("was-validated");
-    $("#email-error-message").text("Please enter email.");
-  } else if ($("#cnic").val() == "") {
-    $("#step1").addClass("was-validated");
-    $("#cnic-error-message").text("Please enter cnic.");
-  } else {
-    $("#step-1-next-button-spinner").removeClass("hidden-imp");
-    fetch("/application/check-if-user-exists", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        email: document.getElementById("email").value,
-        cnic: document.getElementById("cnic").value,
-        application_round_id: $("#application_round_id_field").val(),
-      }),
-    })
-      .then((raw_response) => {
-        $("#step-1-next-button-spinner").addClass("hidden-imp");
-        resetAllErrors(list_of_fields);
-        if (raw_response.ok) {
-          raw_response.json().then((response) => {
-            if (response.exists) {
-              if (response.type == "already_applied") {
-                $("#application-form input").prop("disabled", true);
-                $(`#application-form-error-message`)
-                  .html(
-                    "<i class='fas fa-exclamation-triangle'></i> You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."
-                  )
-                  .show();
-                $(`#step1-next-button`)
-                  .removeClass("btn-primary")
-                  .addClass("btn-danger")
-                  .attr("disabled", true);
-              } else if (response.type == "both_cnic_and_email") {
-                $("#password-input-group :input").prop("disabled", true);
-                $("#password").attr("required", false);
-                $("#password2").attr("required", false);
-                $("#password-input-group").hide();
-                $("#email").attr("readonly", true);
-                $("#cnic").attr("readonly", true);
+const App = () => {
+	const [CNIC, setCNIC] = useState("")
+	const [password, setPassword] = useState("")
+	const [confirmPassword, setConfirmPassword] = useState("")
+	const [passwordMatch, setPasswordMatch] = useState("")
+	const [age, setAge] = useState(0)
+	const [courses, setCourses] = useState([])
+	const [email, setEmail] = useState("")
+	const [courseInterest, setCourseInterest] = useState("")
+	const [status, setStatus] = useState("justOpened")
+	const [applicationStatus, setApplicationStatus] = useState("")
+	const [errorMsg, setErrorMsg] = useState("")
+	const [cnicError, setCNICError] = useState("")
+	//one of few discrete states, not a boolean;
+	//status can be:
+	// justOpened(hasn't entered email yet),
+	// alreadyApplied
+	// existingUser (dont ask for password)
+	// newUser (ask for password)
 
-                // resetting errors
-                $(`#cnic`).removeClass("is-invalid");
-                $(`#email`).removeClass("is-invalid");
-                nextStep("step1", "step2");
-              } else if (response.type == "email_only") {
-                $(`#cnic`).addClass("is-invalid").focus();
-                $(`#cnic-error-message`).html(
-                  `The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br>Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank">click here to change your CNIC number</a> if you remember your password from last time.`
-                );
-              } else if (response.type == "cnic_only") {
-                $(`#email`).addClass("is-invalid").focus();
-                $(`#email-error-message`).html(
-                  `We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ${response.email}.<br>If that email address was correct, then please use that same email address and cnic pair.<br>If you entered a wrong email address the last time, then <a href="/application/change-email">click here to change your email address</a>.`
-                );
-              } else {
-                // resetting errors
-                $(`#cnic`).removeClass("is-invalid");
-                $(`#email`).removeClass("is-invalid");
-                nextStep("step1", "step2");
-              }
-            } else {
-              // resetting errors
-              $(`#cnic`).removeClass("is-invalid");
-              $(`#email`).removeClass("is-invalid");
-              nextStep("step1", "step2");
-            }
-          });
-        } else
-          alert(
-            "Something went wrong. Please check your internet connection and try again. Code 01."
-          );
-      })
-      .catch((err) => {
-        console.log(err);
-        alert(
-          "Something went wrong. Please check your internet connection and try again. Code 02."
-        );
-      });
-  }
-};
+	const handleCNIC = (e) => {
+		setCNIC(formatCNIC(e.target.value))
+	}
 
-$(document).ready(function () {
-  // store console logs for error reporting
-  console.stdlog = console.log.bind(console);
-  console.logs = [];
-  console.log = function () {
-    let last_index = console.logs.push(Array.from(arguments)) - 1;
-    console.logs[last_index] = JSON.stringify(console.logs[last_index]);
-    $("#support_email").prop(
-      "href",
-      `mailto:mail@iec.org.pk?body=${encodeURIComponent(
-        "Console Data (do not change): " + console.logs.toString()
-      )}`
-    );
-    console.stdlog.apply(console, arguments);
-  };
+	const formatCNIC = (input) => {
+		const cleanedInput = input.replace(/\D/g, "")
 
-  // pagination
-  $("#step1-next-button").click(checkIfUserExists);
-  $("#step2-next-button").click(() => nextStep("step2", "step3"));
-  $("#step3-next-button").click(() => nextStep("step3", "step4"));
-  $("#step4-next-button").click(() => nextStep("step4", "step5"));
+		if (input.length <= 5) return cleanedInput
 
-  // showing additional employment questions if the user selects "yes" on "are you employed"
-  $("#is_employed_no").prop("checked", false);
-  if (
-    $('input:radio[name="is_employed"]').is(":checked") &&
-    $('input:radio[name="is_employed"]').val() == "1"
-  ) {
-    $("#additional-employment-questions").fadeIn();
-    $("#salary").prop("required", true);
-    $("#part-time").prop("required", true);
-    $("#will-leave-job-yes").prop("required", true);
-  } else {
-    $("#additional-employment-questions").fadeOut();
-    $("#additional-employment-questions :input").prop("required", false);
-  }
+		let formattedInput = cleanedInput
+			.slice(0, 5)
+			.concat("-", cleanedInput.slice(5, 12))
 
-  $('input:radio[name="is_employed"]').change(function () {
-    if ($(this).is(":checked") && $(this).val() == "1") {
-      $("#additional-employment-questions").fadeIn();
-      $("#additional-employment-questions :input").prop("required", true);
-    } else {
-      $("#additional-employment-questions").fadeOut();
-      $("#additional-employment-questions :input").prop("required", false);
-    }
-  });
+		if (input.length <= 13) return formattedInput
 
-  $('input:radio[name="is_employed_no"]').change(function () {
-    if ($(this).is(":checked") && $(this).val() == "0") {
-      $("#additional-employment-questions").fadeIn();
-      $("#additional-employment-questions :input").prop("required", false);
-    } else {
-      $("#additional-employment-questions").fadeOut();
-      $("#additional-employment-questions :input").prop("required", true);
-    }
-  });
+		formattedInput = formattedInput.concat("-", cleanedInput.slice(12, 13))
 
-  $('input:radio[id="how_to_enroll"]').change(function () {
-    $("#how_complete_course").prop("required", false);
+		return formattedInput
+	}
 
-    if ($(this).is(":checked") && $(this).val() == "1") {
-      //show standard questions
-      $("#standard-questions").fadeIn();
-      $("#standard-questions :input").prop("required", true);
+	const handleAge = (e) => {
+		const value = e.target.value.replace(/\D/g, "")
+		setAge(value)
+	}
 
-      //hide fa questions
-      $("#how_to_enroll_fa").prop("checked", false);
-      $("#fa-questions").fadeOut();
-      $("#fa-questions :input").prop("required", false);
-    } else {
-      $("#standard-questions").fadeOut();
-      $("#standard-questions :input").prop("required", false);
-    }
-  });
+	const checkAlreadyRegistered = async (e) => {
+		e.preventDefault()
+		e.stopPropagation()
 
-  $('input:radio[id="how_to_enroll_fa"]').change(function () {
-    if ($(this).is(":checked") && $(this).val() == "0") {
-      //show the fa questions when checked
-      $("#fa-questions").fadeIn();
-      $("#fa-questions :input").prop("required", true);
-      $("#how_complete_course").prop("required", false);
-    } else {
-      $("#fa-questions").fadeOut();
-      $("#fa-questions :input").prop("required", false);
-    }
-  });
+		//valid responses to this request are;
+		// already_applied (do not allow an application)
+		// both_cnic_and_email (allow but don't ask for password)
+		// cnic_only (don't allow an application, display a message of email and cnic mismatch)
+		// email_only (don't ask for password)
 
-  $('input:radio[id="belongs_to_flood_area"]').change(function () {
-    if ($(this).is(":checked") && $(this).val() == "1") {
-      $("#flood_area_questions").fadeIn();
-      $("#flood_area_questions :input").prop("required", true);
-    } else {
-      $("#flood_area_questions").fadeOut();
-      $("#flood_area_questions :input").prop("required", false);
-    }
-  });
+		try {
+			const response = await fetch(
+				"http://localhost:3000/application/check-if-user-exists",
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						application_round_id: parseInt(
+							window.location.pathname.split("/")[3]
+						),
+						email: email,
+						cnic: CNIC,
+					}),
+				}
+			)
 
-  $('input:radio[id="belongs_to_flood_area_no"]').change(function () {
-    if ($(this).is(":checked") && $(this).val() == "0") {
-      $("#flood_area_questions").fadeOut();
-      $("#flood_area_questions :input").prop("required", false);
-    } else {
-      $("#flood_area_questions").fadeIn();
-      $("#flood_area_questions :input").prop("required", true);
-    }
-  });
+			const data = await response.json()
 
-  // form validation
-});
+			if (!data.exists) {
+				setStatus("newUser")
+				// setApplicationStatus("newUser")
+			} else {
+				setApplicationStatus(data.type)
+			}
+
+			if (data.type === "both_cnic_and_email") {
+				setStatus("existingUser")
+			} else if (data.type === "already_applied") {
+				setErrorMsg("You have already applied to this cohort.")
+			} else if (data.type === "cnic_only"){
+				setCNICError(data.email)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	const handlePassword = (e) => {
+		setPassword(e.target.value)
+
+		if (e.target.value.length < 8) {
+			setErrorMsg("Password must be at least 8 characters")
+		} else {
+			setErrorMsg("")
+		}
+	}
+
+	const handleConfirmPassword = (e) => {
+		setConfirmPassword(e.target.value)
+		setPasswordMatch(e.target.value === password)
+
+		if (e.target.value === password) {
+			setErrorMsg("")
+		} else {
+			setErrorMsg("Passwords do not match")
+		}
+	}
+
+	const handleSubmit = async (e) => {
+		e.preventDefault()
+		e.stopPropagation()
+		try {
+			const application_round_id = window.location.pathname.split("/")[3]
+
+			const formData = new FormData(e.target)
+			console.log(formData)
+
+			// divide name into firstname and lastname by space, if there is no lastname, set it to ""
+			const name = formData.get("name").split(" ")
+			const firstname = name[0]
+			const lastname = name.length > 1 ? name[1] : ""
+
+			const response = await fetch(
+				`http://localhost:3000/application/submit/${application_round_id}/`,
+				{
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: formData.get("email"),
+						cnic: formData.get("cnic"),
+						password: formData.get("password"),
+						firstname: firstname,
+						lastname: lastname,
+						age_group: formData.get("age"),
+						phone: formData.get("phone"),
+						city: formData.get("city"),
+						education_completed: formData.get("education"),
+						type_of_employment: formData.get("employment"),
+						firstPreferenceId: formData.get("course_interest"),
+
+						application_round_id: application_round_id,
+					}),
+				}
+			)
+
+			if (response.status === 201) {
+				window.location.href = "https://iec.org.pk/thankyou"
+			} else {
+				console.log(response)
+			}
+		} catch (err) {
+			console.log(err)
+		}
+	}
+
+	//this effect gets the courses being offered in the current application round
+	useEffect(async () => {
+		//get application ID from URL
+		const application_round_id = window.location.pathname.split("/")[3]
+
+		const response = await fetch(
+			`http://localhost:3000/application/${application_round_id}/courses`
+		)
+		const data = await response.json()
+		if (data.success) {
+			setCourses(data.courses)
+		}
+	}, [])
+
+	return (
+		<div className="bg-gradient-to-r from-iec-blue to-green-500 text-black w-full min-h-screen">
+			<Header />
+
+			<div
+				id="application"
+				className="flex flex-col items-center justify-center w-full"
+			>
+				<form
+					className={`bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-b-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10  transition-all duration-300`}
+					name="application"
+					onSubmit={handleSubmit}
+				>
+					{errorMsg !== "" && (
+						<div
+							className={`bg-red-500 text-white p-2 rounded-lg my-2 w-1/2 self-center justify-self-center flex`}
+						>
+							<p className="mx-auto">{errorMsg}</p>
+						</div>
+					)}
+
+					<div
+						className={` flex flex-col ${
+							status === "justOpened" ? "flex-col" : "md:flex-row"
+						} gap-y-5 md:gap-y-0 md:gap-x-10 `}
+					>
+						<div id="left" className="flex flex-col w-full basis-full gap-y-5">
+							<Input
+								label="Email:"
+								name="email"
+								type="email"
+								value={email}
+								placeholder="info@info.com"
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+							{cnicError !== "" && (
+								<p className="text-sm text-red-500">
+									We already have this CNIC in our database. It means you have
+									applied to IEC in the past, but you used a different email
+									address the last time.
+									<br />
+									The email you used last time was something like {cnicError}.
+									<br/>
+									If that email address was correct, then please use that same
+									email address and cnic pair. If you entered a wrong email
+									address the last time, then
+									<a href="https://apply.iec.org.pk/application/change-email">
+										{" "}
+										click here to change your email address.
+									</a>
+								</p>
+							)}
+
+							<Input
+								label="CNIC:"
+								placeholder="xxxxx-xxxxxxx-x"
+								name="cnic"
+								type="text"
+								value={CNIC}
+								onChange={handleCNIC}
+							/>
+
+							{status !== "justOpened" && (
+								<>
+									<Input
+										label="Name:"
+										name="name"
+										type="text"
+										placeholder="Enter your name"
+									/>
+
+									{status === "newUser" && (
+										<>
+											<Input
+												label="Password:"
+												name="password"
+												type="password"
+												placeholder="********"
+												value={password}
+												onChange={handlePassword}
+											/>
+
+											<Input
+												label="Confirm Password:"
+												name="confirm_password"
+												type="password"
+												placeholder="********"
+												value={confirmPassword}
+												onChange={handleConfirmPassword}
+											/>
+										</>
+									)}
+								</>
+							)}
+						</div>
+						{status !== "justOpened" && (
+							<div
+								id="right"
+								className="flex flex-col w-full basis-full gap-y-5"
+							>
+								<Input
+									label="Phone Number:"
+									name="phone"
+									type="number"
+									placeholder="Phone Number"
+								/>
+								<div className="flex flex-col gap-1 w-full">
+									<label className="label">
+										<span className="">Age:</span>
+									</label>
+
+									<select
+										name="age"
+										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
+										placeholder="What is your age?"
+									>
+										<option value="" selected disabled>
+											Pick your age
+										</option>
+
+										<option value="Less than 22" className="bg-white">
+											Less than 22
+										</option>
+
+										<option value="22 - 35" className="bg-white">
+											Between 22 and 35
+										</option>
+
+										<option value="More than 35" className="bg-white">
+											More than 35
+										</option>
+									</select>
+								</div>
+
+								<div className="flex flex-col gap-1 w-full">
+									<label className="label">
+										<span className="">Course Interest:</span>
+									</label>
+
+									<select
+										name="course_interest"
+										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
+										value={courseInterest}
+									>
+										<option value="" selected disabled>
+											Pick a course
+										</option>
+										{courses.length > 0 &&
+											courses.map((course, index) => (
+												<option
+													key={course.id}
+													value={course.id}
+													className="bg-white"
+													onClick={() => {
+														setCourseInterest(course.id)
+													}}
+												>
+													{course.title}
+												</option>
+											))}
+									</select>
+								</div>
+
+								<div className="flex flex-col gap-1 w-full">
+									<label className="label">
+										<span className="">City:</span>
+									</label>
+
+									<select
+										name="city"
+										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
+									>
+										<option value="" selected disabled>
+											Pick your city
+										</option>
+										<option value="Lahore">Lahore</option>
+										<option value="Islamabad/Rawalpindi">
+											Islamabad/Rawalpindi
+										</option>
+										<option value="Karachi">Karachi</option>
+										<option value="Peshawar">Peshawar</option>
+										<option value="Other">Other</option>
+									</select>
+								</div>
+
+								<div className="flex flex-col gap-1 w-full">
+									<label className="label">
+										<span className="">Education:</span>
+									</label>
+
+									<select
+										name="education"
+										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
+									>
+										<option value="" selected disabled>
+											Select Education Status
+										</option>
+
+										<option>Only Matric</option>
+
+										<option>Only Intermediate</option>
+
+										<option>Bachelors (In process)</option>
+
+										<option>Bachelors (Completed)</option>
+
+										<option>Diploma (In process)</option>
+
+										<option>Diploma (Completed)</option>
+
+										<option>Postgraduate (In process)</option>
+
+										<option>Postgraduate (Completed)</option>
+									</select>
+								</div>
+
+								<div className="flex flex-col gap-1 w-full">
+									<label className="label">
+										<span className="">Employment:</span>
+									</label>
+
+									<select
+										name="employment"
+										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
+										placeholder="Select employment"
+									>
+										<option value="" selected disabled>
+											Select Employment Status
+										</option>
+										<option>Employed (Full time)</option>
+										<option>Employed (Part time)</option>
+										<option>Jobless</option>
+										<option>Freelancer</option>
+									</select>
+								</div>
+							</div>
+						)}
+					</div>
+					{status === "justOpened" ? (
+						<button
+							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
+							onClick={(email) => checkAlreadyRegistered(email)}
+						>
+							Next!
+						</button>
+					) : (
+						<button className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center">
+							Submit Application!
+						</button>
+					)}
+				</form>
+			</div>
+		</div>
+	)
+}
+
+ReactDOM.render(<App />, document.getElementById("app"))

@@ -1,30 +1,12 @@
 "use strict";
 
-function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+const useState = React.useState;
+const useEffect = React.useEffect;
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
-
-function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
-
-function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
-
-function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
-
-function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
-
-var useState = React.useState;
-var useEffect = React.useEffect;
-
-var StudentInterviewPanel = function StudentInterviewPanel(props) {
-  var _useState = useState(null),
-      _useState2 = _slicedToArray(_useState, 2),
-      matchings = _useState2[0],
-      setMatchings = _useState2[1];
-
-  useEffect(function () {
-    fetch("/student/matching").then(function (response) {
-      return response.json();
-    }).then(function (data) {
+const StudentInterviewPanel = props => {
+  const [matchings, setMatchings] = useState(null);
+  useEffect(() => {
+    fetch("/student/matching").then(response => response.json()).then(data => {
       console.log("data.length", data.length);
 
       if (data.length > 0) {
@@ -52,14 +34,12 @@ var StudentInterviewPanel = function StudentInterviewPanel(props) {
     className: "w-full text-left mytable"
   }, /*#__PURE__*/React.createElement("thead", {
     className: "bg-gray-200"
-  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Interviewer Name"), /*#__PURE__*/React.createElement("th", null, "Interviewer Email"), /*#__PURE__*/React.createElement("th", null, "Invitation sent to pick a time "), /*#__PURE__*/React.createElement("th", null, "Interview Time"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(function (matching) {
-    return /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.interviewer_name), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
-      href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id)
-    }, /*#__PURE__*/React.createElement("button", {
-      className: "text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ".concat(matching.booked ? "bg-gray-300" : "bg-iec-blue"),
-      disabled: matching.booked ? true : false
-    }, matching.booked ? "Already Booked" : "PICK A TIME SLOT"))));
-  }))))))));
+  }, /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("th", null, "Interviewer Name"), /*#__PURE__*/React.createElement("th", null, "Interviewer Email"), /*#__PURE__*/React.createElement("th", null, "Invitation sent to pick a time "), /*#__PURE__*/React.createElement("th", null, "Interview Time"))), /*#__PURE__*/React.createElement("tbody", null, matchings.map(matching => /*#__PURE__*/React.createElement("tr", null, /*#__PURE__*/React.createElement("td", null, matching.interviewer_name), /*#__PURE__*/React.createElement("td", null, matching.interviewer_email), /*#__PURE__*/React.createElement("td", null, new Date(matching.createdAt).toLocaleDateString()), /*#__PURE__*/React.createElement("td", null, /*#__PURE__*/React.createElement("a", {
+    href: "/student/interview/".concat(matching.interview_round_id, "/pick-timeslot/").concat(matching.interviewer_id)
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "text-white rounded-md shadow-sm text-md hover:scale-105 p-4 ".concat(matching.booked ? "bg-gray-300" : "bg-iec-blue"),
+    disabled: matching.booked ? true : false
+  }, matching.booked ? "Already Booked" : "PICK A TIME SLOT"))))))))))));
 };
 
 ReactDOM.render( /*#__PURE__*/React.createElement(StudentInterviewPanel, null), document.getElementById("app"));

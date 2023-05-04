@@ -22,7 +22,7 @@ const QuizTile = ({ quiz }) => {
         });
     }, [quiz, reminderEmailsEnabled])
 
-    return (<div className="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card">
+    return (<div className="grid w-64 grid-cols-6 gap-4 border bg-white pb-2 quiz-card basis-full grow">
         <div className="grid grid-cols-8 col-span-8 h-16 bg-iec-blue justify-center content-center">
             <a href={`/quiz/edit/${quiz.id}`}
                 className="text-white text-xl col-start-2 col-span-1 self-center justify-self-center hover:text-gray-100 cursor-pointer"
@@ -80,7 +80,7 @@ const App = () => {
         setAssessments(response)
     }, [])
 
-    return assessments.length > 0 ? <div className="flex gap-x-4">
+    return assessments.length > 0 ? <div className="flex flex-wrap gap-4">
         {assessments.map(quiz => <QuizTile quiz={quiz} key={quiz.id} />)}
     </div> : <p>No quizzes to show.</p>
 }

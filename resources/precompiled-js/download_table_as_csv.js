@@ -1,7 +1,7 @@
 "use strict";
 
 function download_table_as_csv(table_id) {
-  var separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ",";
+  let separator = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : ",";
   // Select rows from table_id
   var rows = document.querySelectorAll("table#" + table_id + " tr"); // Construct csv
 

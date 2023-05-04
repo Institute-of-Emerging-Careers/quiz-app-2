@@ -18,7 +18,7 @@ async function sendReminderEmails() {
 					where: {
 						[Op.and]: [
 							sequelize.literal(
-								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (12*60*60)"
+								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (48*60*60)"
 							),
 							{ completed: false },
 						],
@@ -59,7 +59,10 @@ async function sendReminderEmails() {
 							remaining_time_in_words += ` ${remaining_hours} hour`
 							if (remaining_hours != 1) remaining_time_in_words += "s"
 
-							if (remaining_days > 0 && remaining_days < process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS) {
+							if (
+								remaining_days > 0 &&
+								remaining_days < process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS
+							) {
 								//if remaining time more than 0 days and less than x days then send email, because we don't want to be sending reminder emails to students whose env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS have already passed
 
 								console.log(
@@ -73,8 +76,21 @@ async function sendReminderEmails() {
 										`Reminder | IEC Assessment Deadline`,
 										{
 											heading: "IEC Assessment Due",
-											inner_text: `Dear Student,<br>You have been assigned Assessments that you have to complete within 48 hours of your registration.  The assessment is designed to test your basic English language and critical thinking skills. If you do not complete the Assessment in time you will be disqualified. You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. <br> <br>Best Regards,<br>IEC Team.`,
-											button_announcer: "Log into your student portal to complete assessment",
+											inner_text: `Dear Student,<br>
+
+											You have been assigned Assessments that you have to complete within 72 hours of your registration. 
+
+											This is a final follow-up. The assessment is designed to test your basic English language and critical thinking skills.  In-case you do not complete the Assessment in time you will be disqualified. You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. 
+
+											For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
+											
+											Best Regards, 
+											Team Acquisition
+											Institute of Emerging Careers 
+											http://www.iec.org.pk 
+											<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
+											button_announcer:
+												"Log into your student portal to complete assessment",
 											button_text: "Login",
 											button_link: "https://apply.iec.org.pk/student",
 										}
@@ -101,12 +117,5 @@ async function sendReminderEmails() {
 	}
 }
 
-// sendReminderEmails()
-//   .then(() => {
-//     console.log("done");
-//   })
-//   .catch((err) => {
-//     console.log(err);
-//   });
 
 module.exports = sendReminderEmails
