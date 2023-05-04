@@ -168,6 +168,31 @@ const sendQuizRejectionEmail = async (email) => {
 	})
 }
 
+const sendQuizAcceptanceEmail = async (email) => {
+	return queueMail(email, `IEC Application Receipt`, {
+		heading: `Registration Fee Payment`,
+		inner_text: `Dear student, 
+    
+		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process. You are one step away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers.
+
+		We regret to inform you that we will not be moving forward with your application because your performance in the assessment does not match IEC's criteria.
+
+		We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career.
+		
+		Stay tuned to our website and social media for the upcoming programs. 
+		
+		We wish you all the best in your future career endeavors
+
+		Best Regards, 
+		Team Acquisition
+		Institute of Emerging Careers 
+		http://www.iec.org.pk 
+		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
+		button_announcer: null,
+		button_text: null,
+		button_link: null,
+	})
+}
 
 
 module.exports = { sendHTMLMail, sendApplicationReceiptEmail, sendQuizRejectionEmail }

@@ -23,6 +23,8 @@ const {
 } = require("../db/models")
 const { saveNewQuiz } = require("../functions/saveNewQuiz.js")
 const { saveExistingQuiz } = require("../functions/saveExistingQuiz.js")
+const getStudentScore = require("../functions/getStudentScore.js")
+const { sendQuizRejectionEmail } = require("../functions/sendEmail.js")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
 const deleteQuiz = require("../functions/deleteQuiz")
 const saveQuizProgress = require("../functions/saveQuizProgress")
@@ -1197,8 +1199,19 @@ router.get(
 			assignment
 		)
 
+		const [obtainedScore, totalScore] = await getStudentScore(assignment.id)
 
+		const percentage = (obtainedScore / totalScore) * 100
 
+		//get the student's email
+		const student = await Student.findOne({
+			where: { id: req.user.user.id },
+			attributes: ["email"],
+		})
+
+		if (all_sections_solved && percentage < 50.0) {
+			await sendQuizRejectionEmail(student.email)
+		}	
 
 		res.json({ success: true, all_sections_solved: all_sections_solved })
 	}
