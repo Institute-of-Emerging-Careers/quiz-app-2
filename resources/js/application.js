@@ -19,6 +19,8 @@ const Input = ({
 	type,
 	onChange = undefined,
 	value = undefined,
+	min,
+	max,
 }) => {
 	return (
 		<div className="flex flex-col w-full">
@@ -34,6 +36,8 @@ const Input = ({
 					onChange={onChange}
 					value={value}
 					required={true}
+					min={min}
+					max={max}
 					className="border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
 				/>
 			</div>
@@ -68,7 +72,7 @@ const Input = ({
 // 	)
 // }
 
-const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied', PASSWORD_TOO_SHORT: 'password_too_short' }
+const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied', PASSWORD_TOO_SHORT: 'password_too_short', PASSWORD_MISMATCH: 'password_mismatch' }
 const STATUS_TYPES = { JUST_OPENED: 'just_opened', NEW_USER: 'new_user', EXISTING_USER: 'existing_user' }
 
 const Error = ({ errorType, email }) => {
@@ -78,6 +82,7 @@ const Error = ({ errorType, email }) => {
 		{errorType === ERROR_TYPE.CNIC_EXISTS && <p>We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: {email}.<br />If that email address was correct, then please use that same email address and cnic pair.<br />If you entered a wrong email address the last time, then <a href="/application/change-email" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your email address</a>.</p>}
 		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.</p>}
 		{errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && <p>Password must be at least 8 characters long.</p>}
+		{errorType === ERROR_TYPE.PASSWORD_MISMATCH && <p>Please write the same password both times. The two password fields do not match.</p>}
 	</div>
 }
 
@@ -85,13 +90,10 @@ const App = () => {
 	const [CNIC, setCNIC] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
-	const [passwordMatch, setPasswordMatch] = useState("")
-	const [age, setAge] = useState(0)
 	const [courses, setCourses] = useState([])
 	const [email, setEmail] = useState("")
 	const [courseInterest, setCourseInterest] = useState("")
 	const [status, setStatus] = useState(STATUS_TYPES.JUST_OPENED)
-	const [errorMsg, setErrorMsg] = useState("")
 	const [errorType, setErrorType] = useState("")
 	const [oldEmailAddress, setOldEmailAddress] = useState("")
 	//one of few discrete states, not a boolean;
@@ -119,11 +121,6 @@ const App = () => {
 		formattedInput = formattedInput.concat("-", cleanedInput.slice(12, 13))
 
 		return formattedInput
-	}
-
-	const handleAge = (e) => {
-		const value = e.target.value.replace(/\D/g, "")
-		setAge(value)
 	}
 
 	const checkAlreadyRegistered = async (e) => {
@@ -187,33 +184,37 @@ const App = () => {
 		}
 	}
 
-	const handleConfirmPassword = (e) => {
-		setConfirmPassword(e.target.value)
-		setPasswordMatch(e.target.value === password)
+	const handleConfirmPassword = (e) => setConfirmPassword(e.target.value)
 
-		if (e.target.value === password) {
-			setErrorMsg("")
+	useEffect(() => {
+		if (password === confirmPassword && errorType !== ERROR_TYPE.PASSWORD_TOO_SHORT) {
+			setErrorType("")
 		} else {
-			setErrorMsg("Passwords do not match")
+			setErrorType(ERROR_TYPE.PASSWORD_MISMATCH)
 		}
-	}
+	}, [password, confirmPassword])
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 		e.stopPropagation()
+
+		if (!!errorType) {
+			alert("Please fix all errors before submitting the form. If there is a problem, email mail@iec.org.pk or reload the page.")
+			return
+		}
 		try {
 			const application_round_id = window.location.pathname.split("/")[3]
 
 			const formData = new FormData(e.target)
-			console.log(formData)
 
 			// divide name into firstname and lastname by space, if there is no lastname, set it to ""
 			const name = formData.get("name").split(" ")
 			const firstname = name[0]
 			const lastname = name.length > 1 ? name[1] : ""
+			const age = parseInt(formData.get("age"))
 
 			const response = await fetch(
-				`application/submit/${application_round_id}/`,
+				`/application/submit/${application_round_id}/`,
 				{
 					method: "POST",
 					headers: {
@@ -225,7 +226,8 @@ const App = () => {
 						password: formData.get("password"),
 						firstname: firstname,
 						lastname: lastname,
-						age_group: formData.get("age"),
+						age_group: age < 22 ? 'Less than 22' : age >= 22 && age <= 35 ? '22 - 35' : 'More than 35',
+						age,
 						phone: formData.get("phone"),
 						city: formData.get("city"),
 						education_completed: formData.get("education"),
@@ -240,6 +242,7 @@ const App = () => {
 			if (response.status === 201) {
 				window.location.href = "https://iec.org.pk/thankyou"
 			} else {
+				alert("Something went wrong. Try again or contact mail@iec.org.pk")
 				console.log(response)
 			}
 		} catch (err) {
@@ -339,35 +342,11 @@ const App = () => {
 								<Input
 									label="Phone Number:"
 									name="phone"
-									type="number"
+									type="text"
 									placeholder="Phone Number"
 								/>
 								<div className="flex flex-col gap-1 w-full">
-									<label className="label">
-										<span className="">Age:</span>
-									</label>
-
-									<select
-										name="age"
-										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
-										placeholder="What is your age?"
-									>
-										<option value="" selected disabled>
-											Pick your age
-										</option>
-
-										<option value="Less than 22" className="bg-white">
-											Less than 22
-										</option>
-
-										<option value="22 - 35" className="bg-white">
-											Between 22 and 35
-										</option>
-
-										<option value="More than 35" className="bg-white">
-											More than 35
-										</option>
-									</select>
+									<Input label="Age:" name="age" type="number" min="12" max="120" placeholder="e.g. 25" />
 								</div>
 
 								<div className="flex flex-col gap-1 w-full">
@@ -379,6 +358,7 @@ const App = () => {
 										name="course_interest"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
 										value={courseInterest}
+										onChange={(e) => setCourseInterest(e.target.value)}
 									>
 										<option value="" selected disabled>
 											Pick a course
@@ -389,9 +369,6 @@ const App = () => {
 													key={course.id}
 													value={course.id}
 													className="bg-white"
-													onClick={() => {
-														setCourseInterest(course.id)
-													}}
 												>
 													{course.title}
 												</option>
