@@ -350,13 +350,11 @@ var App = function App() {
                 setStatus(STATUS_TYPES.NEW_USER);
                 validationSchema["password"]["required"] = true;
                 setErrorType("");
-              } else {
-                setStatus(STATUS_TYPES.EXISTING_USER);
-                validationSchema["password"]["required"] = false;
               }
 
               if (data.type === "both_cnic_and_email") {
-                setStatus("existingUser");
+                setStatus(STATUS_TYPES.EXISTING_USER);
+                validationSchema["password"]["required"] = false;
                 setErrorType("");
               } else if (data.type === "already_applied") {
                 setErrorType(ERROR_TYPE.ALREADY_APPLIED);
