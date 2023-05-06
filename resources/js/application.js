@@ -322,6 +322,7 @@ const App = () => {
 			if (error_exists) {
 				alert("Invalid input. Please enter valid information.")
 				setErrorMessage(errors)
+				console.log(errors)
 				return
 			}
 

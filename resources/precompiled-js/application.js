@@ -422,15 +422,16 @@ var App = function App() {
               _validate = validate(formData), _validate2 = _slicedToArray(_validate, 2), error_exists = _validate2[0], errors = _validate2[1];
 
               if (!error_exists) {
-                _context2.next = 13;
+                _context2.next = 14;
                 break;
               }
 
               alert("Invalid input. Please enter valid information.");
               setErrorMessage(errors);
+              console.log(errors);
               return _context2.abrupt("return");
 
-            case 13:
+            case 14:
               // divide name into firstname and lastname by space, if there is no lastname, set it to ""
               name = formData.get("name");
               words = name.trim().split(' ');
@@ -438,7 +439,7 @@ var App = function App() {
               lastName = words.join(' ');
               console.log(firstName, lastName);
               age = parseInt(formData.get("age"));
-              _context2.next = 21;
+              _context2.next = 22;
               return fetch("/application/submit/".concat(application_round_id, "/"), {
                 method: "POST",
                 headers: {
@@ -461,7 +462,7 @@ var App = function App() {
                 })
               });
 
-            case 21:
+            case 22:
               response = _context2.sent;
 
               if (response.status === 201) {
@@ -471,20 +472,20 @@ var App = function App() {
                 console.log(response);
               }
 
-              _context2.next = 28;
+              _context2.next = 29;
               break;
 
-            case 25:
-              _context2.prev = 25;
+            case 26:
+              _context2.prev = 26;
               _context2.t0 = _context2["catch"](5);
               console.log(_context2.t0);
 
-            case 28:
+            case 29:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[5, 25]]);
+      }, _callee2, null, [[5, 26]]);
     }));
 
     return function handleSubmit(_x2) {
