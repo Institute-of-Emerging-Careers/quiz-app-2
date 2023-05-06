@@ -21,7 +21,8 @@ const Input = ({
 	value = undefined,
 	min,
 	max,
-	error
+	error,
+	readonly = false,
 }) => {
 	return (
 		<div className="flex flex-col w-full">
@@ -40,6 +41,7 @@ const Input = ({
 					min={min}
 					max={max}
 					className="border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
+					readOnly={readonly}
 				/>
 			</div>
 		</div>
@@ -116,6 +118,7 @@ const validationSchema = {
 }
 
 function validate(formData) {
+	console.log(validationSchema.course_interest)
 	const errors = {};
 	let error_exists = false
 
@@ -357,7 +360,7 @@ const App = () => {
 			)
 
 			if (response.status === 201) {
-				// window.location.href = "https://iec.org.pk/thankyou"
+				window.location.href = "https://iec.org.pk/thankyou"
 			} else {
 				alert("Something went wrong. Try again or contact mail@iec.org.pk")
 				console.log(response)
@@ -378,7 +381,7 @@ const App = () => {
 		const data = await response.json()
 		if (data.success) {
 			setCourses(data.courses)
-			validationSchema["course_interest"]["is_in"] = data.courses.map(course => course.id)
+			validationSchema["course_interest"]["is_in"] = data.courses.map(course => course.id.toString())
 		}
 	}, [])
 
@@ -411,6 +414,7 @@ const App = () => {
 								placeholder="info@info.com"
 								onChange={(e) => setEmail(e.target.value)}
 								error={errorMessage.email}
+								readonly={status !== STATUS_TYPES.JUST_OPENED}
 							/>
 							<Input
 								label={<span><i className="far fa-address-card"></i> CNIC:</span>}
@@ -420,6 +424,7 @@ const App = () => {
 								value={CNIC}
 								onChange={handleCNIC}
 								error={errorMessage.cnic}
+								readonly={status !== STATUS_TYPES.JUST_OPENED}
 							/>
 
 							{status !== STATUS_TYPES.JUST_OPENED && (

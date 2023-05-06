@@ -43,7 +43,9 @@ var Input = function Input(_ref) {
       value = _ref$value === void 0 ? undefined : _ref$value,
       min = _ref.min,
       max = _ref.max,
-      error = _ref.error;
+      error = _ref.error,
+      _ref$readonly = _ref.readonly,
+      readonly = _ref$readonly === void 0 ? false : _ref$readonly;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col w-full"
   }, /*#__PURE__*/React.createElement("div", {
@@ -63,7 +65,8 @@ var Input = function Input(_ref) {
     required: true,
     min: min,
     max: max,
-    className: "border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
+    className: "border-2 border-gray-300 rounded-lg p-2 h-12 w-full",
+    readOnly: readonly
   })));
 };
 
@@ -153,6 +156,7 @@ var validationSchema = {
 };
 
 function validate(formData) {
+  console.log(validationSchema.course_interest);
   var errors = {};
   var error_exists = false;
 
@@ -460,7 +464,8 @@ var App = function App() {
             case 21:
               response = _context2.sent;
 
-              if (response.status === 201) {// window.location.href = "https://iec.org.pk/thankyou"
+              if (response.status === 201) {
+                window.location.href = "https://iec.org.pk/thankyou";
               } else {
                 alert("Something went wrong. Try again or contact mail@iec.org.pk");
                 console.log(response);
@@ -510,7 +515,7 @@ var App = function App() {
             if (data.success) {
               setCourses(data.courses);
               validationSchema["course_interest"]["is_in"] = data.courses.map(function (course) {
-                return course.id;
+                return course.id.toString();
               });
             }
 
@@ -551,7 +556,8 @@ var App = function App() {
     onChange: function onChange(e) {
       return setEmail(e.target.value);
     },
-    error: errorMessage.email
+    error: errorMessage.email,
+    readonly: status !== STATUS_TYPES.JUST_OPENED
   }), /*#__PURE__*/React.createElement(Input, {
     label: /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("i", {
       className: "far fa-address-card"
@@ -561,7 +567,8 @@ var App = function App() {
     type: "text",
     value: CNIC,
     onChange: handleCNIC,
-    error: errorMessage.cnic
+    error: errorMessage.cnic,
+    readonly: status !== STATUS_TYPES.JUST_OPENED
   }), status !== STATUS_TYPES.JUST_OPENED && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
     label: "Name:",
     name: "name",
