@@ -404,7 +404,7 @@ const App = () => {
 					>
 						<div id="left" className="flex flex-col w-full basis-full gap-y-5">
 							<Input
-								label="Email:"
+								label={<span><i className="far fa-envelope"></i> Email:</span>}
 								name="email"
 								type="email"
 								value={email}
@@ -413,7 +413,7 @@ const App = () => {
 								error={errorMessage.email}
 							/>
 							<Input
-								label="CNIC:"
+								label={<span><i className="far fa-address-card"></i> CNIC:</span>}
 								placeholder="xxxxx-xxxxxxx-x"
 								name="cnic"
 								type="text"

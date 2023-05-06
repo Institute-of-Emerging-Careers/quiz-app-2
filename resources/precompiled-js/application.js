@@ -541,7 +541,9 @@ var App = function App() {
     id: "left",
     className: "flex flex-col w-full basis-full gap-y-5"
   }, /*#__PURE__*/React.createElement(Input, {
-    label: "Email:",
+    label: /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("i", {
+      className: "far fa-envelope"
+    }), " Email:"),
     name: "email",
     type: "email",
     value: email,
@@ -551,7 +553,9 @@ var App = function App() {
     },
     error: errorMessage.email
   }), /*#__PURE__*/React.createElement(Input, {
-    label: "CNIC:",
+    label: /*#__PURE__*/React.createElement("span", null, /*#__PURE__*/React.createElement("i", {
+      className: "far fa-address-card"
+    }), " CNIC:"),
     placeholder: "xxxxx-xxxxxxx-x",
     name: "cnic",
     type: "text",
