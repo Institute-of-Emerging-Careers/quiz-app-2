@@ -88,7 +88,8 @@ var Input = function Input(_ref) {
 var ERROR_TYPE = {
   EMAIL_EXISTS: 'email_exists',
   CNIC_EXISTS: 'cnic_exists',
-  ALREADY_APPLIED: 'already_applied'
+  ALREADY_APPLIED: 'already_applied',
+  PASSWORD_TOO_SHORT: 'password_too_short'
 };
 var STATUS_TYPES = {
   JUST_OPENED: 'just_opened',
@@ -108,7 +109,7 @@ var _Error = function Error(_ref2) {
   }, "click here to change your CNIC number"), " if you remember your password from last time"), errorType === ERROR_TYPE.CNIC_EXISTS && /*#__PURE__*/React.createElement("p", null, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ", email, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair.", /*#__PURE__*/React.createElement("br", null), "If you entered a wrong email address the last time, then ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-email",
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."));
+  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."));
 };
 
 var App = function App() {
@@ -234,10 +235,12 @@ var App = function App() {
 
               if (!data.exists) {
                 setStatus(STATUS_TYPES.NEW_USER);
+                setErrorType("");
               }
 
               if (data.type === "both_cnic_and_email") {
                 setStatus("existingUser");
+                setErrorType("");
               } else if (data.type === "already_applied") {
                 setErrorType(ERROR_TYPE.ALREADY_APPLIED);
               } else if (data.type === "cnic_only") {
@@ -272,9 +275,9 @@ var App = function App() {
     setPassword(e.target.value);
 
     if (e.target.value.length < 8) {
-      setErrorMsg("Password must be at least 8 characters");
+      setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT);
     } else {
-      setErrorMsg("");
+      setErrorType("");
     }
   };
 
@@ -422,7 +425,7 @@ var App = function App() {
     type: "text",
     value: CNIC,
     onChange: handleCNIC
-  }), status !== "justOpened" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
+  }), status !== STATUS_TYPES.JUST_OPENED && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
     label: "Name:",
     name: "name",
     type: "text",
@@ -441,7 +444,7 @@ var App = function App() {
     placeholder: "********",
     value: confirmPassword,
     onChange: handleConfirmPassword
-  })))), status !== "justOpened" && /*#__PURE__*/React.createElement("div", {
+  })))), status !== STATUS_TYPES.JUST_OPENED && /*#__PURE__*/React.createElement("div", {
     id: "right",
     className: "flex flex-col w-full basis-full gap-y-5"
   }, /*#__PURE__*/React.createElement(Input, {
@@ -545,7 +548,7 @@ var App = function App() {
     value: "",
     selected: true,
     disabled: true
-  }, "Select Employment Status"), /*#__PURE__*/React.createElement("option", null, "Employed (Full time)"), /*#__PURE__*/React.createElement("option", null, "Employed (Part time)"), /*#__PURE__*/React.createElement("option", null, "Jobless"), /*#__PURE__*/React.createElement("option", null, "Freelancer"))))), status === "justOpened" ? /*#__PURE__*/React.createElement("button", {
+  }, "Select Employment Status"), /*#__PURE__*/React.createElement("option", null, "Employed (Full time)"), /*#__PURE__*/React.createElement("option", null, "Employed (Part time)"), /*#__PURE__*/React.createElement("option", null, "Jobless"), /*#__PURE__*/React.createElement("option", null, "Freelancer"))))), status === STATUS_TYPES.JUST_OPENED ? /*#__PURE__*/React.createElement("button", {
     className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center",
     onClick: function onClick(email) {
       return checkAlreadyRegistered(email);

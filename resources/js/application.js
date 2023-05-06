@@ -68,7 +68,7 @@ const Input = ({
 // 	)
 // }
 
-const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied' }
+const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied', PASSWORD_TOO_SHORT: 'password_too_short' }
 const STATUS_TYPES = { JUST_OPENED: 'just_opened', NEW_USER: 'new_user', EXISTING_USER: 'existing_user' }
 
 const Error = ({ errorType, email }) => {
@@ -77,6 +77,7 @@ const Error = ({ errorType, email }) => {
 		{errorType === ERROR_TYPE.EMAIL_EXISTS && <p>The email you entered already exists in our database. It means you have already applied to a different IEC cohort before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br />Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your CNIC number</a> if you remember your password from last time</p>}
 		{errorType === ERROR_TYPE.CNIC_EXISTS && <p>We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: {email}.<br />If that email address was correct, then please use that same email address and cnic pair.<br />If you entered a wrong email address the last time, then <a href="/application/change-email" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your email address</a>.</p>}
 		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.</p>}
+		{errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && <p>Password must be at least 8 characters long.</p>}
 	</div>
 }
 
@@ -157,10 +158,12 @@ const App = () => {
 
 			if (!data.exists) {
 				setStatus(STATUS_TYPES.NEW_USER)
+				setErrorType("")
 			}
 
 			if (data.type === "both_cnic_and_email") {
 				setStatus("existingUser")
+				setErrorType("")
 			} else if (data.type === "already_applied") {
 				setErrorType(ERROR_TYPE.ALREADY_APPLIED)
 			} else if (data.type === "cnic_only") {
@@ -178,9 +181,9 @@ const App = () => {
 		setPassword(e.target.value)
 
 		if (e.target.value.length < 8) {
-			setErrorMsg("Password must be at least 8 characters")
+			setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT)
 		} else {
-			setErrorMsg("")
+			setErrorType("")
 		}
 	}
 
@@ -295,7 +298,7 @@ const App = () => {
 								onChange={handleCNIC}
 							/>
 
-							{status !== "justOpened" && (
+							{status !== STATUS_TYPES.JUST_OPENED && (
 								<>
 									<Input
 										label="Name:"
@@ -328,7 +331,7 @@ const App = () => {
 								</>
 							)}
 						</div>
-						{status !== "justOpened" && (
+						{status !== STATUS_TYPES.JUST_OPENED && (
 							<div
 								id="right"
 								className="flex flex-col w-full basis-full gap-y-5"
@@ -471,7 +474,7 @@ const App = () => {
 							</div>
 						)}
 					</div>
-					{status === "justOpened" ? (
+					{status === STATUS_TYPES.JUST_OPENED ? (
 						<button
 							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
 							onClick={(email) => checkAlreadyRegistered(email)}
