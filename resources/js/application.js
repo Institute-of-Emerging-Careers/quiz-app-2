@@ -45,42 +45,15 @@ const Input = ({
 	)
 }
 
-// const DropdownComponent = ({ label, name, placeholder, options }) => {
-// 	return (
-// 		<div className="flex flex-col w-full">
-// 			<div className="flex flex-col gap-1 w-full">
-// 				<label className="label">
-// 					<span className="">{label}</span>
-// 				</label>
-
-// 				<select
-// 					name={name}
-// 					className="border-2 border-gray-300 rounded-lg p-2 w-full"
-// 					placeholder="Select employment"
-// 				>
-// 					<option value="" selected disabled>
-// 						{placeholder}
-// 					</option>
-// 					{options.map((option, index) => (
-// 						<option key={index} value={option}>
-// 							{option}
-// 						</option>
-// 					))}
-// 				</select>
-// 			</div>
-// 		</div>
-// 	)
-// }
-
 const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied', PASSWORD_TOO_SHORT: 'password_too_short', PASSWORD_MISMATCH: 'password_mismatch' }
 const STATUS_TYPES = { JUST_OPENED: 'just_opened', NEW_USER: 'new_user', EXISTING_USER: 'existing_user' }
 
-const Error = ({ errorType, email }) => {
-	return <div>
-		{!!errorType && <i className="fas fa-exclamation-circle"></i>}
+const ErrorDisplay = ({ errorType, email }) => {
+	return <div className="flex items-center gap-x-2">
+		{!!errorType && <i className="fas fa-exclamation-circle text-red-500"></i>}
 		{errorType === ERROR_TYPE.EMAIL_EXISTS && <p>The email you entered already exists in our database. It means you have already applied to a different IEC cohort before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br />Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your CNIC number</a> if you remember your password from last time</p>}
 		{errorType === ERROR_TYPE.CNIC_EXISTS && <p>We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: {email}.<br />If that email address was correct, then please use that same email address and cnic pair.<br />If you entered a wrong email address the last time, then <a href="/application/change-email" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your email address</a>.</p>}
-		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.</p>}
+		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on mail@iec.org.pk if you have any concerns.</p>}
 		{errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && <p>Password must be at least 8 characters long.</p>}
 		{errorType === ERROR_TYPE.PASSWORD_MISMATCH && <p>Please write the same password both times. The two password fields do not match.</p>}
 	</div>
@@ -176,22 +149,16 @@ const App = () => {
 
 	const handlePassword = (e) => {
 		setPassword(e.target.value)
-
-		if (e.target.value.length < 8) {
-			setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT)
-		} else {
-			setErrorType("")
-		}
 	}
 
 	const handleConfirmPassword = (e) => setConfirmPassword(e.target.value)
 
 	useEffect(() => {
-		if (password === confirmPassword && errorType !== ERROR_TYPE.PASSWORD_TOO_SHORT) {
-			setErrorType("")
-		} else {
+		if (password !== confirmPassword)
 			setErrorType(ERROR_TYPE.PASSWORD_MISMATCH)
-		}
+		else if (password.length < 8 && password.length > 0)
+			setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT)
+		else setErrorType("")
 	}, [password, confirmPassword])
 
 	const handleSubmit = async (e) => {
@@ -202,6 +169,7 @@ const App = () => {
 			alert("Please fix all errors before submitting the form. If there is a problem, email mail@iec.org.pk or reload the page.")
 			return
 		}
+
 		try {
 			const application_round_id = window.location.pathname.split("/")[3]
 
@@ -273,11 +241,12 @@ const App = () => {
 				className="flex flex-col items-center justify-center w-full"
 			>
 				<form
-					className={`bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-b-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10  transition-all duration-300`}
+					className='bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10 transition-all duration-300'
 					name="application"
 					onSubmit={handleSubmit}
 				>
-					<Error errorType={errorType} email={oldEmailAddress} />
+					<ErrorDisplay errorType={errorType} email={oldEmailAddress} />
+					{!!errorType && <hr className="mt-2 mb-2" />}
 
 					<div
 						className={`flex flex-col ${status === STATUS_TYPES.JUST_OPENED ? "flex-col" : "md:flex-row"
@@ -453,13 +422,13 @@ const App = () => {
 					</div>
 					{status === STATUS_TYPES.JUST_OPENED ? (
 						<button
-							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
+							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
 							onClick={(email) => checkAlreadyRegistered(email)}
 						>
 							Next!
 						</button>
 					) : (
-						<button className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center">
+						<button className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center">
 							Submit Application!
 						</button>
 					)}

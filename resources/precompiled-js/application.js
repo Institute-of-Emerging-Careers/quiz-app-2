@@ -62,32 +62,7 @@ var Input = function Input(_ref) {
     max: max,
     className: "border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
   })));
-}; // const DropdownComponent = ({ label, name, placeholder, options }) => {
-// 	return (
-// 		<div className="flex flex-col w-full">
-// 			<div className="flex flex-col gap-1 w-full">
-// 				<label className="label">
-// 					<span className="">{label}</span>
-// 				</label>
-// 				<select
-// 					name={name}
-// 					className="border-2 border-gray-300 rounded-lg p-2 w-full"
-// 					placeholder="Select employment"
-// 				>
-// 					<option value="" selected disabled>
-// 						{placeholder}
-// 					</option>
-// 					{options.map((option, index) => (
-// 						<option key={index} value={option}>
-// 							{option}
-// 						</option>
-// 					))}
-// 				</select>
-// 			</div>
-// 		</div>
-// 	)
-// }
-
+};
 
 var ERROR_TYPE = {
   EMAIL_EXISTS: 'email_exists',
@@ -102,11 +77,13 @@ var STATUS_TYPES = {
   EXISTING_USER: 'existing_user'
 };
 
-var _Error = function Error(_ref2) {
+var ErrorDisplay = function ErrorDisplay(_ref2) {
   var errorType = _ref2.errorType,
       email = _ref2.email;
-  return /*#__PURE__*/React.createElement("div", null, !!errorType && /*#__PURE__*/React.createElement("i", {
-    className: "fas fa-exclamation-circle"
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-x-2"
+  }, !!errorType && /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
   }), errorType === ERROR_TYPE.EMAIL_EXISTS && /*#__PURE__*/React.createElement("p", null, "The email you entered already exists in our database. It means you have already applied to a different IEC cohort before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.", /*#__PURE__*/React.createElement("br", null), "Or, if you think you accidentally entered the wrong CNIC number last time, you can ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-cnic",
     target: "_blank",
@@ -114,7 +91,7 @@ var _Error = function Error(_ref2) {
   }, "click here to change your CNIC number"), " if you remember your password from last time"), errorType === ERROR_TYPE.CNIC_EXISTS && /*#__PURE__*/React.createElement("p", null, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ", email, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair.", /*#__PURE__*/React.createElement("br", null), "If you entered a wrong email address the last time, then ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-email",
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."), errorType === ERROR_TYPE.PASSWORD_MISMATCH && /*#__PURE__*/React.createElement("p", null, "Please write the same password both times. The two password fields do not match."));
+  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on mail@iec.org.pk if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."), errorType === ERROR_TYPE.PASSWORD_MISMATCH && /*#__PURE__*/React.createElement("p", null, "Please write the same password both times. The two password fields do not match."));
 };
 
 var App = function App() {
@@ -258,12 +235,6 @@ var App = function App() {
 
   var handlePassword = function handlePassword(e) {
     setPassword(e.target.value);
-
-    if (e.target.value.length < 8) {
-      setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT);
-    } else {
-      setErrorType("");
-    }
   };
 
   var handleConfirmPassword = function handleConfirmPassword(e) {
@@ -271,11 +242,7 @@ var App = function App() {
   };
 
   useEffect(function () {
-    if (password === confirmPassword && errorType !== ERROR_TYPE.PASSWORD_TOO_SHORT) {
-      setErrorType("");
-    } else {
-      setErrorType(ERROR_TYPE.PASSWORD_MISMATCH);
-    }
+    if (password !== confirmPassword) setErrorType(ERROR_TYPE.PASSWORD_MISMATCH);else if (password.length < 8 && password.length > 0) setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT);else setErrorType("");
   }, [password, confirmPassword]);
 
   var handleSubmit = /*#__PURE__*/function () {
@@ -396,12 +363,14 @@ var App = function App() {
     id: "application",
     className: "flex flex-col items-center justify-center w-full"
   }, /*#__PURE__*/React.createElement("form", {
-    className: "bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-b-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10  transition-all duration-300",
+    className: "bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10 transition-all duration-300",
     name: "application",
     onSubmit: handleSubmit
-  }, /*#__PURE__*/React.createElement(_Error, {
+  }, /*#__PURE__*/React.createElement(ErrorDisplay, {
     errorType: errorType,
     email: oldEmailAddress
+  }), !!errorType && /*#__PURE__*/React.createElement("hr", {
+    className: "mt-2 mb-2"
   }), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col ".concat(status === STATUS_TYPES.JUST_OPENED ? "flex-col" : "md:flex-row", " gap-y-5 md:gap-y-0 md:gap-x-10 ")
   }, /*#__PURE__*/React.createElement("div", {
@@ -533,12 +502,12 @@ var App = function App() {
     selected: true,
     disabled: true
   }, "Select Employment Status"), /*#__PURE__*/React.createElement("option", null, "Employed (Full time)"), /*#__PURE__*/React.createElement("option", null, "Employed (Part time)"), /*#__PURE__*/React.createElement("option", null, "Jobless"), /*#__PURE__*/React.createElement("option", null, "Freelancer"))))), status === STATUS_TYPES.JUST_OPENED ? /*#__PURE__*/React.createElement("button", {
-    className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center",
+    className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center",
     onClick: function onClick(email) {
       return checkAlreadyRegistered(email);
     }
   }, "Next!") : /*#__PURE__*/React.createElement("button", {
-    className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
+    className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
   }, "Submit Application!"))));
 };
 
