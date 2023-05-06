@@ -68,6 +68,16 @@ const Input = ({
 // 	)
 // }
 
+const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied' }
+
+const Error = ({ errorType }) => {
+	return <div>
+		{errorType === ERROR_TYPE.EMAIL_EXISTS && <p>The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br />Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your CNIC number</a> if you remember your password from last time</p>}
+		{errorType === ERROR_TYPE.CNIC_EXISTS && <p>We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ${response.email}.<br />If that email address was correct, then please use that same email address and cnic pair.<br />If you entered a wrong email address the last time, then <a href="/application/change-email" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your email address</a>.</p>}
+		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns.</p>}
+	</div>
+}
+
 const App = () => {
 	const [CNIC, setCNIC] = useState("")
 	const [password, setPassword] = useState("")
@@ -80,6 +90,7 @@ const App = () => {
 	const [status, setStatus] = useState("justOpened")
 	const [applicationStatus, setApplicationStatus] = useState("")
 	const [errorMsg, setErrorMsg] = useState("")
+	const [errorType, setErrorType] = useState("")
 	const [cnicError, setCNICError] = useState("")
 	//one of few discrete states, not a boolean;
 	//status can be:
@@ -125,7 +136,7 @@ const App = () => {
 
 		try {
 			const response = await fetch(
-				"https://apply.iec.org.pk/application/check-if-user-exists",
+				"/application/check-if-user-exists",
 				{
 					method: "POST",
 					headers: {
@@ -145,7 +156,7 @@ const App = () => {
 
 			if (!data.exists) {
 				setStatus("newUser")
-				// setApplicationStatus("newUser")
+				setApplicationStatus("newUser")
 			} else {
 				setApplicationStatus(data.type)
 			}
@@ -154,8 +165,12 @@ const App = () => {
 				setStatus("existingUser")
 			} else if (data.type === "already_applied") {
 				setErrorMsg("You have already applied to this cohort.")
-			} else if (data.type === "cnic_only"){
+				setErrorType(ERROR_TYPE.ALREADY_APPLIED)
+			} else if (data.type === "cnic_only") {
 				setCNICError(data.email)
+				setErrorType(ERROR_TYPE.CNIC_EXISTS)
+			} else if (data.type === 'email_only') {
+				setErrorType(ERROR_TYPE.EMAIL_EXISTS)
 			}
 		} catch (err) {
 			console.log(err)
@@ -198,7 +213,7 @@ const App = () => {
 			const lastname = name.length > 1 ? name[1] : ""
 
 			const response = await fetch(
-				`https://apply.iec.org.pk/application/submit/${application_round_id}/`,
+				`application/submit/${application_round_id}/`,
 				{
 					method: "POST",
 					headers: {
@@ -238,7 +253,7 @@ const App = () => {
 		const application_round_id = window.location.pathname.split("/")[3]
 
 		const response = await fetch(
-			`https://apply.iec.org.pk/application/${application_round_id}/courses`
+			`/application/${application_round_id}/courses`
 		)
 		const data = await response.json()
 		if (data.success) {
@@ -259,18 +274,11 @@ const App = () => {
 					name="application"
 					onSubmit={handleSubmit}
 				>
-					{errorMsg !== "" && (
-						<div
-							className={`bg-red-500 text-white p-2 rounded-lg my-2 w-1/2 self-center justify-self-center flex`}
-						>
-							<p className="mx-auto">{errorMsg}</p>
-						</div>
-					)}
+					<Error errorType={errorType} />
 
 					<div
-						className={` flex flex-col ${
-							status === "justOpened" ? "flex-col" : "md:flex-row"
-						} gap-y-5 md:gap-y-0 md:gap-x-10 `}
+						className={` flex flex-col ${status === "justOpened" ? "flex-col" : "md:flex-row"
+							} gap-y-5 md:gap-y-0 md:gap-x-10 `}
 					>
 						<div id="left" className="flex flex-col w-full basis-full gap-y-5">
 							<Input
@@ -288,11 +296,11 @@ const App = () => {
 									address the last time.
 									<br />
 									The email you used last time was something like {cnicError}.
-									<br/>
+									<br />
 									If that email address was correct, then please use that same
 									email address and cnic pair. If you entered a wrong email
 									address the last time, then
-									<a href="https://apply.iec.org.pk/application/change-email">
+									<a href="/application/change-email">
 										{" "}
 										click here to change your email address.
 									</a>
