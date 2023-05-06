@@ -154,15 +154,6 @@ router.post(
 				where: { email: req.body.email, cnic: req.body.cnic },
 			})
 			if (student == null) {
-				if (req.body.password != req.body.password2) {
-					res.status(400).json({
-						error: "mismatch",
-						field: "password",
-						type: "",
-						message: "Password and password confirmation don't match.",
-					})
-					return
-				}
 				student = Student.build({
 					email: req.body.email,
 					cnic: req.body.cnic,
@@ -171,6 +162,7 @@ router.post(
 					gender: req.body.gender,
 					password: await bcrypt.hash(req.body.password, 10),
 				})
+				console.log(req.body.firstName, req.body.lastName)
 				await student.validate()
 				student = await student.save()
 			} else {

@@ -1,15 +1,27 @@
 "use strict";
 
-const MyContext = React.createContext();
-const useEffect = React.useEffect;
-const useState = React.useState;
-const useContext = React.useContext;
-const useRef = React.useRef;
-const useMemo = React.useMemo;
-const sectionId = parseInt(document.getElementById("sectionId").value);
-const quizTitle = document.getElementById("quizTitle").innerText;
-const sectionTitle = document.getElementById("sectionTitle").innerText;
-const preview_or_not = parseInt(document.getElementById("previewOrNot").value);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr == null ? null : typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]; if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+var MyContext = React.createContext();
+var useEffect = React.useEffect;
+var useState = React.useState;
+var useContext = React.useContext;
+var useRef = React.useRef;
+var useMemo = React.useMemo;
+var sectionId = parseInt(document.getElementById("sectionId").value);
+var quizTitle = document.getElementById("quizTitle").innerText;
+var sectionTitle = document.getElementById("sectionTitle").innerText;
+var preview_or_not = parseInt(document.getElementById("previewOrNot").value);
 
 function millisecondsToMinutesAndSeconds(millis) {
   if (millis == 0) return "No Time Limit";else {
@@ -19,10 +31,22 @@ function millisecondsToMinutesAndSeconds(millis) {
   }
 }
 
-const ContextProvider = props => {
-  const [questions, setQuestions] = useState([]);
-  const [passages, setPassages] = useState([]);
-  const [displayQuestions, setDisplayQuestions] = useState(true); // displayQuestions is true when there is still time to solve the quiz, and becomes false when time ends.
+var ContextProvider = function ContextProvider(props) {
+  var _useState = useState([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      questions = _useState2[0],
+      setQuestions = _useState2[1];
+
+  var _useState3 = useState([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      passages = _useState4[0],
+      setPassages = _useState4[1];
+
+  var _useState5 = useState(true),
+      _useState6 = _slicedToArray(_useState5, 2),
+      displayQuestions = _useState6[0],
+      setDisplayQuestions = _useState6[1]; // displayQuestions is true when there is still time to solve the quiz, and becomes false when time ends.
+
 
   return /*#__PURE__*/React.createElement(MyContext.Provider, {
     value: {
@@ -33,11 +57,14 @@ const ContextProvider = props => {
   }, props.children);
 };
 
-const MCQSOption = props => {
-  const {
-    questionsObj
-  } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
+var MCQSOption = function MCQSOption(props) {
+  var _useContext = useContext(MyContext),
+      questionsObj = _useContext.questionsObj;
+
+  var _questionsObj = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj[0],
+      setQuestions = _questionsObj[1];
+
   return /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("input", {
     type: "radio",
     name: props.name,
@@ -47,9 +74,9 @@ const MCQSOption = props => {
       height: "17px",
       width: "17px"
     },
-    onChange: e => {
-      setQuestions(cur => {
-        let copy = cur.slice();
+    onChange: function onChange(e) {
+      setQuestions(function (cur) {
+        var copy = cur.slice();
         copy[props.questionIndex].answer = e.target.value;
         return copy;
       });
@@ -62,19 +89,22 @@ const MCQSOption = props => {
   }) : /*#__PURE__*/React.createElement("span", null)));
 };
 
-const MCQMOption = props => {
-  const {
-    questionsObj
-  } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
+var MCQMOption = function MCQMOption(props) {
+  var _useContext2 = useContext(MyContext),
+      questionsObj = _useContext2.questionsObj;
+
+  var _questionsObj2 = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj2[0],
+      setQuestions = _questionsObj2[1];
+
   return /*#__PURE__*/React.createElement("li", null, /*#__PURE__*/React.createElement("input", {
     type: "checkbox",
     name: props.name,
     value: props.option.id,
     className: "mb-2",
-    onChange: e => {
-      setQuestions(cur => {
-        let copy = cur.slice();
+    onChange: function onChange(e) {
+      setQuestions(function (cur) {
+        var copy = cur.slice();
         copy[props.questionIndex].answer[props.optionIndex] = !copy[props.questionIndex].answer[props.optionIndex];
         console.log("MCQ-M", copy);
         return copy;
@@ -84,7 +114,7 @@ const MCQMOption = props => {
   }), " ", /*#__PURE__*/React.createElement("label", null, props.option.statement));
 };
 
-const Option = props => {
+var Option = function Option(props) {
   if (props.questionType == "MCQ-S") return /*#__PURE__*/React.createElement(MCQSOption, {
     option: props.option,
     name: props.name,
@@ -117,15 +147,22 @@ State questions array looks like this:
 */
 
 
-const PassageQuestionPrompt = props => {
-  const {
-    questionsObj
-  } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
-  const [list_of_questions, setListOfQuestions] = useState("");
-  useEffect(() => {
-    let list = "";
-    questions.forEach((question_obj, question_index) => {
+var PassageQuestionPrompt = function PassageQuestionPrompt(props) {
+  var _useContext3 = useContext(MyContext),
+      questionsObj = _useContext3.questionsObj;
+
+  var _questionsObj3 = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj3[0],
+      setQuestions = _questionsObj3[1];
+
+  var _useState7 = useState(""),
+      _useState8 = _slicedToArray(_useState7, 2),
+      list_of_questions = _useState8[0],
+      setListOfQuestions = _useState8[1];
+
+  useEffect(function () {
+    var list = "";
+    questions.forEach(function (question_obj, question_index) {
       if (question_obj.question.passage == props.passageIndex) {
         if (list != "") list += ", ";
         list += question_index + 1;
@@ -136,11 +173,14 @@ const PassageQuestionPrompt = props => {
   return /*#__PURE__*/React.createElement("span", null, "Questions ", props.questionIndex + 1, " is about the following comprehension passage: ", /*#__PURE__*/React.createElement("br", null));
 };
 
-const Passage = props => {
-  const {
-    passagesObj
-  } = useContext(MyContext);
-  const [passages, setPassages] = passagesObj;
+var Passage = function Passage(props) {
+  var _useContext4 = useContext(MyContext),
+      passagesObj = _useContext4.passagesObj;
+
+  var _passagesObj = _slicedToArray(passagesObj, 2),
+      passages = _passagesObj[0],
+      setPassages = _passagesObj[1];
+
   return /*#__PURE__*/React.createElement("div", {
     className: "single-question rounded-lg pb-4 text-left mx-auto mt-4"
   }, /*#__PURE__*/React.createElement("div", {
@@ -162,7 +202,7 @@ const Passage = props => {
   }, passages[props.passageIndex].statement))));
 };
 
-const ImageOrAudio = props => {
+var ImageOrAudio = function ImageOrAudio(props) {
   if (props.question.image != null && props.question.image != "null") {
     if (props.question.image.indexOf("img/") !== -1) {
       return /*#__PURE__*/React.createElement("img", {
@@ -180,13 +220,16 @@ const ImageOrAudio = props => {
   } else return /*#__PURE__*/React.createElement("div", null);
 };
 
-const Question = props => {
-  const {
-    questionsObj
-  } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
-  const question = props.obj.question;
-  const options = props.obj.options;
+var Question = function Question(props) {
+  var _useContext5 = useContext(MyContext),
+      questionsObj = _useContext5.questionsObj;
+
+  var _questionsObj4 = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj4[0],
+      setQuestions = _questionsObj4[1];
+
+  var question = props.obj.question;
+  var options = props.obj.options;
   return /*#__PURE__*/React.createElement("div", {
     className: "single-question rounded-lg pb-4 text-left mx-auto mt-4"
   }, /*#__PURE__*/React.createElement("div", {
@@ -206,51 +249,82 @@ const Question = props => {
     }
   }, question.statement), /*#__PURE__*/React.createElement("ul", {
     className: "mt-2"
-  }, options.map((option, index) => /*#__PURE__*/React.createElement(Option, {
-    option: option,
-    optionIndex: index,
-    name: props.questionIndex,
-    questionIndex: props.questionIndex,
-    questionType: question.type,
-    key: option.id
-  })))));
+  }, options.map(function (option, index) {
+    return /*#__PURE__*/React.createElement(Option, {
+      option: option,
+      optionIndex: index,
+      name: props.questionIndex,
+      questionIndex: props.questionIndex,
+      questionType: question.type,
+      key: option.id
+    });
+  }))));
 };
 
-const Main = () => {
-  const {
-    questionsObj,
-    displayQuestionsObj,
-    passagesObj
-  } = useContext(MyContext);
-  const [questions, setQuestions] = questionsObj;
-  const [passages, setPassages] = passagesObj;
-  const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
-  const [saveSpinner, setSaveSpinner] = useState(false);
-  const [saveButtonColor, setSaveButtonColor] = useState("bg-iec-blue");
-  const [saveButtonText, setSaveButtonText] = useState("Save Current Progress");
-  const [submitSpinner, setSubmitSpinner] = useState(false);
-  const [submitButtonColor, setSubmitButtonColor] = useState("bg-iec-blue");
-  useMemo(() => {
+var Main = function Main() {
+  var _useContext6 = useContext(MyContext),
+      questionsObj = _useContext6.questionsObj,
+      displayQuestionsObj = _useContext6.displayQuestionsObj,
+      passagesObj = _useContext6.passagesObj;
+
+  var _questionsObj5 = _slicedToArray(questionsObj, 2),
+      questions = _questionsObj5[0],
+      setQuestions = _questionsObj5[1];
+
+  var _passagesObj2 = _slicedToArray(passagesObj, 2),
+      passages = _passagesObj2[0],
+      setPassages = _passagesObj2[1];
+
+  var _displayQuestionsObj = _slicedToArray(displayQuestionsObj, 2),
+      displayQuestions = _displayQuestionsObj[0],
+      setDisplayQuestions = _displayQuestionsObj[1];
+
+  var _useState9 = useState(false),
+      _useState10 = _slicedToArray(_useState9, 2),
+      saveSpinner = _useState10[0],
+      setSaveSpinner = _useState10[1];
+
+  var _useState11 = useState("bg-iec-blue"),
+      _useState12 = _slicedToArray(_useState11, 2),
+      saveButtonColor = _useState12[0],
+      setSaveButtonColor = _useState12[1];
+
+  var _useState13 = useState("Save Current Progress"),
+      _useState14 = _slicedToArray(_useState13, 2),
+      saveButtonText = _useState14[0],
+      setSaveButtonText = _useState14[1];
+
+  var _useState15 = useState(false),
+      _useState16 = _slicedToArray(_useState15, 2),
+      submitSpinner = _useState16[0],
+      setSubmitSpinner = _useState16[1];
+
+  var _useState17 = useState("bg-iec-blue"),
+      _useState18 = _slicedToArray(_useState17, 2),
+      submitButtonColor = _useState18[0],
+      setSubmitButtonColor = _useState18[1];
+
+  useMemo(function () {
     setSaveButtonColor("bg-iec-blue");
     setSaveButtonText("Save Current Progress");
   }, [questions]);
-  useEffect(() => {
+  useEffect(function () {
     if (displayQuestions == false) submitQuiz();
   }, [displayQuestions]);
 
   function saveQuizProgress() {
     // the questions array has excessive information about questions and options. I don't want that. So I'm going to create a reduced array with just the information needed by the server
     setSaveSpinner(true);
-    let answers = [];
-    questions.forEach(obj => {
+    var answers = [];
+    questions.forEach(function (obj) {
       if (obj.question.type == "MCQ-S") answers.push({
         questionId: obj.question.id,
         questionType: obj.question.type,
         answerOptionId: obj.answer
       });else {
         // for MCQ-M, the obj.answer array contains [true, false], we need optionIds there
-        let optionIds = [];
-        obj.options.forEach((option, index) => {
+        var optionIds = [];
+        obj.options.forEach(function (option, index) {
           if (obj.answer[index]) optionIds.push(option.id);
         });
         answers.push({
@@ -260,7 +334,7 @@ const Main = () => {
         });
       }
     });
-    return new Promise((resolve, reject) => {
+    return new Promise(function (resolve, reject) {
       $.ajax({
         url: "/quiz/save-progress",
         type: "POST",
@@ -270,7 +344,7 @@ const Main = () => {
           answers: answers
         }),
         dataType: "json",
-        success: function (response) {
+        success: function success(response) {
           setSaveSpinner(false);
 
           if (response.success == true) {
@@ -280,7 +354,7 @@ const Main = () => {
           } else {
             setSaveButtonColor("bg-red-500");
             setSaveButtonText("Saving Failed!");
-            setTimeout(() => {
+            setTimeout(function () {
               setSaveButtonColor("bg-iec-blue");
               setSaveButtonText("Save Current Progress");
             }, 3000);
@@ -307,10 +381,10 @@ const Main = () => {
   function submitQuiz() {
     // if saveButtonColor is green, that means student's quiz has been saved at the server and nothing has changed afterwards
     if (saveButtonColor != "bg-green-500") {
-      saveQuizProgress().then(time => {
+      saveQuizProgress().then(function (time) {
         setSubmitSpinner(true);
         sendScoringRequest(time);
-      }).catch(err => {
+      }).catch(function (err) {
         console.log(err);
       });
     } else {
@@ -319,10 +393,10 @@ const Main = () => {
 
   }
 
-  useEffect(() => {
-    $.get("/quiz/section/" + sectionId + "/all-questions", resp => {
+  useEffect(function () {
+    $.get("/quiz/section/" + sectionId + "/all-questions", function (resp) {
       if (resp.success == true) {
-        const mcqs = resp.data;
+        var mcqs = resp.data;
         setPassages(resp.passages);
         setQuestions(mcqs);
       } else {
@@ -347,21 +421,23 @@ const Main = () => {
     disabled: preview_or_not
   }, /*#__PURE__*/React.createElement("i", {
     className: submitSpinner ? "fas fa-spinner animate-spin" : "far fa-paper-plane"
-  }), " ", "Finish & Submit Quiz"))), displayQuestions ? questions.map((obj, index) => obj.question.passage == null ? /*#__PURE__*/React.createElement(Question, {
-    obj: obj,
-    questionIndex: index,
-    total_questions: questions.length,
-    key: obj.question.id
-  }) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Passage, {
-    passage: passages[obj.question.passage],
-    questionIndex: index,
-    passageIndex: obj.question.passage
-  }), /*#__PURE__*/React.createElement(Question, {
-    obj: obj,
-    questionIndex: index,
-    total_questions: questions.length,
-    key: obj.question.id
-  }))) : /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", {
+  }), " ", "Finish & Submit Quiz"))), displayQuestions ? questions.map(function (obj, index) {
+    return obj.question.passage == null ? /*#__PURE__*/React.createElement(Question, {
+      obj: obj,
+      questionIndex: index,
+      total_questions: questions.length,
+      key: obj.question.id
+    }) : /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(Passage, {
+      passage: passages[obj.question.passage],
+      questionIndex: index,
+      passageIndex: obj.question.passage
+    }), /*#__PURE__*/React.createElement(Question, {
+      obj: obj,
+      questionIndex: index,
+      total_questions: questions.length,
+      key: obj.question.id
+    }));
+  }) : /*#__PURE__*/React.createElement("div", null), /*#__PURE__*/React.createElement("div", {
     className: "grid grid-cols-1 justify-end mb-6"
   }, /*#__PURE__*/React.createElement("div", {
     className: "justify-self-center sm:justify-self-end flex flex-row gap-2"
@@ -380,15 +456,22 @@ const Main = () => {
   }), " ", "Finish & Submit Quiz"))));
 };
 
-const Header = () => {
-  const {
-    questionsObj,
-    displayQuestionsObj
-  } = useContext(MyContext);
-  const [displayQuestions, setDisplayQuestions] = displayQuestionsObj;
-  const [remainingTime, setRemainingTime] = useState("Please wait");
-  const remainingTimeRef = useRef("Please wait");
-  const timeRef = useRef(null); //stores the setInterval object
+var Header = function Header() {
+  var _useContext7 = useContext(MyContext),
+      questionsObj = _useContext7.questionsObj,
+      displayQuestionsObj = _useContext7.displayQuestionsObj;
+
+  var _displayQuestionsObj2 = _slicedToArray(displayQuestionsObj, 2),
+      displayQuestions = _displayQuestionsObj2[0],
+      setDisplayQuestions = _displayQuestionsObj2[1];
+
+  var _useState19 = useState("Please wait"),
+      _useState20 = _slicedToArray(_useState19, 2),
+      remainingTime = _useState20[0],
+      setRemainingTime = _useState20[1];
+
+  var remainingTimeRef = useRef("Please wait");
+  var timeRef = useRef(null); //stores the setInterval object
 
   remainingTimeRef.current = remainingTime;
 
@@ -397,21 +480,21 @@ const Header = () => {
       setRemainingTime("No Time Limit");
       clearInterval(timeRef.current);
     } else if (remainingTimeRef.current != null && remainingTimeRef.current < 2000) {
-      setTimeout(() => {
+      setTimeout(function () {
         setDisplayQuestions(false);
         setRemainingTime("Time Over");
       }, 1000);
       clearInterval(timeRef.current);
     } else if (remainingTimeRef.current != null) {
-      setRemainingTime(cur => {
+      setRemainingTime(function (cur) {
         return cur - 1000;
       });
     }
   }
 
-  useEffect(() => {
-    let edt;
-    $.get("/quiz/section/" + sectionId + "/endTime", resp => {
+  useEffect(function () {
+    var edt;
+    $.get("/quiz/section/" + sectionId + "/endTime", function (resp) {
       if (resp.success == true) {
         edt = resp.duration_left;
         setRemainingTime(edt);
@@ -441,7 +524,7 @@ const Header = () => {
   }, millisecondsToMinutesAndSeconds(remainingTime))));
 };
 
-const App = () => {
+var App = function App() {
   return /*#__PURE__*/React.createElement(ContextProvider, null, /*#__PURE__*/React.createElement(Header, null), /*#__PURE__*/React.createElement(Main, null));
 };
 

@@ -21,6 +21,7 @@ const Input = ({
 	value = undefined,
 	min,
 	max,
+	error
 }) => {
 	return (
 		<div className="flex flex-col w-full">
@@ -28,7 +29,7 @@ const Input = ({
 				<label className="label">
 					<span className="">{label}</span>
 				</label>
-
+				{!!error && <p><i className="fas fa-exclamation-circle text-red-500"></i> {error}</p>}
 				<input
 					type={type}
 					name={name}
@@ -59,6 +60,133 @@ const ErrorDisplay = ({ errorType, email }) => {
 	</div>
 }
 
+/*
+<option value="Lahore">Lahore</option>
+										<option value="Islamabad/Rawalpindi">
+											Islamabad/Rawalpindi
+										</option>
+										<option value="Karachi">Karachi</option>
+										<option value="Peshawar">Peshawar</option>
+										<option value="Other">Other</option>
+*/
+
+const validationSchema = {
+	email: {
+		required: true,
+		regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+	},
+	cnic: {
+		required: true,
+		regex: /^(\d{5})-(\d{7})-(\d{1})$/,
+	},
+	password: {
+		required: true,
+		min_length: 8,
+	},
+	name: {
+		required: true,
+		min_length: 3,
+		max_length: 100,
+	},
+	age: {
+		required: true,
+		is_int: true,
+		min: 12,
+		max: 120,
+	},
+	phone: {
+		required: true,
+		regex: /^(\+?\d{1,3})?[ -]?\(?\d{3}\)?[ -]?\d{3}[ -]?\d{4}$/,
+	},
+	city: {
+		required: true,
+		is_in: ["Lahore", "Islamabad/Rawalpindi", "Karachi", "Peshawar", "Other"]
+	},
+	education: {
+		required: true,
+		is_in: ["Only Matric", "Only Intermediate", "Bachelors (In process)", "Bachelors (Completed)", "Diploma (In process)", "Diploma (Completed)", "Postgraduate (In process)", "Postgraduate (Completed)"],
+	},
+	employment: {
+		required: true,
+		is_in: ["Employed (Full time)", "Employed (Part time)", "Jobless", "Freelancer"],
+	},
+	course_interest: {
+		required: true,
+	},
+}
+
+function validate(formData) {
+	const errors = {};
+	let error_exists = false
+
+	for (const fieldName in validationSchema) {
+		const fieldValidation = validationSchema[fieldName];
+		errors[fieldName] = ""
+
+		// Check if the field is required
+		if (fieldValidation.required && !formData.has(fieldName)) {
+			errors[fieldName] = `${fieldName} is required`;
+			error_exists = true
+		}
+
+		// Check if the field has a regex pattern to match against
+		if (fieldValidation.regex && formData.has(fieldName)) {
+			const fieldValue = formData.get(fieldName);
+			if (!fieldValidation.regex.test(fieldValue)) {
+				errors[fieldName] = `${fieldName} is invalid`;
+				error_exists = true
+			}
+
+		}
+
+		// Check if the field has a minimum length requirement
+		if (fieldValidation.min_length && formData.has(fieldName)) {
+			const fieldValue = formData.get(fieldName);
+			if (fieldValue.length < fieldValidation.min_length) {
+				errors[fieldName] = `${fieldName} should be at least ${fieldValidation.min_length} characters long`;
+				error_exists = true
+			}
+
+		}
+
+		// Check if the field has a maximum length requirement
+		if (fieldValidation.max_length && formData.has(fieldName)) {
+			const fieldValue = formData.get(fieldName);
+			if (fieldValue.length > fieldValidation.max_length) {
+				errors[fieldName] = `${fieldName} should be at most ${fieldValidation.max_length} characters long`;
+				error_exists = true
+			}
+		}
+
+		// Check if the field is an integer within a range
+		if (fieldValidation.is_int && formData.has(fieldName)) {
+			const fieldValue = parseInt(formData.get(fieldName));
+			if (isNaN(fieldValue) || !Number.isInteger(fieldValue)) {
+				errors[fieldName] = `${fieldName} should be an integer`;
+				error_exists = true
+			} else if (fieldValidation.min && fieldValue < fieldValidation.min) {
+				errors[fieldName] = `${fieldName} should be at least ${fieldValidation.min}`;
+				error_exists = true
+			} else if (fieldValidation.max && fieldValue > fieldValidation.max) {
+				errors[fieldName] = `${fieldName} should be at most ${fieldValidation.max}`;
+				error_exists = true
+			}
+		}
+
+		// Check if the field value is within a set of allowed values
+		if (fieldValidation.is_in && formData.has(fieldName)) {
+			const fieldValue = formData.get(fieldName);
+			if (!fieldValidation.is_in.includes(fieldValue)) {
+				errors[fieldName] = `${fieldName} is not an allowed value`;
+				error_exists = true
+			}
+		}
+	}
+
+	return [error_exists, errors]
+}
+
+
 const App = () => {
 	const [CNIC, setCNIC] = useState("")
 	const [password, setPassword] = useState("")
@@ -69,6 +197,18 @@ const App = () => {
 	const [status, setStatus] = useState(STATUS_TYPES.JUST_OPENED)
 	const [errorType, setErrorType] = useState("")
 	const [oldEmailAddress, setOldEmailAddress] = useState("")
+	const [errorMessage, setErrorMessage] = useState({
+		email: "",
+		cnic: "",
+		password: "",
+		name: "",
+		age: "",
+		phone: "",
+		city: "",
+		education: "",
+		employment: "",
+		course_interest: "",
+	})
 	//one of few discrete states, not a boolean;
 	//status can be:
 	// justOpened(hasn't entered email yet),
@@ -175,10 +315,19 @@ const App = () => {
 
 			const formData = new FormData(e.target)
 
+			const [error_exists, errors] = validate(formData)
+			if (error_exists) {
+				alert("Invalid input. Please enter valid information.")
+				setErrorMessage(errors)
+				return
+			}
+
 			// divide name into firstname and lastname by space, if there is no lastname, set it to ""
-			const name = formData.get("name").split(" ")
-			const firstname = name[0]
-			const lastname = name.length > 1 ? name[1] : ""
+			const name = formData.get("name")
+			const words = name.trim().split(' ');
+			const firstName = words.shift();
+			const lastName = words.join(' ');
+			console.log(firstName, lastName)
 			const age = parseInt(formData.get("age"))
 
 			const response = await fetch(
@@ -192,8 +341,8 @@ const App = () => {
 						email: formData.get("email"),
 						cnic: formData.get("cnic"),
 						password: formData.get("password"),
-						firstname: firstname,
-						lastname: lastname,
+						firstName,
+						lastName,
 						age_group: age < 22 ? 'Less than 22' : age >= 22 && age <= 35 ? '22 - 35' : 'More than 35',
 						age,
 						phone: formData.get("phone"),
@@ -208,7 +357,7 @@ const App = () => {
 			)
 
 			if (response.status === 201) {
-				window.location.href = "https://iec.org.pk/thankyou"
+				// window.location.href = "https://iec.org.pk/thankyou"
 			} else {
 				alert("Something went wrong. Try again or contact mail@iec.org.pk")
 				console.log(response)
@@ -229,6 +378,7 @@ const App = () => {
 		const data = await response.json()
 		if (data.success) {
 			setCourses(data.courses)
+			validationSchema["course_interest"]["is_in"] = data.courses.map(course => course.id)
 		}
 	}, [])
 
@@ -254,20 +404,22 @@ const App = () => {
 					>
 						<div id="left" className="flex flex-col w-full basis-full gap-y-5">
 							<Input
-								label="Email:"
+								label={<span><i className="far fa-envelope"></i> Email:</span>}
 								name="email"
 								type="email"
 								value={email}
 								placeholder="info@info.com"
 								onChange={(e) => setEmail(e.target.value)}
+								error={errorMessage.email}
 							/>
 							<Input
-								label="CNIC:"
+								label={<span><i className="far fa-address-card"></i> CNIC:</span>}
 								placeholder="xxxxx-xxxxxxx-x"
 								name="cnic"
 								type="text"
 								value={CNIC}
 								onChange={handleCNIC}
+								error={errorMessage.cnic}
 							/>
 
 							{status !== STATUS_TYPES.JUST_OPENED && (
@@ -277,6 +429,7 @@ const App = () => {
 										name="name"
 										type="text"
 										placeholder="Enter your name"
+										error={errorMessage.name}
 									/>
 
 									{status === STATUS_TYPES.NEW_USER && (
@@ -288,6 +441,7 @@ const App = () => {
 												placeholder="********"
 												value={password}
 												onChange={handlePassword}
+												error={errorMessage.password}
 											/>
 
 											<Input
@@ -313,16 +467,17 @@ const App = () => {
 									name="phone"
 									type="text"
 									placeholder="Phone Number"
+									error={errorMessage.phone}
 								/>
 								<div className="flex flex-col gap-1 w-full">
-									<Input label="Age:" name="age" type="number" min="12" max="120" placeholder="e.g. 25" />
+									<Input label="Age:" name="age" type="number" min="12" max="120" placeholder="e.g. 25" error={errorMessage.age} />
 								</div>
 
 								<div className="flex flex-col gap-1 w-full">
 									<label className="label">
 										<span className="">Course Interest:</span>
 									</label>
-
+									<p>{errorMessage.course_interest}</p>
 									<select
 										name="course_interest"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -349,7 +504,7 @@ const App = () => {
 									<label className="label">
 										<span className="">City:</span>
 									</label>
-
+									<p>{errorMessage.city}</p>
 									<select
 										name="city"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -371,7 +526,7 @@ const App = () => {
 									<label className="label">
 										<span className="">Education:</span>
 									</label>
-
+									<p>{errorMessage.education}</p>
 									<select
 										name="education"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -380,21 +535,21 @@ const App = () => {
 											Select Education Status
 										</option>
 
-										<option>Only Matric</option>
+										<option value="Only Matric">Only Matric</option>
 
-										<option>Only Intermediate</option>
+										<option value="Only Intermediate">Only Intermediate</option>
 
-										<option>Bachelors (In process)</option>
+										<option value="Bachelors (In process)">Bachelors (In process)</option>
 
-										<option>Bachelors (Completed)</option>
+										<option value="Bachelors (Completed)">Bachelors (Completed)</option>
 
-										<option>Diploma (In process)</option>
+										<option value="Diploma (In process)">Diploma (In process)</option>
 
-										<option>Diploma (Completed)</option>
+										<option value="Diploma (Completed)">Diploma (Completed)</option>
 
-										<option>Postgraduate (In process)</option>
+										<option value="Postgraduate (In process)">Postgraduate (In process)</option>
 
-										<option>Postgraduate (Completed)</option>
+										<option value="Postgraduate (Completed)">Postgraduate (Completed)</option>
 									</select>
 								</div>
 
@@ -402,7 +557,7 @@ const App = () => {
 									<label className="label">
 										<span className="">Employment:</span>
 									</label>
-
+									<p>{errorMessage.employment}</p>
 									<select
 										name="employment"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -411,10 +566,10 @@ const App = () => {
 										<option value="" selected disabled>
 											Select Employment Status
 										</option>
-										<option>Employed (Full time)</option>
-										<option>Employed (Part time)</option>
-										<option>Jobless</option>
-										<option>Freelancer</option>
+										<option value="Employed (Full time)">Employed (Full time)</option>
+										<option value="Employed (Part time)">Employed (Part time)</option>
+										<option value="Jobless">Jobless</option>
+										<option value="Freelancer">Freelancer</option>
 									</select>
 								</div>
 							</div>
