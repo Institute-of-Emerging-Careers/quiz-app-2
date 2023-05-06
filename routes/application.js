@@ -150,8 +150,6 @@ router.post(
 
 		try {
 			// Each Student has many Applications. We need to ascertain whether this student is new or exists previously.
-			console.log("req.body", req.body);
-
 			let student = await Student.findOne({
 				where: { email: req.body.email, cnic: req.body.cnic },
 			})
@@ -287,7 +285,7 @@ router.get("/:application_round_id/courses", async (req, res) => {
 		const application_round = await ApplicationRound.findOne({
 			where: { id: req.params.application_round_id },
 		})
-		
+
 		const courses = await application_round.getCourses({
 			attributes: ["id", "title"],
 		})

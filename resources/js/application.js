@@ -3,7 +3,7 @@ const useEffect = React.useEffect
 
 const Header = () => {
 	return (
-		<div className="flex w-full items-center justify-center p-4 bg-white">
+		<div className="flex w-full items-center justify-center p-4 bg-white mb-4">
 			<h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-iec-blue to-green-500 p-5">
 				Apply To IEC
 			</h1>
@@ -19,6 +19,8 @@ const Input = ({
 	type,
 	onChange = undefined,
 	value = undefined,
+	min,
+	max,
 }) => {
 	return (
 		<div className="flex flex-col w-full">
@@ -34,6 +36,8 @@ const Input = ({
 					onChange={onChange}
 					value={value}
 					required={true}
+					min={min}
+					max={max}
 					className="border-2 border-gray-300 rounded-lg p-2 h-12 w-full"
 				/>
 			</div>
@@ -41,46 +45,30 @@ const Input = ({
 	)
 }
 
-// const DropdownComponent = ({ label, name, placeholder, options }) => {
-// 	return (
-// 		<div className="flex flex-col w-full">
-// 			<div className="flex flex-col gap-1 w-full">
-// 				<label className="label">
-// 					<span className="">{label}</span>
-// 				</label>
+const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied', PASSWORD_TOO_SHORT: 'password_too_short', PASSWORD_MISMATCH: 'password_mismatch' }
+const STATUS_TYPES = { JUST_OPENED: 'just_opened', NEW_USER: 'new_user', EXISTING_USER: 'existing_user' }
 
-// 				<select
-// 					name={name}
-// 					className="border-2 border-gray-300 rounded-lg p-2 w-full"
-// 					placeholder="Select employment"
-// 				>
-// 					<option value="" selected disabled>
-// 						{placeholder}
-// 					</option>
-// 					{options.map((option, index) => (
-// 						<option key={index} value={option}>
-// 							{option}
-// 						</option>
-// 					))}
-// 				</select>
-// 			</div>
-// 		</div>
-// 	)
-// }
+const ErrorDisplay = ({ errorType, email }) => {
+	return <div className="flex items-center gap-x-2">
+		{!!errorType && <i className="fas fa-exclamation-circle text-red-500"></i>}
+		{errorType === ERROR_TYPE.EMAIL_EXISTS && <p>The email you entered already exists in our database. It means you have already applied to a different IEC cohort before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.<br />Or, if you think you accidentally entered the wrong CNIC number last time, you can <a href="/application/change-cnic" target="_blank" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your CNIC number</a> if you remember your password from last time</p>}
+		{errorType === ERROR_TYPE.CNIC_EXISTS && <p>We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: {email}.<br />If that email address was correct, then please use that same email address and cnic pair.<br />If you entered a wrong email address the last time, then <a href="/application/change-email" className="text-iec-blue hover:text-iec-blue-hover underline hover:no-underline">click here to change your email address</a>.</p>}
+		{errorType === ERROR_TYPE.ALREADY_APPLIED && <p>You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on mail@iec.org.pk if you have any concerns.</p>}
+		{errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && <p>Password must be at least 8 characters long.</p>}
+		{errorType === ERROR_TYPE.PASSWORD_MISMATCH && <p>Please write the same password both times. The two password fields do not match.</p>}
+	</div>
+}
 
 const App = () => {
 	const [CNIC, setCNIC] = useState("")
 	const [password, setPassword] = useState("")
 	const [confirmPassword, setConfirmPassword] = useState("")
-	const [passwordMatch, setPasswordMatch] = useState("")
-	const [age, setAge] = useState(0)
 	const [courses, setCourses] = useState([])
 	const [email, setEmail] = useState("")
 	const [courseInterest, setCourseInterest] = useState("")
-	const [status, setStatus] = useState("justOpened")
-	const [applicationStatus, setApplicationStatus] = useState("")
-	const [errorMsg, setErrorMsg] = useState("")
-	const [cnicError, setCNICError] = useState("")
+	const [status, setStatus] = useState(STATUS_TYPES.JUST_OPENED)
+	const [errorType, setErrorType] = useState("")
+	const [oldEmailAddress, setOldEmailAddress] = useState("")
 	//one of few discrete states, not a boolean;
 	//status can be:
 	// justOpened(hasn't entered email yet),
@@ -108,11 +96,6 @@ const App = () => {
 		return formattedInput
 	}
 
-	const handleAge = (e) => {
-		const value = e.target.value.replace(/\D/g, "")
-		setAge(value)
-	}
-
 	const checkAlreadyRegistered = async (e) => {
 		e.preventDefault()
 		e.stopPropagation()
@@ -125,7 +108,7 @@ const App = () => {
 
 		try {
 			const response = await fetch(
-				"https://apply.iec.org.pk/application/check-if-user-exists",
+				"/application/check-if-user-exists",
 				{
 					method: "POST",
 					headers: {
@@ -144,18 +127,20 @@ const App = () => {
 			const data = await response.json()
 
 			if (!data.exists) {
-				setStatus("newUser")
-				// setApplicationStatus("newUser")
-			} else {
-				setApplicationStatus(data.type)
+				setStatus(STATUS_TYPES.NEW_USER)
+				setErrorType("")
 			}
 
 			if (data.type === "both_cnic_and_email") {
 				setStatus("existingUser")
+				setErrorType("")
 			} else if (data.type === "already_applied") {
-				setErrorMsg("You have already applied to this cohort.")
-			} else if (data.type === "cnic_only"){
-				setCNICError(data.email)
+				setErrorType(ERROR_TYPE.ALREADY_APPLIED)
+			} else if (data.type === "cnic_only") {
+				setOldEmailAddress(data.email)
+				setErrorType(ERROR_TYPE.CNIC_EXISTS)
+			} else if (data.type === 'email_only') {
+				setErrorType(ERROR_TYPE.EMAIL_EXISTS)
 			}
 		} catch (err) {
 			console.log(err)
@@ -164,41 +149,40 @@ const App = () => {
 
 	const handlePassword = (e) => {
 		setPassword(e.target.value)
-
-		if (e.target.value.length < 8) {
-			setErrorMsg("Password must be at least 8 characters")
-		} else {
-			setErrorMsg("")
-		}
 	}
 
-	const handleConfirmPassword = (e) => {
-		setConfirmPassword(e.target.value)
-		setPasswordMatch(e.target.value === password)
+	const handleConfirmPassword = (e) => setConfirmPassword(e.target.value)
 
-		if (e.target.value === password) {
-			setErrorMsg("")
-		} else {
-			setErrorMsg("Passwords do not match")
-		}
-	}
+	useEffect(() => {
+		if (password !== confirmPassword)
+			setErrorType(ERROR_TYPE.PASSWORD_MISMATCH)
+		else if (password.length < 8 && password.length > 0)
+			setErrorType(ERROR_TYPE.PASSWORD_TOO_SHORT)
+		else setErrorType("")
+	}, [password, confirmPassword])
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
 		e.stopPropagation()
+
+		if (!!errorType) {
+			alert("Please fix all errors before submitting the form. If there is a problem, email mail@iec.org.pk or reload the page.")
+			return
+		}
+
 		try {
 			const application_round_id = window.location.pathname.split("/")[3]
 
 			const formData = new FormData(e.target)
-			console.log(formData)
 
 			// divide name into firstname and lastname by space, if there is no lastname, set it to ""
 			const name = formData.get("name").split(" ")
 			const firstname = name[0]
 			const lastname = name.length > 1 ? name[1] : ""
+			const age = parseInt(formData.get("age"))
 
 			const response = await fetch(
-				`https://apply.iec.org.pk/application/submit/${application_round_id}/`,
+				`/application/submit/${application_round_id}/`,
 				{
 					method: "POST",
 					headers: {
@@ -210,7 +194,8 @@ const App = () => {
 						password: formData.get("password"),
 						firstname: firstname,
 						lastname: lastname,
-						age_group: formData.get("age"),
+						age_group: age < 22 ? 'Less than 22' : age >= 22 && age <= 35 ? '22 - 35' : 'More than 35',
+						age,
 						phone: formData.get("phone"),
 						city: formData.get("city"),
 						education_completed: formData.get("education"),
@@ -225,6 +210,7 @@ const App = () => {
 			if (response.status === 201) {
 				window.location.href = "https://iec.org.pk/thankyou"
 			} else {
+				alert("Something went wrong. Try again or contact mail@iec.org.pk")
 				console.log(response)
 			}
 		} catch (err) {
@@ -238,7 +224,7 @@ const App = () => {
 		const application_round_id = window.location.pathname.split("/")[3]
 
 		const response = await fetch(
-			`https://apply.iec.org.pk/application/${application_round_id}/courses`
+			`/application/${application_round_id}/courses`
 		)
 		const data = await response.json()
 		if (data.success) {
@@ -255,22 +241,16 @@ const App = () => {
 				className="flex flex-col items-center justify-center w-full"
 			>
 				<form
-					className={`bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-b-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10  transition-all duration-300`}
+					className='bg-white w-full md:w-1/2 shadow-lg hover:shadow-xl p-5 md:rounded-lg flex flex-col gap-y-5 md:gap-y-0 md:gap-x-10 transition-all duration-300'
 					name="application"
 					onSubmit={handleSubmit}
 				>
-					{errorMsg !== "" && (
-						<div
-							className={`bg-red-500 text-white p-2 rounded-lg my-2 w-1/2 self-center justify-self-center flex`}
-						>
-							<p className="mx-auto">{errorMsg}</p>
-						</div>
-					)}
+					<ErrorDisplay errorType={errorType} email={oldEmailAddress} />
+					{!!errorType && <hr className="mt-2 mb-2" />}
 
 					<div
-						className={` flex flex-col ${
-							status === "justOpened" ? "flex-col" : "md:flex-row"
-						} gap-y-5 md:gap-y-0 md:gap-x-10 `}
+						className={`flex flex-col ${status === STATUS_TYPES.JUST_OPENED ? "flex-col" : "md:flex-row"
+							} gap-y-5 md:gap-y-0 md:gap-x-10 `}
 					>
 						<div id="left" className="flex flex-col w-full basis-full gap-y-5">
 							<Input
@@ -281,24 +261,6 @@ const App = () => {
 								placeholder="info@info.com"
 								onChange={(e) => setEmail(e.target.value)}
 							/>
-							{cnicError !== "" && (
-								<p className="text-sm text-red-500">
-									We already have this CNIC in our database. It means you have
-									applied to IEC in the past, but you used a different email
-									address the last time.
-									<br />
-									The email you used last time was something like {cnicError}.
-									<br/>
-									If that email address was correct, then please use that same
-									email address and cnic pair. If you entered a wrong email
-									address the last time, then
-									<a href="https://apply.iec.org.pk/application/change-email">
-										{" "}
-										click here to change your email address.
-									</a>
-								</p>
-							)}
-
 							<Input
 								label="CNIC:"
 								placeholder="xxxxx-xxxxxxx-x"
@@ -308,7 +270,7 @@ const App = () => {
 								onChange={handleCNIC}
 							/>
 
-							{status !== "justOpened" && (
+							{status !== STATUS_TYPES.JUST_OPENED && (
 								<>
 									<Input
 										label="Name:"
@@ -317,7 +279,7 @@ const App = () => {
 										placeholder="Enter your name"
 									/>
 
-									{status === "newUser" && (
+									{status === STATUS_TYPES.NEW_USER && (
 										<>
 											<Input
 												label="Password:"
@@ -341,7 +303,7 @@ const App = () => {
 								</>
 							)}
 						</div>
-						{status !== "justOpened" && (
+						{status !== STATUS_TYPES.JUST_OPENED && (
 							<div
 								id="right"
 								className="flex flex-col w-full basis-full gap-y-5"
@@ -349,35 +311,11 @@ const App = () => {
 								<Input
 									label="Phone Number:"
 									name="phone"
-									type="number"
+									type="text"
 									placeholder="Phone Number"
 								/>
 								<div className="flex flex-col gap-1 w-full">
-									<label className="label">
-										<span className="">Age:</span>
-									</label>
-
-									<select
-										name="age"
-										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
-										placeholder="What is your age?"
-									>
-										<option value="" selected disabled>
-											Pick your age
-										</option>
-
-										<option value="Less than 22" className="bg-white">
-											Less than 22
-										</option>
-
-										<option value="22 - 35" className="bg-white">
-											Between 22 and 35
-										</option>
-
-										<option value="More than 35" className="bg-white">
-											More than 35
-										</option>
-									</select>
+									<Input label="Age:" name="age" type="number" min="12" max="120" placeholder="e.g. 25" />
 								</div>
 
 								<div className="flex flex-col gap-1 w-full">
@@ -389,6 +327,7 @@ const App = () => {
 										name="course_interest"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
 										value={courseInterest}
+										onChange={(e) => setCourseInterest(e.target.value)}
 									>
 										<option value="" selected disabled>
 											Pick a course
@@ -399,9 +338,6 @@ const App = () => {
 													key={course.id}
 													value={course.id}
 													className="bg-white"
-													onClick={() => {
-														setCourseInterest(course.id)
-													}}
 												>
 													{course.title}
 												</option>
@@ -484,15 +420,15 @@ const App = () => {
 							</div>
 						)}
 					</div>
-					{status === "justOpened" ? (
+					{status === STATUS_TYPES.JUST_OPENED ? (
 						<button
-							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
+							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
 							onClick={(email) => checkAlreadyRegistered(email)}
 						>
 							Next!
 						</button>
 					) : (
-						<button className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-full hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center">
+						<button className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center">
 							Submit Application!
 						</button>
 					)}
