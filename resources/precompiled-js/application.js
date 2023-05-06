@@ -91,17 +91,21 @@ var ERROR_TYPE = {
   ALREADY_APPLIED: 'already_applied'
 };
 var STATUS_TYPES = {
+  JUST_OPENED: 'just_opened',
   NEW_USER: 'new_user',
   EXISTING_USER: 'existing_user'
 };
 
 var _Error = function Error(_ref2) {
-  var errorType = _ref2.errorType;
-  return /*#__PURE__*/React.createElement("div", null, errorType === ERROR_TYPE.EMAIL_EXISTS && /*#__PURE__*/React.createElement("p", null, "The email above already exists in our database. It means you have already applied before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.", /*#__PURE__*/React.createElement("br", null), "Or, if you think you accidentally entered the wrong CNIC number last time, you can ", /*#__PURE__*/React.createElement("a", {
+  var errorType = _ref2.errorType,
+      email = _ref2.email;
+  return /*#__PURE__*/React.createElement("div", null, !!errorType && /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle"
+  }), errorType === ERROR_TYPE.EMAIL_EXISTS && /*#__PURE__*/React.createElement("p", null, "The email you entered already exists in our database. It means you have already applied to a different IEC cohort before. But you entered a different CNIC number last time. Please use the same combination of email and CNIC as last time.", /*#__PURE__*/React.createElement("br", null), "Or, if you think you accidentally entered the wrong CNIC number last time, you can ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-cnic",
     target: "_blank",
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-  }, "click here to change your CNIC number"), " if you remember your password from last time"), errorType === ERROR_TYPE.CNIC_EXISTS && /*#__PURE__*/React.createElement("p", null, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: $", response.email, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair.", /*#__PURE__*/React.createElement("br", null), "If you entered a wrong email address the last time, then ", /*#__PURE__*/React.createElement("a", {
+  }, "click here to change your CNIC number"), " if you remember your password from last time"), errorType === ERROR_TYPE.CNIC_EXISTS && /*#__PURE__*/React.createElement("p", null, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this: ", email, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair.", /*#__PURE__*/React.createElement("br", null), "If you entered a wrong email address the last time, then ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-email",
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
   }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email if you have any concerns."));
@@ -148,7 +152,7 @@ var App = function App() {
       courseInterest = _useState16[0],
       setCourseInterest = _useState16[1];
 
-  var _useState17 = useState("justOpened"),
+  var _useState17 = useState(STATUS_TYPES.JUST_OPENED),
       _useState18 = _slicedToArray(_useState17, 2),
       status = _useState18[0],
       setStatus = _useState18[1];
@@ -165,8 +169,8 @@ var App = function App() {
 
   var _useState23 = useState(""),
       _useState24 = _slicedToArray(_useState23, 2),
-      cnicError = _useState24[0],
-      setCNICError = _useState24[1]; //one of few discrete states, not a boolean;
+      oldEmailAddress = _useState24[0],
+      setOldEmailAddress = _useState24[1]; //one of few discrete states, not a boolean;
   //status can be:
   // justOpened(hasn't entered email yet),
   // alreadyApplied
@@ -194,8 +198,7 @@ var App = function App() {
 
   var checkAlreadyRegistered = /*#__PURE__*/function () {
     var _ref3 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(e) {
-      var _response, data;
-
+      var response, data;
       return _regeneratorRuntime().wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -222,9 +225,9 @@ var App = function App() {
               });
 
             case 5:
-              _response = _context.sent;
+              response = _context.sent;
               _context.next = 8;
-              return _response.json();
+              return response.json();
 
             case 8:
               data = _context.sent;
@@ -236,10 +239,9 @@ var App = function App() {
               if (data.type === "both_cnic_and_email") {
                 setStatus("existingUser");
               } else if (data.type === "already_applied") {
-                setErrorMsg("You have already applied to this cohort.");
                 setErrorType(ERROR_TYPE.ALREADY_APPLIED);
               } else if (data.type === "cnic_only") {
-                setCNICError(data.email);
+                setOldEmailAddress(data.email);
                 setErrorType(ERROR_TYPE.CNIC_EXISTS);
               } else if (data.type === 'email_only') {
                 setErrorType(ERROR_TYPE.EMAIL_EXISTS);
@@ -289,8 +291,7 @@ var App = function App() {
 
   var handleSubmit = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-      var application_round_id, formData, name, firstname, lastname, _response2;
-
+      var application_round_id, formData, name, firstname, lastname, response;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -328,12 +329,12 @@ var App = function App() {
               });
 
             case 11:
-              _response2 = _context2.sent;
+              response = _context2.sent;
 
-              if (_response2.status === 201) {
+              if (response.status === 201) {
                 window.location.href = "https://iec.org.pk/thankyou";
               } else {
-                console.log(_response2);
+                console.log(response);
               }
 
               _context2.next = 18;
@@ -398,9 +399,10 @@ var App = function App() {
     name: "application",
     onSubmit: handleSubmit
   }, /*#__PURE__*/React.createElement(_Error, {
-    errorType: errorType
+    errorType: errorType,
+    email: oldEmailAddress
   }), /*#__PURE__*/React.createElement("div", {
-    className: " flex flex-col ".concat(status === "justOpened" ? "flex-col" : "md:flex-row", " gap-y-5 md:gap-y-0 md:gap-x-10 ")
+    className: "flex flex-col ".concat(status === STATUS_TYPES.JUST_OPENED ? "flex-col" : "md:flex-row", " gap-y-5 md:gap-y-0 md:gap-x-10 ")
   }, /*#__PURE__*/React.createElement("div", {
     id: "left",
     className: "flex flex-col w-full basis-full gap-y-5"
@@ -413,11 +415,7 @@ var App = function App() {
     onChange: function onChange(e) {
       return setEmail(e.target.value);
     }
-  }), cnicError !== "" && /*#__PURE__*/React.createElement("p", {
-    className: "text-sm text-red-500"
-  }, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time.", /*#__PURE__*/React.createElement("br", null), "The email you used last time was something like ", cnicError, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair. If you entered a wrong email address the last time, then", /*#__PURE__*/React.createElement("a", {
-    href: "/application/change-email"
-  }, " ", "click here to change your email address.")), /*#__PURE__*/React.createElement(Input, {
+  }), /*#__PURE__*/React.createElement(Input, {
     label: "CNIC:",
     placeholder: "xxxxx-xxxxxxx-x",
     name: "cnic",
