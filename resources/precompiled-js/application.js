@@ -90,6 +90,10 @@ var ERROR_TYPE = {
   CNIC_EXISTS: 'cnic_exists',
   ALREADY_APPLIED: 'already_applied'
 };
+var STATUS_TYPES = {
+  NEW_USER: 'new_user',
+  EXISTING_USER: 'existing_user'
+};
 
 var _Error = function Error(_ref2) {
   var errorType = _ref2.errorType;
@@ -151,23 +155,18 @@ var App = function App() {
 
   var _useState19 = useState(""),
       _useState20 = _slicedToArray(_useState19, 2),
-      applicationStatus = _useState20[0],
-      setApplicationStatus = _useState20[1];
+      errorMsg = _useState20[0],
+      setErrorMsg = _useState20[1];
 
   var _useState21 = useState(""),
       _useState22 = _slicedToArray(_useState21, 2),
-      errorMsg = _useState22[0],
-      setErrorMsg = _useState22[1];
+      errorType = _useState22[0],
+      setErrorType = _useState22[1];
 
   var _useState23 = useState(""),
       _useState24 = _slicedToArray(_useState23, 2),
-      errorType = _useState24[0],
-      setErrorType = _useState24[1];
-
-  var _useState25 = useState(""),
-      _useState26 = _slicedToArray(_useState25, 2),
-      cnicError = _useState26[0],
-      setCNICError = _useState26[1]; //one of few discrete states, not a boolean;
+      cnicError = _useState24[0],
+      setCNICError = _useState24[1]; //one of few discrete states, not a boolean;
   //status can be:
   // justOpened(hasn't entered email yet),
   // alreadyApplied
@@ -231,10 +230,7 @@ var App = function App() {
               data = _context.sent;
 
               if (!data.exists) {
-                setStatus("newUser");
-                setApplicationStatus("newUser");
-              } else {
-                setApplicationStatus(data.type);
+                setStatus(STATUS_TYPES.NEW_USER);
               }
 
               if (data.type === "both_cnic_and_email") {
@@ -433,7 +429,7 @@ var App = function App() {
     name: "name",
     type: "text",
     placeholder: "Enter your name"
-  }), status === "newUser" && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
+  }), status === STATUS_TYPES.NEW_USER && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
     label: "Password:",
     name: "password",
     type: "password",

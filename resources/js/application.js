@@ -69,6 +69,7 @@ const Input = ({
 // }
 
 const ERROR_TYPE = { EMAIL_EXISTS: 'email_exists', CNIC_EXISTS: 'cnic_exists', ALREADY_APPLIED: 'already_applied' }
+const STATUS_TYPES = { NEW_USER: 'new_user', EXISTING_USER: 'existing_user' }
 
 const Error = ({ errorType }) => {
 	return <div>
@@ -88,7 +89,6 @@ const App = () => {
 	const [email, setEmail] = useState("")
 	const [courseInterest, setCourseInterest] = useState("")
 	const [status, setStatus] = useState("justOpened")
-	const [applicationStatus, setApplicationStatus] = useState("")
 	const [errorMsg, setErrorMsg] = useState("")
 	const [errorType, setErrorType] = useState("")
 	const [cnicError, setCNICError] = useState("")
@@ -155,10 +155,7 @@ const App = () => {
 			const data = await response.json()
 
 			if (!data.exists) {
-				setStatus("newUser")
-				setApplicationStatus("newUser")
-			} else {
-				setApplicationStatus(data.type)
+				setStatus(STATUS_TYPES.NEW_USER)
 			}
 
 			if (data.type === "both_cnic_and_email") {
@@ -325,7 +322,7 @@ const App = () => {
 										placeholder="Enter your name"
 									/>
 
-									{status === "newUser" && (
+									{status === STATUS_TYPES.NEW_USER && (
 										<>
 											<Input
 												label="Password:"
