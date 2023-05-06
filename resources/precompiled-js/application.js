@@ -348,7 +348,11 @@ var App = function App() {
 
               if (!data.exists) {
                 setStatus(STATUS_TYPES.NEW_USER);
+                validationSchema["password"]["required"] = true;
                 setErrorType("");
+              } else {
+                setStatus(STATUS_TYPES.EXISTING_USER);
+                validationSchema["password"]["required"] = false;
               }
 
               if (data.type === "both_cnic_and_email") {
@@ -437,9 +441,8 @@ var App = function App() {
               words = name.trim().split(' ');
               firstName = words.shift();
               lastName = words.join(' ');
-              console.log(firstName, lastName);
               age = parseInt(formData.get("age"));
-              _context2.next = 22;
+              _context2.next = 21;
               return fetch("/application/submit/".concat(application_round_id, "/"), {
                 method: "POST",
                 headers: {
@@ -462,7 +465,7 @@ var App = function App() {
                 })
               });
 
-            case 22:
+            case 21:
               response = _context2.sent;
 
               if (response.status === 201) {
@@ -472,20 +475,20 @@ var App = function App() {
                 console.log(response);
               }
 
-              _context2.next = 29;
+              _context2.next = 28;
               break;
 
-            case 26:
-              _context2.prev = 26;
+            case 25:
+              _context2.prev = 25;
               _context2.t0 = _context2["catch"](5);
               console.log(_context2.t0);
 
-            case 29:
+            case 28:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[5, 26]]);
+      }, _callee2, null, [[5, 25]]);
     }));
 
     return function handleSubmit(_x2) {

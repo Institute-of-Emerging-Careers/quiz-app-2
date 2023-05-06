@@ -271,7 +271,11 @@ const App = () => {
 
 			if (!data.exists) {
 				setStatus(STATUS_TYPES.NEW_USER)
+				validationSchema["password"]["required"] = true
 				setErrorType("")
+			} else {
+				setStatus(STATUS_TYPES.EXISTING_USER)
+				validationSchema["password"]["required"] = false
 			}
 
 			if (data.type === "both_cnic_and_email") {
@@ -331,7 +335,6 @@ const App = () => {
 			const words = name.trim().split(' ');
 			const firstName = words.shift();
 			const lastName = words.join(' ');
-			console.log(firstName, lastName)
 			const age = parseInt(formData.get("age"))
 
 			const response = await fetch(
