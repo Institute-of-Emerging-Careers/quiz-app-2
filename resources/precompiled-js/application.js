@@ -608,7 +608,9 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Course Interest:")), /*#__PURE__*/React.createElement("p", null, errorMessage.course_interest), /*#__PURE__*/React.createElement("select", {
+  }, "Course Interest:")), !!errorMessage.course_interest && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
+  }), " ", errorMessage.course_interest), /*#__PURE__*/React.createElement("select", {
     name: "course_interest",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white",
     value: courseInterest,
@@ -631,7 +633,9 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "City:")), /*#__PURE__*/React.createElement("p", null, errorMessage.city), /*#__PURE__*/React.createElement("select", {
+  }, "City:")), !!errorMessage.city && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
+  }), " ", errorMessage.city), /*#__PURE__*/React.createElement("select", {
     name: "city",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
   }, /*#__PURE__*/React.createElement("option", {
@@ -654,7 +658,9 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Education:")), /*#__PURE__*/React.createElement("p", null, errorMessage.education), /*#__PURE__*/React.createElement("select", {
+  }, "Education:")), !!errorMessage.education && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
+  }), " ", errorMessage.education), /*#__PURE__*/React.createElement("select", {
     name: "education",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
   }, /*#__PURE__*/React.createElement("option", {
@@ -683,7 +689,9 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Employment:")), /*#__PURE__*/React.createElement("p", null, errorMessage.employment), /*#__PURE__*/React.createElement("select", {
+  }, "Employment:")), !!errorMessage.employment && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
+  }), " ", errorMessage.employment), /*#__PURE__*/React.createElement("select", {
     name: "employment",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white",
     placeholder: "Select employment"

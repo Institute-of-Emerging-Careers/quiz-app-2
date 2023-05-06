@@ -477,7 +477,7 @@ const App = () => {
 									<label className="label">
 										<span className="">Course Interest:</span>
 									</label>
-									<p>{errorMessage.course_interest}</p>
+									{!!errorMessage.course_interest && <p><i className="fas fa-exclamation-circle text-red-500"></i> {errorMessage.course_interest}</p>}
 									<select
 										name="course_interest"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -504,7 +504,7 @@ const App = () => {
 									<label className="label">
 										<span className="">City:</span>
 									</label>
-									<p>{errorMessage.city}</p>
+									{!!errorMessage.city && <p><i className="fas fa-exclamation-circle text-red-500"></i> {errorMessage.city}</p>}
 									<select
 										name="city"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -526,7 +526,7 @@ const App = () => {
 									<label className="label">
 										<span className="">Education:</span>
 									</label>
-									<p>{errorMessage.education}</p>
+									{!!errorMessage.education && <p><i className="fas fa-exclamation-circle text-red-500"></i> {errorMessage.education}</p>}
 									<select
 										name="education"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
@@ -557,7 +557,7 @@ const App = () => {
 									<label className="label">
 										<span className="">Employment:</span>
 									</label>
-									<p>{errorMessage.employment}</p>
+									{!!errorMessage.employment && <p><i className="fas fa-exclamation-circle text-red-500"></i> {errorMessage.employment}</p>}
 									<select
 										name="employment"
 										className="border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
