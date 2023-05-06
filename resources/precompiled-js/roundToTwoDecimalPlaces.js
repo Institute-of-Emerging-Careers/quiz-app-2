@@ -1,5 +1,1 @@
-"use strict";
-
-function roundToTwoDecimalPlaces(x) {
-  return Math.round(x * 100) / 100;
-}
+"use strict";function roundToTwoDecimalPlaces(x){return Math.round(x*100)/100}
