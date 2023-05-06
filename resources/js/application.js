@@ -3,7 +3,7 @@ const useEffect = React.useEffect
 
 const Header = () => {
 	return (
-		<div className="flex w-full items-center justify-center p-4 bg-white">
+		<div className="flex w-full items-center justify-center p-4 bg-white mb-4">
 			<h1 className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-iec-blue to-green-500 p-5">
 				Apply To IEC
 			</h1>

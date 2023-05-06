@@ -25,7 +25,7 @@ var useEffect = React.useEffect;
 
 var Header = function Header() {
   return /*#__PURE__*/React.createElement("div", {
-    className: "flex w-full items-center justify-center p-4 bg-white"
+    className: "flex w-full items-center justify-center p-4 bg-white mb-4"
   }, /*#__PURE__*/React.createElement("h1", {
     className: "text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-iec-blue to-green-500 p-5"
   }, "Apply To IEC"));
