@@ -1083,15 +1083,6 @@ Student.init(
 		lastName: {
 			type: DataTypes.STRING(100),
 			allowNull: false,
-			validate: {
-				notEmpty: {
-					msg: "Name cannot be empty.",
-				},
-				len: {
-					args: [[1, 100]],
-					msg: "lastName cannot be shorter than 1 alphabet or longer than 100 alphabets.",
-				},
-			},
 		},
 		email: {
 			type: DataTypes.STRING,

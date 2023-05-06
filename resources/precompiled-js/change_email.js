@@ -1,17 +1,17 @@
 "use strict";
 
-const submit_button = document.getElementById("submit-button");
+var submit_button = document.getElementById("submit-button");
 
 function changeEmail(e) {
   e.preventDefault();
   submit_button.value = "Please Wait";
   submit_button.classList.remove("btn-primary");
   submit_button.classList.add("btn-warning");
-  const data = new URLSearchParams(new FormData(e.target));
+  var data = new URLSearchParams(new FormData(e.target));
   fetch("/application/change-email", {
     method: "POST",
     body: data
-  }).then(res => {
+  }).then(function (res) {
     if (res.ok) {
       submit_button.value = "Success";
       submit_button.classList.remove("btn-warning");

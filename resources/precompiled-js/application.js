@@ -42,7 +42,8 @@ var Input = function Input(_ref) {
       _ref$value = _ref.value,
       value = _ref$value === void 0 ? undefined : _ref$value,
       min = _ref.min,
-      max = _ref.max;
+      max = _ref.max,
+      error = _ref.error;
   return /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col w-full"
   }, /*#__PURE__*/React.createElement("div", {
@@ -51,7 +52,9 @@ var Input = function Input(_ref) {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, label)), /*#__PURE__*/React.createElement("input", {
+  }, label)), !!error && /*#__PURE__*/React.createElement("p", null, /*#__PURE__*/React.createElement("i", {
+    className: "fas fa-exclamation-circle text-red-500"
+  }), " ", error), /*#__PURE__*/React.createElement("input", {
     type: type,
     name: name,
     placeholder: placeholder,
@@ -93,6 +96,134 @@ var ErrorDisplay = function ErrorDisplay(_ref2) {
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
   }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on mail@iec.org.pk if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."), errorType === ERROR_TYPE.PASSWORD_MISMATCH && /*#__PURE__*/React.createElement("p", null, "Please write the same password both times. The two password fields do not match."));
 };
+/*
+<option value="Lahore">Lahore</option>
+										<option value="Islamabad/Rawalpindi">
+											Islamabad/Rawalpindi
+										</option>
+										<option value="Karachi">Karachi</option>
+										<option value="Peshawar">Peshawar</option>
+										<option value="Other">Other</option>
+*/
+
+
+var validationSchema = {
+  email: {
+    required: true,
+    regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  },
+  cnic: {
+    required: true,
+    regex: /^(\d{5})-(\d{7})-(\d{1})$/
+  },
+  password: {
+    required: true,
+    min_length: 8
+  },
+  name: {
+    required: true,
+    min_length: 3,
+    max_length: 100
+  },
+  age: {
+    required: true,
+    is_int: true,
+    min: 12,
+    max: 120
+  },
+  phone: {
+    required: true,
+    regex: /^(\+?\d{1,3})?[ -]?\(?\d{3}\)?[ -]?\d{3}[ -]?\d{4}$/
+  },
+  city: {
+    required: true,
+    is_in: ["Lahore", "Islamabad/Rawalpindi", "Karachi", "Peshawar", "Other"]
+  },
+  education: {
+    required: true,
+    is_in: ["Only Matric", "Only Intermediate", "Bachelors (In process)", "Bachelors (Completed)", "Diploma (In process)", "Diploma (Completed)", "Postgraduate (In process)", "Postgraduate (Completed)"]
+  },
+  employment: {
+    required: true,
+    is_in: ["Employed (Full time)", "Employed (Part time)", "Jobless", "Freelancer"]
+  },
+  course_interest: {
+    required: true
+  }
+};
+
+function validate(formData) {
+  var errors = {};
+  var error_exists = false;
+
+  for (var fieldName in validationSchema) {
+    var fieldValidation = validationSchema[fieldName];
+    errors[fieldName] = ""; // Check if the field is required
+
+    if (fieldValidation.required && !formData.has(fieldName)) {
+      errors[fieldName] = "".concat(fieldName, " is required");
+      error_exists = true;
+    } // Check if the field has a regex pattern to match against
+
+
+    if (fieldValidation.regex && formData.has(fieldName)) {
+      var fieldValue = formData.get(fieldName);
+
+      if (!fieldValidation.regex.test(fieldValue)) {
+        errors[fieldName] = "".concat(fieldName, " is invalid");
+        error_exists = true;
+      }
+    } // Check if the field has a minimum length requirement
+
+
+    if (fieldValidation.min_length && formData.has(fieldName)) {
+      var _fieldValue = formData.get(fieldName);
+
+      if (_fieldValue.length < fieldValidation.min_length) {
+        errors[fieldName] = "".concat(fieldName, " should be at least ").concat(fieldValidation.min_length, " characters long");
+        error_exists = true;
+      }
+    } // Check if the field has a maximum length requirement
+
+
+    if (fieldValidation.max_length && formData.has(fieldName)) {
+      var _fieldValue2 = formData.get(fieldName);
+
+      if (_fieldValue2.length > fieldValidation.max_length) {
+        errors[fieldName] = "".concat(fieldName, " should be at most ").concat(fieldValidation.max_length, " characters long");
+        error_exists = true;
+      }
+    } // Check if the field is an integer within a range
+
+
+    if (fieldValidation.is_int && formData.has(fieldName)) {
+      var _fieldValue3 = parseInt(formData.get(fieldName));
+
+      if (isNaN(_fieldValue3) || !Number.isInteger(_fieldValue3)) {
+        errors[fieldName] = "".concat(fieldName, " should be an integer");
+        error_exists = true;
+      } else if (fieldValidation.min && _fieldValue3 < fieldValidation.min) {
+        errors[fieldName] = "".concat(fieldName, " should be at least ").concat(fieldValidation.min);
+        error_exists = true;
+      } else if (fieldValidation.max && _fieldValue3 > fieldValidation.max) {
+        errors[fieldName] = "".concat(fieldName, " should be at most ").concat(fieldValidation.max);
+        error_exists = true;
+      }
+    } // Check if the field value is within a set of allowed values
+
+
+    if (fieldValidation.is_in && formData.has(fieldName)) {
+      var _fieldValue4 = formData.get(fieldName);
+
+      if (!fieldValidation.is_in.includes(_fieldValue4)) {
+        errors[fieldName] = "".concat(fieldName, " is not an allowed value");
+        error_exists = true;
+      }
+    }
+  }
+
+  return [error_exists, errors];
+}
 
 var App = function App() {
   var _useState = useState(""),
@@ -138,7 +269,23 @@ var App = function App() {
   var _useState17 = useState(""),
       _useState18 = _slicedToArray(_useState17, 2),
       oldEmailAddress = _useState18[0],
-      setOldEmailAddress = _useState18[1]; //one of few discrete states, not a boolean;
+      setOldEmailAddress = _useState18[1];
+
+  var _useState19 = useState({
+    email: "",
+    cnic: "",
+    password: "",
+    name: "",
+    age: "",
+    phone: "",
+    city: "",
+    education: "",
+    employment: "",
+    course_interest: ""
+  }),
+      _useState20 = _slicedToArray(_useState19, 2),
+      errorMessage = _useState20[0],
+      setErrorMessage = _useState20[1]; //one of few discrete states, not a boolean;
   //status can be:
   // justOpened(hasn't entered email yet),
   // alreadyApplied
@@ -247,7 +394,8 @@ var App = function App() {
 
   var handleSubmit = /*#__PURE__*/function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(e) {
-      var application_round_id, formData, name, firstname, lastname, age, response;
+      var application_round_id, formData, _validate, _validate2, error_exists, errors, name, words, firstName, lastName, age, response;
+
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -266,13 +414,27 @@ var App = function App() {
             case 5:
               _context2.prev = 5;
               application_round_id = window.location.pathname.split("/")[3];
-              formData = new FormData(e.target); // divide name into firstname and lastname by space, if there is no lastname, set it to ""
+              formData = new FormData(e.target);
+              _validate = validate(formData), _validate2 = _slicedToArray(_validate, 2), error_exists = _validate2[0], errors = _validate2[1];
 
-              name = formData.get("name").split(" ");
-              firstname = name[0];
-              lastname = name.length > 1 ? name[1] : "";
+              if (!error_exists) {
+                _context2.next = 13;
+                break;
+              }
+
+              alert("Invalid input. Please enter valid information.");
+              setErrorMessage(errors);
+              return _context2.abrupt("return");
+
+            case 13:
+              // divide name into firstname and lastname by space, if there is no lastname, set it to ""
+              name = formData.get("name");
+              words = name.trim().split(' ');
+              firstName = words.shift();
+              lastName = words.join(' ');
+              console.log(firstName, lastName);
               age = parseInt(formData.get("age"));
-              _context2.next = 14;
+              _context2.next = 21;
               return fetch("/application/submit/".concat(application_round_id, "/"), {
                 method: "POST",
                 headers: {
@@ -282,8 +444,8 @@ var App = function App() {
                   email: formData.get("email"),
                   cnic: formData.get("cnic"),
                   password: formData.get("password"),
-                  firstname: firstname,
-                  lastname: lastname,
+                  firstName: firstName,
+                  lastName: lastName,
                   age_group: age < 22 ? 'Less than 22' : age >= 22 && age <= 35 ? '22 - 35' : 'More than 35',
                   age: age,
                   phone: formData.get("phone"),
@@ -295,30 +457,29 @@ var App = function App() {
                 })
               });
 
-            case 14:
+            case 21:
               response = _context2.sent;
 
-              if (response.status === 201) {
-                window.location.href = "https://iec.org.pk/thankyou";
+              if (response.status === 201) {// window.location.href = "https://iec.org.pk/thankyou"
               } else {
                 alert("Something went wrong. Try again or contact mail@iec.org.pk");
                 console.log(response);
               }
 
-              _context2.next = 21;
+              _context2.next = 28;
               break;
 
-            case 18:
-              _context2.prev = 18;
+            case 25:
+              _context2.prev = 25;
               _context2.t0 = _context2["catch"](5);
               console.log(_context2.t0);
 
-            case 21:
+            case 28:
             case "end":
               return _context2.stop();
           }
         }
-      }, _callee2, null, [[5, 18]]);
+      }, _callee2, null, [[5, 25]]);
     }));
 
     return function handleSubmit(_x2) {
@@ -348,6 +509,9 @@ var App = function App() {
 
             if (data.success) {
               setCourses(data.courses);
+              validationSchema["course_interest"]["is_in"] = data.courses.map(function (course) {
+                return course.id;
+              });
             }
 
           case 8:
@@ -384,26 +548,30 @@ var App = function App() {
     placeholder: "info@info.com",
     onChange: function onChange(e) {
       return setEmail(e.target.value);
-    }
+    },
+    error: errorMessage.email
   }), /*#__PURE__*/React.createElement(Input, {
     label: "CNIC:",
     placeholder: "xxxxx-xxxxxxx-x",
     name: "cnic",
     type: "text",
     value: CNIC,
-    onChange: handleCNIC
+    onChange: handleCNIC,
+    error: errorMessage.cnic
   }), status !== STATUS_TYPES.JUST_OPENED && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
     label: "Name:",
     name: "name",
     type: "text",
-    placeholder: "Enter your name"
+    placeholder: "Enter your name",
+    error: errorMessage.name
   }), status === STATUS_TYPES.NEW_USER && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(Input, {
     label: "Password:",
     name: "password",
     type: "password",
     placeholder: "********",
     value: password,
-    onChange: handlePassword
+    onChange: handlePassword,
+    error: errorMessage.password
   }), /*#__PURE__*/React.createElement(Input, {
     label: "Confirm Password:",
     name: "confirm_password",
@@ -418,7 +586,8 @@ var App = function App() {
     label: "Phone Number:",
     name: "phone",
     type: "text",
-    placeholder: "Phone Number"
+    placeholder: "Phone Number",
+    error: errorMessage.phone
   }), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-1 w-full"
   }, /*#__PURE__*/React.createElement(Input, {
@@ -427,14 +596,15 @@ var App = function App() {
     type: "number",
     min: "12",
     max: "120",
-    placeholder: "e.g. 25"
+    placeholder: "e.g. 25",
+    error: errorMessage.age
   })), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-1 w-full"
   }, /*#__PURE__*/React.createElement("label", {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Course Interest:")), /*#__PURE__*/React.createElement("select", {
+  }, "Course Interest:")), /*#__PURE__*/React.createElement("p", null, errorMessage.course_interest), /*#__PURE__*/React.createElement("select", {
     name: "course_interest",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white",
     value: courseInterest,
@@ -457,7 +627,7 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "City:")), /*#__PURE__*/React.createElement("select", {
+  }, "City:")), /*#__PURE__*/React.createElement("p", null, errorMessage.city), /*#__PURE__*/React.createElement("select", {
     name: "city",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
   }, /*#__PURE__*/React.createElement("option", {
@@ -480,20 +650,36 @@ var App = function App() {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Education:")), /*#__PURE__*/React.createElement("select", {
+  }, "Education:")), /*#__PURE__*/React.createElement("p", null, errorMessage.education), /*#__PURE__*/React.createElement("select", {
     name: "education",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white"
   }, /*#__PURE__*/React.createElement("option", {
     value: "",
     selected: true,
     disabled: true
-  }, "Select Education Status"), /*#__PURE__*/React.createElement("option", null, "Only Matric"), /*#__PURE__*/React.createElement("option", null, "Only Intermediate"), /*#__PURE__*/React.createElement("option", null, "Bachelors (In process)"), /*#__PURE__*/React.createElement("option", null, "Bachelors (Completed)"), /*#__PURE__*/React.createElement("option", null, "Diploma (In process)"), /*#__PURE__*/React.createElement("option", null, "Diploma (Completed)"), /*#__PURE__*/React.createElement("option", null, "Postgraduate (In process)"), /*#__PURE__*/React.createElement("option", null, "Postgraduate (Completed)"))), /*#__PURE__*/React.createElement("div", {
+  }, "Select Education Status"), /*#__PURE__*/React.createElement("option", {
+    value: "Only Matric"
+  }, "Only Matric"), /*#__PURE__*/React.createElement("option", {
+    value: "Only Intermediate"
+  }, "Only Intermediate"), /*#__PURE__*/React.createElement("option", {
+    value: "Bachelors (In process)"
+  }, "Bachelors (In process)"), /*#__PURE__*/React.createElement("option", {
+    value: "Bachelors (Completed)"
+  }, "Bachelors (Completed)"), /*#__PURE__*/React.createElement("option", {
+    value: "Diploma (In process)"
+  }, "Diploma (In process)"), /*#__PURE__*/React.createElement("option", {
+    value: "Diploma (Completed)"
+  }, "Diploma (Completed)"), /*#__PURE__*/React.createElement("option", {
+    value: "Postgraduate (In process)"
+  }, "Postgraduate (In process)"), /*#__PURE__*/React.createElement("option", {
+    value: "Postgraduate (Completed)"
+  }, "Postgraduate (Completed)"))), /*#__PURE__*/React.createElement("div", {
     className: "flex flex-col gap-1 w-full"
   }, /*#__PURE__*/React.createElement("label", {
     className: "label"
   }, /*#__PURE__*/React.createElement("span", {
     className: ""
-  }, "Employment:")), /*#__PURE__*/React.createElement("select", {
+  }, "Employment:")), /*#__PURE__*/React.createElement("p", null, errorMessage.employment), /*#__PURE__*/React.createElement("select", {
     name: "employment",
     className: "border-2 border-gray-300 rounded-lg h-12 p-2 w-full bg-white",
     placeholder: "Select employment"
@@ -501,7 +687,15 @@ var App = function App() {
     value: "",
     selected: true,
     disabled: true
-  }, "Select Employment Status"), /*#__PURE__*/React.createElement("option", null, "Employed (Full time)"), /*#__PURE__*/React.createElement("option", null, "Employed (Part time)"), /*#__PURE__*/React.createElement("option", null, "Jobless"), /*#__PURE__*/React.createElement("option", null, "Freelancer"))))), status === STATUS_TYPES.JUST_OPENED ? /*#__PURE__*/React.createElement("button", {
+  }, "Select Employment Status"), /*#__PURE__*/React.createElement("option", {
+    value: "Employed (Full time)"
+  }, "Employed (Full time)"), /*#__PURE__*/React.createElement("option", {
+    value: "Employed (Part time)"
+  }, "Employed (Part time)"), /*#__PURE__*/React.createElement("option", {
+    value: "Jobless"
+  }, "Jobless"), /*#__PURE__*/React.createElement("option", {
+    value: "Freelancer"
+  }, "Freelancer"))))), status === STATUS_TYPES.JUST_OPENED ? /*#__PURE__*/React.createElement("button", {
     className: "p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center",
     onClick: function onClick(email) {
       return checkAlreadyRegistered(email);
