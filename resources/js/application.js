@@ -248,12 +248,10 @@ const App = () => {
 		e.stopPropagation()
 
 		if (!email_regex.test(email)) {
-			console.log("hey1")
 			setErrorMessage(cur => ({ ...cur, email: "Please enter a valid email." }))
 			return
 		}
 		if (!cnic_regex.test(CNIC)) {
-			console.log("hey2", CNIC, cnic_regex.test(CNIC))
 			setErrorMessage(cur => ({ ...cur, cnic: "Please enter a valid CNIC Number e.g. xxxxx-xxxxxxx-x." }))
 			return
 		}
