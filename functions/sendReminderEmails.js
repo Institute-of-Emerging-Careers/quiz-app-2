@@ -7,7 +7,6 @@ const { Op } = require("sequelize")
 
 async function sendReminderEmails() {
 	try {
-		console.log("Sending Reminder Emails")
 		const quizzes = await Quiz.findAll({
 			where: {
 				sendReminderEmails: true,
@@ -18,18 +17,19 @@ async function sendReminderEmails() {
 					where: {
 						[Op.and]: [
 							sequelize.literal(
-								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (48*60*60)"
+								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (37*60*60)"
 							),
 							{ completed: false },
 						],
 					},
+
 					include: [
 						{
 							model: Student,
 							attributes: ["email"],
 						},
 					],
-					//i.e. if it has been more than 12 hours since last reminder email and assignment has not been completed yet
+					//i.e. if it has been more than 37 hours since last reminder email and assignment has not been completed yet
 				},
 			],
 		})
@@ -37,7 +37,6 @@ async function sendReminderEmails() {
 		if (quizzes != null && quizzes.length != 0) {
 			let promises = quizzes.map((quiz) => {
 				if (quiz.Assignments != null && quiz.Assignments.length != 0) {
-					console.log(quiz.Assignments)
 					return quiz.Assignments.map((assignment) => {
 						//432 00 000 = 12 hours
 
