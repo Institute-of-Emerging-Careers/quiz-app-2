@@ -1,47 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <%- include('../../templates/global.ejs') %>
-    <title>Feedback - Student Panel</title>
-  </head>
-  <body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
-    <%- include('../../templates/header.ejs') %>
 
-    <div class="flex justify-center justify-items-center mt-10 flex-col">
-      <iframe
-        src="https://docs.google.com/forms/d/e/1FAIpQLSdb1reDzbxamN_m4vKJl-vZLSdfzLQRLdqyoecTSd1JFrsLKQ/viewform?usp=sharing"
-        width="90%"
-        style="margin: auto; margin-top: 2rem"
-        height="801"
-        frameborder="0"
-        marginheight="0"
-        `
-        marginwidth="0"
-        >Loading…</iframe
-      >
-      <!-- <iframe
-        width="90%"
-        height="480px"
-        src="https://forms.office.com/Pages/ResponsePage.aspx?id=7DSYYxV3jUWktAD332IDP5dnnd3luVBMqXPxrsfMLIVUREpURVhKVkNBMDJLSlBJOVc3TkkzUFpBQi4u&embed=true"
-        frameborder="0"
-        marginwidth="0"
-        marginheight="0"
-        style="border: none; max-width: 100%; max-height: 100vh"
-        allowfullscreen
-        webkitallowfullscreen
-        mozallowfullscreen
-        msallowfullscreen
-        class="mt-10 self-center"
-      >
-      </iframe> -->
-      <a
-        href="/student"
-        class="text-iec-blue underline hover:no-underline text-sm text-center mt-4"
-        >Done with the Feedback form? Click here to go to the home page</a
-      >
-    </div>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <%- include('../../templates/global.ejs') %>
+  <title>Feedback - Student Panel</title>
+</head>
+
+<body class="bg-gradient-to-br from-green-300 to-blue-300 min-h-screen">
+  <%- include('../../templates/header.ejs') %>
+
+  <div class="flex justify-center justify-items-center mt-10 flex-col">
+    <iframe
+      src="https://docs.google.com/forms/d/e/1FAIpQLSe_LoqRjKUcl9vJux_xCwl8z7Myqi-wfNi_j9XJ5b8pO42nrA/viewform?embedded=true"
+      width="90%" style="margin: auto; margin-top: 2rem" height="801" frameborder="0" marginheight="0" `
+      marginwidth="0">Loading…</iframe>
+    <a href="/student" class="text-iec-blue underline hover:no-underline text-sm text-center mt-4">Done with the
+      Feedback form? Click here to go to the home page</a>
+  </div>
+</body>
+
 </html>

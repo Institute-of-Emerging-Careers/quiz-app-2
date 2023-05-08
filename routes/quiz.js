@@ -123,27 +123,27 @@ router.get("/edit/:quizId", checkAdminAuthenticated, (req, res) => {
 
 router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
 	/*
-    Target:
-    [
-      {
-          sectionTitle: sectionInput,
-          poolCount: 0,
-          questions: [
-              {
-                  passage: null,
-                  statement: null,
-                  type: type,
-                  image:null,
-                  link:{url:null, text:null}
-                  options: [
-                      { optionStatement: "option 1", correct: true},
-                      { optionStatement: null, correct: false }
-                  ],
-              }
-          ],
-      }
-    ]
-    */
+	Target:
+	[
+	  {
+		  sectionTitle: sectionInput,
+		  poolCount: 0,
+		  questions: [
+			  {
+				  passage: null,
+				  statement: null,
+				  type: type,
+				  image:null,
+				  link:{url:null, text:null}
+				  options: [
+					  { optionStatement: "option 1", correct: true},
+					  { optionStatement: null, correct: false }
+				  ],
+			  }
+		  ],
+	  }
+	]
+	*/
 
 	function findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
 		passages_object,
@@ -234,9 +234,9 @@ router.get("/state/:quizId", checkAdminAuthenticated, async (req, res) => {
 					passage:
 						questions[questionIndex].PassageId != null
 							? findAndReturnPassageIndexFromPassagesArrayUsingPassageId(
-									passages_object,
-									questions[questionIndex].PassageId
-							  )
+								passages_object,
+								questions[questionIndex].PassageId
+							)
 							: null,
 					statement: questions[questionIndex].statement,
 					questionOrder: questions[questionIndex].questionOrder,
@@ -451,7 +451,7 @@ router.get(
 		const now = new Date()
 		const timeDiff = now - assignment.createdAt
 		const deadline_from_signup = process.env.QUIZ_DEADLINE_FROM_SIGNUP_IN_DAYS //days
-		console.log(timeDiff, deadline_from_signup)
+
 		if (timeDiff > deadline_from_signup * 24 * 60 * 60 * 1000) {
 			await scoreSection(req.params.sectionId, req.user.user.id, null, true)
 			await emailStudentOnSectionCompletion(
@@ -785,8 +785,8 @@ router.get(
 								final_questions_array[i].PassageId
 							)
 								? passage_id_to_array_index_mapping[
-										final_questions_array[i].PassageId
-								  ]
+								final_questions_array[i].PassageId
+								]
 								: null,
 						},
 						options: [],
@@ -869,8 +869,8 @@ router.get(
 								final_questions_array[i].PassageId
 							)
 								? passage_id_to_array_index_mapping[
-										final_questions_array[i].PassageId
-								  ]
+								final_questions_array[i].PassageId
+								]
 								: null,
 						},
 						options: [],
@@ -977,8 +977,8 @@ router.get(
 							section.Questions[i].PassageId
 						)
 							? passage_id_to_array_index_mapping[
-									section.Questions[i].PassageId
-							  ]
+							section.Questions[i].PassageId
+							]
 							: null,
 					},
 					options: [],
@@ -1211,7 +1211,7 @@ router.get(
 
 		if (all_sections_solved && percentage < 50.0) {
 			await sendQuizRejectionEmail(student.email)
-		}	
+		}
 
 		res.json({ success: true, all_sections_solved: all_sections_solved })
 	}
@@ -1475,14 +1475,14 @@ router.post(
 		let emails =
 			req.body.hasOwnProperty("applications") && req.body.applications
 				? req.body.users.map((application) => {
-						return {
-							email_address: application.Student.email,
-							application_id: application.id,
-						}
-				  })
+					return {
+						email_address: application.Student.email,
+						application_id: application.id,
+					}
+				})
 				: req.body.users.map((user) => {
-						return { email_address: user.email, application_id: null }
-				  })
+					return { email_address: user.email, application_id: null }
+				})
 
 		const application_ids = emails.map((email_obj) => email_obj.application_id)
 
