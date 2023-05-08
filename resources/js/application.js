@@ -72,14 +72,17 @@ const ErrorDisplay = ({ errorType, email }) => {
 										<option value="Other">Other</option>
 */
 
+const email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const cnic_regex = /^(\d{5})-(\d{7})-(\d{1})$/
+
 const validationSchema = {
 	email: {
 		required: true,
-		regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+		regex: email_regex,
 	},
 	cnic: {
 		required: true,
-		regex: /^(\d{5})-(\d{7})-(\d{1})$/,
+		regex: cnic_regex,
 	},
 	password: {
 		required: true,
@@ -189,6 +192,18 @@ function validate(formData) {
 	return [error_exists, errors]
 }
 
+const noErrorState = {
+	email: "",
+	cnic: "",
+	password: "",
+	name: "",
+	age: "",
+	phone: "",
+	city: "",
+	education: "",
+	employment: "",
+	course_interest: "",
+}
 
 const App = () => {
 	const [CNIC, setCNIC] = useState("")
@@ -200,18 +215,7 @@ const App = () => {
 	const [status, setStatus] = useState(STATUS_TYPES.JUST_OPENED)
 	const [errorType, setErrorType] = useState("")
 	const [oldEmailAddress, setOldEmailAddress] = useState("")
-	const [errorMessage, setErrorMessage] = useState({
-		email: "",
-		cnic: "",
-		password: "",
-		name: "",
-		age: "",
-		phone: "",
-		city: "",
-		education: "",
-		employment: "",
-		course_interest: "",
-	})
+	const [errorMessage, setErrorMessage] = useState(noErrorState)
 	//one of few discrete states, not a boolean;
 	//status can be:
 	// justOpened(hasn't entered email yet),
@@ -242,6 +246,19 @@ const App = () => {
 	const checkAlreadyRegistered = async (e) => {
 		e.preventDefault()
 		e.stopPropagation()
+
+		if (!email_regex.test(email)) {
+			console.log("hey1")
+			setErrorMessage(cur => ({ ...cur, email: "Please enter a valid email." }))
+			return
+		}
+		if (!cnic_regex.test(CNIC)) {
+			console.log("hey2", CNIC, cnic_regex.test(CNIC))
+			setErrorMessage(cur => ({ ...cur, cnic: "Please enter a valid CNIC Number e.g. xxxxx-xxxxxxx-x." }))
+			return
+		}
+
+		setErrorMessage(noErrorState)
 
 		//valid responses to this request are;
 		// already_applied (do not allow an application)
@@ -585,7 +602,7 @@ const App = () => {
 					{status === STATUS_TYPES.JUST_OPENED ? (
 						<button
 							className="p-2 bg-gradient-to-r from-iec-blue to-green-500 text-white rounded-lg hover:scale-105 transition-all duration-300 mt-6 w-1/2 self-center items-center"
-							onClick={(email) => checkAlreadyRegistered(email)}
+							onClick={(e) => checkAlreadyRegistered(e)}
 						>
 							Next!
 						</button>
