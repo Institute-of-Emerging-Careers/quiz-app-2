@@ -20,26 +20,26 @@ const {
 /*
   Final result format:
   [{
-      student_id: 0,
-      student_name: "Rohan Hussain",
-      student_cnic: 35201-3520462-3,
-      student_email: "rohanhussain1@yahoo.com",
-      sections: [
-        {
-          status: "Attempted"/"Not Attempted yet",
-          section_id: 1,
-          section_score: 50,
-          percentage_score: 91,
-          start_time: ___,
-          end_time: ____,
-          duration: ______s,
-        }
-      ],
-      completed: false, //this tells if the student has completed all sections of this assessment or not
-      total_score: 0,
-      maximum_total_score: 0,
-      percentage_total: 0,
-    }]
+	  student_id: 0,
+	  student_name: "Rohan Hussain",
+	  student_cnic: 35201-3520462-3,
+	  student_email: "rohanhussain1@yahoo.com",
+	  sections: [
+		{
+		  status: "Attempted"/"Not Attempted yet",
+		  section_id: 1,
+		  section_score: 50,
+		  percentage_score: 91,
+		  start_time: ___,
+		  end_time: ____,
+		  duration: ______s,
+		}
+	  ],
+	  completed: false, //this tells if the student has completed all sections of this assessment or not
+	  total_score: 0,
+	  maximum_total_score: 0,
+	  percentage_total: 0,
+	}]
   */
 
 const application_fields = [
@@ -161,7 +161,7 @@ const getQuizResults = (quiz_id) => {
 								assignment.Student.lastName,
 							student_cnic: assignment.Student.cnic,
 							student_email: assignment.Student.email,
-							gender: assignment.Student.gender.toLowerCase(),
+							gender: assignment.Student.gender?.toLowerCase() ?? "N/A",
 							sections: [],
 							completed: false, //this tells if the student has completed all sections or not
 							started: false, //this tells if the student has started a section or not
@@ -185,7 +185,7 @@ const getQuizResults = (quiz_id) => {
 								)
 							)
 								courses[assignment.Application["firstPreferenceId"]] = null
-				
+
 						}
 
 						// insert empty placeholder section objects according to number of sections
@@ -204,7 +204,7 @@ const getQuizResults = (quiz_id) => {
 							assignment.Attempts.forEach((attempt) => {
 								if (
 									quiz_sections[
-										section_id_to_array_index_mapping[attempt.SectionId]
+									section_id_to_array_index_mapping[attempt.SectionId]
 									] != undefined
 								) {
 									started = true
@@ -213,7 +213,7 @@ const getQuizResults = (quiz_id) => {
 											quiz_sections[
 												section_id_to_array_index_mapping[attempt.SectionId]
 											].maximum_score) *
-											100
+										100
 									)
 
 									const section_score =
