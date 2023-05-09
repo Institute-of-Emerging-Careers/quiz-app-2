@@ -65,6 +65,7 @@ const NewStudentAdder = (props) => {
           alert(
             "Something went wrong while getting a list of candidates. Error code 02."
           );
+          console.log(err)
         })
         .finally(() => {
           setLoading(false);
