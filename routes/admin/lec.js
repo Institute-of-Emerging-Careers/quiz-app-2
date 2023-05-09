@@ -149,9 +149,10 @@ lecRouter.get("/all-students/:round_id", checkAdminAuthenticated, async (req, re
                 })
             }
             res.json({ success: true, data: data })
+        } else if (round !== null && round.QuizId !== null) {
+            res.json({ success: true, data: [] })
         } else {
-            console.log(round, round.QuizId, round.Quiz)
-            res.sendStatus(401)
+            res.sendStatus(404)
         }
     } catch (err) {
         res.sendStatus(500)
