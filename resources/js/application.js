@@ -101,7 +101,7 @@ const validationSchema = {
 	},
 	phone: {
 		required: true,
-		regex: /^(\+?\d{1,3})?[ -]?\(?\d{3}\)?[ -]?\d{3}[ -]?\d{4}$/,
+		regex: /^\d{11}$/,
 	},
 	city: {
 		required: true,
@@ -139,7 +139,7 @@ function validate(formData) {
 		if (fieldValidation.regex && formData.has(fieldName)) {
 			const fieldValue = formData.get(fieldName);
 			if (!fieldValidation.regex.test(fieldValue)) {
-				errors[fieldName] = `${fieldName} is invalid`;
+				errors[fieldName] = `${fieldName} is invalid.`;
 				error_exists = true
 			}
 
@@ -485,10 +485,10 @@ const App = () => {
 								className="flex flex-col w-full basis-full gap-y-5"
 							>
 								<Input
-									label="Phone Number:"
+									label="Phone Number: (11 digit number, no dashes)"
 									name="phone"
 									type="text"
-									placeholder="Phone Number"
+									placeholder="e.g. 03021234567"
 									error={errorMessage.phone}
 								/>
 								<div className="flex flex-col gap-1 w-full">
