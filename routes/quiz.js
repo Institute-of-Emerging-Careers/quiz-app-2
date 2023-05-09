@@ -1211,7 +1211,7 @@ router.get(
 
 		if (all_sections_solved && percentage < 50.0) {
 			await sendQuizRejectionEmail(student.email)
-		} else {
+		} else if (all_sections_solved) {
 			await sendQuizAcceptanceEmail(student.email)
 		}
 

@@ -143,7 +143,7 @@ const sendApplicationReceiptEmail = async (user) => {
 }
 
 const sendQuizRejectionEmail = async (email) => {
-	return queueMail(email, `IEC Application Receipt`, {
+	return queueMail(email, `IEC Assessment Result`, {
 		heading: `Quiz Result`,
 		inner_text: `Dear student, 
     
@@ -169,7 +169,7 @@ const sendQuizRejectionEmail = async (email) => {
 }
 
 const sendQuizAcceptanceEmail = async (email) => {
-	return queueMail(email, `IEC Application Receipt`, {
+	return queueMail(email, `IEC Assessment Result`, {
 		heading: `Registration Fee Payment`,
 		inner_text: `Dear student, 
     
