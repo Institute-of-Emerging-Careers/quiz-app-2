@@ -150,6 +150,7 @@ lecRouter.get("/all-students/:round_id", checkAdminAuthenticated, async (req, re
             }
             res.json({ success: true, data: data })
         } else {
+            console.log(round, round.QuizId, round.Quiz)
             res.sendStatus(401)
         }
     } catch (err) {
