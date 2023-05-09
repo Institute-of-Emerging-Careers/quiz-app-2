@@ -24,7 +24,7 @@ const {
 const { saveNewQuiz } = require("../functions/saveNewQuiz.js")
 const { saveExistingQuiz } = require("../functions/saveExistingQuiz.js")
 const getStudentScore = require("../functions/getStudentScore.js")
-const { sendQuizRejectionEmail } = require("../functions/sendEmail.js")
+const { sendQuizRejectionEmail, sendQuizAcceptanceEmail } = require("../functions/sendEmail.js")
 const calculateSingleAssessmentStatus = require("../functions/calculateSingleAssessmentStatus")
 const deleteQuiz = require("../functions/deleteQuiz")
 const saveQuizProgress = require("../functions/saveQuizProgress")
@@ -1211,6 +1211,8 @@ router.get(
 
 		if (all_sections_solved && percentage < 50.0) {
 			await sendQuizRejectionEmail(student.email)
+		} else {
+			await sendQuizAcceptanceEmail(student.email)
 		}
 
 		res.json({ success: true, all_sections_solved: all_sections_solved })

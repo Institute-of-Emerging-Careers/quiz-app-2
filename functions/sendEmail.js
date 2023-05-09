@@ -66,13 +66,13 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 
 			return AWSSendEmail(html, mailOptions)
 			/*promise.then(function (data) {
-        console.log(data.MessageId);
-        res.sendStatus(200);
-      })
-      .catch(function (err) {
-        console.error(err, err.stack);
-        res.sendStatus(500);
-      });*/
+		console.log(data.MessageId);
+		res.sendStatus(200);
+	  })
+	  .catch(function (err) {
+		console.error(err, err.stack);
+		res.sendStatus(500);
+	  });*/
 		} else {
 			console.log(
 				recepient,
@@ -148,14 +148,14 @@ const sendQuizRejectionEmail = async (email) => {
 		inner_text: `Dear student, 
     
 		Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.
-
-		We regret to inform you that we will not be moving forward with your application because your performance in the assessment does not match IEC's criteria.
+		
+		We regret to inform you that we will not be moving forward with your application because you scored below 50% in the assessment.
 
 		We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career.
-		
+
 		Stay tuned to our website and social media for the upcoming programs. 
-		
-		We wish you all the best in your future career endeavors
+		We wish you all the best in your future career endeavors.
+
 
 		Best Regards, 
 		Team Acquisition
@@ -173,15 +173,21 @@ const sendQuizAcceptanceEmail = async (email) => {
 		heading: `Registration Fee Payment`,
 		inner_text: `Dear student, 
     
-		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process. You are one step away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers.
-
-		We regret to inform you that we will not be moving forward with your application because your performance in the assessment does not match IEC's criteria.
-
-		We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career.
+		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process. 
 		
-		Stay tuned to our website and social media for the upcoming programs. 
-		
-		We wish you all the best in your future career endeavors
+		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. Please take note of the following steps:
+
+		<ul>
+			<li>In the near future, you will have to sign The LEC Agreement which will be assigned to you in the <a href="https://apply.iec.org.pk/student">student portal</a>. When it is available, you will receive an email from us asking you to sign the LEC document. Then, you will be able to download the document from the portal, sign it, and upload it back again to the student portal.</li>
+
+			<li>Right now, you must pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the payment receipt to the form link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>
+			</li>
+
+		</ul>
+
+		The last round of the selection process is an Individual Interview where our team will be meeting you online to know you better. You will be contacted shortly, do keep an eye on your email inbox.
+
+		For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
 
 		Best Regards, 
 		Team Acquisition
@@ -195,4 +201,4 @@ const sendQuizAcceptanceEmail = async (email) => {
 }
 
 
-module.exports = { sendHTMLMail, sendApplicationReceiptEmail, sendQuizRejectionEmail }
+module.exports = { sendHTMLMail, sendApplicationReceiptEmail, sendQuizRejectionEmail, sendQuizAcceptanceEmail }
