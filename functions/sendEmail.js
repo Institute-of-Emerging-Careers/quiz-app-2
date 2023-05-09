@@ -175,12 +175,12 @@ const sendQuizAcceptanceEmail = async (email) => {
     
 		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process.
 		
-		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. Please take note of the following steps:
+		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. Please take note of the following 2 compulsory steps that you need to complete within the next 48 hours:
 
 		<ul>
-			<li>You have been sent an LEC Agreement that you have to sign. You can find it in your <a href="https://apply.iec.org.pk/student/lec-agreement">Student Panel in the LEC Agreements Section</a>. You can download the unsigned LEC document from there, then you must sign it, and then upload it back again to the student portal on the same page.</li>
+			<li>You have been sent an LEC Agreement that you have to sign within the next 48 hours. You can find it in your <a href="https://apply.iec.org.pk/student/lec-agreement">Student Panel</a>. You have to download the unsigned LEC PDF from there, then sign it, and then upload it back again to the student portal on the same page.</li>
 
-			<li>You must also pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>
+			<li>You must also pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>.
 			</li>
 
 		</ul>
