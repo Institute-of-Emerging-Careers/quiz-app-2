@@ -20,6 +20,7 @@ const {
 	Attempt,
 	Score,
 	Application,
+	LECRoundInvite,
 } = require("../db/models")
 const { saveNewQuiz } = require("../functions/saveNewQuiz.js")
 const { saveExistingQuiz } = require("../functions/saveExistingQuiz.js")
@@ -61,6 +62,8 @@ router.use((req, res, next) => {
 router.get("/new", checkAdminAuthenticated, (req, res) => {
 	res.render("new_quiz.ejs", { quizId: "", user_type: req.user.type })
 })
+
+const AUTO_ASSIGNED_LEC_ROUND_ID = parseInt(process.env.AUTO_ASSIGNED_LEC_ROUND_ID)
 
 router.get(
 	"/all-titles-and-num-attempts",
@@ -1183,39 +1186,51 @@ router.get(
 	"/attempt/:sectionId/score",
 	checkStudentAuthenticated,
 	async (req, res) => {
-		// answers are already saved in Database, so we create a Score object and send student completion email
-		await scoreSection(req.params.sectionId, req.user.user.id, null, true)
-		const section = await Section.findOne({
-			where: { id: req.params.sectionId },
-			attributes: ["id"],
-			include: [Quiz],
-		})
-		const assignment = await Assignment.findOne({
-			where: { QuizId: section.Quiz.id, StudentId: req.user.user.id },
-			attributes: ["id"],
-		})
-		const all_sections_solved = await allSectionsSolved(
-			section.Quiz.id,
-			assignment
-		)
+		try {
+			// answers are already saved in Database, so we create a Score object and send student completion email
+			await scoreSection(req.params.sectionId, req.user.user.id, null, true)
+			const section = await Section.findOne({
+				where: { id: req.params.sectionId },
+				attributes: ["id"],
+				include: [Quiz],
+			})
+			const assignment = await Assignment.findOne({
+				where: { QuizId: section.Quiz.id, StudentId: req.user.user.id },
+				attributes: ["id"],
+			})
+			const all_sections_solved = await allSectionsSolved(
+				section.Quiz.id,
+				assignment
+			)
 
-		const [obtainedScore, totalScore] = await getStudentScore(assignment.id)
+			const [obtainedScore, totalScore] = await getStudentScore(assignment.id)
 
-		const percentage = (obtainedScore / totalScore) * 100
+			const percentage = (obtainedScore / totalScore) * 100
 
-		//get the student's email
-		const student = await Student.findOne({
-			where: { id: req.user.user.id },
-			attributes: ["email"],
-		})
+			//get the student's email
+			const student = await Student.findOne({
+				where: { id: req.user.user.id },
+				attributes: ["id", "email"],
+			})
 
-		if (all_sections_solved && percentage < 50.0) {
-			await sendQuizRejectionEmail(student.email)
-		} else if (all_sections_solved) {
-			await sendQuizAcceptanceEmail(student.email)
+			if (all_sections_solved && percentage < 50.0) {
+				await sendQuizRejectionEmail(student.email)
+			} else if (all_sections_solved) {
+				console.log("Student Passed Assessment")
+				await sendQuizAcceptanceEmail(student.email)
+				await LECRoundInvite.findOrCreate({
+					where: {
+						StudentId: student.id,
+						LECRoundId: AUTO_ASSIGNED_LEC_ROUND_ID,
+					}
+				})
+			}
+
+			res.json({ success: true, all_sections_solved: all_sections_solved })
+		} catch (err) {
+			res.sendStatus(500)
+			console.log(err)
 		}
-
-		res.json({ success: true, all_sections_solved: all_sections_solved })
 	}
 )
 

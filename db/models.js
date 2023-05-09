@@ -485,7 +485,7 @@ Application.init(
 							Team Acquisition
 							Institute of Emerging Careers
 							https://iec.org.pk`,
-						})
+						}, false, (2 * 60 * 60)) // 2h delay
 					} catch (err) {
 						user.rejection_email_sent = false
 						return new Promise((resolve, reject) => {

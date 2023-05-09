@@ -165,7 +165,7 @@ const sendQuizRejectionEmail = async (email) => {
 		button_announcer: null,
 		button_text: null,
 		button_link: null,
-	})
+	}, false, (1 * 60 * 60)) // 1h delay
 }
 
 const sendQuizAcceptanceEmail = async (email) => {
@@ -173,14 +173,14 @@ const sendQuizAcceptanceEmail = async (email) => {
 		heading: `Registration Fee Payment`,
 		inner_text: `Dear student, 
     
-		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process. 
+		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process.
 		
 		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. Please take note of the following steps:
 
 		<ul>
-			<li>In the near future, you will have to sign The LEC Agreement which will be assigned to you in the <a href="https://apply.iec.org.pk/student">student portal</a>. When it is available, you will receive an email from us asking you to sign the LEC document. Then, you will be able to download the document from the portal, sign it, and upload it back again to the student portal.</li>
+			<li>You have been sent an LEC Agreement that you have to sign. You can find it in your <a href="https://apply.iec.org.pk/student/lec-agreement">Student Panel in the LEC Agreements Section</a>. You can download the unsigned LEC document from there, then you must sign it, and then upload it back again to the student portal on the same page.</li>
 
-			<li>Right now, you must pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the payment receipt to the form link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>
+			<li>You must also pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>
 			</li>
 
 		</ul>
