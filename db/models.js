@@ -474,8 +474,14 @@ Application.init(
 							heading: `Application Not Accepted`,
 							button_announcer: false,
 							inner_text: `Dear ${student.firstName},
-							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. We regret to inform you that we will not be moving forward with your application because you do not follow the required criteria set by IEC.
-
+							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. 
+							We regret to inform you that we will not be moving forward with your application because you do not follow the required criteria set by IEC as mentioned below:
+							
+							- Age is less than 22 or more than 35.
+							- You do not reside in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar (We would be launching in other cities from next Cohort).
+							- You are currently studying and are enrolled in an educational institution.
+							- You are currently employed full-time/part-time
+							
 							We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. Stay tuned to our website and social media for the upcoming programs. 
 
 							We wish you all the best in your future career endeavors
