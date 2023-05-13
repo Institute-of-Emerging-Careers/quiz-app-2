@@ -581,7 +581,6 @@ const App = () => {
 											/>
 										</>
 									)}
-<<<<<<< HEAD
 								</>
 							)}
 						</div>
@@ -592,11 +591,6 @@ const App = () => {
 							>
 								<Input
 									label="Phone Number: (11 digit number, no dashes)"
-=======
-
-<Input
-									label="Phone Number:"
->>>>>>> d74d2c56625b329f0008201e33a613df24a6bf1a
 									name="phone"
 									type="text"
 									placeholder="e.g. 03021234567"
@@ -613,24 +607,13 @@ const App = () => {
 										error={errorMessage.age}
 									/>
 								</div>
-<<<<<<< HEAD
 							</div>
 						)}
-=======
-								</>
-							)}
-						</div>
->>>>>>> d74d2c56625b329f0008201e33a613df24a6bf1a
 						{status !== "justOpened" && (
 							<div
 								id="right"
 								className="flex flex-col w-full basis-full gap-y-5"
 							>
-<<<<<<< HEAD
-=======
-
-
->>>>>>> d74d2c56625b329f0008201e33a613df24a6bf1a
 								<div className="flex flex-col gap-1 w-full">
 									<label className="label">
 										<span className="">Course Interest:</span>
