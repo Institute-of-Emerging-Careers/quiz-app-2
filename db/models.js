@@ -433,14 +433,11 @@ Application.init(
 
 				//age cutoff
 				if (user.age_group != "22 - 35") {
-					console.log("Invalid Age group")
 					reject = true
 				}
 
 				//not from a major city
 				if (user.city === "Other") {
-					console.log("Invalid Age group")
-
 					reject = true
 				}
 
@@ -449,9 +446,6 @@ Application.init(
 					user.education_completed !== "Diploma (Completed)" &&
 					user.education_completed !== "Postgraduate (Completed)"
 				) {
-					console.log(user.education_completed);
-					console.log("Invalid Education")
-
 					reject = true
 				}
 
@@ -459,8 +453,6 @@ Application.init(
 					user.type_of_employment === "Employed (Full time)" ||
 					user.type_of_employment === "Employed (Part time)"
 				) {
-					console.log("Invalid Employment")
-
 					reject = true
 				}
 				//this is the sending email part
@@ -478,7 +470,7 @@ Application.init(
 							We regret to inform you that we will not be moving forward with your application because you do not follow the required criteria set by IEC as mentioned below:
 							
 							- Age is less than 22 or more than 35.
-							- You do not reside in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar (We would be launching in other cities from next Cohort).
+							- You do not reside in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar, Quetta (We would be launching in other cities from next Cohort).
 							- You are currently studying and are enrolled in an educational institution.
 							- You are currently employed full-time/part-time
 							

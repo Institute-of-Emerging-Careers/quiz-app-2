@@ -3,6 +3,7 @@ const cities = [
 	"Karachi",
 	"Islamabad/Rawalpindi",
 	"Peshawar",
+	"Quetta",
 	"Other",
 ]
 
