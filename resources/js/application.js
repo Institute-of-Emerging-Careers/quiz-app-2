@@ -609,7 +609,7 @@ const App = () => {
 								</div>
 							</div>
 						)}
-						{status !== "justOpened" && (
+						{status !== STATUS_TYPES.JUST_OPENED && (
 							<div
 								id="right"
 								className="flex flex-col w-full basis-full gap-y-5"
