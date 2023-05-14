@@ -172,7 +172,7 @@ const validationSchema = {
 	},
 	city: {
 		required: true,
-		is_in: ["Lahore", "Islamabad/Rawalpindi", "Karachi", "Peshawar", "Other"],
+		is_in: ["Lahore", "Islamabad/Rawalpindi", "Karachi", "Peshawar", "Quetta", "Other"],
 	},
 	education: {
 		required: true,
@@ -669,6 +669,7 @@ const App = () => {
 										</option>
 										<option value="Karachi">Karachi</option>
 										<option value="Peshawar">Peshawar</option>
+										<option value="Quetta">Quetta</option>
 										<option value="Other">Other</option>
 									</select>
 								</div>
