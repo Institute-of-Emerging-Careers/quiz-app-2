@@ -129,7 +129,7 @@ const sendApplicationReceiptEmail = async (user) => {
 
         Are you excited to start this journey with us?
 
-        Stay tuned on your email account as you will receive successive emails in the coming days. For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
+        Stay tuned on your email account as you will receive successive emails in the coming days. For any further questions or concerns, feel free to contact us at mail@iec.org.pk or Whatsapp: 03338800947
 
 		Best Regards, 
 		Team Acquisition
@@ -187,7 +187,7 @@ const sendQuizAcceptanceEmail = async (email) => {
 
 		The last round of the selection process is an Individual Interview where our team will be meeting you online to know you better. You will be contacted shortly, do keep an eye on your email inbox.
 
-		For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
+		For any further questions or concerns, feel free to contact us at mail@iec.org.pk or Whatsapp: 03338800947
 
 		Best Regards, 
 		Team Acquisition

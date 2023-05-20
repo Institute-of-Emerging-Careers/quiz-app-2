@@ -81,7 +81,7 @@ async function sendReminderEmails() {
 
 											This is a final follow-up. The assessment is designed to test your basic English language and critical thinking skills.  In-case you do not complete the Assessment in time you will be disqualified. You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. 
 
-											For any further questions or concerns, feel free to contact us at info@iec.org.pk or Whatsapp: 03338800947
+											For any further questions or concerns, feel free to contact us at mail@iec.org.pk or Whatsapp: 03338800947
 											
 											Best Regards, 
 											Team Acquisition
