@@ -18,7 +18,7 @@ const { sendApplicationReceiptEmail } = require("../functions/sendEmail")
 const { autoAssignQuiz } = require("./utils")
 const { queueMail } = require("../bull")
 
-class ApplicationRound extends Model { }
+class ApplicationRound extends Model {}
 
 ApplicationRound.init(
 	{
@@ -38,7 +38,7 @@ ApplicationRound.init(
 	}
 )
 
-class Application extends Model { }
+class Application extends Model {}
 
 Application.init(
 	{
@@ -462,28 +462,39 @@ Application.init(
 							attributes: ["email", "firstName"],
 						})
 						user.rejection_email_sent = true
-						return queueMail(student.email, `IEC Application Update`, {
-							heading: `Application Not Accepted`,
-							button_announcer: false,
-							inner_text: `Dear ${student.firstName},
+						return queueMail(
+							student.email,
+							`IEC Application Update`,
+							{
+								heading: `Application Not Accepted`,
+								button_announcer: false,
+								inner_text: `Dear ${student.firstName},
 							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. 
-							We regret to inform you that we will not be moving forward with your application because you do not follow the required criteria set by IEC as mentioned below:
+
+							We regret to inform you that we will not be moving forward with your application. 
 							
-							- Age is less than 22 or more than 35.
-							- You do not reside in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar, Quetta (We would be launching in other cities from next Cohort).
-							- You are currently studying and are enrolled in an educational institution.
-							- You are currently employed full-time/part-time
+							To be considered for Cohort 8 the required criteria is mentioned below:
+
+							<ul>
+							<li>Your age should be more than 22 and less than 35.</li>
+							<li>You should be residing in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar or Quetta (We would be launching in other cities from next Cohort).</li>
+							<li>You should be a graduate with at least 14 years of completed education and currently are not studying or enrolled in any educational institution.</li>
+							<li>You are currently not employed full-time/part-time and not in any kind of internship.</li>
+							</ul>
 							
 							We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. Stay tuned to our website and social media for the upcoming programs. 
 
-							We wish you all the best in your future career endeavors
+							We wish you all the best in your future career endeavors.
 							
 
 							Best Regards,
 							Team Acquisition
 							Institute of Emerging Careers
 							https://iec.org.pk`,
-						}, false, (2 * 60 * 60)) // 2h delay
+							},
+							false,
+							2 * 60 * 60
+						) // 2h delay
 					} catch (err) {
 						user.rejection_email_sent = false
 						return new Promise((resolve, reject) => {
@@ -516,7 +527,7 @@ Application.init(
 	}
 )
 
-class Course extends Model { }
+class Course extends Model {}
 
 Course.init(
 	{
@@ -532,7 +543,7 @@ Course.init(
 )
 
 // junction table for ApplicaitonRound and Course (many-to-many relationship)
-class ApplicationRoundCourseJunction extends Model { }
+class ApplicationRoundCourseJunction extends Model {}
 ApplicationRoundCourseJunction.init(
 	{
 		id: {
@@ -545,7 +556,7 @@ ApplicationRoundCourseJunction.init(
 	{ sequelize, modelName: "ApplicationRoundCourseJunction" }
 )
 
-class InterviewRound extends Model { }
+class InterviewRound extends Model {}
 
 InterviewRound.init(
 	{
@@ -569,7 +580,7 @@ InterviewRound.init(
 	}
 )
 
-class Interviewer extends Model { }
+class Interviewer extends Model {}
 
 Interviewer.init(
 	{
@@ -593,7 +604,7 @@ Interviewer.init(
 	}
 )
 
-class InterviewerSlot extends Model { }
+class InterviewerSlot extends Model {}
 
 InterviewerSlot.init(
 	{
@@ -635,7 +646,7 @@ InterviewerInvite.init(
 )
 
 // StudentInterviewRoundInvite is junction model for the many-to-many relationship between "Student" and "InterviewRound"
-class StudentInterviewRoundInvite extends Model { }
+class StudentInterviewRoundInvite extends Model {}
 StudentInterviewRoundInvite.init(
 	{
 		id: {
@@ -648,7 +659,7 @@ StudentInterviewRoundInvite.init(
 	{ sequelize, modelName: "StudentInterviewRoundInvite" }
 )
 
-class InterviewMatching extends Model { }
+class InterviewMatching extends Model {}
 
 InterviewMatching.init(
 	{
@@ -676,7 +687,7 @@ InterviewMatching.init(
 	{ sequelize, modelName: "InterviewMatching" }
 )
 
-class InterviewQuestions extends Model { }
+class InterviewQuestions extends Model {}
 
 InterviewQuestions.init(
 	{
@@ -711,7 +722,7 @@ InterviewQuestions.init(
 	{ sequelize, modelName: "InterviewQuestions" }
 )
 
-class InterviewAnswers extends Model { }
+class InterviewAnswers extends Model {}
 
 InterviewAnswers.init(
 	{
@@ -755,7 +766,7 @@ InterviewAnswers.init(
 	{ sequelize, modelName: "InterviewAnswers" }
 )
 
-class InterviewScores extends Model { }
+class InterviewScores extends Model {}
 
 InterviewScores.init(
 	{
@@ -791,7 +802,7 @@ InterviewScores.init(
 	{ sequelize, modelName: "InterviewScores" }
 )
 
-class InterviewBookingSlots extends Model { }
+class InterviewBookingSlots extends Model {}
 
 InterviewBookingSlots.init(
 	{
@@ -841,7 +852,7 @@ InterviewBookingSlots.init(
 	}
 )
 
-class Orientation extends Model { }
+class Orientation extends Model {}
 
 Orientation.init(
 	{
@@ -870,7 +881,7 @@ Orientation.init(
 
 // OrientationInvite is the Junction model for the Many-to-Many relationship of "Orientation" and "Student" models.
 
-class OrientationInvite extends Model { }
+class OrientationInvite extends Model {}
 OrientationInvite.init(
 	{
 		email_sent: {
@@ -890,7 +901,7 @@ OrientationInvite.init(
 	}
 )
 
-class Quiz extends Model { }
+class Quiz extends Model {}
 
 Quiz.init(
 	{
@@ -920,7 +931,7 @@ Quiz.init(
 	}
 )
 
-class Section extends Model { }
+class Section extends Model {}
 
 Section.init(
 	{
@@ -947,7 +958,7 @@ Section.init(
 	}
 )
 
-class Passage extends Model { }
+class Passage extends Model {}
 Passage.init(
 	{
 		statement: {
@@ -965,7 +976,7 @@ Passage.init(
 	}
 )
 
-class Question extends Model { }
+class Question extends Model {}
 
 Question.init(
 	{
@@ -1006,7 +1017,7 @@ Question.init(
 	}
 )
 
-class Option extends Model { }
+class Option extends Model {}
 
 Option.init(
 	{
@@ -1033,7 +1044,7 @@ Option.init(
 	}
 )
 
-class User extends Model { }
+class User extends Model {}
 
 User.init(
 	{
@@ -1061,7 +1072,7 @@ User.init(
 	}
 )
 
-class Student extends Model { }
+class Student extends Model {}
 
 Student.init(
 	{
@@ -1152,7 +1163,7 @@ Student.init(
 	}
 )
 
-class Invite extends Model { }
+class Invite extends Model {}
 
 Invite.init(
 	{
@@ -1173,7 +1184,7 @@ Invite.init(
 	}
 )
 
-class Assignment extends Model { }
+class Assignment extends Model {}
 
 Assignment.init(
 	{
@@ -1194,7 +1205,7 @@ Assignment.init(
 	}
 )
 
-class Attempt extends Model { }
+class Attempt extends Model {}
 
 // An Attempt is the attempt of just a single section out of a quiz
 Attempt.init(
@@ -1223,7 +1234,7 @@ Attempt.init(
 	}
 )
 
-class Score extends Model { }
+class Score extends Model {}
 
 // An Attempt is the attempt of just a single section out of a quiz
 Score.init(
@@ -1240,11 +1251,11 @@ Score.init(
 	}
 )
 
-class Answer extends Model { }
+class Answer extends Model {}
 
 Answer.init({}, { sequelize, modelName: "Answer" })
 
-class PasswordResetLink extends Model { }
+class PasswordResetLink extends Model {}
 
 PasswordResetLink.init(
 	{
@@ -1259,7 +1270,7 @@ PasswordResetLink.init(
 	}
 )
 
-class Email extends Model { }
+class Email extends Model {}
 
 Email.init(
 	{
@@ -1295,7 +1306,7 @@ Email.init(
 )
 
 // LEC Agreements
-class LECRound extends Model { }
+class LECRound extends Model {}
 LECRound.init(
 	{
 		title: {
@@ -1316,7 +1327,7 @@ LECRound.init(
 	{ sequelize, modelName: "LECRound" }
 )
 
-class LECRoundInvite extends Model { }
+class LECRoundInvite extends Model {}
 LECRoundInvite.init(
 	{
 		// how many times this particular user has been emailed about this particular LEC round, be it through automated reminder emails or manual emails
@@ -1330,7 +1341,7 @@ LECRoundInvite.init(
 )
 
 // an LEC Agreement Template is an unsigned LEC agreement PDF that can be sent to students. Students download it, fill & sign it, and send it back to us.
-class LECAgreementTemplate extends Model { }
+class LECAgreementTemplate extends Model {}
 LECAgreementTemplate.init(
 	{
 		url: {
@@ -1341,7 +1352,7 @@ LECAgreementTemplate.init(
 	{ sequelize }
 )
 
-class LECAgreementSubmission extends Model { }
+class LECAgreementSubmission extends Model {}
 LECAgreementSubmission.init({}, { sequelize })
 
 // Relationships
