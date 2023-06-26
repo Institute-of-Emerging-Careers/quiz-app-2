@@ -17,7 +17,7 @@ async function sendReminderEmails() {
 					where: {
 						[Op.and]: [
 							sequelize.literal(
-								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (24*60*60)"
+								"UNIX_TIMESTAMP() - 0 > (24*60*60)"
 							),
 							{ completed: false },
 						],
@@ -29,7 +29,7 @@ async function sendReminderEmails() {
 							attributes: ["email"],
 						},
 					],
-					//i.e. if it has been more than 24 hours since last reminder email and assignment has not been completed yet
+					//i.e. if it has been more than 37 hours since last reminder email and assignment has not been completed yet
 				},
 			],
 		})
@@ -96,8 +96,7 @@ async function sendReminderEmails() {
 									),
 
 									assignment.update({
-										timeOfLastReminderEmail:
-											sequelize.fn("NOW"),
+										timeOfLastReminderEmail: Date.now(),
 									}),
 								]
 							}
@@ -116,5 +115,6 @@ async function sendReminderEmails() {
 		console.log(err)
 	}
 }
+
 
 module.exports = sendReminderEmails

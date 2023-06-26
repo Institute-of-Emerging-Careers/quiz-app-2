@@ -435,7 +435,7 @@ Application.init(
 				if (user.age_group != "22 - 35") {
 					reject = true
 				}
-
+				
 				if (
 					user.education_completed !== "Bachelors (Completed)" &&
 					user.education_completed !== "Diploma (Completed)" &&
@@ -1186,7 +1186,7 @@ Assignment.init(
 		timeOfLastReminderEmail: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
-			defaultValue: sequelize.fn("NOW"),
+			defaultValue: 0,
 		},
 		completed: {
 			type: DataTypes.BOOLEAN,
