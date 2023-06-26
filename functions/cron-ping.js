@@ -14,7 +14,7 @@ const {
 const sendReminderEmails = require("./sendReminderEmails")
 
 const assessment_reminder_mailer_task = cron.schedule(
-	"4 * * * * *",
+	"0 0 */3 * * *",
 	() => {
 		console.log("Running 3-hourly reminder email.")
 		sendReminderEmails()
