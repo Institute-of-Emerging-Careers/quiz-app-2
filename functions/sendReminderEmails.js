@@ -97,7 +97,7 @@ async function sendReminderEmails() {
 
 									assignment.update({
 										timeOfLastReminderEmail:
-											sequelize.literal("CURRENT_TIMESTAMP"),
+											sequelize.fn("NOW"),
 									}),
 								]
 							}

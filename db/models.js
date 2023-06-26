@@ -1186,7 +1186,7 @@ Assignment.init(
 		timeOfLastReminderEmail: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
-			defaultValue: sequelize.literal("CURRENT_TIMESTAMP"),
+			defaultValue: sequelize.fn("NOW"),
 		},
 		completed: {
 			type: DataTypes.BOOLEAN,
