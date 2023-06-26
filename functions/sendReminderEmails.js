@@ -17,7 +17,7 @@ async function sendReminderEmails() {
 					where: {
 						[Op.and]: [
 							sequelize.literal(
-								"TIME_TO_SEC(TIMEDIFF(NOW(),Assignments.timeOfLastReminderEmail)) > (37*60*60)"
+								"UNIX_TIMESTAMP() - 0 > (24*60*60)"
 							),
 							{ completed: false },
 						],

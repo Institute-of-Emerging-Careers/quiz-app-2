@@ -435,12 +435,7 @@ Application.init(
 				if (user.age_group != "22 - 35") {
 					reject = true
 				}
-
-				//not from a major city
-				if (user.city === "Other") {
-					reject = true
-				}
-
+				
 				if (
 					user.education_completed !== "Bachelors (Completed)" &&
 					user.education_completed !== "Diploma (Completed)" &&
@@ -469,11 +464,11 @@ Application.init(
 								heading: `Application Not Accepted`,
 								button_announcer: false,
 								inner_text: `Dear ${student.firstName},
-							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. 
+							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. 
 
 							We regret to inform you that we will not be moving forward with your application. 
 							
-							To be considered for Cohort 8 the required criteria is mentioned below:
+							To be considered for Cohort 9 the required criteria is mentioned below:
 
 							<ul>
 							<li>Your age should be more than 22 and less than 35.</li>

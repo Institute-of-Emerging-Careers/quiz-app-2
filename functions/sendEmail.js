@@ -109,9 +109,9 @@ const sendApplicationReceiptEmail = async (user) => {
 		heading: `Application Received`,
 		inner_text: `Dear ${student.firstName}
     
-        Thank you for applying to the “Tech Apprenticeship Program Cohort 08” at the Institute of Emerging Careers.<b> Your Application number is ${user.id}</b>. You may use this number for future correspondence. 
+        Thank you for applying to the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers.<b> Your Application number is ${user.id}</b>. You may use this number for future correspondence. 
 
-        Our next part of the registration process includes Assessments which have been assigned to you on the portal you signed-up on. This is compulsory to complete within 72 hours of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. Incompletion of the Assessment will lead to disqualification. 
+        Our next part of the registration process includes Assessments which have been assigned to you on the portal you signed-up on. This is compulsory to complete within 5 days of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. Incompletion of the Assessment will lead to disqualification. 
 
 		Please log into your student portal by clicking <a href="https://apply.iec.org.pk/student">here</a> to solve the assessment.
 
@@ -119,7 +119,7 @@ const sendApplicationReceiptEmail = async (user) => {
 
         Important Dates and Next Steps:
         <b>Stage 1:</b>
-            Assessments (to be completed within 72 hours
+            Assessments (to be completed within 5 days)
         <b>Stage 2:</b>
             Registration Fee Payment & Signing LEC Agreement 
         <b>Stage 3:</b>
@@ -147,7 +147,7 @@ const sendQuizRejectionEmail = async (email) => {
 		heading: `Quiz Result`,
 		inner_text: `Dear student, 
     
-		Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 8” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.
+		Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.
 		
 		We regret to inform you that we will not be moving forward with your application because you scored below 50% in the assessment.
 
