@@ -112,7 +112,7 @@ const ErrorDisplay = ({ errorType, email }) => {
 			{errorType === ERROR_TYPE.ALREADY_APPLIED && (
 				<p>
 					You have already applied to this Cohort of IEC. You cannot apply
-					again. Contact IEC via email on mail@iec.org.pk if you have any
+					again. Contact IEC via email on ask@iec.org.pk if you have any
 					concerns.
 				</p>
 			)}
@@ -416,7 +416,7 @@ const App = () => {
 
 		if (!!errorType) {
 			alert(
-				"Please fix all errors before submitting the form. If there is a problem, email mail@iec.org.pk or reload the page."
+				"Please fix all errors before submitting the form. If there is a problem, email ask@iec.org.pk or reload the page."
 			)
 			return
 		}
@@ -475,7 +475,7 @@ const App = () => {
 			if (response.status === 201) {
 				window.location.href = "https://iec.org.pk/thankyou"
 			} else {
-				alert("Something went wrong. Try again or contact mail@iec.org.pk")
+				alert("Something went wrong. Try again or contact ask@iec.org.pk")
 				console.log(response)
 			}
 		} catch (err) {

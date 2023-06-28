@@ -35,11 +35,11 @@ function completeHandler(event) {
 }
 
 function errorHandler(event) {
-    _("status").innerHTML = "Upload Failed. Try again, or email us for support at: mail@iec.org.pk";
+    _("status").innerHTML = "Upload Failed. Try again, or email us for support at: ask@iec.org.pk";
     _("progressBar").classList.add("hidden")
 }
 
 function abortHandler(event) {
-    _("status").innerHTML = "Upload Aborted.  Try again, or email us for support at: mail@iec.org.pk";
+    _("status").innerHTML = "Upload Aborted.  Try again, or email us for support at: ask@iec.org.pk";
     _("progressBar").classList.add("hidden")
 }
