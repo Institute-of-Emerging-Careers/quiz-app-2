@@ -609,7 +609,7 @@ router.post("/lec-agreement/upload", checkStudentAuthenticated, pdf_upload.singl
 		await LECAgreementSubmission.create({ LECAgreementTemplateId: req.body.agreement_template_id, StudentId: req.user.user.id, LECRoundId: req.body.round_id })
 		res.send(`<i class="fas fa-check"></i></i> Your LEC Agreement has been uploaded successfully.`)
 	} catch (err) {
-		res.status(500).send("There was a problem with your submission. Please contact IEC Support Team at mail@iec.org.pk")
+		res.status(500).send("There was a problem with your submission. Please contact IEC Support Team at ask@iec.org.pk")
 	}
 })
 

@@ -78,7 +78,7 @@ const ErrorDisplay = _ref2 => {
   }, "click here to change your CNIC number"), " ", "if you remember your password from last time"), errorType === ERROR_TYPE.CNIC_EXISTS && /*#__PURE__*/React.createElement("p", null, "We already have this CNIC in our database. It means you have applied to IEC in the past, but you used a different email address the last time. The email address you used last time looked something like this:", " ", email, ".", /*#__PURE__*/React.createElement("br", null), "If that email address was correct, then please use that same email address and cnic pair.", /*#__PURE__*/React.createElement("br", null), "If you entered a wrong email address the last time, then", " ", /*#__PURE__*/React.createElement("a", {
     href: "/application/change-email",
     className: "text-iec-blue hover:text-iec-blue-hover underline hover:no-underline"
-  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on mail@iec.org.pk if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."), errorType === ERROR_TYPE.PASSWORD_MISMATCH && /*#__PURE__*/React.createElement("p", null, "Please write the same password both times. The two password fields do not match."));
+  }, "click here to change your email address"), "."), errorType === ERROR_TYPE.ALREADY_APPLIED && /*#__PURE__*/React.createElement("p", null, "You have already applied to this Cohort of IEC. You cannot apply again. Contact IEC via email on ask@iec.org.pk if you have any concerns."), errorType === ERROR_TYPE.PASSWORD_TOO_SHORT && /*#__PURE__*/React.createElement("p", null, "Password must be at least 8 characters long."), errorType === ERROR_TYPE.PASSWORD_MISMATCH && /*#__PURE__*/React.createElement("p", null, "Please write the same password both times. The two password fields do not match."));
 };
 /*
 <option value="Lahore">Lahore</option>
@@ -331,7 +331,7 @@ const App = () => {
     e.stopPropagation();
 
     if (!!errorType) {
-      alert("Please fix all errors before submitting the form. If there is a problem, email mail@iec.org.pk or reload the page.");
+      alert("Please fix all errors before submitting the form. If there is a problem, email ask@iec.org.pk or reload the page.");
       return;
     }
 
@@ -378,7 +378,7 @@ const App = () => {
       if (response.status === 201) {
         window.location.href = "https://iec.org.pk/thankyou";
       } else {
-        alert("Something went wrong. Try again or contact mail@iec.org.pk");
+        alert("Something went wrong. Try again or contact ask@iec.org.pk");
         console.log(response);
       }
     } catch (err) {

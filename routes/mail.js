@@ -88,7 +88,7 @@ router.get("/unsubscribe", checkStudentAuthenticated, async (req, res) => {
 		res.render("templates/error.ejs", {
 			additional_info: "Failed",
 			error_message:
-				"We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at mail@iec.org.pk for assistance.",
+				"We could not remove you from the mailing list. We are terribly sorry. Please email the tech team at ask@iec.org.pk for assistance.",
 			action_link: "/",
 			action_link_text: "Click here to go to the IEC LCMS home page.",
 		})

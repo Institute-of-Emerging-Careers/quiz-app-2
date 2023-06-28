@@ -58,7 +58,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 			)
 
 			var mailOptions = {
-				from: "IEC Mail <mail@iec.org.pk>",
+				from: "IEC Mail <ask@iec.org.pk>",
 				to: recepient,
 				subject: subject,
 				html: html,
@@ -121,7 +121,7 @@ const sendApplicationReceiptEmail = async (user) => {
         <b>Stage 1:</b>
             Assessments (to be completed within 5 days)
         <b>Stage 2:</b>
-            Registration Fee Payment & Signing LEC Agreement 
+            Registration Fee Payment
         <b>Stage 3:</b>
             Interviews 
         <b>Final Stage:</b>
@@ -129,7 +129,7 @@ const sendApplicationReceiptEmail = async (user) => {
 
         Are you excited to start this journey with us?
 
-        Stay tuned on your email account as you will receive successive emails in the coming days. For any further questions or concerns, feel free to contact us at mail@iec.org.pk or Whatsapp: 03338800947
+        Stay tuned on your email account as you will receive successive emails in the coming days. For any further questions or concerns, feel free to contact us at ask@iec.org.pk or Whatsapp: 03338800947
 
 		Best Regards, 
 		Team Acquisition
@@ -175,19 +175,15 @@ const sendQuizAcceptanceEmail = async (email) => {
     
 		Congratulations on successfully completing the assessment and qualifying for the last round of the selection process.
 		
-		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. Please take note of the following 2 compulsory steps that you need to complete within the next 48 hours:
+		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. 
 
-		<ul>
-			<li>Upload a screenshot of your Registration Fee Payment Receipt along with the LEC Agreement in the link below.</li>
 
-			<li>You must also pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>.
-			</li>
+		For the next step in the process, you must pay a Registration Fee of Rs. 1000 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>.
 
-		</ul>
 
 		The last round of the selection process is an Individual Interview where our team will be meeting you online to know you better. You will be contacted shortly, do keep an eye on your email inbox.
 
-		For any further questions or concerns, feel free to contact us at mail@iec.org.pk or Whatsapp: 03338800947
+		For any further questions or concerns, feel free to contact us at ask@iec.org.pk or Whatsapp: 03338800947
 
 		Best Regards, 
 		Team Acquisition

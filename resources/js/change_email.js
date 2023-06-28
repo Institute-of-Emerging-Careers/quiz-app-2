@@ -20,14 +20,14 @@ function changeEmail(e) {
         submit_button.classList.add("btn-primary");
         document.getElementById("submit-button").value = "Try Again";
         alert(
-          "Email not changed. There is something wrong with your CNIC and password. Contact mail@iec.org.pk."
+          "Email not changed. There is something wrong with your CNIC and password. Contact ask@iec.org.pk."
         );
       } else {
         submit_button.classList.remove("btn-warning");
         submit_button.classList.add("btn-primary");
         document.getElementById("submit-button").value = "Try Again";
         alert(
-          "Email not changed. Please enter a valid email address, CNIC, and password. Contact mail@iec.org.pk."
+          "Email not changed. Please enter a valid email address, CNIC, and password. Contact ask@iec.org.pk."
         );
       }
     }
