@@ -178,7 +178,7 @@ const sendQuizAcceptanceEmail = async (email) => {
 		You are a couple of steps away from becoming part of a transforming digital skills learning journey with the Institute of Emerging Careers. 
 
 
-		For the next step in the process, you must pay a Registration Fee of Rs. 500 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>.
+		For the next step in the process, you must pay a Registration Fee of Rs. 1000 which is non-refundable. After paying, please upload the image of the payment receipt to the link below. Payment details are also mentioned in the same link: <a href="https://forms.gle/eE3wZTEGV88Zo65F7">https://forms.gle/eE3wZTEGV88Zo65F7</a>.
 
 
 		The last round of the selection process is an Individual Interview where our team will be meeting you online to know you better. You will be contacted shortly, do keep an eye on your email inbox.
