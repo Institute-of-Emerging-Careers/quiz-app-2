@@ -58,7 +58,7 @@ async function sendHTMLMail(recepient, subject, ejs_obj, force_send = false) {
 			)
 
 			var mailOptions = {
-				from: "IEC Mail <ask@iec.org.pk>",
+				from: "IEC Mail <mail@iec.org.pk>",
 				to: recepient,
 				subject: subject,
 				html: html,
@@ -143,9 +143,12 @@ const sendApplicationReceiptEmail = async (user) => {
 }
 
 const sendQuizRejectionEmail = async (email) => {
-	return queueMail(email, `IEC Assessment Result`, {
-		heading: `Quiz Result`,
-		inner_text: `Dear student, 
+	return queueMail(
+		email,
+		`IEC Assessment Result`,
+		{
+			heading: `Quiz Result`,
+			inner_text: `Dear student, 
     
 		Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.
 		
@@ -162,10 +165,13 @@ const sendQuizRejectionEmail = async (email) => {
 		Institute of Emerging Careers 
 		http://www.iec.org.pk 
 		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
-		button_announcer: null,
-		button_text: null,
-		button_link: null,
-	}, false, (1 * 60 * 60)) // 1h delay
+			button_announcer: null,
+			button_text: null,
+			button_link: null,
+		},
+		false,
+		1 * 60 * 60
+	) // 1h delay
 }
 
 const sendQuizAcceptanceEmail = async (email) => {
@@ -196,5 +202,9 @@ const sendQuizAcceptanceEmail = async (email) => {
 	})
 }
 
-
-module.exports = { sendHTMLMail, sendApplicationReceiptEmail, sendQuizRejectionEmail, sendQuizAcceptanceEmail }
+module.exports = {
+	sendHTMLMail,
+	sendApplicationReceiptEmail,
+	sendQuizRejectionEmail,
+	sendQuizAcceptanceEmail,
+}
