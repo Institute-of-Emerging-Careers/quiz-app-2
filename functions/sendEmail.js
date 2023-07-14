@@ -110,37 +110,37 @@ const sendApplicationReceiptEmail = async (user) => {
 		`<i> IEC: Successful Registration for Tech Apprenticeship Program Cohort 09 </i>`,
 		{
 			heading: `Application Received`,
-			inner_text: `Dear ${student.firstName}
-	   <br />
-       <i> Thank you for applying to the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers.<b> Your Application number is ${user.id}</b>. You may use this number for future correspondence. 
-	   <br />
-        Our next part of the registration process includes <b>Assessments</b> which have been assigned to you on the portal you signed up on. This is compulsory to complete within <b> 5 days </b> of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. <b> Incompletion of the Assessment will lead to disqualification. </b>
-		<br />
-        <b> Important Dates and Next Steps:</b>
-		<b>Stage 1:</b>
-		<ul style="padding-left: 50px;">
-		  <li> Assessment  </li>
-		</ul>
-    	<b>Stage 2:</b>
-		<ul style="padding-left: 50px;">
-		  <li> Informative Sessions with the Team  </li>
-		</ul>
-   		<b>Stage 3:</b>
-		<ul style="padding-left: 50px;">
-		  <li> Registration Fee Payment & Signing LEC Agreement   </li>
-		</ul>
-        <b>Final Stage:</b>
-		<ul style="padding-left: 50px;">
-		  <li> Onboarding and Probation Weeks  </li>
-		</ul>
-		<br />
-        For any further questions or concerns, feel free to contact us at <a href="ask@iec.org.pk">ask@iec.org.pk</a> ask@iec.org.pk or Whatsapp:03338800947
-		<br />
-		Best Regards, 
-		Team Acquisition
-		Institute of Emerging Careers 
-		<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a>  
-		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i> `,
+			inner_text: `<> Dear ${student.firstName}
+			<br /><br />
+			Thank you for applying to the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers.<b> Your Application number is 1290</b>. You may use this number for future correspondence. 
+			<br /><br />
+			Our next part of the registration process includes <b>Assessments</b> which have been assigned to you on the portal you signed up on. This is compulsory to complete within <b> 5 days </b> of receiving this email. The assessment is designed to test your basic English language and Critical Thinking skills. <b> Incompletion of the Assessment will lead to disqualification. </b>
+			<br /><br />
+			<b> Important Dates and Next Steps:</b> <br /><br />
+			<b>Stage 1:</b>
+			<ul style="padding-left: 50px;">
+			  <li> Assessment  </li>
+			</ul>
+			<b>Stage 2:</b>
+			<ul style="padding-left: 50px;">
+			  <li> Informative Sessions with the Team  </li>
+			</ul>
+			   <b>Stage 3:</b>
+			<ul style="padding-left: 50px;">
+			  <li> Registration Fee Payment & Signing LEC Agreement   </li>
+			</ul>
+			<b>Final Stage:</b>
+			<ul style="padding-left: 50px;">
+			  <li> Onboarding and Probation Weeks  </li>
+			</ul>
+			<br />
+			For any further questions or concerns, feel free to contact us at <a href="ask@iec.org.pk">ask@iec.org.pk</a> or Whatsapp:03338800947
+			<br /><br />
+			Best Regards, <br /><br />
+			Team Acquisition <br /><br />
+			Institute of Emerging Careers <br /><br />
+			<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a>  <br /><br />
+			<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i> `,
 			button_announcer: null,
 			button_text: null,
 			button_link: null,
@@ -154,21 +154,23 @@ const sendQuizRejectionEmail = async (email) => {
 		`IEC Assessment Result`,
 		{
 			heading: `Quiz Result`,
-			inner_text: `Dear student, 
-		<br />
-		<i> Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.
-		<br />
-		We regret to inform you that we will not be moving forward with your application because <span> { You scored below 50% in the assessment} or {You didn't complete the assessment within 5 days deadline, despite the follow-ups}. </span>
-		<br />
-		All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career.
-		<br />
-		Stay tuned to our website and social media for the upcoming programs. 
-		<br />
-		Best Regards, 
-		Team Acquisition
-		Institute of Emerging Careers 
-		<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a> 
-		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i>`,
+			inner_text: `<i> Dear student, 
+
+			<p>Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program.</p>
+
+
+			<p>We regret to inform you that we will not be moving forward with your application because <span> { You scored below 50% in the assessment} or {You didn't complete the assessment within 5 days deadline, despite the follow-ups}. </span> </p>
+			
+			<p>All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. </p>
+			
+			
+			<p>Stay tuned to our website and social media for the upcoming programs.</p> <br>  <br> 
+			
+			<p>Best Regards, </p>
+			<p>Team Acquisition</p>
+			<p>Institute of Emerging Careers </p>
+			<p><a href="http://www.iec.org.pk" > http://www.iec.org.pk </a> </p>
+			<p><a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i> </p>`,
 			button_announcer: null,
 			button_text: null,
 			button_link: null,
@@ -181,24 +183,24 @@ const sendQuizRejectionEmail = async (email) => {
 const sendQuizAcceptanceEmail = async (email) => {
 	return queueMail(email, `IEC Assessment Result`, {
 		heading: `Registration Fee Payment`,
-		inner_text: `Dear student, 
-		<br />
-		<i> Congratulations on completing the assessment and qualifying for the last round of the selection process.You are one compulsory step away from becoming part of IEC. 
-        <br />
-		<ul>
-		  <li> Upload a screenshot of your Registration Fee Payment Receipt along with the LEC Agreement in the link below. You must pay Rs.500 Non-Refundable. Payment details & instructions to upload the LEC Agreement are mentioned in the link here: <a href="https://forms.gle/MxkgEd3EufXyy5Gb8" > https://forms.gle/MxkgEd3EufXyy5Gb8</a>   </li>
-		  <li> <b> Deadline to Pay the registration fee and sign the LEC Agreement is before 14th August 2023.</b>   </li>
-		</ul>
-		<br />
-		Afterward, you will be contacted shortly with the next step, do keep an eye on your email inbox.
-		<br />
-		For any further questions or concerns, feel free to contact us at <a href="ask@iec.org.pk">ask@iec.org.pk</a> ask@iec.org.pk or Whatsapp:03338800947
-		<br />
-		Best Regards, 
-		Team Acquisition
-		Institute of Emerging Careers 
-		<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a> 
-		<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i> `,
+		inner_text: `<i> Dear student, 
+<br /><br />
+Congratulations on completing the assessment and qualifying for the last round of the selection process.You are one compulsory step away from becoming part of IEC. 
+<br /><br />
+<ul>
+  <li> Upload a screenshot of your Registration Fee Payment Receipt along with the LEC Agreement in the link below. You must pay Rs.500 Non-Refundable. Payment details & instructions to upload the LEC Agreement are mentioned in the link here: <a href="https://forms.gle/MxkgEd3EufXyy5Gb8" > https://forms.gle/MxkgEd3EufXyy5Gb8</a>   </li>
+  <br /> <li> <b> Deadline to Pay the registration fee and sign the LEC Agreement is before 14th August 2023.</b>   </li>
+</ul> <br />
+
+Afterward, you will be contacted shortly with the next step, do keep an eye on your email inbox.
+<br /><br />
+For any further questions or concerns, feel free to contact us at <a href="ask@iec.org.pk">ask@iec.org.pk</a> or Whatsapp:03338800947
+<br /><br />
+Best Regards, <br /><br />
+Team Acquisition<br /><br />
+Institute of Emerging Careers <br /><br />
+<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a> <br /><br />
+<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i> `,
 		button_announcer: null,
 		button_text: null,
 		button_link: null,
