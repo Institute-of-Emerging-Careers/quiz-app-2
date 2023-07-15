@@ -72,31 +72,22 @@ async function sendReminderEmails() {
 								return [
 									queueMail(
 										assignment.Student.email,
-										`IEC: Complete Your Assessment`,
+										`Reminder | IEC Assessment Deadline`,
 										{
 											heading: "IEC Assessment Due",
-											inner_text: `<i>Dear Student,<br><br />
+											inner_text: `Dear Student,<br>
 
-											You have been assigned Assessments that you have to complete within 5 days of your registration. <b> This is a final follow-up! </b> <br /><br />
-											<b> In- case you do not complete the Assessment in time you will be disqualified. </b> <br /><br />
+											You have been assigned Assessments that you have to complete within 72 hours of your registration. 
+
+											This is a final follow-up. The assessment is designed to test your basic English language and critical thinking skills.  In-case you do not complete the Assessment in time you will be disqualified. You only have ${remaining_time_in_words} to solve the IEC Assessment.<br>If you have already completed the assessment, you can ignore this email. 
+
+											For any further questions or concerns, feel free to contact us at ask@iec.org.pk or Whatsapp: 03338800947
 											
-											The assessment is designed to test your basic English language and critical thinking skills. Make sure to go through the assessment guide for your understanding. <br /><br />
-											
-											<b> Assessment Guide Link: </b>  <a href="https://iec.org.pk/testing" > Assessment Guide </a> <br /><br />
-											
-											<b> Assessment Link: </b>  <a href="https://iec.org.pk/testing" > Assessment Link </a> <br /><br />
-											
-											Best of luck with the assessment! <br /><br />
-											
-											Are you excited to start this journey with us? <br /><br />
-											
-											For any further questions or concerns, feel free to contact us at <a href="ask@iec.org.pk">ask@iec.org.pk</a> or Whatsapp:03338800947 <br /><br />
-											
-											Best Regards, <br /><br />
-											Team Acquisition <br /><br />
-											Institute of Emerging Careers <br /><br />
-											<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a>  <br /><br />
-											<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> <i/>`,
+											Best Regards, 
+											Team Acquisition
+											Institute of Emerging Careers 
+											http://www.iec.org.pk 
+											<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a>`,
 											button_announcer:
 												"Log into your student portal to complete assessment",
 											button_text: "Login",

@@ -459,32 +459,33 @@ Application.init(
 						user.rejection_email_sent = true
 						return queueMail(
 							student.email,
-							`IEC: Application Result`,
+							`IEC Application Update`,
 							{
 								heading: `Application Not Accepted`,
 								button_announcer: false,
-								inner_text: `<i> Dear ${student.firstName},<br /><br />
-								Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. <br /><br />
-								
-								We regret to inform you that we will not be moving forward with your application. 
-								<br /><br />
-								To be considered for Cohort 9 the required criteria is mentioned below:
-								<br /> <br />
-								<ul>
-								<li>Your age should be more than 22 and less than 35.</li>
-								<li>You should be a graduate with 14 years of completed education and currently are not studying or enrolled in any educational institution.</li>
-								<li>You are currently not employed full-time/part-time and are not in any kind of internship.</li>
-								</ul>
-								<br /><br />
-								All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. 
-								<br /><br />
-								Stay tuned to our website and social media for the upcoming programs. 
-								<br /><br />
-								Best Regards,<br /><br />
-								Team Acquisition <br /><br />
-								Institute of Emerging Careers <br /><br />
-								<a href="http://www.iec.org.pk" > http://www.iec.org.pk </a>   <br /><br />
-								<a href="https://www.facebook.com/instituteofemergingcareers?_rdc=1&_rdr">Facebook</a> | <a href = "https://www.instagram.com/emergingcareer/">Instagram</a> | <a href="https://www.linkedin.com/company/emergingcareers/">LinkedIn</a> | <a href="https://twitter.com/iec_pk?lang=en">Twitter</a> </i>` ,
+								inner_text: `Dear ${student.firstName},
+							Thank you for showing your interest in the “Tech Apprenticeship Program Cohort 9” at the Institute of Emerging Careers. We appreciate you taking out time to apply for the program. 
+
+							We regret to inform you that we will not be moving forward with your application. 
+							
+							To be considered for Cohort 9 the required criteria is mentioned below:
+
+							<ul>
+							<li>Your age should be more than 22 and less than 35.</li>
+							<li>You should be residing in Lahore, Islamabad, Rawalpindi, Karachi, Peshawar or Quetta (We would be launching in other cities from next Cohort).</li>
+							<li>You should be a graduate with at least 14 years of completed education and currently are not studying or enrolled in any educational institution.</li>
+							<li>You are currently not employed full-time/part-time and not in any kind of internship.</li>
+							</ul>
+							
+							We are thankful to you for applying. All of us at IEC are hopeful to see you in the next cycle of the program and help you build your digital career. Stay tuned to our website and social media for the upcoming programs. 
+
+							We wish you all the best in your future career endeavors.
+							
+
+							Best Regards,
+							Team Acquisition
+							Institute of Emerging Careers
+							https://iec.org.pk`,
 							},
 							false,
 							2 * 60 * 60
